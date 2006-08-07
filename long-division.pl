@@ -8,7 +8,7 @@ sub parse_poly {
     my ($polytext) = @_;
     my @poly;
 
-    while ($polytext =~ s/^\s*([+-]?[0-9]*)(x)?(\^([0-9]*))?//) {
+    while ($polytext =~ s|^\s*([+-]?[0-9/]*)(x)?(\^([0-9]*))?||) {
 	last if ($1 eq "" and $2 eq "" and $3 eq "");
 	$coeff = $1;
 	$power = $4;
@@ -66,8 +66,8 @@ sub format_poly_texformat {
     return $result;
 }
 
-# always prints (twice the degree) number of "&" marks, minus one (no
-# trailing mark)
+# always prints (twice the degree) number of "&" marks, minus two (no
+# leading or trailing marks)
 
 sub format_poly_textableformat {
     my ($poly) = @_;
@@ -105,6 +105,7 @@ sub format_poly_textableformat {
     }
 
     $result =~ s/&$//;
+    $result =~ s/$&//;
     $result = "0" if $result eq "";
     return $result;
 }
@@ -215,32 +216,33 @@ for ($i=1; $i<=$numcols; $i++) {
 print "\\cr\n";
 
 # quotient, indented
-print "\\multispan{", $numcols - (2*($#$quotient+1)), "}";
-print &format_poly_textableformat($quotient), "\\cr\n";
+print "\\multispan{", $numcols - (2*($#$quotient+1))-1, "}&";
+print &format_poly_textableformat($quotient), "\\vbox to16pt{}\\cr\n";
 
 # line under quotient
 
-print "\\multispan{", $numcols - (2*($#$dividend+1)), "}&";
-print "\\multispan{", (2*($#$dividend+1))-1, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
+print "\\multispan{", $numcols - (2*($#$dividend+1))-1, "}&";
+print "\\multispan{", (2*($#$dividend+1)), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
 
 # divisor, vertical bar, dividend
 
 print &format_poly_textableformat($divisor);
-print "\\vrule\\,", &format_poly_textableformat($dividend), "\\cr\n";
+print "&\\vrule\\,", &format_poly_textableformat($dividend), "\\vbox to16pt{}\\cr\n";
 
 # series of divisions
 
 for (my $i=1; $i<=$#remainders; $i++) {
     print "\\multispan{", $numcols - (2*($#{$sterms[$i]}+1)) - 1, "}&";
     print &format_poly_textableformat($sterms[$i]);
-    print "\\cr\n";
+    print "\\vbox to16pt{}\\cr\n";
 
-    print "\\multispan{", $numcols - (2*($#{$sterms[$i]}+1)), "}&";
-    print "\\multispan{", (2*($#{$sterms[$i]}+1))-1, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
+    # the line
+    print "\\multispan{", $numcols - (2*($#{$sterms[$i]}+1))-1, "}&";
+    print "\\multispan{", (2*($#{$sterms[$i]}+1)), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
 
     print "\\multispan{", $numcols - (2*($#{$remainders[$i]}+1)) - 1, "}&";
     print &format_poly_textableformat($remainders[$i]);
-    print "\\cr\n";
+    print "\\vbox to16pt{}\\cr\n";
 }
 
 print "}}\n";
