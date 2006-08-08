@@ -134,8 +134,8 @@ sub format_poly_textableformat {
     }
 
     $result =~ s/&$//;
-    $result =~ s/^&//;
-    $result = "0" if $result eq "";
+    #$result =~ s/^&//;
+    $result = "&0" if $result eq "&";
     return $result;
 }
 
@@ -234,14 +234,14 @@ print STDERR &format_poly_textableformat($quotient), "\n";
 print STDERR &format_poly_textableformat($divisor), "\n";
 print STDERR &format_poly_textableformat($dividend), "\n";
 
-$numcols = 2*($#$dividend + $#$divisor + 1);
+$numcols = 2*($#$dividend + 1 + $#$divisor + 1);
 
-print STDERR "numcols = $numcols = 2*($#$dividend + $#$divisor + 1)\n";
+print STDERR "numcols = $numcols = 2*($#$dividend + 1 + $#$divisor + 1)\n";
 
 print "\\vbox{\\offinterlineskip\n";
 print "\\tabskip=0pt plus1fil\n";
 print "\\halign to\\hsize{\\tabskip=0pt";
-for ($i=0; $i<=$numcols; $i++) {
+for ($i=1; $i<=$numcols; $i++) {
     print "\\hfil \$#\$";
     print " & " if ($i != $numcols);
 }
@@ -249,15 +249,15 @@ for ($i=0; $i<=$numcols; $i++) {
 print "\\tabskip=0pt plus1fil\\cr\n";
 
 # quotient, indented
-# remember, (twice the degree) plus one columns
+# remember, (twice the degree) plus two columns
 
-print "\\multispan{", $numcols - (2*$#$quotient+1), "}&";
+print "\\multispan{", $numcols - (2*$#$quotient+2), "}&";
 print &format_poly_textableformat($quotient), "\\vbox to16pt{}\\cr\n";
 
 # line under quotient
 
-print "\\multispan{", $numcols - (2*$#$dividend+1), "}&";
-print "\\multispan{", (2*$#$dividend+1), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
+print "\\multispan{", $numcols - (2*$#$dividend+2), "}&";
+print "\\multispan{", (2*$#$dividend+2), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
 
 # divisor, vertical bar, dividend
 
@@ -267,16 +267,16 @@ print "&\\vrule\\,", &format_poly_textableformat($dividend), "\\vbox to16pt{}\\c
 # series of divisions
 
 for (my $i=1; $i<=$#remainders; $i++) {
-    print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+1), "}&";
+    print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2), "}&";
     print &format_poly_textableformat($sterms[$i]);
     print "\\vbox to16pt{}\\cr\n";
 
     # the line
-    print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+1), "}&";
-    print "\\multispan{", (2*$#{$sterms[$i]}+1), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
+    print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2), "}&";
+    print "\\multispan{", (2*$#{$sterms[$i]}+2), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
 
     print STDERR $#{$remainders[$i]}, " ", &format_poly_texformat($remainders[$i]),"\n";
-    print "\\multispan{", $numcols - (2*$#{$remainders[$i]}+1), "}&";
+    print "\\multispan{", $numcols - (2*$#{$remainders[$i]}+2), "}&";
     print &format_poly_textableformat($remainders[$i]);
     print "\\vbox to16pt{}\\cr\n";
 }
