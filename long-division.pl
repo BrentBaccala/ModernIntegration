@@ -284,12 +284,18 @@ for (my $i=1; $i<=$#remainders; $i++) {
 	print "\\vbox to16pt{}\\cr\n";
     }
 
-    # the line
+    # the line - there are two cases here depending on whether the leading
+    # term of the polynomial right above use is positive or negative,
+    # which determines if we should extend the line left into the sign
+    # field (if it's negative) or not (if it's positive)
+
     if ($sterms[$i][$#{$sterms[$i]}-1] >= 0) {
-	print STDERR "plus\n";
+	print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2)+1, "}&";
+	print "\\multispan{", (2*$#{$sterms[$i]}+2)-1, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
+    } else {
+	print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2), "}&";
+	print "\\multispan{", (2*$#{$sterms[$i]}+2), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
     }
-    print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2), "}&";
-    print "\\multispan{", (2*$#{$sterms[$i]}+2), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
 
     print STDERR $#{$remainders[$i]}, " ", &format_poly_texformat($remainders[$i]),"\n";
     print "\\multispan{", $numcols - (2*$#{$remainders[$i]}+2), "}&";
