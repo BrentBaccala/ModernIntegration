@@ -30,6 +30,16 @@ sub parse_poly {
     return \@poly;
 }
 
+sub poly_degree {
+    my ($poly) = @_;
+
+    if ($#$poly == -1) {
+	return 0;
+    } else {
+	return $#$poly;
+    }
+}
+
 sub texformat_fraction {
     my ($number) = @_;
 
@@ -74,8 +84,16 @@ sub format_poly_texformat {
     return $result;
 }
 
-# always prints (twice the degree) number of "&" marks, minus two (no
-# leading or trailing marks)
+# Always prints (twice (degree plus one)) number of "&" marks,
+# seperating sign from coeff/var of each term, minus two (no leading
+# or trailing marks).  So, returned string consumes (twice the degree)
+# plus two columns.
+#
+# &0
+# &5
+# -&5
+# &x&+&1
+# -&x&+&1
 
 sub format_poly_textableformat {
     my ($poly) = @_;
@@ -83,7 +101,10 @@ sub format_poly_textableformat {
 
     for (my $power=$#$poly; $power>=0; $power--) {
 	my $coeff = $$poly[$power] + 0;
-	$result .= "&&" if ($coeff == 0);
+	if ($coeff == 0) {
+	    $result .= "&&";
+	    next;
+	}
 	if ($coeff == 1 and $power > 0) {
 	    if ($power == $#$poly) {
 		$result .= "&";
@@ -113,7 +134,7 @@ sub format_poly_textableformat {
     }
 
     $result =~ s/&$//;
-    $result =~ s/$&//;
+    $result =~ s/^&//;
     $result = "0" if $result eq "";
     return $result;
 }
@@ -127,7 +148,7 @@ sub print_poly_texformat {
 
 sub add_poly {
     my ($poly1, $poly2) = @_;
-    my @result;
+    my @result = (0);
     my $maxpower = ($#$poly1 > $#$poly2 ? $#$poly1 : $#$poly2);
 
     for (my $power = $maxpower; $power>=0; $power--) {
@@ -142,7 +163,7 @@ sub add_poly {
 
 sub subtract_poly {
     my ($poly1, $poly2) = @_;
-    my @result;
+    my @result = (0);
 
     for (my $power = $#$poly1; $power>=0; $power--) {
 	my $coeff = $$poly1[$power] - $$poly2[$power];
@@ -154,7 +175,7 @@ sub subtract_poly {
 
 sub multiply_poly {
     my ($poly1, $poly2) = @_;
-    my @result;
+    my @result = (0);
 
     for (my $power1 = $#$poly1; $power1>=0; $power1--) {
 	for (my $power2 = $#$poly2; $power2>=0; $power2--) {
@@ -170,7 +191,7 @@ sub multiply_poly {
 
 sub divide_leading_terms {
     my ($poly1, $poly2) = @_;
-    my @result;
+    my @result = (0);
 
     $result[$#$poly1 - $#$poly2] = $$poly1[$#$poly1] / $$poly2[$#$poly2];
 
@@ -209,28 +230,34 @@ while ($#{$remainders[$#remainders]} >= $#$divisor) {
 #}
 
 #print "\n\n            ";
-#print &format_poly_textableformat($quotient), "\n";
-#print &format_poly_textableformat($divisor), "         ";
-#print &format_poly_textableformat($dividend), "\n";
+print STDERR &format_poly_textableformat($quotient), "\n";
+print STDERR &format_poly_textableformat($divisor), "\n";
+print STDERR &format_poly_textableformat($dividend), "\n";
 
-$numcols = 2*($#$dividend + 1 + $#$divisor + 1);
+$numcols = 2*($#$dividend + $#$divisor + 1);
+
+print STDERR "numcols = $numcols = 2*($#$dividend + $#$divisor + 1)\n";
 
 print "\\vbox{\\offinterlineskip\n";
-print "\\halign{";
-for ($i=1; $i<=$numcols; $i++) {
+print "\\tabskip=0pt plus1fil\n";
+print "\\halign to\\hsize{\\tabskip=0pt";
+for ($i=0; $i<=$numcols; $i++) {
     print "\\hfil \$#\$";
     print " & " if ($i != $numcols);
 }
-print "\\cr\n";
+#print "\\hfil \$#\$&\\hfil \$#\$&&\\hfil \$#\$";
+print "\\tabskip=0pt plus1fil\\cr\n";
 
 # quotient, indented
-print "\\multispan{", $numcols - (2*($#$quotient+1))-1, "}&";
+# remember, (twice the degree) plus one columns
+
+print "\\multispan{", $numcols - (2*$#$quotient+1), "}&";
 print &format_poly_textableformat($quotient), "\\vbox to16pt{}\\cr\n";
 
 # line under quotient
 
-print "\\multispan{", $numcols - (2*($#$dividend+1))-1, "}&";
-print "\\multispan{", (2*($#$dividend+1)), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
+print "\\multispan{", $numcols - (2*$#$dividend+1), "}&";
+print "\\multispan{", (2*$#$dividend+1), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
 
 # divisor, vertical bar, dividend
 
@@ -240,15 +267,16 @@ print "&\\vrule\\,", &format_poly_textableformat($dividend), "\\vbox to16pt{}\\c
 # series of divisions
 
 for (my $i=1; $i<=$#remainders; $i++) {
-    print "\\multispan{", $numcols - (2*($#{$sterms[$i]}+1)) - 1, "}&";
+    print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+1), "}&";
     print &format_poly_textableformat($sterms[$i]);
     print "\\vbox to16pt{}\\cr\n";
 
     # the line
-    print "\\multispan{", $numcols - (2*($#{$sterms[$i]}+1))-1, "}&";
-    print "\\multispan{", (2*($#{$sterms[$i]}+1)), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
+    print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+1), "}&";
+    print "\\multispan{", (2*$#{$sterms[$i]}+1), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
 
-    print "\\multispan{", $numcols - (2*($#{$remainders[$i]}+1)) - 1, "}&";
+    print STDERR $#{$remainders[$i]}, " ", &format_poly_texformat($remainders[$i]),"\n";
+    print "\\multispan{", $numcols - (2*$#{$remainders[$i]}+1), "}&";
     print &format_poly_textableformat($remainders[$i]);
     print "\\vbox to16pt{}\\cr\n";
 }
