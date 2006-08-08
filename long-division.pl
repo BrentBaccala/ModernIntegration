@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+$use_parens = 0;
+
 # Polynomial internal format: list of length equal to degree of poly
 # Each item in list is coeff of that term
 # So, x^2 = [0, 0, 1]
@@ -238,10 +240,12 @@ $numcols = 2*($#$dividend + 1 + $#$divisor + 1);
 
 print STDERR "numcols = $numcols = 2*($#$dividend + 1 + $#$divisor + 1)\n";
 
+# add one more column for closing paren at end if $use_parens
+
 print "\\vbox{\\offinterlineskip\n";
 print "\\tabskip=0pt plus1fil\n";
 print "\\halign to\\hsize{\\tabskip=0pt";
-for ($i=1; $i<=$numcols; $i++) {
+for ($i=($use_parens?0:1); $i<=$numcols; $i++) {
     print "\\hfil \$#\$";
     print " & " if ($i != $numcols);
 }
@@ -267,11 +271,23 @@ print "&\\vrule\\,", &format_poly_textableformat($dividend), "\\vbox to16pt{}\\c
 # series of divisions
 
 for (my $i=1; $i<=$#remainders; $i++) {
-    print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2), "}&";
-    print &format_poly_textableformat($sterms[$i]);
-    print "\\vbox to16pt{}\\cr\n";
+
+    if ($use_parens) {
+	print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2) - 1, "}&";
+	print "\\span\\hfil -(";
+	my $poly =  &format_poly_textableformat($sterms[$i]);
+	$poly =~ s/^&/\\span /;
+	print "$poly\\vbox to16pt{}&)\\cr\n";
+    } else {
+	print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2), "}&";
+	print &format_poly_textableformat($sterms[$i]);
+	print "\\vbox to16pt{}\\cr\n";
+    }
 
     # the line
+    if ($sterms[$i][$#{$sterms[$i]}-1] >= 0) {
+	print STDERR "plus\n";
+    }
     print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2), "}&";
     print "\\multispan{", (2*$#{$sterms[$i]}+2), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
 
