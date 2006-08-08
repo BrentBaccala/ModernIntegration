@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-$use_parens = 0;
+$use_parens = 1;
 
 # Polynomial internal format: list of length equal to degree of poly
 # Each item in list is coeff of that term
@@ -273,10 +273,22 @@ print "&\\vrule\\,", &format_poly_textableformat($dividend), "\\vbox to16pt{}\\c
 for (my $i=1; $i<=$#remainders; $i++) {
 
     if ($use_parens) {
-	print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2) - 1, "}&";
-	print "\\span\\hfil -(";
+	# Insane code.  We want to span up to the first text of
+	# the polynomial to put a leading "-(" in.  Need to span
+	# an extra column if the first column of the poly isn't
+	# really occupied by anything.
+
+	# my $multispan_cols = 
+	my $stripped_one = 0;
+	print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2)+1, "}";
+	print "\\hfill";
 	my $poly =  &format_poly_textableformat($sterms[$i]);
-	$poly =~ s/^&/\\span /;
+	if ($poly =~ s/^&//) {
+	    $stripped_one = 1;
+	}
+	$poly =~ s/&/\$&/;
+	print "\\span\\omit" if ($stripped_one);
+	print "\$-(";
 	print "$poly\\vbox to16pt{}&)\\cr\n";
     } else {
 	print "\\multispan{", $numcols - (2*$#{$sterms[$i]}+2), "}&";
