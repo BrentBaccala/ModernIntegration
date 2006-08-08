@@ -12,11 +12,19 @@ sub parse_poly {
 	last if ($1 eq "" and $2 eq "" and $3 eq "");
 	$coeff = $1;
 	$power = $4;
-	$coeff = "1" if ($coeff eq "" or $coeff eq "+");
-	$coeff = "-1" if ($coeff eq "-");
+
+	if ($coeff eq "" or $coeff eq "+") {
+	    $coeff = 1;
+	} elsif ($coeff eq "-") {
+	    $coeff = -1;
+	} else {
+	    #print STDERR $coeff;
+	    $coeff = eval "$coeff + 0";
+	    #print STDERR " ", $coeff, "\n",
+	}
 	$power = "1" if ($power eq "");
 	$power = "0" if ($2 ne "x");
-	#print "$coeff $power\n";
+	#print STDERR "$coeff $power\n";
 	$poly[$power] = $coeff;
     }
     return \@poly;
