@@ -1,19 +1,32 @@
 #!/usr/bin/perl
 
-$use_parens = 1;
+use strict;
+
+my $use_parens = 1;
+
+my %poly_var;
 
 # Polynomial internal format: list of length equal to degree of poly
 # Each item in list is coeff of that term
 # So, x^2 = [0, 0, 1]
+# Also, $poly_var{ref to poly} contains the variable letter of poly
 
 sub parse_poly {
     my ($polytext) = @_;
     my @poly;
 
-    while ($polytext =~ s|^\s*([+-]?[0-9/]*)(x)?(\^([0-9]*))?||) {
+    while ($polytext =~ s|^\s*([+-]?[0-9/]*)([a-z])?(\^([0-9]*))?||) {
 	last if ($1 eq "" and $2 eq "" and $3 eq "");
-	$coeff = $1;
-	$power = $4;
+	my $coeff = $1;
+	my $power = $4;
+
+	if ($2 ne "") {
+	    if (not exists $poly_var{\@poly}) {
+		$poly_var{\@poly} = $2;
+	    } else {
+		die "inconsistent poly vars in parse" if $poly_var{\@poly} ne $2;
+	    }
+	}
 
 	if ($coeff eq "" or $coeff eq "+") {
 	    $coeff = 1;
@@ -25,10 +38,11 @@ sub parse_poly {
 	    #print STDERR " ", $coeff, "\n",
 	}
 	$power = "1" if ($power eq "");
-	$power = "0" if ($2 ne "x");
+	$power = "0" if ($2 eq "");
 	#print STDERR "$coeff $power\n";
 	$poly[$power] = $coeff;
     }
+    #$poly_var{\@poly} = "x";
     return \@poly;
 }
 
@@ -75,11 +89,11 @@ sub format_poly_texformat {
 	}
 
 	if ($power == 0) {
-	    $result .= "${coeff}";
+	    $result .= $coeff;
 	} elsif ($power == 1) {
-	    $result .= "${coeff}x";
+	    $result .= $coeff . $poly_var{$poly};
 	} else {
-	    $result .= "${coeff}x^$power";
+	    $result .= ${coeff} . $poly_var{$poly} . "^$power";
 	}
     }
     $result = "0" if $result eq "";
@@ -100,6 +114,8 @@ sub format_poly_texformat {
 sub format_poly_textableformat {
     my ($poly) = @_;
     my $result;
+
+    die "no poly var\n" unless exists $poly_var{$poly};
 
     for (my $power=$#$poly; $power>=0; $power--) {
 	my $coeff = $$poly[$power] + 0;
@@ -129,9 +145,9 @@ sub format_poly_textableformat {
 	if ($power == 0) {
 	    $result .= "&";
 	} elsif ($power == 1) {
-	    $result .= "x&";
+	    $result .= $poly_var{$poly} . "&";
 	} else {
-	    $result .= "x^$power&";
+	    $result .= $poly_var{$poly} . "^$power&";
 	}
     }
 
@@ -146,18 +162,22 @@ sub print_poly_texformat {
     print &format_poly_texformat($poly), "\n";
 }
 
-# &add_poly assumes that poly1's degree is >= poly2's degree
 
 sub add_poly {
     my ($poly1, $poly2) = @_;
     my @result = (0);
     my $maxpower = ($#$poly1 > $#$poly2 ? $#$poly1 : $#$poly2);
 
+    die "no poly var\n" unless exists $poly_var{$poly1};
+    die "no poly var\n" unless exists $poly_var{$poly1};
+    die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
+
     for (my $power = $maxpower; $power>=0; $power--) {
 	my $coeff = $$poly1[$power] + $$poly2[$power];
 	$result[$power] = $coeff if $coeff != 0;
     }
 
+    $poly_var{\@result} = $poly_var{$poly1};
     return \@result;
 }
 
@@ -166,18 +186,28 @@ sub add_poly {
 sub subtract_poly {
     my ($poly1, $poly2) = @_;
     my @result = (0);
+    my $maxpower = ($#$poly1 > $#$poly2 ? $#$poly1 : $#$poly2);
 
-    for (my $power = $#$poly1; $power>=0; $power--) {
+    die "no poly var\n" unless exists $poly_var{$poly1};
+    die "no poly var\n" unless exists $poly_var{$poly1};
+    die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
+
+    for (my $power = $maxpower; $power>=0; $power--) {
 	my $coeff = $$poly1[$power] - $$poly2[$power];
 	$result[$power] = $coeff if $coeff != 0;
     }
 
+    $poly_var{\@result} = $poly_var{$poly1};
     return \@result;
 }
 
 sub multiply_poly {
     my ($poly1, $poly2) = @_;
     my @result = (0);
+
+    die "no poly var\n" unless exists $poly_var{$poly1};
+    die "no poly var\n" unless exists $poly_var{$poly1};
+    die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
 
     for (my $power1 = $#$poly1; $power1>=0; $power1--) {
 	for (my $power2 = $#$poly2; $power2>=0; $power2--) {
@@ -186,6 +216,7 @@ sub multiply_poly {
 	}
     }
 
+    $poly_var{\@result} = $poly_var{$poly1};
     return \@result;
 }
 
@@ -195,15 +226,23 @@ sub divide_leading_terms {
     my ($poly1, $poly2) = @_;
     my @result = (0);
 
+    die "no poly var\n" unless exists $poly_var{$poly1};
+    die "no poly var\n" unless exists $poly_var{$poly1};
+    die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
+
     $result[$#$poly1 - $#$poly2] = $$poly1[$#$poly1] / $$poly2[$#$poly2];
 
+    $poly_var{\@result} = $poly_var{$poly1};
     return \@result;
 }
 
-$dividend = &parse_poly($ARGV[0]);
-$divisor = &parse_poly($ARGV[1]);
+my $dividend = &parse_poly($ARGV[0]);
+my $divisor = &parse_poly($ARGV[1]);
 
+die "inconsistent poly vars\n" unless $poly_var{$dividend} eq $poly_var{$divisor};
 my $quotient=[0];
+$poly_var{$quotient}=$poly_var{$dividend};
+
 my @remainders = ($dividend);
 my @sterms = ([0]);
 my @multiples = ([0]);
@@ -236,7 +275,7 @@ print STDERR &format_poly_textableformat($quotient), "\n";
 print STDERR &format_poly_textableformat($divisor), "\n";
 print STDERR &format_poly_textableformat($dividend), "\n";
 
-$numcols = 2*($#$dividend + 1 + $#$divisor + 1);
+my $numcols = 2*($#$dividend + 1 + $#$divisor + 1);
 
 print STDERR "numcols = $numcols = 2*($#$dividend + 1 + $#$divisor + 1)\n";
 
@@ -245,7 +284,7 @@ print STDERR "numcols = $numcols = 2*($#$dividend + 1 + $#$divisor + 1)\n";
 print "\\vbox{\\offinterlineskip\n";
 print "\\tabskip=0pt plus1fil\n";
 print "\\halign to\\hsize{\\tabskip=0pt";
-for ($i=($use_parens?0:1); $i<=$numcols; $i++) {
+for (my $i=($use_parens?0:1); $i<=$numcols; $i++) {
     print "\\hfil \$#\$";
     print " & " if ($i != $numcols);
 }
