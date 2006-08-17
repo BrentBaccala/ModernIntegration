@@ -12,6 +12,7 @@ sub add;
 sub subtract;
 sub multiply;
 sub divide;
+sub divide_leading_terms;
 
 sub parse_coefficient {
     my ($coeff_text) = @_;
@@ -29,17 +30,43 @@ sub parse_coefficient {
     }
 }
 
+sub ispositive {
+    my ($coeff) = @_;
+
+    return ($coeff > 0) if not ref $coeff;
+
+    die "can't test &ispositive on a polynomial" if exists $poly_var{$coeff};
+
+    return (&ispositive($$coeff[0]));
+}
+
+sub negate {
+    my ($coeff) = @_;
+
+    return (-$coeff) if not ref $coeff;
+
+    die "can't &negate a polynomial" if exists $poly_var{$coeff};
+
+    return [&negate($$coeff[0]), $$coeff[1]];
+}
+
+sub swap {
+    my ($ref1, $ref2) = @_;
+    my $temp;
+
+    die "bad swap" if not ref $ref1 or not ref $ref2;
+    $temp = $$ref1;
+    $$ref1 = $$ref2;
+    $$ref2 = $temp;
+}
+
 sub gcd {
     my ($a,$b) = @_;
 
-    $a *= -1 if $a < 0;
-    $b *= -1 if $b < 0;
+    $a = &negate($a) if not &ispositive($a);
+    $b = &negate($b) if not &ispositive($b);
 
-    if ($a < $b) {
-	my $temp = $a;
-	$a = $b;
-	$b = $temp;
-    }
+    swap(\$a, \$b) if (not &ispositive(&subtract($a, $b)));
 
     my $lastremainder = $b;
 
@@ -52,6 +79,8 @@ sub gcd {
     return $lastremainder;
 }
 
+# &normalize_coeff - notice that it changes the thing passed in by reference
+
 sub normalize_coeff {
     my ($coeff) = @_;
 
@@ -61,112 +90,91 @@ sub normalize_coeff {
 
     my $gcd = &gcd($$coeff[0],$$coeff[1]);
 
-    $$coeff[0] /= $gcd;
-    $$coeff[1] /= $gcd;
+    $$coeff[0] = &divide($$coeff[0], $gcd);
+    $$coeff[1] = &divide($$coeff[1], $gcd);
 
     return $$coeff[0] if $$coeff[1] == 1;
 
     return $coeff;
 }
 
-sub ispositive {
-    my ($coeff) = @_;
-
-    return ($coeff > 0) if not ref $coeff;
-
-    return (&ispositive($$coeff[0]));
-}
-
-sub negate {
-    my ($coeff) = @_;
-
-    return (-$coeff) if not ref $coeff;
-
-    return [&negate($$coeff[0]), $$coeff[1]];
-}
-
 sub add_coeffs {
-    my @coeffs = @_;
-    # print STDERR Dumper(@coeffs), "\n";
-    shift @coeffs if not defined $coeffs[0];
-    my @quotient = ref $coeffs[0] ? (${$coeffs[0]}[0],${$coeffs[0]}[1]) : ($coeffs[0],1);
-    my $result = ref $coeffs[0] ? undef : $coeffs[0];
-    shift @coeffs;
-    foreach my $coeff (@coeffs) {
-	if (ref $coeff) {
-	    $quotient[0]=$$coeff[0]*$quotient[1]+$$coeff[1]*$quotient[0];
-	    $quotient[1]=$quotient[1]*$$coeff[1];
-	    undef $result;
-	} else {
-	    $quotient[0] += $quotient[1]*$coeff;
-	    $result += $coeff if (defined $result);
-	}
+    my ($arg1, $arg2) = @_;
+    my @quotient;
+
+    return $arg2 if not defined $arg1;
+    return $arg1 if not defined $arg2;
+
+    swap(\$arg1, \$arg2) if not ref $arg1 and ref $arg2;
+
+    if (ref $arg1 and ref $arg2) {
+	$quotient[0]=&add(&multiply($$arg2[0],$$arg1[1]),
+			  &multiply($$arg2[1],$$arg1[0]));
+	$quotient[1]=&multiply($$arg1[1],$$arg2[1]);
+	return &normalize_coeff(\@quotient);
+    } elsif (ref $arg1) {
+	$quotient[0] = &add($$arg1[0],&multiply($$arg1[1],$arg2));
+	$quotient[1] = $$arg1[1];
+	return &normalize_coeff(\@quotient);
+    } else {
+	return $arg1 + $arg2;
     }
-    return &normalize_coeff(defined $result ? $result : \@quotient);
 }
 
 sub subtract_coeffs {
-    my @coeffs = @_;
-    $coeffs[0]=0 if not defined $coeffs[0];
-    my @quotient = ref $coeffs[0] ? (${$coeffs[0]}[0],${$coeffs[0]}[1]) : ($coeffs[0],1);
-    my $result = ref $coeffs[0] ? undef : $coeffs[0];
-    shift @coeffs;
-    foreach my $coeff (@coeffs) {
-	if (ref $coeff) {
-	    $quotient[0]=$$coeff[0]*$quotient[1]-$$coeff[1]*$quotient[0];
-	    $quotient[1]=$quotient[1]*$$coeff[1];
-	    undef $result;
-	} else {
-	    $quotient[0] -= $quotient[1]*$coeff;
-	    $result -= $coeff if (defined $result);
-	}
-    }
-    return &normalize_coeff(defined $result ? $result : \@quotient);
-    return defined $result ? $result : \@quotient;
+    my ($arg1, $arg2) = @_;
+    my @quotient;
+
+    return &negate($arg2) if not defined $arg1;
+    return $arg1 if not defined $arg2;
+
+    return &add_coeffs($arg1, &negate($arg2));
 }
 
 sub multiply_coeffs {
-    my @coeffs = @_;
-    shift @coeffs if not defined $coeffs[0];
-    my @quotient = ref $coeffs[0] ? (${$coeffs[0]}[0],${$coeffs[0]}[1]) : ($coeffs[0],1);
-    my $result = ref $coeffs[0] ? undef : $coeffs[0];
-    shift @coeffs;
-    foreach my $coeff (@coeffs) {
-	if (ref $coeff) {
-	    $quotient[0]=$$coeff[0]*$quotient[0];
-	    $quotient[1]=$quotient[1]*$$coeff[1];
-	    undef $result;
-	} else {
-	    $quotient[0] *= $coeff;
-	    $result *= $coeff if (defined $result);
-	}
+    my ($arg1, $arg2) = @_;
+    my @quotient;
+
+    return $arg2 if not defined $arg1;
+    return $arg1 if not defined $arg2;
+
+    swap(\$arg1, \$arg2) if not ref $arg1 and ref $arg2;
+
+    if (ref $arg1 and ref $arg2) {
+	$quotient[0]=&multiply($$arg1[0],$$arg2[0]);
+	$quotient[1]=&multiply($$arg1[1],$$arg2[1]);
+	return &normalize_coeff(\@quotient);
+    } elsif (ref $arg1) {
+	$quotient[0] = &multiply($$arg1[0],$arg2);
+	$quotient[1] = $$arg1[1];
+	return &normalize_coeff(\@quotient);
+    } else {
+	return $arg1 * $arg2;
     }
-    return &normalize_coeff(defined $result ? $result : \@quotient);
-    return defined $result ? $result : \@quotient;
 }
 
 sub divide_coeffs {
-    my @coeffs = @_;
-    $coeffs[0]=1 if not defined $coeffs[0];
-    my @quotient = ref $coeffs[0] ? (${$coeffs[0]}[0],${$coeffs[0]}[1]) : ($coeffs[0],1);
-    my $result = ref $coeffs[0] ? undef : $coeffs[0];
-    shift @coeffs;
-    foreach my $coeff (@coeffs) {
-	if (ref $coeff) {
-	    $quotient[0]=$$coeff[1]*$quotient[0];
-	    $quotient[1]=$quotient[1]*$$coeff[0];
-	    undef $result;
-	} else {
-	    #$quotient[0] /= $coeff;
-	    $quotient[1] *= $coeff;
-	    $result /= $coeff if (defined $result);
-	}
+    my ($arg1, $arg2) = @_;
+    my @quotient;
+
+    return $arg2 if not defined $arg1;
+    return $arg1 if not defined $arg2;
+
+    if (ref $arg1 and ref $arg2) {
+	$quotient[0]=&multiply($$arg1[0],$$arg2[1]);
+	$quotient[1]=&multiply($$arg1[1],$$arg2[0]);
+	return &normalize_coeff(\@quotient);
+    } elsif (ref $arg1) {
+	$quotient[0] = $$arg1[0];
+	$quotient[1] = &multiply($$arg1[1],$arg2);
+	return &normalize_coeff(\@quotient);
+    } elsif (ref $arg2) {
+	$quotient[0] = &multiply($arg1,$$arg2[1]);
+	$quotient[1] = $$arg2[0];
+	return &normalize_coeff(\@quotient);
+    } else {
+	return $arg1 / $arg2;
     }
-    return &normalize_coeff(defined $result ? $result : \@quotient);
-    #return defined $result ? $result : \@quotient;
-    $result = defined $result ? $result : \@quotient;
-    #print STDERR "divide_coeffs: ", Dumper($result), "\n";
-    return $result;
 }
 
 # Polynomial internal format: list of length equal to degree of poly
@@ -357,8 +365,6 @@ sub add_poly {
     return \@result;
 }
 
-# &subtract_poly assumes that poly1's degree is >= poly2's degree
-
 sub subtract_poly {
     my ($poly1, $poly2) = @_;
     my @result = (0);
@@ -408,7 +414,7 @@ sub multiply_poly {
 
 # &divide_leading_terms assumes that poly1's degree is >= poly2's degree
 
-sub divide_leading_terms {
+sub divide_leading_terms_poly {
     my ($poly1, $poly2) = @_;
     my @result = (0);
 
@@ -445,7 +451,7 @@ sub subtract {
     my ($arg1, $arg2) = @_;
 
     if (not defined $arg1) {
-	return $arg2;
+	return &negate($arg2);
     } elsif (not exists $poly_var{$arg1}) {
 	die "incompatiable arguments" if exists $poly_var{$arg2};
 	return &subtract_coeffs($arg1, $arg2);
@@ -479,6 +485,7 @@ sub divide {
     my ($arg1, $arg2) = @_;
 
     if (not defined $arg1) {
+	die "empty division";
 	return $arg2;
     } elsif (not exists $poly_var{$arg1}) {
 	die "incompatiable arguments" if exists $poly_var{$arg2};
@@ -490,6 +497,25 @@ sub divide {
     } else {
 	die "can't divide polynomials";
 	#return &divide_poly($arg1, $arg2);
+    }
+}
+
+sub divide_leading_terms {
+    my ($arg1, $arg2) = @_;
+
+    if (not defined $arg1) {
+	die "empty division";
+	return $arg2;
+    } elsif (not exists $poly_var{$arg1}) {
+	die "incompatiable arguments" if exists $poly_var{$arg2};
+	die "what do we do here?";
+	return &divide_coeffs($arg1, $arg2);
+    } elsif (not exists $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } elsif ($poly_var{$arg1} ne $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } else {
+	return &divide_leading_terms_poly($arg1, $arg2);
     }
 }
 
