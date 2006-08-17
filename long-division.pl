@@ -6,6 +6,54 @@ my $use_parens = 1;
 
 my %poly_var;
 
+sub parse_coefficient {
+    my ($coeff_text) = @_;
+
+    if ($coeff_text =~ m:^[0-9]+$:) {
+	return $coeff_text + 0;
+    } elsif ($coeff_text =~ m:^([0-9]+)/([0-9]+)$:) {
+	return [$1 + 0, $2 + 0];
+    } else {
+	die "can't parse coefficient";
+    }
+}
+
+sub add_coeffs {
+    my @coeffs = @_;
+    my $result = shift @coeffs;
+    foreach my $coeff (@coeffs) {
+	$result += $coeff;
+    }
+    return $result;
+}
+
+sub subtract_coeffs {
+    my @coeffs = @_;
+    my $result = shift @coeffs;
+    foreach my $coeff (@coeffs) {
+	$result -= $coeff;
+    }
+    return $result;
+}
+
+sub multiply_coeffs {
+    my @coeffs = @_;
+    my $result = shift @coeffs;
+    foreach my $coeff (@coeffs) {
+	$result *= $coeff;
+    }
+    return $result;
+}
+
+sub divide_coeffs {
+    my @coeffs = @_;
+    my $result = shift @coeffs;
+    foreach my $coeff (@coeffs) {
+	$result /= $coeff;
+    }
+    return $result;
+}
+
 # Polynomial internal format: list of length equal to degree of poly
 # Each item in list is coeff of that term
 # So, x^2 = [0, 0, 1]
@@ -173,11 +221,12 @@ sub add_poly {
     die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
 
     for (my $power = $maxpower; $power>=0; $power--) {
-	my $coeff = $$poly1[$power] + $$poly2[$power];
+	my $coeff = &add_coeffs($$poly1[$power], $$poly2[$power]);
 	$result[$power] = $coeff if $coeff != 0;
     }
 
     $poly_var{\@result} = $poly_var{$poly1};
+    print STDERR "ADD\n";
     return \@result;
 }
 
@@ -193,11 +242,12 @@ sub subtract_poly {
     die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
 
     for (my $power = $maxpower; $power>=0; $power--) {
-	my $coeff = $$poly1[$power] - $$poly2[$power];
+	my $coeff = &subtract_coeffs($$poly1[$power], $$poly2[$power]);
 	$result[$power] = $coeff if $coeff != 0;
     }
 
     $poly_var{\@result} = $poly_var{$poly1};
+    print STDERR "SUBTRACT\n";
     return \@result;
 }
 
@@ -211,12 +261,19 @@ sub multiply_poly {
 
     for (my $power1 = $#$poly1; $power1>=0; $power1--) {
 	for (my $power2 = $#$poly2; $power2>=0; $power2--) {
-	    my $coeff = $$poly1[$power1] * $$poly2[$power2];
-	    $result[$power1+$power2] += $coeff if $coeff != 0;
+	    my $coeff = &multiply_coeffs($$poly1[$power1], $$poly2[$power2]);
+	    if ($coeff != 0) {
+		if (exists $result[$power1+$power2]) {
+		    $result[$power1+$power2] = &add_coeffs($result[$power1+$power2], $coeff);
+		} else {
+		    $result[$power1+$power2] = $coeff;
+		}
+	    }
 	}
     }
 
     $poly_var{\@result} = $poly_var{$poly1};
+    print STDERR "MULTIPLY\n";
     return \@result;
 }
 
@@ -230,9 +287,10 @@ sub divide_leading_terms {
     die "no poly var\n" unless exists $poly_var{$poly1};
     die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
 
-    $result[$#$poly1 - $#$poly2] = $$poly1[$#$poly1] / $$poly2[$#$poly2];
+    $result[$#$poly1 - $#$poly2] = &divide_coeffs($$poly1[$#$poly1], $$poly2[$#$poly2]);
 
     $poly_var{\@result} = $poly_var{$poly1};
+    print STDERR "DIVIDE_LEADING_TERM ", &format_poly_texformat($poly1), " / ", &format_poly_texformat($poly2), " = ", &format_poly_texformat(\@result), "\n";
     return \@result;
 }
 
@@ -254,7 +312,7 @@ while ($#{$remainders[$#remainders]} >= $#$divisor) {
     push @remainders, &subtract_poly($remainders[$#remainders], $sterm);
     push @sterms, $sterm;
     push @multiples, $multiple;
-    #&print_poly_texformat($remainder);
+    #&print_poly_texformat($remainders[$#remainders]);
 }
 
 #print "            ";
