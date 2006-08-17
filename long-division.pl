@@ -64,6 +64,22 @@ sub normalize_coeff {
     return $coeff;
 }
 
+sub ispositive {
+    my ($coeff) = @_;
+
+    return ($coeff > 0) if not ref $coeff;
+
+    return (&ispositive($$coeff[0]));
+}
+
+sub negate {
+    my ($coeff) = @_;
+
+    return (-$coeff) if not ref $coeff;
+
+    return [&negate($$coeff[0]), $$coeff[1]];
+}
+
 sub add_coeffs {
     my @coeffs = @_;
     # print STDERR Dumper(@coeffs), "\n";
@@ -233,11 +249,11 @@ sub format_poly_texformat {
 	    $coeff = "" if ($power == $#$poly);
 	} elsif ($coeff == -1 and $power > 0) {
 	    $coeff = "-";
-	} elsif ($coeff > 0) {
+	} elsif (&ispositive($coeff)) {
 	    $coeff = &texformat_fraction($coeff);
 	    $coeff = "+$coeff" unless ($power == $#$poly);
-	} elsif ($coeff < 0) {
-	    $coeff = "-" . &texformat_fraction(-$coeff);
+	} else {
+	    $coeff = "-" . &texformat_fraction(&negate($coeff));
 	}
 
 	if ($power == 0) {
@@ -284,15 +300,15 @@ sub format_poly_textableformat {
 	    }
 	} elsif ($coeff == -1 and $power > 0) {
 	    $result .= "-&";
-	} elsif ($coeff > 0) {
+	} elsif (&ispositive($coeff)) {
 	    if ($power == $#$poly) {
 		$result .= "&";
 	    } else {
 		$result .= "+&";
 	    }
 	    $result .= &texformat_fraction($coeff);
-	} elsif ($coeff < 0) {
-	    $result .= "-&" . &texformat_fraction(-$coeff);
+	} else {
+	    $result .= "-&" . &texformat_fraction(&negate($coeff));
 	}
 
 	if ($power == 0) {
