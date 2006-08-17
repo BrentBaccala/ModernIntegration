@@ -2,55 +2,149 @@
 
 use strict;
 
+use Data::Dumper;
+
 my $use_parens = 1;
 
 my %poly_var;
 
 sub parse_coefficient {
     my ($coeff_text) = @_;
+    my $sign = 1;
+
+    $coeff_text =~ s/^\+//;
+    $sign = -1 if ($coeff_text =~ s/^-//);
 
     if ($coeff_text =~ m:^[0-9]+$:) {
-	return $coeff_text + 0;
+	return $sign * ($coeff_text + 0);
     } elsif ($coeff_text =~ m:^([0-9]+)/([0-9]+)$:) {
-	return [$1 + 0, $2 + 0];
+	return [$sign * ($1 + 0), $2 + 0];
     } else {
-	die "can't parse coefficient";
+	die "can't parse coefficient \"$coeff_text\"";
     }
+}
+
+sub gcd {
+    my ($a,$b) = @_;
+
+    $a *= -1 if $a < 0;
+    $b *= -1 if $b < 0;
+
+    if ($a < $b) {
+	my $temp = $a;
+	$a = $b;
+	$b = $temp;
+    }
+
+    my $lastremainder = $b;
+
+    while ((my $remainder = $a-(int($a/$b)*$b)) != 0) {
+	$a = $b;
+	$b = $remainder;
+	$lastremainder = $remainder;
+    }
+
+    return $lastremainder;
+}
+
+sub normalize_coeff {
+    my ($coeff) = @_;
+
+    return $coeff if (not ref $coeff);
+
+    return 0 if $$coeff[0] == 0;
+
+    my $gcd = &gcd($$coeff[0],$$coeff[1]);
+
+    $$coeff[0] /= $gcd;
+    $$coeff[1] /= $gcd;
+
+    return $$coeff[0] if $$coeff[1] == 1;
+
+    return $coeff;
 }
 
 sub add_coeffs {
     my @coeffs = @_;
-    my $result = shift @coeffs;
+    # print STDERR Dumper(@coeffs), "\n";
+    shift @coeffs if not defined $coeffs[0];
+    my @quotient = ref $coeffs[0] ? (${$coeffs[0]}[0],${$coeffs[0]}[1]) : ($coeffs[0],1);
+    my $result = ref $coeffs[0] ? undef : $coeffs[0];
+    shift @coeffs;
     foreach my $coeff (@coeffs) {
-	$result += $coeff;
+	if (ref $coeff) {
+	    $quotient[0]=$$coeff[0]*$quotient[1]+$$coeff[1]*$quotient[0];
+	    $quotient[1]=$quotient[1]*$$coeff[1];
+	    undef $result;
+	} else {
+	    $quotient[0] += $quotient[1]*$coeff;
+	    $result += $coeff if (defined $result);
+	}
     }
-    return $result;
+    return &normalize_coeff(defined $result ? $result : \@quotient);
 }
 
 sub subtract_coeffs {
     my @coeffs = @_;
-    my $result = shift @coeffs;
+    $coeffs[0]=0 if not defined $coeffs[0];
+    my @quotient = ref $coeffs[0] ? (${$coeffs[0]}[0],${$coeffs[0]}[1]) : ($coeffs[0],1);
+    my $result = ref $coeffs[0] ? undef : $coeffs[0];
+    shift @coeffs;
     foreach my $coeff (@coeffs) {
-	$result -= $coeff;
+	if (ref $coeff) {
+	    $quotient[0]=$$coeff[0]*$quotient[1]-$$coeff[1]*$quotient[0];
+	    $quotient[1]=$quotient[1]*$$coeff[1];
+	    undef $result;
+	} else {
+	    $quotient[0] -= $quotient[1]*$coeff;
+	    $result -= $coeff if (defined $result);
+	}
     }
-    return $result;
+    return &normalize_coeff(defined $result ? $result : \@quotient);
+    return defined $result ? $result : \@quotient;
 }
 
 sub multiply_coeffs {
     my @coeffs = @_;
-    my $result = shift @coeffs;
+    shift @coeffs if not defined $coeffs[0];
+    my @quotient = ref $coeffs[0] ? (${$coeffs[0]}[0],${$coeffs[0]}[1]) : ($coeffs[0],1);
+    my $result = ref $coeffs[0] ? undef : $coeffs[0];
+    shift @coeffs;
     foreach my $coeff (@coeffs) {
-	$result *= $coeff;
+	if (ref $coeff) {
+	    $quotient[0]=$$coeff[0]*$quotient[0];
+	    $quotient[1]=$quotient[1]*$$coeff[1];
+	    undef $result;
+	} else {
+	    $quotient[0] *= $coeff;
+	    $result *= $coeff if (defined $result);
+	}
     }
-    return $result;
+    return &normalize_coeff(defined $result ? $result : \@quotient);
+    return defined $result ? $result : \@quotient;
 }
 
 sub divide_coeffs {
     my @coeffs = @_;
-    my $result = shift @coeffs;
+    $coeffs[0]=1 if not defined $coeffs[0];
+    my @quotient = ref $coeffs[0] ? (${$coeffs[0]}[0],${$coeffs[0]}[1]) : ($coeffs[0],1);
+    my $result = ref $coeffs[0] ? undef : $coeffs[0];
+    shift @coeffs;
     foreach my $coeff (@coeffs) {
-	$result /= $coeff;
+	if (ref $coeff) {
+	    $quotient[0]=$$coeff[1]*$quotient[0];
+	    $quotient[1]=$quotient[1]*$$coeff[0];
+	    undef $result;
+	} else {
+	    #$quotient[0] /= $coeff;
+	    $quotient[1] *= $coeff;
+	    $result /= $coeff if (defined $result);
+	}
     }
+    return &normalize_coeff(defined $result ? $result : \@quotient);
+    #return defined $result ? $result : \@quotient;
+    $result = defined $result ? $result : \@quotient;
+    #print STDERR "divide_coeffs: ", Dumper($result), "\n";
     return $result;
 }
 
@@ -82,7 +176,8 @@ sub parse_poly {
 	    $coeff = -1;
 	} else {
 	    #print STDERR $coeff;
-	    $coeff = eval "$coeff + 0";
+	    #$coeff = eval "$coeff + 0";
+	    $coeff = &parse_coefficient($coeff);
 	    #print STDERR " ", $coeff, "\n",
 	}
 	$power = "1" if ($power eq "");
@@ -91,6 +186,7 @@ sub parse_poly {
 	$poly[$power] = $coeff;
     }
     #$poly_var{\@poly} = "x";
+    #print STDERR Dumper(\@poly);
     return \@poly;
 }
 
@@ -107,6 +203,12 @@ sub poly_degree {
 sub texformat_fraction {
     my ($number) = @_;
 
+    #print STDERR "texformat_fraction: ", Dumper($number), "\n";
+
+    if (ref $number) {
+	return "{" . $$number[0] . "\\over " . $$number[1] . "}";
+    }
+
     return $number if (int($number) == $number);
 
     for (my $denom=2; ; $denom++) {
@@ -121,8 +223,10 @@ sub format_poly_texformat {
     my ($poly) = @_;
     my $result;
 
+    #print STDERR Dumper($poly);
     for (my $power=$#$poly; $power>=0; $power--) {
-	my $coeff = $$poly[$power] + 0;
+	#my $coeff = $$poly[$power] + 0;
+	my $coeff = $$poly[$power];
 	next if ($coeff == 0);
 	if ($coeff == 1 and $power > 0) {
 	    $coeff = "+";
@@ -166,7 +270,8 @@ sub format_poly_textableformat {
     die "no poly var\n" unless exists $poly_var{$poly};
 
     for (my $power=$#$poly; $power>=0; $power--) {
-	my $coeff = $$poly[$power] + 0;
+	#my $coeff = $$poly[$power] + 0;
+	my $coeff = $$poly[$power];
 	if ($coeff == 0) {
 	    $result .= "&&";
 	    next;
@@ -226,7 +331,8 @@ sub add_poly {
     }
 
     $poly_var{\@result} = $poly_var{$poly1};
-    print STDERR "ADD\n";
+    print STDERR "ADD ";
+    print STDERR &format_poly_texformat($poly1), " + ", &format_poly_texformat($poly2), " = ", &format_poly_texformat(\@result), "\n";
     return \@result;
 }
 
@@ -247,7 +353,8 @@ sub subtract_poly {
     }
 
     $poly_var{\@result} = $poly_var{$poly1};
-    print STDERR "SUBTRACT\n";
+    print STDERR "SUBTRACT ";
+    print STDERR &format_poly_texformat($poly1), " - ", &format_poly_texformat($poly2), " = ", &format_poly_texformat(\@result), "\n";
     return \@result;
 }
 
@@ -273,7 +380,8 @@ sub multiply_poly {
     }
 
     $poly_var{\@result} = $poly_var{$poly1};
-    print STDERR "MULTIPLY\n";
+    print STDERR "MULTIPLY ";
+    print STDERR &format_poly_texformat($poly1), " * ", &format_poly_texformat($poly2), " = ", &format_poly_texformat(\@result), "\n";
     return \@result;
 }
 
@@ -290,7 +398,8 @@ sub divide_leading_terms {
     $result[$#$poly1 - $#$poly2] = &divide_coeffs($$poly1[$#$poly1], $$poly2[$#$poly2]);
 
     $poly_var{\@result} = $poly_var{$poly1};
-    print STDERR "DIVIDE_LEADING_TERM ", &format_poly_texformat($poly1), " / ", &format_poly_texformat($poly2), " = ", &format_poly_texformat(\@result), "\n";
+    print STDERR "DIVIDE_LEADING_TERM ";
+    print STDERR &format_poly_texformat($poly1), " / ", &format_poly_texformat($poly2), " = ", &format_poly_texformat(\@result), "\n";
     return \@result;
 }
 
