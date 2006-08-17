@@ -8,6 +8,11 @@ my $use_parens = 1;
 
 my %poly_var;
 
+sub add;
+sub subtract;
+sub multiply;
+sub divide;
+
 sub parse_coefficient {
     my ($coeff_text) = @_;
     my $sign = 1;
@@ -342,7 +347,7 @@ sub add_poly {
     die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
 
     for (my $power = $maxpower; $power>=0; $power--) {
-	my $coeff = &add_coeffs($$poly1[$power], $$poly2[$power]);
+	my $coeff = &add($$poly1[$power], $$poly2[$power]);
 	$result[$power] = $coeff if $coeff != 0;
     }
 
@@ -364,7 +369,7 @@ sub subtract_poly {
     die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
 
     for (my $power = $maxpower; $power>=0; $power--) {
-	my $coeff = &subtract_coeffs($$poly1[$power], $$poly2[$power]);
+	my $coeff = &subtract($$poly1[$power], $$poly2[$power]);
 	$result[$power] = $coeff if $coeff != 0;
     }
 
@@ -384,10 +389,10 @@ sub multiply_poly {
 
     for (my $power1 = $#$poly1; $power1>=0; $power1--) {
 	for (my $power2 = $#$poly2; $power2>=0; $power2--) {
-	    my $coeff = &multiply_coeffs($$poly1[$power1], $$poly2[$power2]);
+	    my $coeff = &multiply($$poly1[$power1], $$poly2[$power2]);
 	    if ($coeff != 0) {
 		if (exists $result[$power1+$power2]) {
-		    $result[$power1+$power2] = &add_coeffs($result[$power1+$power2], $coeff);
+		    $result[$power1+$power2] = &add($result[$power1+$power2], $coeff);
 		} else {
 		    $result[$power1+$power2] = $coeff;
 		}
@@ -411,12 +416,81 @@ sub divide_leading_terms {
     die "no poly var\n" unless exists $poly_var{$poly1};
     die "inconsistent poly vars\n" unless $poly_var{$poly1} eq $poly_var{$poly2};
 
-    $result[$#$poly1 - $#$poly2] = &divide_coeffs($$poly1[$#$poly1], $$poly2[$#$poly2]);
+    $result[$#$poly1 - $#$poly2] = &divide($$poly1[$#$poly1], $$poly2[$#$poly2]);
 
     $poly_var{\@result} = $poly_var{$poly1};
     print STDERR "DIVIDE_LEADING_TERM ";
     print STDERR &format_poly_texformat($poly1), " / ", &format_poly_texformat($poly2), " = ", &format_poly_texformat(\@result), "\n";
     return \@result;
+}
+
+sub add {
+    my ($arg1, $arg2) = @_;
+
+    if (not defined $arg1) {
+	return $arg2;
+    } elsif (not exists $poly_var{$arg1}) {
+	die "incompatiable arguments" if exists $poly_var{$arg2};
+	return &add_coeffs($arg1, $arg2);
+    } elsif (not exists $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } elsif ($poly_var{$arg1} ne $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } else {
+	return &add_poly($arg1, $arg2);
+    }
+}
+
+sub subtract {
+    my ($arg1, $arg2) = @_;
+
+    if (not defined $arg1) {
+	return $arg2;
+    } elsif (not exists $poly_var{$arg1}) {
+	die "incompatiable arguments" if exists $poly_var{$arg2};
+	return &subtract_coeffs($arg1, $arg2);
+    } elsif (not exists $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } elsif ($poly_var{$arg1} ne $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } else {
+	return &subtract_poly($arg1, $arg2);
+    }
+}
+
+sub multiply {
+    my ($arg1, $arg2) = @_;
+
+    if (not defined $arg1) {
+	return $arg2;
+    } elsif (not exists $poly_var{$arg1}) {
+	die "incompatiable arguments" if exists $poly_var{$arg2};
+	return &multiply_coeffs($arg1, $arg2);
+    } elsif (not exists $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } elsif ($poly_var{$arg1} ne $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } else {
+	return &multiply_poly($arg1, $arg2);
+    }
+}
+
+sub divide {
+    my ($arg1, $arg2) = @_;
+
+    if (not defined $arg1) {
+	return $arg2;
+    } elsif (not exists $poly_var{$arg1}) {
+	die "incompatiable arguments" if exists $poly_var{$arg2};
+	return &divide_coeffs($arg1, $arg2);
+    } elsif (not exists $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } elsif ($poly_var{$arg1} ne $poly_var{$arg2}) {
+	die "incompatiable arguments";
+    } else {
+	die "can't divide polynomials";
+	#return &divide_poly($arg1, $arg2);
+    }
 }
 
 my $dividend = &parse_poly($ARGV[0]);
@@ -432,9 +506,9 @@ my @multiples = ([0]);
 
 while ($#{$remainders[$#remainders]} >= $#$divisor) {
     my $multiple = &divide_leading_terms($remainders[$#remainders],$divisor);
-    my $sterm = &multiply_poly($multiple, $divisor);
-    $quotient = &add_poly($quotient,$multiple);
-    push @remainders, &subtract_poly($remainders[$#remainders], $sterm);
+    my $sterm = &multiply($multiple, $divisor);
+    $quotient = &add($quotient,$multiple);
+    push @remainders, &subtract($remainders[$#remainders], $sterm);
     push @sterms, $sterm;
     push @multiples, $multiple;
     #&print_poly_texformat($remainders[$#remainders]);
