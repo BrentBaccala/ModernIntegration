@@ -187,11 +187,11 @@ sub parse_poly {
     my ($polytext) = @_;
     my @poly;
 
-    while ($polytext =~ s|^\s*([+-]?[0-9/]*)([a-z])?(\^([0-9]*))?||) {
+    while ($polytext =~ s!^\s*(([+-]?[0-9/]*)|(\([^()]*\)))([a-z])?(\^([0-9]*))?!!) {
 
 	my $coeff = $1;
-	my $polyvar = $2;
-	my $power = $4;
+	my $polyvar = $4;
+	my $power = $6;
 
 	last if ($coeff eq "" and $polyvar eq "" and $power eq "");
 
