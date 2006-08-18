@@ -188,15 +188,18 @@ sub parse_poly {
     my @poly;
 
     while ($polytext =~ s|^\s*([+-]?[0-9/]*)([a-z])?(\^([0-9]*))?||) {
-	last if ($1 eq "" and $2 eq "" and $3 eq "");
+
 	my $coeff = $1;
+	my $polyvar = $2;
 	my $power = $4;
 
-	if ($2 ne "") {
+	last if ($coeff eq "" and $polyvar eq "" and $power eq "");
+
+	if ($polyvar ne "") {
 	    if (not exists $poly_var{\@poly}) {
-		$poly_var{\@poly} = $2;
+		$poly_var{\@poly} = $polyvar;
 	    } else {
-		die "inconsistent poly vars in parse" if $poly_var{\@poly} ne $2;
+		die "inconsistent poly vars in parse" if $poly_var{\@poly} ne $polyvar;
 	    }
 	}
 
@@ -211,7 +214,7 @@ sub parse_poly {
 	    #print STDERR " ", $coeff, "\n",
 	}
 	$power = "1" if ($power eq "");
-	$power = "0" if ($2 eq "");
+	$power = "0" if ($polyvar eq "");
 	#print STDERR "$coeff $power\n";
 	$poly[$power] = $coeff;
     }
