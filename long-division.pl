@@ -70,7 +70,8 @@ sub gcd {
 
     my $lastremainder = $b;
 
-    while ((my $remainder = $a-(int($a/$b)*$b)) != 0) {
+    while ((my $remainder
+	    = &subtract($a, &multiply(&divide_leading_terms($a,$b),$b))) != 0){
 	$a = $b;
 	$b = $remainder;
 	$lastremainder = $remainder;
@@ -508,7 +509,8 @@ sub divide_leading_terms {
 	return $arg2;
     } elsif (not exists $poly_var{$arg1}) {
 	die "incompatiable arguments" if exists $poly_var{$arg2};
-	die "what do we do here?";
+	die "what do we do here?" if ref $arg1 or ref $arg2;
+	return int($arg1/$arg2);
 	return &divide_coeffs($arg1, $arg2);
     } elsif (not exists $poly_var{$arg2}) {
 	die "incompatiable arguments";
