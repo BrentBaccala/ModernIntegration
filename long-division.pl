@@ -78,8 +78,8 @@ sub swap {
 
 sub gcd {
     my ($a,$b) = @_;
+    my $result;
 
-    #print STDERR "gcd: ", Dumper($a), Dumper($b), "\n";
     print STDERR &indent, "GCD ", &texformat($a), " ", &texformat($b), "\n";
 
     if (not ref $a and not ref $b) {
@@ -88,83 +88,137 @@ sub gcd {
 	$b = &negate($b) if not &ispositive($b);
 
 	swap(\$a, \$b) if (not &ispositive(&subtract($a, $b)));
-    }
 
-    if (exists $poly_var{$a} and exists $poly_var{$b}) {
-	# two polynomials
-	swap(\$a, \$b) if ($#$a < $#$b);
-    }
+	my $dividend = $a;
+	my $divisor = $b;
 
-    swap(\$a, \$b) if (not exists $poly_var{$a} and exists $poly_var{$b});
+	while ($divisor != 0) {
+	    my $quotient = int($dividend/$divisor);
+	    my $remainder = $dividend - $quotient*$divisor;
+	    $dividend = $divisor;
+	    $divisor = $remainder;
+	}
 
-    if (exists $poly_var{$a} and not ref $b) {
-	# a polynomial and an integer
-	print STDERR &exdent, "GCD ", &texformat($a), " ", &texformat($b), " = 1\n";
-	return 1;
-    }
+	$result =  $dividend;
 
-    if (exists $poly_var{$a} and ref $b and not exists $poly_var{$b}) {
-	# a polynomial and a rational fraction
-	die "polynomial and rational fraction";
-    }
+    } else {
+
+	if (exists $poly_var{$a} and exists $poly_var{$b}) {
+	    # two polynomials
+	    swap(\$a, \$b) if ($#$a < $#$b);
+	}
+
+	swap(\$a, \$b) if (not exists $poly_var{$a} and exists $poly_var{$b});
+
+	if (exists $poly_var{$a} and not ref $b) {
+
+	    # a polynomial and an integer
+	    $result = 1;
+
+	} else {
+
+	    if (exists $poly_var{$a} and ref $b and not exists $poly_var{$b}) {
+		# a polynomial and a rational fraction
+		die "polynomial and rational fraction";
+	    }
 
     #print STDERR "gcd2: ", Dumper($a), Dumper($b), "\n";
     #print STDERR "gcd2 ", &texformat($a), " ", &texformat($b), "\n";
 
-    my $lastremainder = $b;
+#    while ((my $remainder
+#	    = &subtract($a, &multiply(&divide_leading_terms($a,$b),$b))) != 0){
+#	$a = $b;
+#	$b = $remainder;
+#	$lastremainder = $remainder;
+#    }
 
-    while ((my $remainder
-	    = &subtract($a, &multiply(&divide_leading_terms($a,$b),$b))) != 0){
-	$a = $b;
-	$b = $remainder;
-	$lastremainder = $remainder;
+	    my $dividend = $a;
+	    my $divisor = $b;
+
+	    while ($divisor != 0) {
+		print STDERR "DD ",&texformat($dividend), " ", &texformat($divisor), "\n";
+		my ($quotient, $remainder);
+		if (exists $poly_var{$divisor}) {
+		    ($quotient, $remainder) = &longdivide_poly($dividend, $divisor);
+		} elsif (exists $poly_var{$dividend}) {
+		    my @poly = ($divisor);
+		    $poly_var{\@poly} = $poly_var{$dividend};
+		    ($quotient, $remainder) = &longdivide_poly($dividend, \@poly);
+		} else {
+		    $quotient = &divide($dividend, $divisor);
+		    $remainder = 0;
+		}
+		$dividend = $divisor;
+		$divisor = $remainder;
+	    }
+
+	    $result = $dividend;
+	}
     }
 
-    print STDERR &exdent, "GCD ", &texformat($a), " ", &texformat($b), " = ", &texformat($lastremainder), "\n";
+    print STDERR &exdent, "GCD ", &texformat($a), " ", &texformat($b), " = ", &texformat($result), "\n";
 
-    return $lastremainder;
+    return $result;
 }
 
 # &normalize_coeff - notice that it changes the thing passed in by reference
 
 sub normalize {
     my ($coeff) = @_;
+    my $result = $coeff;
 
-    return undef if not defined $coeff;
+    print STDERR &indent, "NORMALIZE ", &texformat($coeff), "\n";
 
-    if (not ref $coeff) {
-	return $coeff;
-    }
+    if (ref $coeff) {
 
-    if (exists $poly_var{$coeff}) {
-	if ($#$coeff <= 0) {
-	    return &normalize($$coeff[0]);
-	} else {
-	    for (my $power=$#$coeff; $power>=0; $power--) {
-		$$coeff[$power] = &normalize($$coeff[$power]);
+	if (exists $poly_var{$coeff}) {
+
+	    if ($#$coeff <= 0) {
+		$result = &normalize($$coeff[0]);
+	    } else {
+		for (my $power=$#$coeff; $power>=0; $power--) {
+		    $$coeff[$power] = &normalize($$coeff[$power]);
+		}
+		$result = $coeff;
 	    }
-	    return $coeff;
+
+	} else {
+
+	    $$coeff[0] = &normalize($$coeff[0]);
+	    $$coeff[1] = &normalize($$coeff[1]);
+
+	    if ($$coeff[0] == 0) {
+
+		$result = 0;
+
+	    } else {
+
+		my $gcd = &gcd($$coeff[0],$$coeff[1]);
+
+		my @fraction;
+		delete $poly_var{\@fraction};
+
+		$fraction[0] = &divide($$coeff[0], $gcd);
+		$fraction[1] = &divide($$coeff[1], $gcd);
+
+		if ($fraction[1] == 1 ) {
+		    $result = $fraction[0];
+		} else {
+		    $result = \@fraction;
+		}
+	    }
 	}
     }
 
-    $$coeff[0] = &normalize($$coeff[0]);
-    $$coeff[1] = &normalize($$coeff[1]);
+    print STDERR &exdent, "NORMALIZE ", &texformat($coeff), " = ", &texformat($result), "\n";
 
-    return 0 if $$coeff[0] == 0;
-
-    my $gcd = &gcd($$coeff[0],$$coeff[1]);
-
-    $$coeff[0] = &divide($$coeff[0], $gcd);
-    $$coeff[1] = &divide($$coeff[1], $gcd);
-
-    return $$coeff[0] if $$coeff[1] == 1;
-
-    return $coeff;
+    return $result;
 }
 
 sub add_coeffs {
     my ($arg1, $arg2) = @_;
     my @quotient;
+    delete $poly_var{\@quotient};
 
     return $arg2 if not defined $arg1;
     return $arg1 if not defined $arg2;
@@ -198,6 +252,7 @@ sub subtract_coeffs {
 sub multiply_coeffs {
     my ($arg1, $arg2) = @_;
     my @quotient;
+    delete $poly_var{\@quotient};
 
     return $arg2 if not defined $arg1;
     return $arg1 if not defined $arg2;
@@ -220,6 +275,7 @@ sub multiply_coeffs {
 sub divide_coeffs {
     my ($arg1, $arg2) = @_;
     my @quotient;
+    delete $poly_var{\@quotient};
 
     return $arg2 if not defined $arg1;
     return $arg1 if not defined $arg2;
@@ -364,9 +420,9 @@ sub format_poly_texformat {
 	}
     }
     $result = "0" if $result eq "";
-    return $result;
+    #return $result;
     #return "[" . $result . ";$#$poly]";
-    #return "[" . $result . "]";
+    return "[" . $result . "]";
 }
 
 sub texformat {
@@ -540,7 +596,7 @@ sub longdivide_poly
     my $quotient=0;
     my $remainder=$a;
 
-    while ($remainder != 0 and $#$remainder >= $#$b) {
+    while ($poly_var{$remainder} eq $poly_var{$a} and $#$remainder >= $#$b) {
 	my $spoly = &divide_leading_terms($a,$b);
 	$quotient = &add($quotient, $spoly);
 	$remainder = &subtract($remainder, &multiply($spoly, $b));
@@ -586,16 +642,20 @@ sub subtract {
     print STDERR &texformat($arg1), " - ", &texformat($arg2), "\n";
 
     if (not defined $arg1) {
-	$result = &negate($arg2);
+	$result = &normalize(&negate($arg2));
     } elsif (not exists $poly_var{$arg1}) {
 	die "incompatiable arguments" if exists $poly_var{$arg2};
-	$result = &subtract_coeffs($arg1, $arg2);
+	$result = &normalize(&subtract_coeffs($arg1, $arg2));
     } elsif (not exists $poly_var{$arg2}) {
-	die "incompatiable arguments";
+	my @poly = @$arg1;
+	$poly_var{\@poly} = $poly_var{$arg1};
+	$poly[0] = &subtract_coeffs($poly[0], $arg2);
+	$result = &normalize(\@poly);
+	#die "incompatiable arguments";
     } elsif ($poly_var{$arg1} ne $poly_var{$arg2}) {
 	die "incompatiable arguments";
     } else {
-	$result = &subtract_poly($arg1, $arg2);
+	$result = &normalize(&subtract_poly($arg1, $arg2));
     }
 
     print STDERR &exdent, "SUBTRACT ";
@@ -617,13 +677,15 @@ sub multiply {
 	$result = 0;
     } elsif (not exists $poly_var{$arg1} and not exists $poly_var{$arg2}) {
 	print STDERR "multiplying two fractions\n";
-	$result = &multiply_coeffs($arg1, $arg2);
+	$result = &normalize(&multiply_coeffs($arg1, $arg2));
     } elsif (exists $poly_var{$arg1} and not exists $poly_var{$arg2}) {
 	print STDERR "multiplying polynomial by non-polynomial\n";
 	if (ref $arg2 and $poly_var{$$arg2[1]} eq $poly_var{$arg1}) {
 	    # multiplying a polynomial by a fraction with that
 	    # polynomial's var in the denominator
+	    print STDERR "multiplying poly by fraction w/that poly in denom\n";
 	    my @fraction = @$arg2;
+	    delete $poly_var{\@fraction};
 	    $fraction[0]=&multiply($fraction[0],$arg1);
 	    $result = &normalize(\@fraction);
 	} else {
@@ -642,7 +704,7 @@ sub multiply {
 	die "incompatiable arguments";
     } else {
 	print STDERR "multiplying two polynomials\n";
-	$result = &multiply_poly($arg1, $arg2);
+	$result = &normalize(&multiply_poly($arg1, $arg2));
     }
     print STDERR &exdent, "MULTIPLY ";
     print STDERR &texformat($arg1), " * ", &texformat($arg2), " = ", &texformat($result), "\n";
@@ -662,7 +724,7 @@ sub divide {
 	$result = undef;
     } elsif (not exists $poly_var{$arg1} and not exists $poly_var{$arg2}) {
 	# dividing two fractions into each other
-	$result = &divide_coeffs($arg1, $arg2);
+	$result = &normalize(&divide_coeffs($arg1, $arg2));
     } elsif (exists $poly_var{$arg1} and not exists $poly_var{$arg2}) {
 	# dividing polynomial by non-polynomial
 	# die "incompatiable arguments";
@@ -680,8 +742,13 @@ sub divide {
 	die "incompatiable arguments";
     } else {
 	my ($quotient, $remainder) = &longdivide_poly($arg1, $arg2);
-	die "polynomial division isn't exact" if ($remainder != 0);
-	$result = $quotient;
+	if ($remainder != 0) {
+	    my @fraction = ($arg1, $arg2);
+	    delete $poly_var{\@fraction};
+	    $result = &normalize(\@fraction);
+	} else {
+	    $result = &normalize($quotient);
+	}
 	#return &divide_poly($arg1, $arg2);
     }
 
@@ -706,7 +773,10 @@ sub divide_leading_terms {
 	$result = int($arg1/$arg2);
 	#return &divide_coeffs($arg1, $arg2);
     } elsif (not exists $poly_var{$arg2}) {
-	die "incompatiable arguments";
+	#die "incompatiable arguments";
+	my @poly = ($arg2);
+	$poly_var{\@poly} = $poly_var{$arg1};
+	$result = &divide_leading_terms_poly($arg1, \@poly);
     } elsif ($poly_var{$arg1} ne $poly_var{$arg2}) {
 	die "incompatiable arguments";
     } else {
