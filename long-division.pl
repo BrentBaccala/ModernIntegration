@@ -215,88 +215,6 @@ sub normalize {
     return $result;
 }
 
-sub add_coeffs {
-    my ($arg1, $arg2) = @_;
-    my @quotient;
-    delete $poly_var{\@quotient};
-
-    return $arg2 if not defined $arg1;
-    return $arg1 if not defined $arg2;
-
-    swap(\$arg1, \$arg2) if not ref $arg1 and ref $arg2;
-
-    if (ref $arg1 and ref $arg2) {
-	$quotient[0]=&add(&multiply($$arg2[0],$$arg1[1]),
-			  &multiply($$arg2[1],$$arg1[0]));
-	$quotient[1]=&multiply($$arg1[1],$$arg2[1]);
-	return &normalize(\@quotient);
-    } elsif (ref $arg1) {
-	$quotient[0] = &add($$arg1[0],&multiply($$arg1[1],$arg2));
-	$quotient[1] = $$arg1[1];
-	return &normalize(\@quotient);
-    } else {
-	return $arg1 + $arg2;
-    }
-}
-
-sub subtract_coeffs {
-    my ($arg1, $arg2) = @_;
-    my @quotient;
-
-    return &negate($arg2) if not defined $arg1;
-    return $arg1 if not defined $arg2;
-
-    return &add_coeffs($arg1, &negate($arg2));
-}
-
-sub multiply_coeffs {
-    my ($arg1, $arg2) = @_;
-    my @quotient;
-    delete $poly_var{\@quotient};
-
-    return $arg2 if not defined $arg1;
-    return $arg1 if not defined $arg2;
-
-    swap(\$arg1, \$arg2) if not ref $arg1 and ref $arg2;
-
-    if (ref $arg1 and ref $arg2) {
-	$quotient[0]=&multiply($$arg1[0],$$arg2[0]);
-	$quotient[1]=&multiply($$arg1[1],$$arg2[1]);
-	return &normalize(\@quotient);
-    } elsif (ref $arg1) {
-	$quotient[0] = &multiply($$arg1[0],$arg2);
-	$quotient[1] = $$arg1[1];
-	return &normalize(\@quotient);
-    } else {
-	return $arg1 * $arg2;
-    }
-}
-
-sub divide_coeffs {
-    my ($arg1, $arg2) = @_;
-    my @quotient;
-    delete $poly_var{\@quotient};
-
-    return $arg2 if not defined $arg1;
-    return $arg1 if not defined $arg2;
-
-    if (ref $arg1 and ref $arg2) {
-	$quotient[0]=&multiply($$arg1[0],$$arg2[1]);
-	$quotient[1]=&multiply($$arg1[1],$$arg2[0]);
-	return &normalize(\@quotient);
-    } elsif (ref $arg1) {
-	$quotient[0] = $$arg1[0];
-	$quotient[1] = &multiply($$arg1[1],$arg2);
-	return &normalize(\@quotient);
-    } elsif (ref $arg2) {
-	$quotient[0] = &multiply($arg1,$$arg2[1]);
-	$quotient[1] = $$arg2[0];
-	return &normalize(\@quotient);
-    } else {
-	return $arg1 / $arg2;
-    }
-}
-
 # Polynomial internal format: list of length equal to degree of poly
 # Each item in list is coeff of that term
 # So, x^2 = [0, 0, 1]
@@ -507,6 +425,88 @@ sub print_poly_texformat {
     print &format_poly_texformat($poly), "\n";
 }
 
+
+sub add_coeffs {
+    my ($arg1, $arg2) = @_;
+    my @quotient;
+    delete $poly_var{\@quotient};
+
+    return $arg2 if not defined $arg1;
+    return $arg1 if not defined $arg2;
+
+    swap(\$arg1, \$arg2) if not ref $arg1 and ref $arg2;
+
+    if (ref $arg1 and ref $arg2) {
+	$quotient[0]=&add(&multiply($$arg2[0],$$arg1[1]),
+			  &multiply($$arg2[1],$$arg1[0]));
+	$quotient[1]=&multiply($$arg1[1],$$arg2[1]);
+	return &normalize(\@quotient);
+    } elsif (ref $arg1) {
+	$quotient[0] = &add($$arg1[0],&multiply($$arg1[1],$arg2));
+	$quotient[1] = $$arg1[1];
+	return &normalize(\@quotient);
+    } else {
+	return $arg1 + $arg2;
+    }
+}
+
+sub subtract_coeffs {
+    my ($arg1, $arg2) = @_;
+    my @quotient;
+
+    return &negate($arg2) if not defined $arg1;
+    return $arg1 if not defined $arg2;
+
+    return &add_coeffs($arg1, &negate($arg2));
+}
+
+sub multiply_coeffs {
+    my ($arg1, $arg2) = @_;
+    my @quotient;
+    delete $poly_var{\@quotient};
+
+    return $arg2 if not defined $arg1;
+    return $arg1 if not defined $arg2;
+
+    swap(\$arg1, \$arg2) if not ref $arg1 and ref $arg2;
+
+    if (ref $arg1 and ref $arg2) {
+	$quotient[0]=&multiply($$arg1[0],$$arg2[0]);
+	$quotient[1]=&multiply($$arg1[1],$$arg2[1]);
+	return &normalize(\@quotient);
+    } elsif (ref $arg1) {
+	$quotient[0] = &multiply($$arg1[0],$arg2);
+	$quotient[1] = $$arg1[1];
+	return &normalize(\@quotient);
+    } else {
+	return $arg1 * $arg2;
+    }
+}
+
+sub divide_coeffs {
+    my ($arg1, $arg2) = @_;
+    my @quotient;
+    delete $poly_var{\@quotient};
+
+    return $arg2 if not defined $arg1;
+    return $arg1 if not defined $arg2;
+
+    if (ref $arg1 and ref $arg2) {
+	$quotient[0]=&multiply($$arg1[0],$$arg2[1]);
+	$quotient[1]=&multiply($$arg1[1],$$arg2[0]);
+	return &normalize(\@quotient);
+    } elsif (ref $arg1) {
+	$quotient[0] = $$arg1[0];
+	$quotient[1] = &multiply($$arg1[1],$arg2);
+	return &normalize(\@quotient);
+    } elsif (ref $arg2) {
+	$quotient[0] = &multiply($arg1,$$arg2[1]);
+	$quotient[1] = $$arg2[0];
+	return &normalize(\@quotient);
+    } else {
+	return $arg1 / $arg2;
+    }
+}
 
 sub add_poly {
     my ($poly1, $poly2) = @_;
