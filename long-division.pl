@@ -4,6 +4,9 @@ use strict;
 
 use Data::Dumper;
 
+# to avoid debugging messages
+close(STDERR);
+
 my $use_parens = 1;
 
 my %poly_var;
@@ -201,6 +204,11 @@ sub normalize {
 		$fraction[0] = &divide($$coeff[0], $gcd);
 		$fraction[1] = &divide($$coeff[1], $gcd);
 
+		if ((not ref $fraction[1]) and ($fraction[1] < 0)) {
+		    $fraction[0] = &negate($fraction[0]);
+		    $fraction[1] = &negate($fraction[1]);
+		}
+
 		if ($fraction[1] == 1 ) {
 		    $result = $fraction[0];
 		} else {
@@ -297,6 +305,8 @@ sub texformat_fraction {
 
     return $number if (int($number) == $number);
 
+    die "Fraction in texformat_fraction!";
+
     for (my $denom=2; ; $denom++) {
 	if (int($number*$denom) == $number*$denom) {
 	    # return $number*$denom . "/$denom";
@@ -338,9 +348,9 @@ sub format_poly_texformat {
 	}
     }
     $result = "0" if $result eq "";
-    #return $result;
+    return $result;
     #return "[" . $result . ";$#$poly]";
-    return "[" . $result . "]";
+    #return "[" . $result . "]";
 }
 
 sub texformat {
@@ -468,7 +478,7 @@ sub multiply_coeffs {
     return $arg2 if not defined $arg1;
     return $arg1 if not defined $arg2;
 
-    swap(\$arg1, \$arg2) if not ref $arg1 and ref $arg2;
+    swap(\$arg1, \$arg2) if (not ref $arg1) and (ref $arg2);
 
     if (ref $arg1 and ref $arg2) {
 	$quotient[0]=&multiply($$arg1[0],$$arg2[0]);
@@ -503,8 +513,15 @@ sub divide_coeffs {
 	$quotient[0] = &multiply($arg1,$$arg2[1]);
 	$quotient[1] = $$arg2[0];
 	return &normalize(\@quotient);
+    } elsif ($arg1 == $arg2*int($arg1/$arg2)) {
+	# need to check for exact division here to avoid the call
+	# to normalize below, which could cause an infinite loop
+	return int($arg1/$arg2);
     } else {
-	return $arg1 / $arg2;
+	$quotient[0] = $arg1;
+	$quotient[1] = $arg2;
+	return &normalize(\@quotient);
+	#return $arg1 / $arg2;
     }
 }
 
