@@ -29,23 +29,16 @@ sub longdivide_poly;
 sub texformat;
 sub textableformat;
 
-sub parse_coefficient {
-    my ($coeff_text) = @_;
-    my $sign = 1;
+sub ispoly {
+    my ($arg) = @_;
 
-    $coeff_text =~ s/^\+//;
-    $sign = -1 if ($coeff_text =~ s/^-//);
+    return ((ref $arg) and (exists $poly_var{$arg}));
+}
 
-    if ($coeff_text =~ m:^[0-9]+$:) {
-	return $sign * ($coeff_text + 0);
-    } elsif ($coeff_text =~ m:^([0-9]+)/([0-9]+)$:) {
-	return [$sign * ($1 + 0), $2 + 0];
-    } elsif ($coeff_text =~ m:^\(([^()]*)\)$:) {
-	#return [&parse_poly($1), 1];
-	return &parse_poly($1);
-    } else {
-	die "can't parse coefficient \"$coeff_text\"";
-    }
+sub isfraction {
+    my ($arg) = @_;
+
+    return ((ref $arg) and (not exists $poly_var{$arg}));
 }
 
 sub ispositive {
@@ -64,7 +57,16 @@ sub negate {
 
     return (-$coeff) if not ref $coeff;
 
-    die "can't &negate a polynomial" if exists $poly_var{$coeff};
+    if (&ispoly($coeff)) {
+	#my @poly = map &negate($_), @$coeff;
+	#die "ispoly " . &texformat($coeff);
+	my @poly;
+	for (my $power=$#$coeff; $power>=0; $power--) {
+	    $poly[$power] = &negate($$coeff[$power]);
+	}
+	$poly_var{\@poly} = $poly_var{$coeff};
+	return \@poly;
+    }
 
     return [&negate($$coeff[0]), $$coeff[1]];
 }
@@ -228,6 +230,29 @@ sub normalize {
 # So, x^2 = [0, 0, 1]
 # Also, $poly_var{ref to poly} contains the variable letter of poly
 
+sub parse_coefficient {
+    my ($coeff_text) = @_;
+    my $sign = 1;
+
+    $coeff_text =~ s/^\+//;
+    $sign = -1 if ($coeff_text =~ s/^-//);
+    #die if ($coeff_text =~ s/^-//);
+
+    if ($coeff_text =~ m:^[0-9]+$:) {
+	return $sign * ($coeff_text + 0);
+    } elsif ($coeff_text =~ m:^([0-9]+)/([0-9]+)$:) {
+	return [$sign * ($1 + 0), $2 + 0];
+    } elsif ($coeff_text =~ m:^\(([^()]*)\)$:) {
+	#return [&parse_poly($1), 1];
+	my $result = &parse_poly($1);
+	#print STDERR "parse poly $sign ", &texformat($result), "\n";
+	#die "negate " . &texformat($result) if ($sign == -1);
+	return (($sign == -1) ? &negate($result) : $result);
+    } else {
+	die "can't parse coefficient \"$coeff_text\"";
+    }
+}
+
 sub parse_poly {
     my ($polytext) = @_;
     my @poly;
@@ -240,7 +265,7 @@ sub parse_poly {
 
 	$polytext =~ s!^\s*!!;
 
-	if ($polytext =~ m:^\(:) {
+	if ($polytext =~ m:^[+-]?\(:) {
 	    $polytext =~ s!^([+-]?\([^()]*\))([a-z])?(\^([0-9]*))?!!;
 	    $coeff = $1;
 	    $polyvar = $2;
@@ -396,7 +421,14 @@ sub format_poly_textableformat {
 	    $result .= "&&";
 	    next;
 	}
-	if ($coeff == 1 and $power > 0) {
+	if (exists $poly_var{$coeff}) {
+	    if ($power == $#$poly) {
+		$result .= "&";
+	    } else {
+		$result .= "+&";
+	    }
+	    $result .= "(" . &texformat($coeff) . ")";
+	} elsif ($coeff == 1 and $power > 0) {
 	    if ($power == $#$poly) {
 		$result .= "&";
 	    } else {
