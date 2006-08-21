@@ -81,6 +81,29 @@ sub swap {
     $$ref2 = $temp;
 }
 
+# The purpose of this routine is to extract common denominators from
+# the coefficients of a polynomial.  Multiplying the polynomial by the
+# result is guaranteed to cancel the denominators (though it may
+# produce common factors in the coefficients).
+
+sub denominator_common_multiple {
+    my ($poly) = @_;
+
+    if (&isfraction($poly)) {
+	return $$poly[1];
+    } elsif (not &ispoly($poly)) {
+	return $poly;
+    } else {
+	my $multiple=1;
+	for (my $power=$#$poly; $power>=0; $power--) {
+	    if (&isfraction($$poly[$power])) {
+		$multiple = &multiply($multiple, ${$$poly[$power]}[1]);
+	    }
+	}
+	return $multiple;
+    }
+}
+
 sub gcd {
     my ($a,$b) = @_;
     my $result;
@@ -118,6 +141,7 @@ sub gcd {
 	if (exists $poly_var{$a} and not ref $b) {
 
 	    # a polynomial and an integer
+	    # probably should recuse into a gcd of poly's coeffs w/integer
 	    $result = 1;
 
 	} else {
@@ -198,13 +222,27 @@ sub normalize {
 
 	    } else {
 
-		my $gcd = &gcd($$coeff[0],$$coeff[1]);
+		my $common_multiple_numerator;
+		my $common_multiple_denominator;
+		my $common_multiple;
 
 		my @fraction;
 		delete $poly_var{\@fraction};
 
-		$fraction[0] = &divide($$coeff[0], $gcd);
-		$fraction[1] = &divide($$coeff[1], $gcd);
+		$common_multiple_numerator = &denominator_common_multiple($$coeff[0]);
+		$common_multiple_denominator = &denominator_common_multiple($$coeff[1]);
+		$common_multiple = &multiply($common_multiple_numerator,
+					     $common_multiple_denominator);
+
+		print STDERR "COMMON MULTIPLE ", &texformat($common_multiple), "\n";
+
+		$fraction[0] = &multiply($$coeff[0], $common_multiple);
+		$fraction[1] = &multiply($$coeff[1], $common_multiple);
+
+		my $gcd = &gcd($fraction[0],$fraction[1]);
+
+		$fraction[0] = &divide($fraction[0], $gcd);
+		$fraction[1] = &divide($fraction[1], $gcd);
 
 		if ((not ref $fraction[1]) and ($fraction[1] < 0)) {
 		    $fraction[0] = &negate($fraction[0]);
