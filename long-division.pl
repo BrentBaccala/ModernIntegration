@@ -4,8 +4,8 @@ use strict;
 
 use Data::Dumper;
 
-# to avoid debugging messages
-close(STDERR);
+# for debugging messages
+open(DEBUG, ">&STDERR");
 
 my $use_parens = 1;
 
@@ -124,7 +124,7 @@ sub gcd {
     my ($a,$b) = @_;
     my $result;
 
-    print STDERR &indent, "GCD ", &texformat($a), " ", &texformat($b), "\n";
+    print DEBUG &indent, "GCD ", &texformat($a), " ", &texformat($b), "\n";
 
     if (not ref $a and not ref $b) {
 	# two integers
@@ -204,7 +204,7 @@ sub gcd {
 		}
 	    }
 
-	    print STDERR &indent, "CONTENTA ", &texformat($contenta), " CONTENTB ", &texformat($contentb), "\n";
+	    print DEBUG &indent, "CONTENTA ", &texformat($contenta), " CONTENTB ", &texformat($contentb), "\n";
 	    &exdent;
 
 	    #my $dividend = $a;
@@ -213,7 +213,7 @@ sub gcd {
 	    my $divisor = &divide($b,$contentb);
 
 	    while ($divisor != 0) {
-		print STDERR "DD ",&texformat($dividend), " ", &texformat($divisor), "\n";
+		print DEBUG "DD ",&texformat($dividend), " ", &texformat($divisor), "\n";
 		my ($quotient, $remainder);
 		if (exists $poly_var{$divisor}) {
 		    ($quotient, $remainder) = &longdivide_poly($dividend, $divisor);
@@ -243,7 +243,7 @@ sub gcd {
 		    }
 		}
 
-		print STDERR &indent, "DIVIDEND CONTENT ", &texformat($dividend_content), "\n";
+		print DEBUG &indent, "DIVIDEND CONTENT ", &texformat($dividend_content), "\n";
 		&exdent;
 		$dividend = &divide($dividend,$dividend_content);
 	    } else {
@@ -255,7 +255,7 @@ sub gcd {
 	}
     }
 
-    print STDERR &exdent, "GCD ", &texformat($a), " ", &texformat($b), " = ", &texformat($result), "\n";
+    print DEBUG &exdent, "GCD ", &texformat($a), " ", &texformat($b), " = ", &texformat($result), "\n";
 
     return $result;
 }
@@ -266,7 +266,7 @@ sub normalize {
     my ($coeff) = @_;
     my $result = $coeff;
 
-    print STDERR &indent, "NORMALIZE ", &texformat($coeff), "\n";
+    print DEBUG &indent, "NORMALIZE ", &texformat($coeff), "\n";
 
     if (ref $coeff) {
 
@@ -304,7 +304,7 @@ sub normalize {
 		$common_multiple = &multiply($common_multiple_numerator,
 					     $common_multiple_denominator);
 
-		print STDERR "COMMON MULTIPLE ", &texformat($common_multiple), "\n";
+		print DEBUG "COMMON MULTIPLE ", &texformat($common_multiple), "\n";
 
 		$fraction[0] = &multiply($$coeff[0], $common_multiple);
 		$fraction[1] = &multiply($$coeff[1], $common_multiple);
@@ -328,7 +328,7 @@ sub normalize {
 	}
     }
 
-    print STDERR &exdent, "NORMALIZE ", &texformat($coeff), " = ", &texformat($result), "\n";
+    print DEBUG &exdent, "NORMALIZE ", &texformat($coeff), " = ", &texformat($result), "\n";
 
     return $result;
 }
@@ -353,7 +353,7 @@ sub parse_coefficient {
     } elsif ($coeff_text =~ m:^\(([^()]*)\)$:) {
 	#return [&parse_poly($1), 1];
 	my $result = &parse_poly($1);
-	#print STDERR "parse poly $sign ", &texformat($result), "\n";
+	#print DEBUG "parse poly $sign ", &texformat($result), "\n";
 	#die "negate " . &texformat($result) if ($sign == -1);
 	return (($sign == -1) ? &negate($result) : $result);
     } else {
@@ -385,7 +385,7 @@ sub parse_poly {
 	    $power = $4;
 	}
 
-	#print STDERR "cpp: '$coeff' '$polyvar' '$power' '$polytext'\n";
+	#print DEBUG "cpp: '$coeff' '$polyvar' '$power' '$polytext'\n";
 
 	last if ($coeff eq "" and $polyvar eq "" and $power eq "");
 
@@ -402,18 +402,18 @@ sub parse_poly {
 	} elsif ($coeff eq "-") {
 	    $coeff = -1;
 	} else {
-	    #print STDERR $coeff;
+	    #print DEBUG $coeff;
 	    #$coeff = eval "$coeff + 0";
 	    $coeff = &parse_coefficient($coeff);
-	    #print STDERR " ", $coeff, "\n",
+	    #print DEBUG " ", $coeff, "\n",
 	}
 	$power = "1" if ($power eq "");
 	$power = "0" if ($polyvar eq "");
-	#print STDERR "$coeff $power\n";
+	#print DEBUG "$coeff $power\n";
 	$poly[$power] = $coeff;
     }
     #$poly_var{\@poly} = "x";
-    #print STDERR Dumper(\@poly);
+    #print DEBUG Dumper(\@poly);
     return \@poly;
 }
 
@@ -430,7 +430,7 @@ sub poly_degree {
 sub texformat_fraction {
     my ($number) = @_;
 
-    #print STDERR "texformat_fraction: ", Dumper($number), "\n";
+    #print DEBUG "texformat_fraction: ", Dumper($number), "\n";
 
     if (ref $number) {
 	return "{" . &texformat($$number[0]) . "\\over " . &texformat($$number[1]) . "}";
@@ -452,7 +452,7 @@ sub format_poly_texformat {
     my ($poly) = @_;
     my $result;
 
-    #print STDERR Dumper($poly);
+    #print DEBUG Dumper($poly);
     for (my $power=$#$poly; $power>=0; $power--) {
 	#my $coeff = $$poly[$power] + 0;
 	my $coeff = $$poly[$power];
@@ -779,8 +779,8 @@ sub add {
     my ($arg1, $arg2) = @_;
     my $result;
 
-    print STDERR &indent, "ADD ";
-    print STDERR &texformat($arg1), " + ", &texformat($arg2), "\n";
+    print DEBUG &indent, "ADD ";
+    print DEBUG &texformat($arg1), " + ", &texformat($arg2), "\n";
 
     if (not defined $arg1) {
 	$result = $arg2;
@@ -799,8 +799,8 @@ sub add {
     } else {
 	$result = &add_poly($arg1, $arg2);
     }
-    print STDERR &exdent, "ADD ";
-    print STDERR &texformat($arg1), " + ", &texformat($arg2), " = ", &texformat($result), "\n";
+    print DEBUG &exdent, "ADD ";
+    print DEBUG &texformat($arg1), " + ", &texformat($arg2), " = ", &texformat($result), "\n";
     return $result;
 }
 
@@ -808,8 +808,8 @@ sub subtract {
     my ($arg1, $arg2) = @_;
     my $result;
 
-    print STDERR &indent, "SUBTRACT ";
-    print STDERR &texformat($arg1), " - ", &texformat($arg2), "\n";
+    print DEBUG &indent, "SUBTRACT ";
+    print DEBUG &texformat($arg1), " - ", &texformat($arg2), "\n";
 
     if (not defined $arg1) {
 	$result = &normalize(&negate($arg2));
@@ -828,8 +828,8 @@ sub subtract {
 	$result = &normalize(&subtract_poly($arg1, $arg2));
     }
 
-    print STDERR &exdent, "SUBTRACT ";
-    print STDERR &texformat($arg1), " - ", &texformat($arg2), " = ", &texformat($result), "\n";
+    print DEBUG &exdent, "SUBTRACT ";
+    print DEBUG &texformat($arg1), " - ", &texformat($arg2), " = ", &texformat($result), "\n";
     return $result;
 }
 
@@ -837,8 +837,8 @@ sub multiply {
     my ($arg1, $arg2) = @_;
     my $result;
 
-    print STDERR &indent, "MULTIPLY ";
-    print STDERR &texformat($arg1), " * ", &texformat($arg2), "\n";
+    print DEBUG &indent, "MULTIPLY ";
+    print DEBUG &texformat($arg1), " * ", &texformat($arg2), "\n";
 
     if (not defined $arg1 or not defined $arg2) {
 	# maybe this should return zero?
@@ -846,14 +846,14 @@ sub multiply {
 	# $result = undef;
 	$result = 0;
     } elsif (not exists $poly_var{$arg1} and not exists $poly_var{$arg2}) {
-	print STDERR "multiplying two fractions\n";
+	print DEBUG "multiplying two fractions\n";
 	$result = &normalize(&multiply_coeffs($arg1, $arg2));
     } elsif (exists $poly_var{$arg1} and not exists $poly_var{$arg2}) {
-	print STDERR "multiplying polynomial by non-polynomial\n";
+	print DEBUG "multiplying polynomial by non-polynomial\n";
 	if (ref $arg2 and $poly_var{$$arg2[1]} eq $poly_var{$arg1}) {
 	    # multiplying a polynomial by a fraction with that
 	    # polynomial's var in the denominator
-	    print STDERR "multiplying poly by fraction w/that poly in denom\n";
+	    print DEBUG "multiplying poly by fraction w/that poly in denom\n";
 	    my @fraction = @$arg2;
 	    delete $poly_var{\@fraction};
 	    $fraction[0]=&multiply($fraction[0],$arg1);
@@ -863,7 +863,7 @@ sub multiply {
 	    for (my $power = $#$arg1; $power>=0; $power--) {
 		my $coeff = &multiply($$arg1[$power], $arg2);
 		$quotient[$power] = $coeff if ($coeff != 0);
-		#print STDERR "power $power $coeff ", &texformat($coeff), "\n";
+		#print DEBUG "power $power $coeff ", &texformat($coeff), "\n";
 	    }
 	    $poly_var{\@quotient} = $poly_var{$arg1};
 	    $result = &normalize(\@quotient);
@@ -873,11 +873,11 @@ sub multiply {
     } elsif ($poly_var{$arg1} ne $poly_var{$arg2}) {
 	die "incompatiable arguments";
     } else {
-	print STDERR "multiplying two polynomials\n";
+	print DEBUG "multiplying two polynomials\n";
 	$result = &normalize(&multiply_poly($arg1, $arg2));
     }
-    print STDERR &exdent, "MULTIPLY ";
-    print STDERR &texformat($arg1), " * ", &texformat($arg2), " = ", &texformat($result), "\n";
+    print DEBUG &exdent, "MULTIPLY ";
+    print DEBUG &texformat($arg1), " * ", &texformat($arg2), " = ", &texformat($result), "\n";
     return $result;
 }
 
@@ -885,8 +885,8 @@ sub divide {
     my ($arg1, $arg2) = @_;
     my $result;
 
-    print STDERR &indent, "DIVIDE ";
-    print STDERR &texformat($arg1), " / ", &texformat($arg2), "\n";
+    print DEBUG &indent, "DIVIDE ";
+    print DEBUG &texformat($arg1), " / ", &texformat($arg2), "\n";
 
     if (not defined $arg1) {
 	# undef = zero
@@ -922,8 +922,8 @@ sub divide {
 	#return &divide_poly($arg1, $arg2);
     }
 
-    print STDERR &exdent, "DIVIDE ";
-    print STDERR &texformat($arg1), " / ", &texformat($arg2), " = ", &texformat($result), "\n";
+    print DEBUG &exdent, "DIVIDE ";
+    print DEBUG &texformat($arg1), " / ", &texformat($arg2), " = ", &texformat($result), "\n";
     return $result;
 }
 
@@ -931,8 +931,8 @@ sub divide_leading_terms {
     my ($arg1, $arg2) = @_;
     my $result;
 
-    print STDERR &indent, "DIVIDE_LEADING_TERMS ";
-    print STDERR &texformat($arg1), " / ", &texformat($arg2), "\n";
+    print DEBUG &indent, "DIVIDE_LEADING_TERMS ";
+    print DEBUG &texformat($arg1), " / ", &texformat($arg2), "\n";
 
     if (not defined $arg1) {
 	die "empty division";
@@ -953,8 +953,8 @@ sub divide_leading_terms {
 	$result = &divide_leading_terms_poly($arg1, $arg2);
     }
 
-    print STDERR &exdent, "DIVIDE_LEADING_TERMS ";
-    print STDERR &texformat($arg1), " / ", &texformat($arg2), , " = ", &texformat($result), "\n";
+    print DEBUG &exdent, "DIVIDE_LEADING_TERMS ";
+    print DEBUG &texformat($arg1), " / ", &texformat($arg2), , " = ", &texformat($result), "\n";
     return $result;
 }
 
@@ -994,13 +994,13 @@ while ($poly_var{$remainders[$#remainders]} eq $poly_var{$dividend}
 #}
 
 #print "\n\n            ";
-print STDERR &format_poly_textableformat($quotient), "\n";
-print STDERR &format_poly_textableformat($divisor), "\n";
-print STDERR &format_poly_textableformat($dividend), "\n";
+print DEBUG &format_poly_textableformat($quotient), "\n";
+print DEBUG &format_poly_textableformat($divisor), "\n";
+print DEBUG &format_poly_textableformat($dividend), "\n";
 
 my $numcols = 2*($#$dividend + 1 + $#$divisor + 1);
 
-print STDERR "numcols = $numcols = 2*($#$dividend + 1 + $#$divisor + 1)\n";
+print DEBUG "numcols = $numcols = 2*($#$dividend + 1 + $#$divisor + 1)\n";
 
 # add one more column for closing paren at end if $use_parens
 
@@ -1071,7 +1071,7 @@ for (my $i=1; $i<=$#remainders; $i++) {
 	print "\\multispan{", (2*$#{$sterms[$i]}+2), "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr\n";
     }
 
-    #print STDERR $#{$remainders[$i]}, " ", &format_poly_texformat($remainders[$i]),"\n";
+    #print DEBUG $#{$remainders[$i]}, " ", &format_poly_texformat($remainders[$i]),"\n";
     if (exists $poly_var{$remainders[$i]}) {
 	print "\\multispan{", $numcols - (2*$#{$remainders[$i]}+2), "}&";
 	print &format_poly_textableformat($remainders[$i]);
