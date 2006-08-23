@@ -141,28 +141,60 @@ sub gcd {
 	if (exists $poly_var{$a} and not ref $b) {
 
 	    # a polynomial and an integer
-	    # probably should recuse into a gcd of poly's coeffs w/integer
-	    $result = 1;
+	    # recuse into a gcd of poly's coeffs w/integer
+
+	    my $contenta;
+
+	    for (my $power=$#$a; $power>=0; $power--) {
+		if (defined $$a[$power] and $$a[$power] != 0) {
+		    if (defined $contenta) {
+			$contenta = &gcd($contenta, $$a[$power]);
+		    } else {
+			$contenta = $$a[$power];
+		    }
+		}
+	    }
+
+	    $result = &gcd($contenta,$b);
+
+	} elsif (exists $poly_var{$a} and ref $b and not exists $poly_var{$b}) {
+	    # a polynomial and a rational fraction
+	    die "polynomial and rational fraction";
 
 	} else {
 
-	    if (exists $poly_var{$a} and ref $b and not exists $poly_var{$b}) {
-		# a polynomial and a rational fraction
-		die "polynomial and rational fraction";
+	    # two polynomials
+
+	    my $contenta;
+	    my $contentb;
+
+	    for (my $power=$#$a; $power>=0; $power--) {
+		if (defined $$a[$power] and $$a[$power] != 0) {
+		    if (defined $contenta) {
+			$contenta = &gcd($contenta, $$a[$power]);
+		    } else {
+			$contenta = $$a[$power];
+		    }
+		}
 	    }
 
-    #print STDERR "gcd2: ", Dumper($a), Dumper($b), "\n";
-    #print STDERR "gcd2 ", &texformat($a), " ", &texformat($b), "\n";
+	    for (my $power=$#$b; $power>=0; $power--) {
+		if (defined $$b[$power] and $$b[$power] != 0) {
+		    if (defined $contentb) {
+			$contentb = &gcd($contentb, $$b[$power]);
+		    } else {
+			$contentb = $$b[$power];
+		    }
+		}
+	    }
 
-#    while ((my $remainder
-#	    = &subtract($a, &multiply(&divide_leading_terms($a,$b),$b))) != 0){
-#	$a = $b;
-#	$b = $remainder;
-#	$lastremainder = $remainder;
-#    }
+	    print STDERR &indent, "CONTENTA ", &texformat($contenta), " CONTENTB ", &texformat($contentb), "\n";
+	    &exdent;
 
-	    my $dividend = $a;
-	    my $divisor = $b;
+	    #my $dividend = $a;
+	    #my $divisor = $b;
+	    my $dividend = &divide($a,$contenta);
+	    my $divisor = &divide($b,$contentb);
 
 	    while ($divisor != 0) {
 		print STDERR "DD ",&texformat($dividend), " ", &texformat($divisor), "\n";
@@ -181,7 +213,29 @@ sub gcd {
 		$divisor = $remainder;
 	    }
 
-	    $result = $dividend;
+	    if (&ispoly($dividend)) {
+
+		my $dividend_content;
+
+		for (my $power=$#$dividend; $power>=0; $power--) {
+		    if (defined $$dividend[$power] and $$dividend[$power] != 0) {
+			if (defined $dividend_content) {
+			    $dividend_content = &gcd($dividend_content, $$dividend[$power]);
+			} else {
+			    $dividend_content = $$dividend[$power];
+			}
+		    }
+		}
+
+		print STDERR &indent, "DIVIDEND CONTENT ", &texformat($dividend_content), "\n";
+		&exdent;
+		$dividend = &divide($dividend,$dividend_content);
+	    } else {
+		die "not integer in GCD: " . &texformat($dividend) if ref $dividend;
+		$dividend = 1;
+	    }
+
+	    $result = &multiply(&gcd($contenta,$contentb), $dividend);
 	}
     }
 
