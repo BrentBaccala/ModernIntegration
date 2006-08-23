@@ -35,6 +35,19 @@ sub ispoly {
     return ((ref $arg) and (exists $poly_var{$arg}));
 }
 
+sub ismonomial {
+    my ($arg) = @_;
+
+    return 0 unless &ispoly($arg);
+    return 1 if ($#$arg == -1);
+
+    for (my $power=$#$arg-1; $power>=0; $power--) {
+	return 0 if (defined $$arg[$power] and $$arg[$power] != 0);
+    }
+    return 1;
+
+}
+
 sub isfraction {
     my ($arg) = @_;
 
@@ -442,7 +455,11 @@ sub format_poly_texformat {
 	my $coeff = $$poly[$power];
 	next if ($coeff == 0);
 	if (exists $poly_var{$coeff}) {
-	    $coeff = "(" . &texformat($coeff) . ")";
+	    if (&ismonomial($coeff)) {
+		$coeff = &texformat($coeff);
+	    } else {
+		$coeff = "(" . &texformat($coeff) . ")";
+	    }
 	    $coeff = "+$coeff" unless ($power == $#$poly);
 	} elsif ($coeff == 1 and $power > 0) {
 	    $coeff = "+";
@@ -519,7 +536,11 @@ sub format_poly_textableformat {
 	    } else {
 		$result .= "+&";
 	    }
-	    $result .= "(" . &texformat($coeff) . ")";
+	    if (&ismonomial($coeff)) {
+		$result .= &texformat($coeff);
+	    } else {
+		$result .= "(" . &texformat($coeff) . ")";
+	    }
 	} elsif ($coeff == 1 and $power > 0) {
 	    if ($power == $#$poly) {
 		$result .= "&";
