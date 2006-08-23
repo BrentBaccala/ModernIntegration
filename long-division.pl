@@ -349,7 +349,9 @@ sub parse_coefficient {
     if ($coeff_text =~ m:^[0-9]+$:) {
 	return $sign * ($coeff_text + 0);
     } elsif ($coeff_text =~ m:^([0-9]+)/([0-9]+)$:) {
-	return [$sign * ($1 + 0), $2 + 0];
+	my $result = [$sign * ($1 + 0), $2 + 0];
+	delete $poly_var{$result};
+	return $result;
     } elsif ($coeff_text =~ m:^\(([^()]*)\)$:) {
 	#return [&parse_poly($1), 1];
 	my $result = &parse_poly($1);
