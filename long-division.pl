@@ -60,7 +60,8 @@ sub ispositive {
     return ($coeff > 0) if not ref $coeff;
 
     #die "can't test &ispositive on a polynomial" if exists $poly_var{$coeff};
-    return 1 if exists $poly_var{$coeff};
+    #return 1 if exists $poly_var{$coeff};
+    return &ispositive($$coeff[$#$coeff]) if (&ispoly($coeff));
 
     return (&ispositive($$coeff[0]));
 }
@@ -81,7 +82,9 @@ sub negate {
 	return \@poly;
     }
 
-    return [&negate($$coeff[0]), $$coeff[1]];
+    my $result = [&negate($$coeff[0]), $$coeff[1]];
+    delete $poly_var{$result};
+    return $result;
 }
 
 sub swap {
@@ -455,30 +458,32 @@ sub format_poly_texformat {
 	my $coeff = $$poly[$power];
 	next if ($coeff == 0);
 	if (exists $poly_var{$coeff}) {
-	    if (&ismonomial($coeff)) {
-		$coeff = &texformat($coeff);
-	    } else {
-		$coeff = "(" . &texformat($coeff) . ")";
+	    if (not &ispositive($coeff)) {
+		$result .= "-";
+		$coeff = &negate($coeff);
+	    } elsif ($power < $#$poly) {
+		$result .= "+";
 	    }
-	    $coeff = "+$coeff" unless ($power == $#$poly);
+	    if (&ismonomial($coeff)) {
+		$result .= &texformat($coeff);
+	    } else {
+		$result .= "(" . &texformat($coeff) . ")";
+	    }
 	} elsif ($coeff == 1 and $power > 0) {
-	    $coeff = "+";
-	    $coeff = "" if ($power == $#$poly);
+	    $result .= "+" unless ($power == $#$poly);
 	} elsif ($coeff == -1 and $power > 0) {
-	    $coeff = "-";
+	    $result .= "-";
 	} elsif (&ispositive($coeff)) {
-	    $coeff = &texformat($coeff);
-	    $coeff = "+$coeff" unless ($power == $#$poly);
+	    $result .= "+" unless ($power == $#$poly);
+	    $result .= &texformat($coeff);
 	} else {
-	    $coeff = "-" . &texformat(&negate($coeff));
+	    $result .= "-" . &texformat(&negate($coeff));
 	}
 
-	if ($power == 0) {
-	    $result .= $coeff;
-	} elsif ($power == 1) {
-	    $result .= $coeff . $poly_var{$poly};
-	} else {
-	    $result .= ${coeff} . $poly_var{$poly} . "^$power";
+	if ($power == 1) {
+	    $result .= $poly_var{$poly};
+	} elsif ($power > 1) {
+	    $result .= $poly_var{$poly} . "^$power";
 	}
     }
     $result = "0" if $result eq "";
@@ -531,7 +536,10 @@ sub format_poly_textableformat {
 	    next;
 	}
 	if (exists $poly_var{$coeff}) {
-	    if ($power == $#$poly) {
+	    if (not &ispositive($coeff)) {
+		$result .= "-&";
+		$coeff = &negate($coeff);
+	    } elsif ($power == $#$poly) {
 		$result .= "&";
 	    } else {
 		$result .= "+&";
