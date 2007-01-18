@@ -50,65 +50,55 @@ global_settings {
 
 // ===== 1 ======= 2 ======= 3 ======= 4 ======= 5 ======= 6 ======= 7 ======= 8 ======= 9 ======= 10
 
+// the Riemann surface - intersection between isosurfaces and a cylinder
+
 intersection {
   union {
-  isosurface {
-    function { pow((z/10-(atan2(y,x)+pi/2)),2) - .01 }
-    max_gradient 3
-    contained_by { box { <0,-200,-100>, <200,200,100> } }
-    rotate <0, 0, 90>
-  }
-  isosurface {
-    function { pow((z/10-(atan2(y,x)-pi/2)),2) - .01 }
-    max_gradient 3
-    contained_by { box { <0,-200,-100>, <200,200,50> } }
-    rotate <0, 0, -90>
-  }
-//  isosurface {
-//    function { pow((z/10-(atan2(y,x)-pi*3/2)),2) - .01 }
-//    max_gradient 3
-//    contained_by { box { <0,-200,-100>, <200,200,100> } }
-//    rotate <0, 0, 90>
-//  }
+    isosurface {
+      function { pow((z/10-(atan2(y,x)+pi/2)),2) - .01 }
+      max_gradient 3
+      contained_by { box { <0,-200,-100>, <200,200,100> } }
+      rotate <0, 0, 90>
+    }
+    isosurface {
+      function { pow((z/10-(atan2(y,x)-pi/2)),2) - .01 }
+      max_gradient 3
+      contained_by { box { <0,-200,-100>, <200,200,50> } }
+      rotate <0, 0, -90>
+    }
   }
   cylinder { <0,0,-100>, <0,0,100>, 50 }
 
   material { M_Glass }
   hollow
-  }
+}
 
 // x-axis
-  cylinder {
-    <-100, 0, 0>,     // Center of one end
-    <100, 0, 0>,     // Center of other end
-    0.5            // Radius
-    open           // Remove end caps
-    //texture { T_Stone25 scale 4 }
-    //pigment { color Green }
-    pigment { color Black }
-  }
+cylinder {
+  <-100, 0, 0>,     // Center of one end
+  <100, 0, 0>,     // Center of other end
+  0.5            // Radius
+  open           // Remove end caps
+  pigment { color Black }
+}
 
 // y-axis
-  cylinder {
-    <0, -100, 0>,     // Center of one end
-    <0, 100, 0>,     // Center of other end
-    0.5            // Radius
-    open           // Remove end caps
-    //texture { T_Stone25 scale 4 }
-    //pigment { color Red }
-    pigment { color Black }
-  }
+cylinder {
+  <0, -100, 0>,     // Center of one end
+  <0, 100, 0>,     // Center of other end
+  0.5            // Radius
+  open           // Remove end caps
+  pigment { color Black }
+}
 
 // z-axis
-  cylinder {
-    <0, 0, 0>,     // Center of one end
-    <0, 0, 100>,     // Center of other end
-    0.5            // Radius
-    open           // Remove end caps
-    //texture { T_Stone25 scale 4 }
-    //pigment { color Blue }
-    pigment { color Black }
-  }
+cylinder {
+  <0, 0, 0>,     // Center of one end
+  <0, 0, 100>,     // Center of other end
+  0.5            // Radius
+  open           // Remove end caps
+  pigment { color Black }
+}
 
 // ===== 1 ======= 2 ======= 3 ======= 4 ======= 5 ======= 6 ======= 7 ======= 8 ======= 9 ======= 10
 
