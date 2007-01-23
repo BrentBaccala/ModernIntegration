@@ -26,7 +26,7 @@ global_settings {
     texture {
       //pigment { color rgbf <1.0, 0.6, 0.0, 1.2> }
       //pigment { brick brick_size <5,5,1> }
-      pigment { brick rgbf <1.0, 0.6, 0.0, 1.2> Clear brick_size <2,2,100> }
+      pigment { brick rgbf <1.0, 0.6, 0.0, 1.2> Clear brick_size <2,2,100>*.2 mortar .1 }
       finish {
         ambient 0.0
         diffuse 0.05
@@ -55,14 +55,14 @@ global_settings {
 intersection {
   union {
     isosurface {
-      function { pow((z/10-(atan2(y,x)+pi/2)),2) - .01 }
-      max_gradient 3
+      function { pow((z-(atan2(y,x)+pi/2)),2) - .01 }
+      max_gradient 300
       contained_by { box { <0,-200,-100>, <200,200,100> } }
       rotate <0, 0, 90>
     }
     isosurface {
-      function { pow((z/10-(atan2(y,x)-pi/2)),2) - .01 }
-      max_gradient 3
+      function { pow((z-(atan2(y,x)-pi/2)),2) - .01 }
+      max_gradient 300
       contained_by { box { <0,-200,-100>, <200,200,50> } }
       rotate <0, 0, -90>
     }
@@ -73,11 +73,35 @@ intersection {
   hollow
 }
 
+#declare func1 = function(x) {
+  pow(x,3) - 3*x
+}
+
+#declare curve = function(x,y,z,fx,fy,fz) {
+  (pow(x-fx,2) + pow(y-fy,2) + pow(z-fz,2)) - 1
+}
+
+//isosurface {
+//  //function { curve(x,y,z,func1(sqrt(y+2)),y,0) }
+//  //function { curve(x,y,z,y,y,0) }
+//  //function { -(pow(x-y,2) + pow(z,2) - 1) }
+//  //function { -((x-y)*(x-y) + z*z - 10) }
+//  function { -(x*x + y*y + z*z - 25) }
+//  //function { x*x - 100 }
+//  //function { -(z*z - 100) }
+//  //contained_by { box{<-100,-100,-100>, <100,100,100>} }
+//  contained_by { box{-5,5} }
+//  //max_gradient 2
+//  open
+//  all_intersections
+//  pigment { color Black }
+//}
+
 // x-axis
 cylinder {
   <-100, 0, 0>,     // Center of one end
   <100, 0, 0>,     // Center of other end
-  0.5            // Radius
+  0.1            // Radius
   open           // Remove end caps
   pigment { color Black }
 }
@@ -86,7 +110,7 @@ cylinder {
 cylinder {
   <0, -100, 0>,     // Center of one end
   <0, 100, 0>,     // Center of other end
-  0.5            // Radius
+  0.1            // Radius
   open           // Remove end caps
   pigment { color Black }
 }
@@ -95,7 +119,7 @@ cylinder {
 cylinder {
   <0, 0, 0>,     // Center of one end
   <0, 0, 100>,     // Center of other end
-  0.5            // Radius
+  0.1            // Radius
   open           // Remove end caps
   pigment { color Black }
 }
@@ -149,8 +173,8 @@ camera {
 //  location <1, 1, 5>*10
 //  look_at <-1, 1, 0>
 // view 4
-  location <1, -1, 5>*20
-  look_at <-1, 1, 0>
+  location <1, -1, 5>*2
+  look_at <-1, 1, 0>*.5
 }
 
 // ===== 1 ======= 2 ======= 3 ======= 4 ======= 5 ======= 6 ======= 7 ======= 8 ======= 9 ======= 10
