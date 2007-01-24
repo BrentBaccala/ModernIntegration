@@ -24,8 +24,6 @@ set ticslevel -0.71428
 set zeroaxis
 unset xtics
 set zrange [-10:4]
-set xrange [-5:5]
-set yrange [-5:5]
 
 funcx(v) = ((v/2)*(v/2)*(v/2)-3*(v/2))
 funcy(v) = (v/2)*(v/2)-2
@@ -35,16 +33,13 @@ func2y(v) = (-v/2)*(-v/2)-2
 
 func2atan2(y,x) = atan2(y,x)  - ((y > 0) ? 2*pi : 0)
 
-set multiplot
+splot [-5:5] [0:5] u,5-v,atan2(5-v,u) with lines ls 1,   \
+	u,-v,atan2(-v,u) with lines ls 1, \
+	u,5-v,atan2(5-v,u)-2*pi with lines ls 1, \
+	u,-v,atan2(-v,u)-2*pi with lines ls 1, \
+	funcx(v),funcy(v),func2atan2(funcy(v),funcx(v))+0.2 with lines ls 2, \
+	func2x(v),func2y(v),atan2(func2y(v),func2x(v))+0.2 with lines ls 2
 
-splot [-5:5] [0:5] u,5-v,atan2(5-v,u) with lines ls 1
-splot [-5:5] [0:5] u,-v,atan2(-v,u) with lines ls 1
-splot [-5:5] [0:5] u,5-v,atan2(5-v,u)-2*pi with lines ls 1
-splot [-5:5] [0:5] u,-v,atan2(-v,u)-2*pi with lines ls 1
-splot [-5:5] [0:5] funcx(v),funcy(v),func2atan2(funcy(v),funcx(v))+0.2 with lines ls 2
-splot [-5:5] [0:5] func2x(v),func2y(v),atan2(func2y(v),func2x(v))+0.2 with lines ls 2
-
-unset multiplot
 
 EOF
 
