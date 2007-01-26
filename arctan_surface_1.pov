@@ -50,7 +50,88 @@ global_settings {
 
 // ===== 1 ======= 2 ======= 3 ======= 4 ======= 5 ======= 6 ======= 7 ======= 8 ======= 9 ======= 10
 
+#declare func1 = function(x) {
+  pow(x,3) - 3*x
+}
+
+#declare curve = function(x,y,z,fx,fy,fz) {
+  (pow(x-fx,2) + pow(y-fy,2) + pow(z-fz,2)) - .1
+}
+
 // the Riemann surface - intersection between isosurfaces and a cylinder
+
+//difference {
+//  intersection {
+//    union {
+//      isosurface {
+//        function { pow((z-(atan2(y,x)+pi/2)),2) - .01 }
+//        max_gradient 300
+//        contained_by { box { <0,-200,-100>, <200,200,100> } }
+//        rotate <0, 0, 90>
+//      }
+//      isosurface {
+//        function { pow((z-(atan2(y,x)-pi/2)),2) - .01 }
+//        max_gradient 300
+//        contained_by { box { <0,-200,-100>, <200,200,50> } }
+//        rotate <0, 0, -90>
+//      }
+//    }
+//    cylinder { <0,0,-100>, <0,0,100>, 50 }
+//  }
+//
+//  isosurface {
+//    function { curve(x,y,z,func1(sqrt(y+2)),y,z) }
+//    contained_by { box{<-10,-10,-1>, <10,10,1>} }
+//    max_gradient 1e10
+//    all_intersections
+//  }
+//
+//  isosurface {
+//    function { curve(x,y,z,func1(-sqrt(y+2)),y,z) }
+//    contained_by { box{<-10,-10,-1>, <10,10,1>} }
+//    max_gradient 1e10
+//    all_intersections
+//  }
+//
+//  material { M_Glass }
+//  hollow
+//}
+
+//intersection {
+//  intersection {
+//    union {
+//      isosurface {
+//        function { pow((z-(atan2(y,x)+pi/2)),2) - .01 }
+//        max_gradient 300
+//        contained_by { box { <0,-200,-100>, <200,200,100> } }
+//        rotate <0, 0, 90>
+//      }
+//      isosurface {
+//        function { pow((z-(atan2(y,x)-pi/2)),2) - .01 }
+//        max_gradient 300
+//        contained_by { box { <0,-200,-100>, <200,200,50> } }
+//        rotate <0, 0, -90>
+//      }
+//    }
+//    cylinder { <0,0,-100>, <0,0,100>, 50 }
+//  }
+//
+//  isosurface {
+//    function { curve(x,y,z,func1(sqrt(y+2)),y,z) }
+//    contained_by { box{<-10,-10,-1>, <10,10,1>} }
+//    max_gradient 1e10
+//    all_intersections
+//  }
+//
+//  isosurface {
+//    function { curve(x,y,z,func1(-sqrt(y+2)),y,z) }
+//    contained_by { box{<-10,-10,-1>, <10,10,1>} }
+//    max_gradient 1e10
+//    all_intersections
+//  }
+//
+//  pigment { color Black }
+//}
 
 intersection {
   union {
@@ -67,18 +148,24 @@ intersection {
       rotate <0, 0, -90>
     }
   }
-  cylinder { <0,0,-100>, <0,0,100>, 50 }
 
-  material { M_Glass }
-  hollow
-}
+  union {
+    isosurface {
+      function { curve(x,y,z,func1(sqrt(y+2)),y,z) }
+      contained_by { box{<-10,-10,-8>, <10,10,8>} }
+      max_gradient 1e10
+      all_intersections
+    }
 
-#declare func1 = function(x) {
-  pow(x,3) - 3*x
-}
+    isosurface {
+      function { curve(x,y,z,func1(-sqrt(y+2)),y,z) }
+      contained_by { box{<-10,-10,-8>, <10,10,8>} }
+      max_gradient 1e10
+      all_intersections
+    }
+  }
 
-#declare curve = function(x,y,z,fx,fy,fz) {
-  (pow(x-fx,2) + pow(y-fy,2) + pow(z-fz,2)) - 1
+  pigment { color Black }
 }
 
 //isosurface {
