@@ -12,13 +12,16 @@ I want to footnote all the missing proofs with references
 back to two or three texts; maybe Lang, van der Waerden,
 and an introductory undergraduate text of some kind.}
 
+\section{Ring and Fields}
+\qquad [van der Waerden], \S3.1
+
 We begin with two key definitions that we will use throughout: the
 {\it ring} and the {\it field}.  As I explained in the previous
 chapter, both are associated primarily with sets of axioms.  Any
 algebraic system that obeys the ring axioms is called a ring; any
 algebraic system that obeys the field axioms is a field.
 
-Both rings and fields are defined over sets with two operators,
+Both rings and fields are defined over sets with two binary operators,
 conventionally called addition and multiplication.  It will appease
 the nervous reader to know that for our purposes,
 addition is addition and multiplication is multiplication --- the same
@@ -29,66 +32,87 @@ concern ourselves with this.
 
 A {\it ring} ${\cal R}$ obeys the following axioms:\footnote{I freely
 use the set-theoretic symbols $\forall$ (read: for all) and $\exists$
-(read: there exists) to abbreviate this table.  These symbols
-will rarely be used again.}
+(read: there exists) to abbreviate this table.  Their ordering
+is significant.  $\exists a, \forall b$ means ``there exists an
+$a$ (independent of $b$) so that for all $b$\ldots'', while
+$\forall a, \exists b$ means ``for all $a$, there exists a $b$
+(possibly different for each $a$) so that\ldots''}
 
 \begin{center}
-\begin{tabular}{l l l r}
+\begin{supertabular}{l l l r}
    associative law of addition	& $\forall a,b,c \in {\cal R},$ & $(a+b)+c = a+(b+c)$ &(R1)\cr
-   associative law of multiplication & $\forall a,b \in {\cal R},$ & $(ab)c = a(bc)$ &(R2)\cr
+   associative law of multiplication & $\forall a,b,c \in {\cal R},$ & $(ab)c = a(bc)$ &(R2)\cr
    commutative law of addition	& $\forall a,b \in {\cal R},$ & $a+b = b+a$ &(R3)\cr
-   distributive law   & $\forall a,b \in {\cal R},$ & $a(b+c) = ab + bc$ &(R4)\cr
-   existence of an additive identity  & $\exists 0 \in {\cal R}, \forall a \in {\cal R}$, & $0 + a = a$ &(R5)\cr
-   invertibility of addition & $\forall a \in {\cal R}, \exists b \in {\cal R}$, & $a + b = 0$ &(R6)\cr
-\end{tabular}
+   commutative law of multiplication & $\forall a,b \in {\cal R},$ & $ab = ba$ &(R4)\cr
+   distributive law   & $\forall a,b,c \in {\cal R},$ & $a(b+c) = ab + bc$ &(R5)\cr
+   existence of an additive identity (zero) & $\exists 0 \in {\cal R}, \forall a \in {\cal R}$, & $0 + a = a$ &(R6)\cr
+   existence of a multiplicative identity (unity) & $\exists 1 \in {\cal R}, \forall a \in {\cal R},$ & $1a = a$ &(R7)\cr
+   invertibility of addition & $\forall a \in {\cal R}, \exists b \in {\cal R}$, & $a + b = 0$ &(R8)\cr
+\end{supertabular}
 \end{center}
 
+Some comments are in order.  Notice in particular that I listed the
+commutative law of multiplication as (R4).  Most authors don't do
+this, because a substantial theory has been developed around {\it
+non-commutative} rings, probably because matrix multiplication (a
+critically important example) is non-commutative.  A commutative ring
+is said to be {\it abelian}, and most authors require a field to be
+commutative; reserving the term {\it skew field} to refer to a
+(possibly) non-commutative field.  Also, I required the existence of a
+multiplicative identity as (R7).  Again, most authors don't require
+rings to have a unity element, but since all of our rings will be
+commutative, and all will have a unity element, I will omit any
+additional terminology and adopt the R4 and R7 axioms to obtain a {\it
+abelian (commutative) ring with unity} (and call it a ``ring'').
 
 A {\it field} ${\cal F}$ obeys all the ring axioms (thus all fields are also
-rings), as well as the following:
+rings), as well as the following axiom:
 
 \begin{center}
 \begin{tabular}{l l l r}
-   existence of a multiplicative identity & $\exists 1 \in {\cal F}, \forall a \in {\cal F},$ & $1a = a$ &(F1)\cr
-   invertibility of multiplication & $\forall a \ne 0 \in {\cal F}, \exists b \in {\cal F},$ & $ab = 1$ &(F2)\cr
-\end{tabular}
-\end{center}
-
-Notice that I didn't list the commutative law of multiplication.  This
-is because a substantial theory has been developed around {\it
-non-commutative} rings and fields, probably because matrix
-multiplication (a critically important example) is non-commutative.  A
-commutative ring is said to be {\it abelian}, and most authors require
-a field to be commutative; reserving the term {\it skew field}
-to refer to a (possibly) non-commutative field.  Since all of our
-rings and fields will be commutative, I will omit this additional
-terminology and adopt a further ring axiom:
-
-\begin{center}
-\begin{tabular}{l l l r}
-   commutative law of multiplication & $\forall a,b \in {\cal F},$ & $ab = ba$ &(R7)\cr
+   invertibility of multiplication & $\forall a \ne 0 \in {\cal F}, \exists b \in {\cal F},$ & $ab = 1$ &(F1)\cr
 \end{tabular}
 \end{center}
 
 In plain English, rings are mathematical systems in which addition,
 multiplication and subtraction are cleanly defined.  Subtraction is
-defined due to the invertibility of addition.  Division, however, is
-not.  Since the ring axioms do not require multiplication to be
-invertible, there is no guarantee that we can carry out division
-in a ring.  A field, on the other hand, is a mathematical system
-in which all four elementary operations --- addition, subtraction,
-multiplication, and division --- are defined.
+defined due to (R8), the invertibility of addition.  Division,
+however, is not, since it requires (F1).  Since the ring axioms do not
+require multiplication to be invertible, there is no guarantee that we
+can carry out division in a ring.  A field, on the other hand, is a
+mathematical system in which all four elementary operations ---
+addition, subtraction, multiplication, and division --- are defined.
+
+THEOREM (Zero Theorem)
+
+$\forall x\in{\cal R}, 0x=0$
+
+PROOF
+
+From the equation $0x=0x+0x+(-0x)=(0+0)x+(-0x)=0x+(-0x)=0$.
+
+I used
+first R8 (applied to $0x$) to obtain $0x+(-0x)=0$, then applied the
+principle of equality to substitute this equation into $0x=0x+0$
+(obtained from R6 and R3), then used R5 to factor out $(0+0)$ and R6
+to replace this with $0$, then R8 again to conclude that $0x+(-0x)=0$.
+
+Thus, multiplication by zero is a property of all rings.
+
+END THEOREM
 
 The simplest example of a ring is the set of integers, which I shall
 denote as {\bf Z} (after the German word for number, {\it zahl}).  A pair
 of integers can be added, subtracted or multiplied to form another
 integer.  Note, however, that a pair of integers can not necessarily
 be divided to form another integer.  $3 \over 2$ is not an integer,
-because multiplication (in {\bf Z}) is not necessarily invertible -
+because multiplication (in {\bf Z}) is not necessarily invertible ---
 there is no integer that when multiplied by 2 forms 1.
+(F1) is not satisfied.
 Thus {\bf Z} forms a ring but not a field.
 
 \section{Quotient fields}
+\qquad [van der Waerden], \S3.3
 
 We can remedy this by moving on the {\it rational numbers},
 traditionally denoted {\bf Q} (probably for {\it quotient}).  This is the
@@ -163,15 +187,14 @@ same class.  In this way, we confirm that the operations are cleanly
 defined not just on the fractions, but on the classes.  I'm not going
 to actually make this verification, but leave it as an exercise.
 
-Which brings us to when I excluded zero as a
-possible denominator.  We do this because otherwise our operations
-aren't cleanly defined on these equivalence classes. ${1\over0}$
-is not equivalent to ${0\over1}$ (since $1\cdot1\ne0\cdot0$),
-so ${1\over0}$ must have a multiplicative inverse (by axiom F2); i.e,
-some fraction ${a\over b}$ must exist which when multiplied
-by ${1\over0}$ produces ${1\over1}$, yet by Chapter 1's
-zero theorem, no such element $b$ can exist so that $1b=0$.
-Excluding zero as a possible denominator ensures that our
+Which is why I excluded zero as a possible denominator.  We do this
+because otherwise our operations aren't cleanly defined on these
+equivalence classes. ${1\over0}$ is not equivalent to ${0\over1}$
+(since $1\cdot1\ne0\cdot0$), so ${1\over0}$ must have a multiplicative
+inverse (by axiom F1); i.e, some fraction ${a\over b}$ must exist
+which when multiplied by ${1\over0}$ produces ${1\over1}$, yet by the
+zero theorem, no such element $b$ can exist in the base ring so that
+$1b=0$.  Excluding zero as a possible denominator ensures that our
 field axioms are satisfied.
 
 Yet in the quotient
@@ -199,6 +222,7 @@ domain to obtain its quotient field.
 
 
 \section{Polynomial rings and rational function fields}
+\qquad [van der Waerden], \S3.4
 
 Having built a field from a ring, can we build a ring from a field?
 The answer is yes, and the most important such construction is a {\it
@@ -212,8 +236,7 @@ the underlying field, brackets and the variable, so ${\cal F}[x]$ is
 the ring of polynomials in $x$ with coefficients from the field ${\cal
 F}$.
 
-${\cal F}[x]$ is a ring, but except for an important special case (an
-algebraic variable), not generally a field.  It is, however, an
+${\cal F}[x]$ is a ring but not a field.  It is, however, an
 integral domain (left as an exercise), so we can form a quotient field
 from it, which we write using parenthesis instead of brackets: ${\cal
 F}(x)$.  Elements in ${\cal F}(x)$ are fractions, both the numerator
@@ -271,6 +294,7 @@ relate them to real world problems.
 NEED TO INTRODUCE {\bf R} and {\bf C}.
 
 \section{Long Division}
+\qquad [van der Waerden], \S3.4
 
 As we all learned in grade school, polynomials can be divided
 using long division.  To generalize this in our more abstract
@@ -308,10 +332,10 @@ division by dividing, multiplying, and subtracting the {\it
 coefficients}.  Now, these are three of the basic four operations
 provided by a field.  It follows, therefore, that we can perform
 polynomial long division on polynomials whose coefficients lie in any
-field whatsoever.  Given a polynomial ring ${\cal F}[x]$, we can use
-the field operations provided by ${\cal F}$ to divide any two elements
-from ${\cal F}[x]$ using polynomial long division and obtain a
-remainder and a quotient.
+field whatsoever.  Given ${\cal F}[x]$, a polynomial ring over a
+field, we can use the field operations provided by ${\cal F}$ to
+divide any two elements from ${\cal F}[x]$ using polynomial long
+division and obtain a remainder and a quotient.
 
 We can even say a bit more.  Just like with grade school long
 division, we know that the degree of the quotient will be the
@@ -322,6 +346,8 @@ to the polynomial ring variable, not any other variable that might
 appear as part of the underlying field.
 
 \section{GCD Computation}
+\qquad [van der Waerden], \S3.7, \S3.8, \S5.4 (multivariate rings)\hfil\break
+\hbox{}\qquad [Geddes], Ch. 7
 
 One of the most important uses of polynomial long division is to
 compute greatest common divisors (GCDs), at least in theory.  In
@@ -333,12 +359,12 @@ solving polynomial diophantine equations, I'll present it here in this
 section.
 
 The first thing to observe is that the long division equation, $D = qd
-+ r$ (dividend = quotient times divisor plus remainder), can be
++ r$ (dividend equals quotient times divisor plus remainder), can be
 rearranged to read $r = D - qd$, which shows that any common divisor
-of the dividend and the quotient can be divided out from the right
-hand side of the equation, so must also divide the left hand side.
-Thus, common divisors of the dividend and divisor are preserved
-in the remainder.
+of the dividend and the divisor can be divided out from the right hand
+side of the equation, so must divide the left hand side also.  Thus,
+common divisors of the dividend and divisor are preserved in the
+remainder.
 
 Furthermore, since the remainder is always of lower degree than the
 divisor, we can repeat the long division with the divisor as the new
@@ -371,11 +397,10 @@ as well as:
 U1 implies I1.  Take a unique factorization domain, and pick two
 elements $c$ and $d$ which are multiples of zero, $cd=0$.  Obviously,
 we can pick $a=0$ and $b=0$ and have $ab=0=cd$.  So, by U1, $x$ exists
-so that $0x=c$ or $0x=d$ or $x0=c$ or $x0=d$, which by the zero
-theorem implies that either $c=0$ or $d=0$.  This proves I1.  Thus, a
-unique factorization domain is also an integral domain.  Also, ${\cal
-F}[x]$ is a unique factorization domain unless $x$ is algebraic (read
-on for details).
+so that $0x=c$ or $0x=d$, which by the zero theorem implies that
+either $c=0$ or $d=0$.  This proves I1.  Thus, a unique factorization
+domain is also an integral domain.  Also, ${\cal F}[x]$ is a unique
+factorization domain (proof omitted).
 
 U1 also implies the existence of GCDs.  Consider an element $x$ with
 two different factors, say $a$ and $c$, so $x=ab$ and $x=cd$.  U1
@@ -386,13 +411,13 @@ FIX THIS.
 Not all rings satisfy U1.  Consider, for example, ${\bf Z}[i];
 i^2=-1$, the Gaussian integers.  This ring differs from the polynomial
 ring ${\bf Z}[x]$ because polynomials of degree two and higher don't
-exist since the square of $i$ is -1; $i$ is thus {\it algebraic} and
-this makes all the difference.  The number 9 can be factored two
-different ways in this ring: $9=3\cdot3=(4-i)(4+i)$.  It's not too
-hard to see that 3 can't be multiplied by any Gaussian integer to form
-either $(4-i)$ or $(4+i)$, so U1 is not satisfied.  The Gaussian
-integers form an integral domain, but not a unique factorization
-domain.
+exist since the square of $i$ is -1; $i$ is thus {\it algebraic} (see
+below) and this makes all the difference.  The number 9 can be
+factored two different ways in this ring: $9=3\cdot3=(4-i)(4+i)$.
+It's not too hard to see that 3 can't be multiplied by any Gaussian
+integer to form either $(4-i)$ or $(4+i)$, so U1 is not satisfied.
+The Gaussian integers form an integral domain, but not a unique
+factorization domain.
 
 I did say a greatest common divisor, not the greatest common divisor,
 because there can be more than one.\footnote{Actually, I haven't even
@@ -406,6 +431,43 @@ another greatest common divisor by multiplying it by a unit.  I leave
 without proof the claims that in ${\cal F}[x]$, the units are all
 elements in ${\cal F}$, and that all GCDs differ from each other by a
 unit multiple.
+
+A few words are in order here about GCDs in systems of the form ${\cal
+U}[x]$, i.e, where the coefficients come from a unique factorization
+domain that is not a field.  A factorization in ${\bf Q}(x)[y]$ or
+${\bf Q}(y)[x]$ (both of the form ${\cal F}[x]$) is superficially so
+similar to a factorization in ${\bf Q}[x,y]$ ({\it not} of the form
+${\cal F}[x]$), that the distinction should be noted.  In both of the
+first two cases, we form a quotient field with respect to one of the
+two variables and thus obtain a polynomial ring (in the other
+variable) over the quotient field.  In the case of ${\bf Q}[x,y]$ we
+do not form a quotient field with respect to either variable; thus we
+have a polynomial ring over not a field, but over another polynomial ring.
+
+Now a polynomial ring over a unique factorization domain ${\cal U}[x]$
+itself satisfies U1 (proof omitted), so by induction any finite series
+of such polynomial rings over a unique factorization domain (like
+${\bf Q}[x,y]$) is also a unique factorization domain.  This implies
+that GCDs exist in ${\cal U}[x]$-type systems.  The problem is finding
+them, since long division only works cleanly in an ${\cal F}[x]$-type
+system.
+
+The solution, invented by Gauss\footnote{check this}, is to first
+factor out of each polynomial the GCD of the coefficients (calculated
+in ${\cal U}$) which we call the {\it content} of the polynomial,
+leaving a {\it primitive polynomial}.  It can be shown\footnote{van
+der Waerden} that if a primitive polynomial factors at all, then it
+factors into primitive polynomials.  We thus can compute a primitive
+GCD of the primitive parts and multiply this by the GCD of the
+contents to obtain a GCD in ${\cal U}[x]$.  A LITTLE UNCLEAR.
+
+We will have little use for ${\cal U}[x]$ factorizations in this book,
+since invariably we will calculate GCDs with respect to one variable,
+and form quotient fields from any others, and thus always be working
+in ${\cal F}[x]$ systems.  I mention this mainly to avoid confusion
+between factoring in ${\cal F}[x,y]$ and ${\cal F}(x)[y]$, and have
+thus omitted the proofs of Gauss' method; see the references for
+details.
 
 \vfill\eject
 
@@ -425,6 +487,56 @@ and get another GCD.  For this example, the obvious thing to multiply
 by is $2\over35$, which both clears the denominators and divides out
 the common factor in the numerators to produce $x^2+2x+1$.  Both
 answers are acceptable.
+
+\vfill\eject
+
+EXAMPLE
+
+Compute the GCD of $5xy-5y^2-7x+7y$ and $2x^2-yx-y^2$ in ${\bf Q}[x,y]$.
+
+This is a ${\cal U}[x]$-type system, so we'll need to work in a
+${\cal F}[x]$-type system to perform the computation.  Our choices
+are ${\bf Q}(x)[y]$ and ${\bf Q}(y)[x]$.
+
+Let's start with ${\bf Q}(x)[y]$, and rearrange the polynomials
+so that $y$ is the polynomial variable:
+
+$$-5y^2+(5x+7)y-7x {\rm\qquad and\qquad} -y^2-xy+2x^2$$
+
+The first step is to compute the content (GCD of the coefficients) of
+each polynomial.  Clearly, the GCD of $-5$, $(5x+7)$, and $-7x$ is 1
+and the GCD of $-1$, $-x$, and $2x^2$ is also 1, so both polynomials
+are already primitive and we can just proceed with the GCD calculation
+in ${\bf Q}(x)[y]$:
+
+\input{02-ALGEBRA-EXAMPLE5a.inc}
+
+This leads us to conclude that the last divisor,
+$-(2x+{7\over5})y+(2x^2+{7\over5}x)$ is a GCD in ${\bf Q}(x)[y]$.  Now
+we need to remove its content, which is the GCD of $-(2x+{7\over5})$
+and $(2x^2+{7\over5}x)$, or $(2x+{7\over5})$.  Dividing through by
+this polynomial (a polynomial in ${\bf Q}[x]$, and thus a unit in
+${\bf Q}(x)[y]$) we obtain $-y+x$.  We now multiply by the GCD of our
+original contents, but they were just 1, so we conclude that $x-y$
+is our GCD in ${\bf Q}[x,y]$.
+
+Now let's do all that again in ${\bf Q}(y)[x]$.  Our polynomials become:
+
+$$(5y-7)x-(5y^2-7y) {\rm\qquad and\qquad} 2x^2-yx-y^2$$
+
+The second one has unit content (the GCD of $2$, $-y$, and $-y^2$),
+but the first one's content is $\gcd_y(5y-7,5y^2-7y)=5y-7$.
+Dividing this out, we obtain:
+
+$$x-y {\rm\qquad and\qquad} 2x^2-yx-y^2$$
+
+and compute:
+
+\input{02-ALGEBRA-EXAMPLE5.inc}
+
+Thus, $x-y$ is the GCD of the primitive polynomials, and it has unit
+content $\gcd_y(1,-y)$.  The GCD of the original contents
+($1$ and $5y-7$) is 1, so the final result is again $x-y$.
 
 \vfill\eject
 
@@ -539,7 +651,59 @@ Verify this solution using a computer algebra system.
 \vfill\eject
 
 
+\section{Square-free factorization}
+
+\hbox{}\qquad [Geddes], \S 8.2
+
+A {\it square-free polynomial} is one with no repeated factors.
+$x^2-1$ is square-free because it factors as $(x-1)(x+1)$.  $x^2+2x+1$
+is not square-free because it factors as $(x+1)^2$.
+
+Whether or not a polynomial is square-free is independent of the field
+in which the factorization occurs.
+
+A {\it square-free factorization} of a polynomial is a factorization
+into square-free factors, each of which appears at a different power.
+It is much easy to compute than a full factorization into irreducible
+factors and for this reason will be quite useful to us.
+
+Surprisingly, a polynomial's square-free factorization is independent
+of its algebraic system!  For example, $x^2+1$ is irreducible in ${\bf
+R}[x]$, so its square-free factorization is simply $x^2+1$.  On the
+other hand, in ${\bf C}[x]$, $x^2+1$ factors as $(x+i)(x-i)$.  Yet
+both of these factors combine together in the square-free
+factorization (since they both appear to the first power), so
+$x^2+1$'s square-free factorization in ${\bf C}[x]$ is\ldots $x^2+1$.
+
+To compute square-free factorizations, we'll use an operation that,
+for lack of a better word, I'll call ``differentiation.''  We
+``differentiate'' a polynomial by multiplying each term by its power
+and then lowering the power by one.
+
+This ``differentiation'' not to be confused with the field operation
+that I will define in the next chapter.  ``Differentiation'' is simply
+a mechanical procedure of lowering powers and multiplying by
+constants.  In particular, no attempt is made to ``differentiate''
+the coefficients {\it even if they are not constants}.
+
+To compute a square-free factorization, first we ``differentiate'' the
+polynomial.  The result is a second polynomial with the degree of all
+factors reduced by one.  Note in particular that any factors of unit
+degree (and only those factors) disappear completely.  Dividing this
+into the original polynomial, we obtain a polynomial with no square
+factors --- all factors now appear with unit degree.  Computing the
+GCD of this polynomial with the original one also produces a
+polynomial with only factors of unit degree, except that the original
+unit degree factors are missing.  We can divide this last two
+polynomials into each other to determine the original unit degree
+factors.  Going back to the ``differentiation'' step, we can keep
+repeating the process until we have obtained all the square-free
+factors.
+
+\vfill\eject
+
 \section{Partial Fractions Expansion}
+\qquad [van der Waerden], \S5.10
 
 As a first application of polynomial Diophantine equations, we use
 them to construct partial fractions expansions.  Consider an element
@@ -595,11 +759,27 @@ We recurse on the first term until we have completed the desired construction.
 
 EXAMPLE
 
-Compute the partial fractions expansion of $${x^2 + 3x + 2}\over{(x-2)^2(x+1)}$$
+Use a square-free factorization of the denominator to compute the partial fractions expansion of $${x^2 + 3x + 2}\over{x^3-3x^2+4}$$
 
-The degree of the numerator is 2 and the degree of the denominator is 3,
-so the fraction is already proper.  We begin by solving the polynomial
-Diophantine equation:
+We begin by ``differentiating'' the denominator to obtain $3x^2-6x$.
+Computing the GCD of $x^3-3x^2+4$ and $3x^2-6x$:
+
+\input{02-ALGEBRA-EXAMPLE4c.inc}
+
+Thus, $-2x+4$ is a GCD, which we normalize by dividing through by -2
+to obtain $x-2$.  We could now proceed by dividing $x^3-3x^2+4$ by
+$x-2$ to obtain $x^2-x-2$ (all factors at unit power), compute the GCD
+of $x-2$ and $x^2-x-2$ to obtain $x-2$ (all higher factors at unit
+power), divide $x^2-x-2$ by $x-2$ to obtain $x+1$ (the unit
+square-free factor), and repeat the process (trivially) with $x-2$ to
+decide that $x-2$ is the second square-free factor.  Or, we could
+shortcut the entire process by noting that since $x-2$ is linear,
+it can only be the second square-free factor.  In any event, we conclude that:
+
+
+$${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {{x^2 + 3x + 2}\over{(x-2)^2(x+1)}}$$
+
+Next, we solve the polynomial Diophantine equation:
 
 $$x^2 + 3x + 2 = s(x-2)^2 + t(x+1) = sa+tb$$
 
@@ -609,8 +789,8 @@ Compute the GCD of $a=(x-2)^2=x^2-4x+4$ and $b=x+1$:
 
 Since the remainder, 9, is a unit, $a$ and $b$ have no common
 factors and their GCD is 1.  Of course, this result is hardly
-surprising since an initial assumption is that the denominator
-factors have no common factor.
+surprising since the square-free factorization was guaranteed
+to produce factors with no common factor between them.
 
 $$a=(x-5)b+9$$
 $$9=a-(x-5)b$$
@@ -628,7 +808,7 @@ we conclude that:
 
 $$x^2 + 3x + 2 = -{1\over9}(-9x-18)b = (x+2)b$$
 
-In other words,
+In other words (remember that $b=x+1$),
 
 $${{x^2 + 3x + 2}\over{(x-2)^2(x+1)}} = {{(x+2)(x+1)}\over{(x-2)^2(x+1)}} = {{(x+2)}\over{(x-2)^2}}$$
 
@@ -636,7 +816,13 @@ We need only divide $(x+2)$ by $(x-2)$:
 
 \input{02-ALGEBRA-EXAMPLE4b.inc}
 
-$${{x^2 + 3x + 2}\over{(x-2)^2(x+1)}} = {4\over{(x-2)^2}} + {1\over{(x-2)}}$$
+% $$(x+2)=(x-2)+4$$
+
+so,
+
+$${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {4\over{(x-2)^2}} + {1\over{(x-2)}}$$
+
+Again, verify this result using a computer algebra system.
 
 \vfill\eject
 
@@ -721,40 +907,20 @@ characteristic zero}).  WHAT ABOUT RINGS OF INFINITE CHARACTERISTIC?
 
 DEFINE ISOMORPHISM.
 
-\section{Square-free factorization}
+\section{Symmetric Polynomials}
+\qquad [van der Waerden], \S5.7
 
-A {\it square-free polynomial} is one with no repeated factors.
-$x^2-1$ is square-free because it factors as $(x-1)(x+1)$.  $x^2+2x+1$
-is not square-free because it factors as $(x+1)^2$.
+\section{Linear Algebra}
+\qquad [van der Waerden], Ch. 4, \S6.11 (trace of an field extension)
 
-Whether or not a polynomial is square-free is independent of the field
-in which the factorization occurs.
+Determinants; trace.
 
-A {\it square-free factorization} of a polynomial is a factorization
-into square-free factors, each of which appears at a different power.
-It is much easy to compute than a full factorization into irreducible
-factors and for this reason will be quite useful to us.
+\section{Resultants}
+\qquad [van der Waerden], \S5.8
 
-Surprisingly, a polynomial's square-free factorization is independent
-of its algebraic system!  For example, $x^2+1$ is irreducible in ${\bf
-R}[x]$, so its square-free factorization is simply $x^2+1$.  On the
-other hand, in ${\bf C}[x]$, $x^2+1$ factors as $(x+i)(x-i)$.  Yet
-both of these factors combine together in the square-free
-factorization (since they both appear to the first power), so
-$x^2+1$'s square-free factorization in ${\bf C}[x]$ is\ldots $x^2+1$.
-
-To compute square-free factorizations, we'll use an operation that,
-for lack of a better word, I'll call ``differentiation.''  We
-``differentiate'' a polynomial by multiplying each term by its power
-and then lowering the power by one.
-
-This ``differentiation'' not to be confused with the field operation
-that I will define in the next chapter.  ``Differentiation'' is simply
-a mechanical procedure of lowering powers and multiplying by
-constants.  In particular, no attempt is made to ``differentiate''
-the coefficients {\it even if they are not constants}.
-
-\section{Polynomial factorization}
+\section{Polynomial factorization (optional)}
+\qquad [van der Waerden], \S5.6
+\hbox{}\qquad [Geddes], Chs. 5, 6, 8
 
 Let's conclude this chapter by taking a least a brief look at fully
 factoring a polynomial into its irreducible factors.  There are
