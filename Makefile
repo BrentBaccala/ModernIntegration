@@ -8,10 +8,10 @@ all: file.pdf
 %.pdf: %.ps
 	ps2pdf $<
 
-file.pdf: PREFACE 01-INTRO 02-ALGEBRA 03-DIFFALG 04-RATIONALS file.tex $(patsubst %.sh, %.inc, $(wildcard 02-ALGEBRA*.sh))
+file.pdf: [0-9]*.tex file.tex $(patsubst %.sh, %.inc, $(wildcard 02-ALGEBRA*.sh))
 	pdflatex file
 
 dep depend .depend:
-	grep includegraphics [0-9]* | sed 's/^[^{]*{/file.pdf:/' | sed 's/}.*//' > .depend
+	grep includegraphics [0-9]*.tex | sed 's/^[^{]*{/file.pdf:/' | sed 's/}.*//' > .depend
 
 include .depend
