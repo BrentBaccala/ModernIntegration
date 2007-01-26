@@ -1,0 +1,178 @@
+
+At this point, there is only one major missing piece in our
+integration theory for simple radicals --- how do we limit the
+multiples of a divisor to a testable set?  We've seen how to
+repeatedly raise a divisor to higher and higher powers, but how do we
+know when to stop?  At what point can we declare that a divisor has no
+multiple that is principle?
+
+We'll attack this problem the same way we attacked polynomial
+factorization in Chapter ?, by mapping into a finite field, solving a
+corresponding problem there, then somehow lifting the result back to
+the original field.  The details differ, but the basic idea is the
+same.  Of course, divisors, like polynomials, behave somewhat
+different in finite fields, so our first task is to study
+some of their unique properties in this domain.
+
+Let's start with a simple but crucial observation:
+
+THEOREM
+
+In an algebraic extension over a finite field, the evaluation field is
+also finite.
+
+PROOF
+
+Consider a finite field of constants ${\cal F}$, over which we'll
+extend first into a rational function field ${\cal F}(x)$ and then add
+an algebraic extension ${\cal F}(x,y)$, where $y$ satisfies some
+minimial polynomial $f(x,y)=0$.  Start with the constant field, which
+gives us a finite number of values for $x$.  Plugging each of these
+values into the minimal polynomial gives a finite set of polynomials
+$f(y_i)=0$.  By Theorem ?, we can extend ${\cal F}$ into a finite
+extension field ${\cal F}[\gamma]$ where all the roots of the
+polynomial exist.  Since there a only a finite number of polynomials,
+we need at worst a finite set of extensions ${\cal
+F}[\gamma_1,...,\gamma_k]$ to construct a field in which all the roots
+of all the polynomials exist.  Using the Theorem of the Primitive
+Element, we can collapse all of these into a single finite extension
+field ${\cal F}[\phi]$.  Since all values of $x$ exist in ${\cal F}$,
+and all values of $y$ exist in ${\cal F}[\phi]$, an evaluation
+homomorphism carries any rational function in $x$ and $y$ into
+${\cal F}[\phi]^\infty$.
+
+END THEOREM
+
+This theorem leads directly to the single more important difference
+(to us) between divisors in an infinite field versus those in a finite
+field.  {\it In a finite field, some multiple of every divisor is
+principle.}  The reason is that the multiplicative group of the
+evaluation field has finite order.  The simplest way to demonstrate
+this is to construct theorems analogous to Theorems ? and ?:
+
+THEOREM
+
+In an algebraic extension of a finite field with characteristic
+greater than 2, a function can always be constructed with an $m^{\rm
+th}$-order zero at a specified place $(\alpha, \beta)$ and zero order
+at all other finite places, where $m$ is the multiplicative order of
+the evaluation field.
+
+PROOF
+
+The desired function is
+
+$$(x-\alpha)^m + (y-\beta)^m$$.
+
+Clearly, this function is zero at $(\alpha, \beta)$ and of $m^{\rm
+th}$ order there (PROOF THIS).  At all other places one of the two
+terms will be non-zero, and both exist in the evaluation field.  By
+Theorem ?, any non-zero number raised to the multiplicative order of
+its field is one.  Thus the value of this function will be either
+$1+0$, $0+1$, or $1+1=2$, all finite and non-zero, and thus of zero
+order.
+
+END THEOREM
+
+THEOREM
+
+In an algebraic extension of a finite field with characteristic
+greater than 2, a function can always be constructed with an $m^{\rm
+th}$-order pole at a specified place $(\alpha, \beta)$ and zero order
+at all other finite places, where $m$ is the multiplicative order of
+the evaluation field.
+
+PROOF
+
+The desired function is
+
+$${f(\alpha,y)^m\over(x-\alpha)^m(y-\beta)^m} + 1$$
+
+where the division by $(y-\beta)^m$ is exact.
+Clearly, this function has a pole at $(\alpha, \beta)$ and of $m^{\rm
+th}$ order there (PROOF THIS).  CONSIDER OTHER PLACES OVER $\alpha$.
+At all other places the denominator
+term will be non-zero, and thus one, and the numerator will be
+either zero or one (by Theorem ?)
+Thus the value of this function at these places will be either
+$0+1$ or $1+1=2$, both finite and non-zero, and thus of zero
+order.
+
+END THEOREM
+
+
+EXAMPLE
+
+Show that some multiple of ${\mathrm Z}(1,1)$ is principle in
+${\bf Z}_5(x,y); y^2=x$.
+
+Let's first construct a multiplication table for ${\bf Z}_5$:
+
+\begin{center}
+\begin{tabular}{c|c c c c c}
+  & 0 & 1 & 2 & 3 & 4 \cr
+\hline
+0 & 0 & 0 & 0 & 0 & 0 \cr
+1 & 0 & 1 & 2 & 3 & 4 \cr
+2 & 0 & 2 & 4 & 1 & 3 \cr
+3 & 0 & 3 & 1 & 4 & 2 \cr
+4 & 0 & 4 & 3 & 2 & 1 \cr
+\end{tabular}
+\end{center}
+
+Now, let's list out the places on the Riemann surface for
+${\bf Z}_5(x,y); y^2=x$.
+
+\begin{center}
+\begin{tabular}{c l}
+$x$ & $(x,y)$ \cr
+\hline
+0 & (0,0) \cr
+1 & (1,1) \quad (1,4) \cr
+2 & $(2,\gamma) \quad (2,-\gamma); \quad \gamma^2 - 2 =0$ \cr
+3 & $(3,\theta) \quad (3,-\theta); \quad \theta^2 - 3 =0$ \cr
+4 & (4,2) \quad (4,3) \cr
+\end{tabular}
+\end{center}
+
+It looks like we need ${\bf Z}_5[\gamma,\theta]$ to express these places.
+It's simplest to collapse $\gamma$ and $\theta$ into a single algebraic
+extension.  We could use the Theorem of the Primitive Element to
+do this, but in this case just looking at the multiplication table
+and noting that $3 = 2^3 = \gamma^6$ shows that $\theta = \pm \gamma^3$.
+So, in fact, we only need ${\bf Z}_5[\gamma]$:
+
+\begin{center}
+\begin{tabular}{c l}
+$x$ & $(x,y)$ \cr
+\hline
+0 & (0,0) \cr
+1 & (1,1) \quad (1,4) \cr
+2 & $(2,\gamma) \quad (2,-\gamma); \quad \gamma^2 - 2 =0$ \cr
+3 & $(3,\gamma^3) \quad (3,-\gamma^3)$ \cr
+4 & (4,2) \quad (4,3) \cr
+\end{tabular}
+\end{center}
+
+Since ${\bf Z}_5[\gamma]$ has $5^2=25$ elements, its multiplicative
+group has order one less than this.  We conclude that 24 is our
+``magic'' multiple, and that ${\mathrm Z}^{24}(1,1)$ must be
+principle in this field.  Its generator should be simply
+$(x-1)^{24} + (y-1)^{24}$.  Clearly this function is zero for
+$(x,y)=(1,1)$.  Let's verify that it's non-zero for some other
+places on the Riemann surface:
+
+\begin{eqnarray*}
+(0,0) &:& (-1)^{24} + (-1)^{24} = 4^{24} + 4^{24} = 1+1 = 2 \cr
+(1,4) &:& 3^{24} + 0^{24} = 1 + 0 = 1 \cr
+(2,\gamma) &:& (\gamma-1)^{24} + (2-1)^{24} = 1+1 = 2 {\rm ,\quad since:} \cr
+&&\cr
+&& (\gamma-1)^2 = (\gamma^2-2\gamma+1) = 3-2\gamma \cr
+&& (\gamma-1)^4 = (3-2\gamma)^2 = (9-12\gamma+4\gamma^2) = 2-2\gamma \cr
+&& (\gamma-1)^8 = (2-2\gamma)^2 = (4-8\gamma+4\gamma^2) = 2-3\gamma \cr
+&& (\gamma-1)^{12} = (2-2\gamma)(2-3\gamma) = (4-10\gamma+6\gamma^2) = 1 \cr
+\end{eqnarray*}
+
+In the final series of calculations, I used $\gamma^2=2$ and reduced
+mod 5 repeatedly.  I think the pattern should be clear, and leave
+further verification as an exercise.
