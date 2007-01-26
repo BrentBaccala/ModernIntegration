@@ -1,0 +1,79 @@
+
+\documentclass{book}
+
+\usepackage{vmargin}
+\usepackage{times}
+\usepackage{graphics}
+\usepackage{amssymb}
+
+\usepackage{footnote}
+\makesavenoteenv{tabular}
+
+\usepackage[light]{draftcopy}
+
+\usepackage{fancyhdr}
+
+\usepackage{supertabular}
+
+\usepackage[pdftex]{graphicx}
+%\usepackage[dvips]{graphicx}
+
+%\setmarginsrb{0.5in}{0.5in}{0.5in}{0.5in}{0.5in}{0.2in}{0pt}{10pt}
+\setmarginsrb{0.5in}{1in}{0.5in}{0.5in}{20pt}{20pt}{20pt}{20pt}
+%\setmargnohfrb{0.5in}{1in}{0.5in}{0.5in}
+
+%\pagestyle{empty}
+\pagestyle{fancy}
+
+\fancyhead{}
+\fancyfoot{}
+%\fancyhead[LE,RO]{\thepage}
+%\fancyhead[RE,LO]{DRAFT}
+\lhead{DRAFT}
+\chead{\today}
+\rhead{DRAFT}
+\cfoot{\thepage}
+
+% Get rid of section numbers
+\def\thesection{}
+
+% Get rid of page numbers
+% \def\thepage{}
+
+\begin{document}
+
+\parindent 0pt
+\parskip 12pt
+
+% default seems to be 10/12
+\fontsize{12pt}{14pt}
+\selectfont
+%\fontsize{14pt}{20pt}
+%\selectfont
+
+\newtheorem{ttheorem}{Theorem}
+\def\theorem{\begin{ttheorem}}
+\def\proof{{\bf Proof}}
+\def\endtheorem{\hfill$\blacksquare$\end{ttheorem}}
+
+\newtheorem{tdefinition}[ttheorem]{Definition}
+\def\definition{\begin{tdefinition}}
+\def\enddefinition{\end{tdefinition}}
+
+\title{Introduction to Differential Algebra}
+\author{Brent Baccala}
+\date{}
+
+\maketitle
+
+%\input{PREFACE}
+%\input{01-INTRO}
+%\input{02-ALGEBRA}
+\setcounter{chapter}{2}
+\input{03-DIFFALG}
+\input{04-RATIONALS}
+%\input{09a-ALGEBRAIC-THEORY}
+%\input{10-GOOD-REDUCTION}
+
+\end{document}
+

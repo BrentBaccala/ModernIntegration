@@ -1,0 +1,156 @@
+
+\chapter{Introduction}
+
+In high school, we study what the Arabs called ``al-jabr'', or what
+the Encyclopaedia Britanncia calls ``a generalization and extension of
+arithmetic''.  ``Elementary algebra," the encyclopedia goes on, ``is
+concerned with properties of arbitrary numbers,'' and cites the
+commutative law of addition $(a+b=b+a)$ as an example of such a
+property.  We use only a few others: the commutative law of
+multiplication; associative laws of both addition and multiplication;
+the distributive law.  The key point is that all of these laws are
+valid for any numbers whatsoever, so we are justified in applying them
+to unknown numbers.
+
+In addition to these basic laws, there is a language to be learned, as
+well as the more general Principle of Equality: given two identical
+quantities, the same operation applied to both must given identical
+results.  This hold true no matter what the operation is, so long as
+it is deterministic (i.e, has no randomness).  Thus, combining the
+Principle of Equality with the commutative law of addition, I can
+conclude that $\sin(a+b)=\sin(b+a)$, without any additional knowledge of
+what ``$\sin$'' might be.
+
+For example, consider the following sequence:
+
+\begin{tabular}{r c l l @{\vbox to20pt{}}}
+$(ax+{b\over2})^2$ &=& $(ax+{b\over2})(ax+{b\over2})$ & definition of square \cr
+&=& $ax(ax+{b\over2}) + {b\over2}(ax+{b\over2})$ & distributive law \cr
+&=& $axax+ax{b\over2} + {b\over2}(ax+{b\over2})$ & distributive law \cr
+&=& $axax+ax{b\over2} + {b\over2}ax+{b\over2}{b\over2}$ & distributive law \cr
+&=& $aaxx+{1\over2}abx + {1\over2}abx+{b\over2}{b\over2}$ & commutative law of multiplication (3 times)\cr
+&=& $a^2x^2 + {1\over2}abx+ {1\over2}abx + {b^2\over4}$ & definition of square\cr
+&=& $a^2x^2 + ({1\over2}+{1\over2})abx + {b^2\over4}$ & distributive law\cr
+&=& $a^2x^2 + abx + {b^2\over4}$ & basic arithmetic\cr
+$(ax+{b\over2})^2 - {b^2\over4} + ac$ &=& $a^2x^2 + abx + {b^2\over4}- {b^2\over4}+ ac$ & principle of equality\cr
+$(ax+{b\over2})^2 - {b^2\over4} + ac$ &=& $a^2x^2 + abx + ac$ & definition of subtraction\cr
+\end{tabular}
+\vfill\eject
+
+So, if $ax^2+bx+c=0$, then
+
+\begin{tabular}{r c l l @{\vbox to20pt{}}}
+$ax^2+bx+c$ &=& $0$ & \cr
+$a(ax^2+bx+c)$ &=& $0a$ & principle of equality \cr
+$a(ax^2+bx+c)$ &=& $0$ & zero theorem\footnote{$0a=0a+0a-0a=(0+0)a-0a=0a-0a=0$, showing that zero's unique behavior under multiplication is a direct result of the distributive law and zero's role as the identity element under addition}\cr
+$a^2x^2+abx+ac$ &=& $0$ & distributive law\cr
+$(ax+{b\over2})^2 - {b^2\over4} + ac$ &=& $0$ & principle of equality\footnote{using the last equality from the previous page}\cr
+$(ax+{b\over2})^2 - {b^2\over4} + ac + {b^2\over4} - ac$ &=& ${b^2\over4} - ac$ & principle of equality\cr
+$(ax+{b\over2})^2 $ &=& ${b^2\over4} - ac$ & definition of subtraction\cr
+$4(ax+{b\over2})^2 $ &=& $4{b^2\over4} - 4ac$ & principle of equality\cr
+$4(ax+{b\over2})^2 $ &=& $b^2 - 4ac$ & definition of division\cr
+$2^2(ax+{b\over2})^2 $ &=& $b^2 - 4ac$ & definition of square\cr
+$(2(ax+{b\over2}))^2 $ &=& $b^2 - 4ac$ & commutative law of multiplication\footnote{In the form $a^2b^2=aabb=abab=(ab)^2$}\cr
+$(2ax+2{b\over2})^2 $ &=& $b^2 - 4ac$ & distributive law \cr
+$(2ax+b)^2 $ &=& $b^2 - 4ac$ & definition of division \cr
+$\sqrt{(2ax+b)^2} $ &=& $\sqrt{b^2 - 4ac}$ & principle of equality \cr
+$(2ax+b) $ &=& $\sqrt{b^2 - 4ac}$ & !?!?!??! \cr
+$(2ax+b)-b $ &=& $\sqrt{b^2 - 4ac} - b$ & principle of equality \cr
+$2ax $ &=& $\sqrt{b^2 - 4ac} - b$ & definition of subtraction \cr
+${1\over2a}2ax $ &=& ${1\over2a}(\sqrt{b^2 - 4ac} - b)$ & principle of equality \cr
+$x $ &=& ${1\over2a}(\sqrt{b^2 - 4ac} - b)$ & definition of division \cr
+
+\end{tabular}
+
+At each step in the sequence (except one), we're just applying one of
+the basic rules above.  The problem with the ``mystery step'' isn't so
+much that we're taking the square root, since the principle of
+equality tells us that we can perform the same operation on both sides
+of the equal sign, but rather that it cancels out the square in some
+undefined way.  So, assuming that we can perform the mystery step, and
+noting that the division in the next to last step is only defined if
+$a\ne0$, we can legitimately conclude that the final result is true
+for any $a$, $b$, and $c$ whatsoever.
+
+The mystery step leads us to introduce complex numbers,
+typically when we want to use this equation to solve polynomials such
+as $x^2+1=0$.  At this point, the alert student, having been lured in
+to a false sense of security by the encyclopedia's ``numbers'', and
+now finding himself facing a whole new type of number entirely, can
+rightly ask, ``What is a number?''
+
+To which we wave our hands and reply, ``It's, you know, a number!''
+I am reminded of the time that I was asked to sub in a
+seventh grade pre-algebra class, and was promptly asked by one of the
+students to explain the difference between ``3'' and ``2.9999999\ldots''
+I think I mumbled something lame like ``I don't know, what do you
+think?'' I certainly hadn't come to class prepared to discuss Cauchy
+sequences!
+
+In college we are no longer satisfied with this answer, and here is
+really the launching point for ``higher'' algebra.  Our ``numbers''
+become objects in a set, and our simple concepts of addition and
+multiplication morph into operations which map pairs of objects into
+other objects.  When asked, ``What is a number?'', we now confidently
+reply, ``Anything whose operations obey the axioms!'', which really
+isn't all that surprising an answer (anymore) because our entire
+theory had been built around those axioms to begin with.
+
+The program of higher algebra (in fact much of modern mathematics)
+goes thus.  We postulate the existance of one or more sets of objects
+and one or more operations, which are simply mappings defined on the
+objects of those sets.  We write out a list of axioms that we assume
+those sets and operations obey.  Which axioms are those?  Whichever we
+find useful (or at least interesting).  Then we develop as little or
+much of a theory as we can, reasoning always from the base axioms.
+Finally, we take some specific set of objects (like the integers),
+demonstrate that they obey our set of axioms, and conclude that the
+entire theory developed for those axioms must apply, therefore, to the
+integers.  Sometimes we reverse the process by finding axioms obeyed
+by some specific set of objects we wish to study, then developing a
+theory around them.\footnote{How do we demonstrate that a certain set
+obeys certain axioms?  By using more axioms, of course!  Mathematics
+is probably the most self-contained of all major academic fields of study.
+Many other fields use its results, but math itself references nothing.
+It's impossible to get started without assuming {\it something}, so
+the entire process becomes a bit of a chicken-and-egg operation, which
+leads you to wonder$...$ which {\it did} come first?}
+
+The most important (i.e, repeatedly used) sets of axioms are given
+names, or more precisely the sets and operators which obey them are
+given names.  Thus, a ``group'' is any set and operator which obey three
+or four certain axioms.  A ``ring'' is any set and pair of operators
+which obey about six axioms.  Add another axiom or two and it
+becomes a ``field''.  If a different axiom is obeyed, it is a
+``Noetherian ring''.
+
+It's easy to get bogged down with terminology, especially in a
+classroom environment where you can't raise your hand during a test
+and ask, ``Excuse me, what's a semigroup again?''  Far more important,
+I think, is to grasp the central idea that any of these terms refers
+simultaneously to three things: a set of axioms, a theory logically
+developed from those axioms, and any particular object(s) that obeys
+those axioms, and therefore the theory.  The ultimate goal is to
+develop far more sophisticated theories than are possible using the
+``numbers'' of elementary algebra.
+
+Our goal in this book is the development of an algebraic system that
+allows us to represent as a single object any expression written using
+elementary functions, putting $\sqrt{1 + \sin x}$ on par with
+$3\over2$, introducing the concept of a derivative so that we can
+write differential equations using these objects (it now becomes {\it
+differential} algebra), and equipping this system with a theory
+powerful enough to either integrate anything so expressed, or prove
+that it can't be done, at least not using elementary functions.  This
+is how computer programs like {\it Mathematica} or {\it AXIOM} solve
+``impossible'' integrals.  Along the way, we will have cause to
+at least survey some of the deepest waters of modern
+mathematics.  Differential algebra is very much a 20$^{\rm th}$
+century theory --- the integration problem was not solved until
+roughly 1970; a really workable algorithm for the toughest cases
+wasn't available until 1990; a key sub-problem (testing the
+equivalence of constants) remains unsolved still.  Yet one thing is
+for sure.  Three hundred years after the development of calculus, one
+of its most basic and elusive problems has finally yielded not to
+limits, sums, and series, but to rings, fields and polynomials.  Quite a
+triumph for ``al-jabr''.

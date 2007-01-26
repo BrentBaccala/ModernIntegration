@@ -1,0 +1,249 @@
+
+\chapter{Differential Algebra}
+
+\section{Differential Fields}
+
+Ritt proposed, in the 1940s, the concepts of {\it differential rings}
+and {\it differential fields}.  They are exactly analogous to ordinary
+rings and fields, except that they are equipped with a third basic
+operator (addition and multiplication are the first two), called a
+{\it derivation}.  A derivation is a unary operator (the other two are
+binary), which we shall typically denote by $D$.  Since algebra is
+fundamentally concerned with how operators commute with each other,
+the first question we are lead to ask are, ``How does derivation
+commute with addition and multiplication?''  The answer
+is to be found in two basic axioms:
+
+\begin{center}
+\begin{supertabular}{l l l r}
+   addition law of derivations	& $\forall a,b \in {\cal D},$ & $D(a+b) = Da+Db$ &(D1)\cr
+   multiplication law of derivations	& $\forall a,b \in {\cal D},$ & $D(ab) = aDb+bDa$ &(D2)\cr
+\end{supertabular}
+\end{center}
+
+Neither axiom should come as any great surprise.  After all, these are
+just the basic addition and multiplication rules we learned in first
+year calculus.  Yet note how they are being presented; not as results
+derived from some theorem involving fractions and limits, but as
+axioms that are assumed true from the start.  One of the great themes
+of differential algebra is that we purge from the subject almost any
+mention of limits; for us, derivation is just a mapping in a field
+that carries an object $a$ to another object $b$.  Integration, then,
+is little more than the inversion of derivation: given an object $b$,
+can we find an object $a$ which maps into $b$?
+
+Yet the connection to calculus should be made clear.  Since derivation
+(in the calculus sense) obeys these two axioms for derivation (in the
+algebra sense), the calculus derivation will always behave as an
+algebra derivation, so any theory we develop for the algebra
+derivation will apply immediately to the calculus version.
+
+What can we determine from these two axioms?  A surprising lot,
+in my opinion:
+
+THEOREM
+
+$$D(0) = 0$$
+
+$$D(1) = 0$$
+
+$$ D({1\over a}) = - {1\over a^2}D(a)$$
+
+PROOF
+
+$$D(0) = D(0) + D(0) - D(0) = D(0+0) - D(0) = D(0) - D(0) = 0$$
+
+$$D(1) = D(1\cdot1) = D(1) + D(1)$$
+
+$$D(1) = D(1) + D(1) - D(1) = D(1) - D(1) = 0$$
+
+$$0 = D(1) = D(a\cdot{1\over a}) = {1\over a} D(a) + a D({1\over a})$$
+
+$$ a D({1\over a}) = - {1\over a}D(a)$$
+
+$$ D({1\over a}) = - {1\over a^2}D(a)$$
+
+END THEOREM
+
+THEOREM
+
+The derivation of an element algebraic over a subfield is completely
+defined by the subfield's derivation.
+
+END THEOREM
+
+It follows immediately from these theorem that our entire prime
+subfield, as well as any purely algebraic extension thereof, must map
+to zero under derivation.
+
+THEOREM
+
+The set of all elements in a differential field which map to zero
+under derivation forms a subfield.
+
+END THEOREM
+
+The subfield which maps to zero is called the {\it constant subfield}.
+It necessarily includes the prime subfield and any elements algebraic
+over the prime subfield, but may include other transcendental elements
+as well.  For example, consider ${\bf R}$, the real numbers.  $2$ is
+in the prime subfield, so $D(2)=0$; $\sqrt{2}$ is algebraic over the
+prime subfield, so $D({\sqrt 2})=0$; $\pi$ is transcendental over the
+prime subfield, so doesn't {\it have} to map to zero, but we will
+(obviously) set $D(\pi)=0$.  All three elements --- $2$, ${\sqrt 2}$,
+$\pi$ --- are in the constant subfield.
+
+The upshot of all this is that our basic D1 and D2 axioms completely
+define a derivation both for our prime subfield as well as any purely
+algebraic extensions.  It therefore follows that we need only specify
+the behavior of a derivation on transcendental elements and we will
+have completely defined the derivation.
+
+We will use four types of transcendental elements in our theory:
+
+1. Constants.  $D(c)=0$
+
+2. The distinguished variable of integration, $x$.  $D(x)=1$
+
+Since this is an O.D.E. theory, and particularly an integration
+theory, we are always integrating with respect to some variable of
+integration.  There is no loss of generality in labeling it $x$.  By
+setting $D(x)=1$ we establish that our derivation is in fact a
+derivative and not a differential.
+
+Incidently, Ritt had already conceived back in the 1940s of equipping
+a differential field with multiple derivations, one for each of a set
+of independent variables.  This corresponds nicely to what should be
+needed for a P.D.E. theory.  Thus, given variables $x$, $y$ and $z$,
+we could construct derivatives $D_x$, $D_y$ and $D_z$ so that
+$D_x(x)=1$, $D_x(y)=0$, $D_x(z)=0$ and so on.  I definitely consider
+this approach to be ripe ``for further study,'' but since our focus is
+on integration, I'll have nothing more to say about fields with
+multiple derivations.
+
+3. Logarithmic extensions. $D(\theta)={D(\phi)\over{\phi}}$
+
+4. Exponential extensions. $D(\theta)=\theta D(\phi)$
+
+These two clearly correspond to $\theta = \ln\phi$ (in the logrithmic
+case) and $\theta = \exp\phi$ (in the exponential case).  The key
+point I want to made immediately is that these are {\it
+transcendental} extensions\ldots and not all logarithms and
+exponentials are transcendental!  ADD EXAMPLE.  If we're dealing with
+an algebraic extension, even if defined using logarithms and
+exponentials, we have to use our algebraic theory.  Transcendental
+extensions are defined by exclusion --- any extension that isn't
+algebraic is transcendental.
+
+DISCUSS TESTING FOR TRANSCENDENCE
+
+That's it!  The basic two differential axioms, plus these four types
+of transcendentals, round out the entire base algebraic structure
+we'll need to construct our theory.  Now, how can this be?  What
+about sines and cosines, all those arc-functions, raising things
+to powers, and all that?  Obviously, we'll need to express those
+operations using our basic extensions...
+
+\vfill\eject
+
+\section{Root/Logarithm/Exponential Form}
+
+The key here is Euler's famous identify $e^{i\theta}=i\sin\theta+\cos\theta$.
+
+\begin{center}
+\begin{tabular}{c c @{\bigskip}}
+Elementary expression & \multicolumn{1}{c}{Expansion} \\
+\hline
+$\sin x$ & $\displaystyle {-i \,{{e^{ix} - e^{-ix}}\over 2}}$ \vbox to20pt{}\\
+$\cos x$ & $\displaystyle {{e^{ix} + e^{-ix}}\over 2}$ \\
+$\tan x$ & $\displaystyle {-i \,{{e^{ix}-e^{-ix}}\over {e^{ix}+e^{-ix}}}}$ \\
+$\arcsin x$ & $\displaystyle -i \,\ln (ix + \sqrt{1-x^2})$ \\
+$\arccos x$ & $\displaystyle -i \,\ln (x + i\sqrt{1-x^2})$ \\
+$\arctan x$ & $\displaystyle {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$ \\
+$f^g$ & $\displaystyle e^{\,g \ln f}$ \\
+\end{tabular}
+\end{center}
+
+\vfill\eject
+
+EXAMPLE
+
+Express $\sin x$ in a form suitable for Risch Integration.
+
+Looking up $\sin x$ in the preceding table, we immediately find:
+
+$$\sin x = {-i \,{{e^{ix} - e^{-ix}}\over 2}}$$
+
+Therefore, starting from ${\bf C}(x)$,
+we add the exponential extension $\theta = \exp(ix)$,
+and conclude that $\sin x$ can be expressed as the rational function:
+
+$${{\theta^2 - 1}\over 2i\theta}$$
+
+in the field ${\bf C}(x,\theta); \theta=\exp(ix)$.
+
+END EXAMPLE
+
+\vfill\eject
+
+\section{Liouville's Theorem}
+
+The next problem we must confront is to limit the number of possible
+fields in which we can find solutions to our problem.  So far, we can
+only conclude that there is an infinity of possible systems that can
+be used to express elementary (Liouvillian) functions.  Searching them
+exhaustively for the solution to a given integral is out of the
+question.  Fortunately, it's been known for almost 200 years that
+there are severe restrictions on what extensions can appear above and
+beyond those in the original integrand.
+
+For example, consider the expression $e^x$.  Differentiating it
+yields, well, $e^x$.  Now the key thing to note is that the
+exponential does not disappear after differentiation.  This, in fact,
+is a general property of exponentials --- differentiation never makes
+them disappear.  They can change around, to be sure,
+${d\over dx}e^{2x}=2e^{2x}$, but notice that the exponential is still
+present in the result.  Therefore, since the solution to our integral
+must differentiate into the original integrand, we conclude that no
+new exponentials can appear in the integral beyond those in the
+integrand.  If there were new exponentials in the result, then they
+would have to appear in the integrand as well, since they can never
+disappear under differentiation.
+
+The same thing happens with roots.  Differentiate $\sqrt{x}$ and you
+get ${1\over{2\sqrt{x}}}$.  This time the root moves from the
+numerator to the denominator, but again, it doesn't completely
+disappear.  This is a general property of roots, algebraic extensions
+in general, in fact.
+
+Logarithms are different, though.  Differentiate $\ln x$ to get
+$1\over x$.  The logarithm is gone.  So new {\it logarithms} can
+appear in integrals, because they can disappear under differentiation
+to recover the original integrand.  Even here, though, there are
+important restrictions.  The logarithms have to appear with constant
+coefficients (because something like $x\ln x$ would differentiate into
+$1 + \ln x$), can not appear in powers or in denominators (${d\over
+dx} \ln^2x = 2{\ln x\over x}$), and can not be nested (${d\over dx}
+\ln(\ln x) = {1\over{x\ln x}}$).
+
+Of course, all of this is hand-waving so far, but I hope that it
+provides context and concrete examples to understand what has become
+known as {\it Liouville's Theorem} --- the only new extensions that
+can appear are simple logarithms.  Let's nail this down, now.
+
+INSERT PROOFS HERE!
+
+EXAMPLE
+
+Explain the ``disappearance'' of the square root in:
+
+$$\int{1\over\sqrt{1-x^2}} = \arcsin x$$
+
+Finding $\arcsin x$ in the table, we see that:
+
+$$\arcsin x = -i \,\ln (ix + \sqrt{1-x^2})$$
+
+That's where it went!  It ``disappeared'' into the complex logarithm
+that $\arcsin x$ is formed from.  New logarithms, of course, are
+acceptable.  Notice that the new logarithm has a constant coefficient
+($-i$), is not nested, and appears to the first power.
