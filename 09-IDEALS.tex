@@ -2,6 +2,8 @@
 \setcounter{chapter}{8}
 \chapter{Simple Algebraic Extensions}
 
+\input{09a-ALGEBRAIC-THEORY.tex}
+
 \section{Integral Modules}
 
 In ${\bf C}(x)$, we were working with the quotient field of a
@@ -25,11 +27,21 @@ using an integral basis, any ${\cal I}$-module is also a ${\bf
 C}[x]$-module.  Not all ${\bf C}[x]$-modules are ${\cal I}$-modules,
 however, since ${\cal I}$ is typically larger than ${\bf C}[x]$.
 
+Some authors use the term {\it fractional ideal} to refer to an ${\cal
+I}$-module.  I have avoided use of this term for two reasons.  First,
+I wish to emphasize the concept of a module.  Second, ${\cal
+I}$-modules are not ideals, either in the ring ${\cal I}$ (since they
+may contain elements not in ${\cal I}$), nor in the field ${\bf
+C}(x,y)$, since, as a field, ${\bf C}(x,y)$ has only the trivial
+ideals.  The term {\it fractional ideal} is used because an ${\cal
+I}$-module can be regarded as a fraction of ideals in ${\cal I}$.
+
 THEOREM C
 
 A function can always be constructed with a simple zero at a specified
-place $(\alpha, \beta)$, zero order at an additional finite set of
-places $\Sigma$, and non-negative order at all other finite places.
+place $(\alpha, \beta)$, $\alpha$ and $\beta$ both finite, zero order
+at an additional finite set of places $\Sigma$, and non-negative order
+at all other finite places.
 
 PROOF
 
@@ -51,12 +63,13 @@ END THEOREM
 THEOREM D
 
 A function can always be constructed with a simple pole at a specified
-place $(\alpha, \beta)$, zero order at an additional finite set of
-places $\Sigma$, and non-negative order at all other places.
+place $(\alpha, \beta)$, $\alpha$ and $\beta$ both finite, zero order
+at an additional finite set of places $\Sigma$, and non-negative order
+at all other places.
 
 PROOF
 
-Begin with the function:
+If $(\alpha, \beta)$ is non-singular, begin with the function:
 
 $$f(\alpha,y)\over(x-\alpha)(y-\beta)$$
 
@@ -68,10 +81,27 @@ polynomial in $x$ ($x-\alpha$, to be precise).  It has a simple pole at
 $(\alpha, \beta)$ and non-negative order at all other places, which
 is obvious except for places over $x=\alpha$.
 
-(Prove this for other values over $\alpha$).
+If $x=\alpha$ and $y\ne\beta$, $f$ takes the form $0\over0$, so we can
+expand it using L'H\^opital's rule:
+
+$$\lim_{(x,y)\to p} {{P(y)}\over{Q(x)}}
+  = \lim_{{(x,y)\to p}} {{{dP(y)}\over{dx}}\over{{dQ(x)}\over{dx}}}
+  = {{P'(y)}\over{Q'(x)}} \, {{dy}\over{dx}} $$
+
+where $'$ denotes differentiation with respect to the polynomial's
+variable.  Now, $Q(x)=(x-\alpha)$, so $Q'(x)=1$, and the denominator
+is thus finite.  $P'(y)$ is a polynomial, and is thus also finite.
+$(\alpha, \beta)$ is a finite place, so ${dy}\over{dx}$ is also
+finite.  Since all the numerator terms are finite and the denominator
+is non-zero, it follows that $f$ is at least finite, and thus has
+non-negative order, at places over $x=\alpha$ other than $(\alpha,
+\beta)$.
+
+If $x=\alpha$ and $y=\beta$, then $f$'s numerator is non-zero and its
+denominator is zero, so this is clearly a pole, but of what order?
 
 Now, compute the value of the function at all other places in
-$\Sigma$, using either L'Hopital's rule or Puiseux expansion if some
+$\Sigma$, using either L'H\^opital's rule or Puiseux expansion if some
 of these are other places over $\alpha$.  If the value of the function
 is non-zero at all of these places, then we are done.  Otherwise,
 select a number $\gamma$ different from all of these values.  The
@@ -88,19 +118,18 @@ END THEOREM
 
 THEOREM E
 
-A function can always be constructed with a finite set of poles and
-zeros of specified integer orders at specified places, zero order at
-an additional finite set of places, and non-negative order at all
-other finite places.
+A function can always be constructed with specified integer orders at
+a finite set of places $\Sigma$ and non-negative order at all other finite
+places.
 
 PROOF
 
 For each pole or zero, use Theorems C or D to construct a function
-with a simple pole or a simple zero at that place, zero order at the
-places of all other poles or zeros, and zero order at the additional
-set of places where that is required.  Raise each of these function to
-the integer power that is the order of the corresponding pole or zero,
-then multiply them all together.
+with a simple pole or a simple zero at that place, zero order at all
+other places in $\Sigma$ and non-negative order at all other finite
+places.  Raise each of these function to the integer power that is the
+order of the corresponding pole or zero, then multiply them all
+together.
 
 END THEOREM
 
@@ -132,7 +161,7 @@ multiple of the associated divisor except at infinity.
 Conversely, I will show that the set of all multiples of a given
 divisor $\cal D$ form an integral module.  Use the preceding theorems
 to construct a function $f$ with poles and zeros exactly as required
-by $\cal D$.  Since ${bf C}(x,y)$ is a field, the inverse of $f$ exists,
+by $\cal D$.  Since ${\bf C}(x,y)$ is a field, the inverse of $f$ exists,
 and any multiple $m$ of $\cal D$, when multiplied by $f^{-1}$, will be
 integral, and can thus be expanded using an integral basis:
 
@@ -185,11 +214,150 @@ ${\cal D}$'s associated ${\cal I}$-module.
 END THEOREM
 
 Once we have constructed a basis for the integral module, we need to
-determine if the module is principal.
+determine if the module is principal.  Since the total order of a
+field element is always zero, this only makes sense for divisors of
+zero order.  Futhermore, since an integral module corresponds to
+multiples of a divisor {\it except at infinity}, we can't use this
+technique to find functions with poles or zeros at infinity, but that
+isn't a serious limitation since we can just transform into a field
+with an ordinary point at infinity.
+
+A zero order ${\cal I}$-module is principle iff it contains a function
+with no poles at infinity.  We can determine this by expressing the
+${\cal I}$-module as a ${\bf C}[x]$-module, simply by multiplying the
+${\cal I}$-module basis through by an integral basis (remember that an
+integral basis is simply a basis for ${\cal I}$ as a ${\bf
+C}[x]$-module).
+
+We then check these basis elements to see if one of them has no poles
+at infinity.  The most straightforward way to do this is to invert the
+field using $z={1\over x}$, which swaps zero with infinity.  We can
+then construct an integral basis for the inverse field, and express
+each of the module's basis elements (after inverting them) using this
+inverse basis.  If there are any poles at infinity in the original
+field, they will appear as poles at zero in the inverse field, and can
+easily be detected by checking if $z=0$ is a zero of the denominators.
+
+\example Compute $\int {1\over{\sqrt{1-x^2}}} \,dx$
+
+The obvious attempt is to use the algebraic extension $y^2=1-x^2$ and
+integrate ${1\over y}\,dx$.
+
+But we first need to determine if this differential has any poles at
+infinity, by inverting the field and looking for poles at zero.
+Setting $z={1\over x}$, we convert our minimal polynomial into
+$z^2y^2=z^2-1$ (after multiplying through by $z^2$), and using
+$\hat{y}=zy$ we obtain our inverse field ${\bf C}(z,\hat{y}); \hat{y}^2=z^2-1$.
+
+Since $x={1\over z}$ and $y={\hat{y}\over z}$, we convert our differential as follows:
+
+ $${1\over y}\,dx ={z\over\hat{y}} (-{1\over{z^2}} dz) = -{1\over{z\hat{y}}} dz$$
+
+Now, $\{1, \hat{y}\}$ is an integral basis for the inverse field, so we
+multiply through by $\hat{y}\over\hat{y}$ to obtain:
+
+ $${1\over y}\,dx = -{\hat{y}\over{z\hat{y}^2}} dz = -{1\over{z(z^2-1)}}\hat{y} \, dz $$
+
+which is now in normal form and clearly has a pole at $z=0$, or $x=\infty$.  Note that
+
+ $${1\over y} = {z\over\hat{y}} = {{z\hat{y}}\over{\hat{y}^2}}
+ = {z\over{z^2-1}} \hat{y}$$
+
+has no pole at $z=0$, a clear example of a differential having a pole
+at a place where its constituent function has none.
+
+In any event, we clearly can not use the original field to conduct the
+integration, since it would require constructing a function with a
+pole at infinity, and our algorithm can't handle this.  So we need to
+transform into a field where the differential has no pole at infinity.
+
+We've actually already done this!  Note that the integrand had no pole
+at zero in the original field:
+
+ $${1\over y}\,dx = {y\over y^2}\,dx = {1\over{1-x^2}}y \,dx $$
+
+Since the inverse field swapped zero with infinity, it follows that
+there is no pole at infinity in the inverse field, so we can proceed
+to integrate $-{1\over{z(z^2-1)}}\hat{y} \,dz$ in ${\bf C}(z,\hat{y})$;
+$\hat{y}^2=z^2-1$.
+
+Simple inspection of the integrand (already in normal form) shows that
+its poles are at $(0, i)$, $(0, -i)$, $(1, 0)$, and $(-1, 0)$.
+Remember that we're now working on the Riemann surface of an algebraic
+extension, so we need to specify $\it both$ $z$ and $\hat{y}$ to
+specify a place.
+
+The next step is to compute the residues at each of these places,
+using the Theorem on p. 56 of Trager's thesis:
+
+\begin{center}
+\begin{supertabular}{l l l}
+  $(0, i)$  &  $\displaystyle -{1\over{(z^2-1)}}\hat{y}$ @ $(0, i)$     & = $i$    \cr
+  $(0, -i)$  &  $\displaystyle -{1\over{(z^2-1)}}\hat{y}$ @ $(0, -i)$   & = $-i$    \cr
+  $(1, 0)$  &  $\displaystyle -2{1\over{z(z+1)}}\hat{y}$ @ $(1, 0)$      & = $0$    \cr
+  $(-1, 0)$  &  $\displaystyle -2{1\over{z(z-1)}}\hat{y}$ @ $(-1, 0)$    & = $0$    \cr
+\end{supertabular}
+\end{center}
+
+The poles with zero residues can be ignored.  We're interested in the
+other two, which exist in ${\bf Q}[i]$, which can be regarded as a
+vector field over ${\bf Q}$ with basis ${1, i}$, and we want to
+construct a function whose poles and zeros match the $i$-component of
+the residues (the 1-component is uniformly zero).
+
+We start by constructing an ${\cal I}$-module basis for the divisor
+with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.  Theorems
+? show us that $(\hat{y}-i)$ has a simple zero at $(0,i)$ and is non-zero at
+$(0,-i)$, and that:
+
+$${{\hat{y}^2+1}\over{z(\hat{y}+i)}} = {{\hat{y}-i}\over{z}} $$
+
+has a simple pole at $(0,-i)$.  At $(0,i)$, L'H\^opital's rule gives:
+
+$$ \lim_{(z,\hat{y})\to (0,i)} {{\hat{y}-i}\over{z}}
+   = {{(\hat{y}-i)'}\over{z'}} {{d\hat{y}}\over{dz}} = {{d\hat{y}}\over{dz}} = {z\over\hat{y}} = 0 $$
+
+where the last transformation was accomplished by differentiating the
+mimimal polynomial.  Since the function has a zero at $(0,i)$, we
+correct to something like:\footnote{The astute reader will note
+that we've just stumbled into the solution, but I'll continue with
+the general algorithm.}
+
+$$ {{\hat{y}-i}\over{z}} + 1 $$
+
+which has a simple pole at $(0,-i)$ and is non-zero at $(0,i)$.
+Multiplying by $(\hat{y}-i)$, we obtain a function with a simple
+zero at $(0,i)$ and a simple pole at $(0,-i)$:
+
+$$ {{(\hat{y}-i)^2}\over{z}} + (\hat{y}-i)
+ = {{\hat{y}^2-2i\hat{y}-1}\over{z}} + (\hat{y}-i)
+ = {{z^2-2i\hat{y}-2}\over{z}} + (\hat{y}-i)
+ $$
+
+So we've found the function we're looking for.  Let's convert back to
+our original field:
+
+$${{\hat{y}-i}\over{z}} = x({y\over x}-i) = y - ix $$
+
+Remembering that our residues came multiplied by a factor of $i$, we
+conclude that our solution is $i\,\ln(y-ix)$, or:
+
+\begin{eqnarray*}
+\int {1\over{\sqrt{1-x^2}}} \,dx &=& i\,\ln(\sqrt{1-x^2}-ix) \\
+                                 &=& -i\,\ln({1\over{\sqrt{1-x^2}-ix}}) \\
+                                 &=& -i\,\ln({{\sqrt{1-x^2}+ix}\over{1-x^2+x^2}}) \\
+                                 &=& -i\,\ln({\sqrt{1-x^2}+ix}) \\
+                                 &=& \arcsin x \\
+\end{eqnarray*}
+
+where I used the negative of a logarithm being the logarithm of
+the inverse, and the last transformation came from section ?.
 
 
+\endexample
 
-Senor Gonzalez, una otra vez
+
+\section{Se\~nor Gonzalez, otra vez}
 
 The Rothstein-Trager resultant allows us to compute all the residues
 at once.  Trager, in his Ph.D. thesis, then showed how to construct a
