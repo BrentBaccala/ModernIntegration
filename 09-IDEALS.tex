@@ -301,16 +301,15 @@ using the Theorem on p. 56 of Trager's thesis:
 
 The poles with zero residues can be ignored.  We're interested in the
 other two, which exist in ${\bf Q}[i]$, which can be regarded as a
-vector field over ${\bf Q}$ with basis ${1, i}$, and we want to
+vector field over ${\bf Q}$ with basis $\{1, i\}$, and we want to
 construct a function whose poles and zeros match the $i$-component of
 the residues (the 1-component is uniformly zero).
 
 We start by constructing an ${\cal I}$-module basis for the divisor
-with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.  Theorems
-? show us that $(\hat{y}-i)$ has a simple zero at $(0,i)$ and is non-zero at
-$(0,-i)$, and that:
+with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.  Theorem
+? shows that:
 
-$${{\hat{y}^2+1}\over{z(\hat{y}+i)}} = {{\hat{y}-i}\over{z}} $$
+$$f = {{\hat{y}^2+1}\over{z(\hat{y}+i)}} = {{\hat{y}-i}\over{z}} $$
 
 has a simple pole at $(0,-i)$.  At $(0,i)$, L'H\^opital's rule gives:
 
@@ -318,23 +317,20 @@ $$ \lim_{(z,\hat{y})\to (0,i)} {{\hat{y}-i}\over{z}}
    = {{(\hat{y}-i)'}\over{z'}} {{d\hat{y}}\over{dz}} = {{d\hat{y}}\over{dz}} = {z\over\hat{y}} = 0 $$
 
 where the last transformation was accomplished by differentiating the
-mimimal polynomial.  Since the function has a zero at $(0,i)$, we
-correct to something like:\footnote{The astute reader will note
-that we've just stumbled into the solution, but I'll continue with
-the general algorithm.}
+mimimal polynomial.  So $f$ has a zero at $(0,i)$, and I'll
+note that we've just stumbled into the solution.  Theorem ? already
+assures us that $f$ has only a single finite simple pole,
+and we can see that its only zeros occur when $\hat{y}-i=0$, which,
+according to the minimum polynomial, can only occur at $z=0$, thus
+$(0,i)$ is its only finite zero, and it is simple, as we can
+verify by showing that the corresponding pole in its inverse is simple:
 
-$$ {{\hat{y}-i}\over{z}} + 1 $$
+$$ {1\over f} = {z\over{\hat{y}-i}} = {{z(\hat{y}+i)}\over{\hat{y}^2+1}}
+  = {{z(\hat{y}+i)}\over{z^2}} = {1\over z}\hat{y} + {i\over z} $$
 
-which has a simple pole at $(0,-i)$ and is non-zero at $(0,i)$.
-Multiplying by $(\hat{y}-i)$, we obtain a function with a simple
-zero at $(0,i)$ and a simple pole at $(0,-i)$:
 
-$$ {{(\hat{y}-i)^2}\over{z}} + (\hat{y}-i)
- = {{\hat{y}^2-2i\hat{y}-1}\over{z}} + (\hat{y}-i)
- = {{z^2-2i\hat{y}-2}\over{z}} + (\hat{y}-i)
- $$
-
-So we've found the function we're looking for.  Let's convert back to
+So we've found the function we're looking for by accident.  Let's save the
+general case for the next example, and convert back to
 our original field:
 
 $${{\hat{y}-i}\over{z}} = x({y\over x}-i) = y - ix $$
