@@ -1,4 +1,6 @@
 
+\section{Integral Elements}
+
 \definition
 
 A field's {\bf local ring} at a place $p$ is the set of
@@ -20,7 +22,7 @@ $\lim_{x\to0}{x\over\sqrt{x}}=\sqrt{x}=0$, a finite value.
 It is often important, however, to specify which field we are
 refering to when we discuss a local ring.
 
-EXAMPLE
+\example \quad
 
 In the field ${\cal C}(x)$, the function $x$ is locally integral at $x=0$.
 
@@ -33,7 +35,7 @@ Likewise, $y$ is locally integral in $F$ at both $(x=0, y=1)$ and
 $(x=0, y=-1)$.  It is not locally integral in ${\cal C}(x)$ at $x=0$ simply
 because $y$ does not exist in the field ${\cal C}(x)$.
 
-END EXAMPLE
+\endexample
 
 Thus, a function like $x$ can be locally integral in both ${\cal C}(x)$ and
 ${\cal C}(x,y)$; it is important to specify which we are talking about.
@@ -43,6 +45,7 @@ places, they also have different local rings.  There is an important
 connection between them, however.
 
 \theorem
+\label{local integral polynomial}
 
 A function $f$ is locally integral at a place $p$ in ${\cal C}(x,y)$ if it
 satisfies a monic polynomial with coefficients in the local ring of
@@ -75,14 +78,14 @@ The converse is not true; just because a function does not satisfy
 such a monic polynomial does not mean that it is not locally integral.
 A slightly weaker converse does hold, however:
 
-THEOREM
+\theorem
 
 A function $f$ in ${\cal C}(x,y)$ which is locally integral at all
 places in ${\cal C}(x,y)$ over a place $p$ in ${\cal C}(x)$ satisfies
 a monic polynomial with coefficients in the local ring of ${\cal C}(x)$
 under $p$.
 
-PROOF
+\proof
 
 Construct the polynomial
 
@@ -102,7 +105,7 @@ coefficients must also be finite at $p$ (since they are constructed by
 addition and multiplication from the conjugate values of $f$), and are
 thus in the local ring of ${\cal C}(x)$ at $p$.
 
-END THEOREM
+\endtheorem
 
 In short, a function in ${\cal C}(x,y)$ which satisfies a monic
 polynomial whose coefficients are in a local ring of ${\cal C}(x)$ at
@@ -111,11 +114,11 @@ $p$.  A function which does not satisfy such a polynomial has
 a pole at at least one place over $p$.
 
 A more advanced, more purely algebraic approach to this subject would
-{\it define} local rings using Theorem ?, then use valuations and
-completions to {\it prove} the connection between local rings and
-poles (or the lack thereof).  See [van der Waerden], Chapter 18.  I
-will forego this in favor of this simpler, more analytic (note the use
-of the limit) approach.
+{\it define} local rings using Theorem \ref{local integral
+polynomial}, then use valuations and completions to {\it prove} the
+connection between local rings and poles (or the lack thereof).  See
+[van der Waerden], Chapter 18.  I will forego this in favor of this
+simpler, more analytic (note the use of the limit) approach.
 
 
 Having established the existence and basic properties of {\it locally}
@@ -129,23 +132,23 @@ immediately tell us that the only such functions (those which have no
 poles anywhere) are the constants, so this turns out to be too
 restrictive to be useful.  Instead, we exclude infinity and define:
 
-DEFINITION
+\definition
 
 A function is {\bf globally integral} in a field if it is locally
 integral at all {\it finite} places in the field.
 
-END DEFINITION
+\enddefinition
 
 What's special about infinity?  Why not exclude some other place?
 Well, nothing's all that special about infinity.  We've already seen
 how a birational transformation can be used to swap infinity with any
 finite point.  We use infinity because it's convenient.  For example,
 
-THEOREM
+\theorem
 
 The globally integral functions in ${\cal C}(x)$ are the polynomials.
 
-PROOF
+\proof
 
 The elements of ${\cal C}(x)$ are fractions of polynomials with no
 common factors between numerator and denominator.  Since {\cal C} is
@@ -154,7 +157,7 @@ linear terms with no cancelation between them.  To avoid any finite
 poles, the denominator must be a constant.  Since polynomials
 have no finite poles, there is no restriction on the numerator.
 
-END THEOREM
+\endtheorem
 
 Pretty straightforward, huh?
 
@@ -168,44 +171,62 @@ function had to be finite (you can't square infinity and get a
 finite value), so we conclude that $y \over x$ is, in fact,
 globally integral in ${\cal C}(x,y); y^2=x^3$.
 
-We could use Theorem B and the fact that, in ${\cal C}(x,y); y^2=x^3$,
+We could use Theorem \ref{local integral polynomial} and the fact
+that, in ${\cal C}(x,y); y^2=x^3$,
 
 	$$ \left({y \over x}\right)^2 - x = 0 $$
 
 to conclude that, since this is a monic polynomial with coefficients
 globally integral in ${\cal C}(x)$, $y \over x$ must be globally
-integral in ${\cal C}(x,y); y^2=x^3$.  Theorem B can be easily
-generalized:
+integral in ${\cal C}(x,y); y^2=x^3$.  Theorem \ref{local integral
+polynomial} can be easily generalized:
 
-THEOREM
+\theorem
 
 A function $f$ is globally integral in ${\cal C}(x,y)$ if it
 satisfies a monic polynomial with globally integral coefficients in
 ${\cal C}(x)$.
 
-PROOF
+\proof
 
-END THEOREM
+\endtheorem
+
+Proof that globally integral elements form a finite extension:
+[Eichler], p. 54
+
+Proof that field elements are determined by their divisors, up to a
+constant multiple: [Eicher], p. 84
+
+[Eicher], p. 86: Prime divisors are isomorphic with special local rings.
 
 The problem is that we have no straightforward means to construct
 such a polynomial, or prove that one doesn't exist, for any
 particular function $f$.  To test a function to determine
 if it is integral, we'll use a different approach.
 
-
-MODULES AND BASES
+\section{Modules}
 
 We'll resort now to {\it modules}, a fairly important algebra concept
-backed by a substantial body of theory, upon which I shall only touch
-lightly.  Not all modules have a basis; those that do are called {\it
-free modules}.  All of our modules will have a basis, so for our
-purposes I'll drop the term ``free'' and define a module using a ring
-and a set of basis elements.
+backed by a substantial body of theory, upon which I shall only draw
+as needed.  General references included [Atiyah+McDonald], [Lang], and
+about a thousand others.
 
-DEFINITION
+\definition
 
-A {\it free R-module}, or an {\it R-module spanned by a basis}
-$\{b_1, b_2, ... b_n\}$, consists of all elements formed as follows:
+An {\it R-module} over a ring R is an additive group M acted on by R
+(i.e, there is a mapping $R \times M \to M$) in a distributive manner:
+
+$$(r_1 + r_2)m = r_1 m + r_2 m \qquad r_1, r_2 \in {\rm R};\, m \in {\rm M}$$
+
+where we have adopted the usual convention of writing R's action on M
+as a multiplication.
+
+\enddefinition
+
+\definition
+
+A {\it free R-module} is an R-module spanned by a basis
+$\{b_1, b_2, ... b_n\}$.  It consists of all elements formed as follows:
 \footnote{I'll also note that a multiplication rule needs to be specified
 between the basis elements and the elements of the ring, and an
 addition rule between the elements of the module.  Also,
@@ -216,7 +237,28 @@ case, these rules are obvious, but that's not always the case.}
 	$$ a_1 b_1 + a_2 b_2 + ... + a_n b_n; \qquad a_i \in R $$
 
 
-END DEFINITION
+\enddefinition
+
+Not all modules have a basis, but for those that do the two
+definitions are basically identical.  Elements formed from a basis can
+be added by using the module's distributive property (!!) to factor out the
+coefficients from of each basis element and then performing the addition
+in the ring R:
+
+$$ (a_1 b_1 + a_2 b_2 + ... + a_n b_n) + (c_1 b_1 + c_2 b_2 + ... + c_n b_n) $$
+$$  = (a_1 + c_1) b_1 + (a_2 + c_2) b_2 + ... + (a_n + c_n) b_n $$
+
+So the elements generated from a basis clearly form a module.  R operates
+on them by multiplication by every coefficient.
+
+\example
+
+An ideal I in a ring R is a R-module, but a subring of R, in
+general, is not, because multiplication by an element of R might
+not produce a result in the subring.
+
+\endexample
+
 
 Note that it is vitally important to specify the ring used for the
 coefficients.  For example, consider the basis $\{1, y\}$.  Treating
@@ -226,7 +268,7 @@ not} belong to the ${\cal C}[x]$-module generated by $\{1, y\}$.  I
 would need to use polynomial coefficients to form a ${\cal
 C}[x]$-module, not the rational functions coefficients allowed in a
 ${\cal C}(x)$-module.  We'll be primarily interested in ${\cal C}[x]$-modules,
-${\cal C}(x)$-modules, and $o$-modules, where $o$ is the ring
+${\cal C}(x)$-modules, and ${\cal I}$-modules, where ${\cal I}$ is the ring
 of globally integral elements in ${\cal C}(x,y)$.
 
 
@@ -243,27 +285,29 @@ Such a basis will always have $n$ elements, where $n$ is the degree of
 the ${\cal C}(x,y)$ extension over ${\cal C}(x)$, and can be most
 conveniently characterized using its {\it conjugate matrix}:
 
-DEFINITION
+\definition
 
 The {\bf conjugate matrix} of $n$ elements in ${\cal C}(x,y)$, where
 $n$ is the degree of ${\cal C}(x,y)$ over ${\cal C}(x)$, is the matrix
 whose each row consists of the $n$ conjugate values of a single element,
 and whose $n$ rows are formed in this way from the $n$ elements.
 
-END DEFINITION
+\enddefinition
 
-THEOREM
+\theorem
 
 A set of $n$ functions forms a ${\cal C}(x)$-module basis for
 ${\cal C}(x,y)$, where $n$ is the degree of ${\cal C}(x,y)$
 over ${\cal C}(x)$, iff the determinant of their conjugate
 matrix is not identically zero.
 
-END THEOREM
+\proof
+
+\endtheorem
 
 Let me illustrate with a simple example.
 
-EXAMPLE
+\example
 
 Consider the basis $\{1, y\}$ over the field ${\cal C}(x,y); y^2=x$.
 The conjugate value of $y$ is $-y$ (PROVE THIS), so the conjugate
@@ -278,37 +322,37 @@ $$\det C=\left|\matrix{1&1\cr y&-y\cr}\right| = -2y$$
 Since $-2y$ is not zero, we conclude that $\{1, y\}$ is a basis
 for all rational functions over ${\cal C}(x,y); y^2=x$.
 
-END EXAMPLE
+\endexample
 
 Notice that I didn't ask whether $-2y$ was zero at some place in the
 field.  The determinant of the conjugate matrix can be zero at certain
 places; in fact, often is.  It just can't be {\it identically} zero;
 i.e, it can't be zero {\it everywhere}.
 
-DEFINITION
+\definition
 
 A basis is said to be a {\bf locally integral basis} at a place $p$ in
 ${\cal C}(x)$ if the basis elements are locally integral at all places
 in ${\cal C}(x,y)$ over $p$ and the determinant of its conjugate
 matrix assumes a finite, non-zero value at that place.
 
-END DEFINITION
+\enddefinition
 
-THEOREM
+\theorem
 
 A function $f$ in ${\cal C}(x,y)$ has no poles over a place $p$ in
 ${\cal C}(x)$ iff $f$ can be formed from a basis locally integral at
 $p$, using elements from ${\cal C}(x)$ locally integral at $p$.
 
-END THEOREM
+\endtheorem
 
-DEFINITION
+\definition
 
 A basis is said to be a {\bf globally integral basis}, or more commonly
 just an {\bf integral basis}, if it is a locally integral basis at
 all finite places in ${\cal C}(x)$
 
-END DEFINITION
+\enddefinition
 
 It is not immediately clear that an (globally) integral basis will
 exist for any particular field, and in fact the calculation of an

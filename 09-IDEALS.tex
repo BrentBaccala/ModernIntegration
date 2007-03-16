@@ -168,57 +168,20 @@ to $\Sigma$ if necessary.
 
 \endtheorem
 
-THEOREM A
+\theorem
+\label{divisor-module isomorphism}
 
 There is a one-to-one relationship between integral modules and
 divisors; divisors and integral modules are said to be {\it
-associated}.  An integral module consists of all multiples except at
-infinity of its associated divisor.
+associated}.  An integral module consists of all finite multiples of
+its associated divisor, and the order of an associated divisor at
+every finite place is the minimum of the orders of the module's
+generators at that place.
 
-PROOF
-
-Given an integral module, construct its associated divisor by taking
-at every place the minimum of the orders of the module's generators at
-that place.  This is a Notherian ring, so there is always a finite set
-of generators, and each function has only a finite number of zeros and
-poles.  Since integral elements have non-negative order at all places
-other than infinity, multiplying a generator by an integral element
-can only raise its orders at finite places.  Likewise, adding two
-elements produces orders at each place greater than or equal to the
-minimum of the orders of the summands.  Since all elements of an
-integral module have the form:
-
-	$$\sum a_i g_i, \qquad a_i \in {\cal I}, g_i \in {\bf C}(x,y)$$
-
-everything constructed from the module's generators must be a
-multiple of the associated divisor except at infinity.
-
-Conversely, I will show that the set of all multiples of a given
-divisor $\cal D$ form an integral module.  Use the preceding theorems
-to construct a function $f$ with poles and zeros exactly as required
-by $\cal D$.  Since ${\bf C}(x,y)$ is a field, the inverse of $f$ exists,
-and any multiple $m$ of $\cal D$, when multiplied by $f^{-1}$, will be
-integral, and can thus be expanded using an integral basis:
-
-	$$mf^{-1} = \sum a_i b_i, \qquad a_i \in {\bf C}[x], b_i \in {\cal I}$$
-
-Multiplying the integral basis $b_i$ though by $f$ produces a ${\bf
-C}[x]$-module, which clearly contains all multiples $m$ of $\cal D$:
-
-	$$m = \sum a_i (b_i f), \qquad a_i \in {\bf C}[x], b_i \in {\bf C}(x,y)$$
-
-This ${\bf C}[x]$-module basis can now be used as the basis for an
-${\cal I}$-module, which clearly contains the original ${\bf
-C}[x]$-module, and thus all multiples of ${\cal D}$.  Now, since the
-integral basis $b_i$ has non-negative order at all finite places, $b_i
-f$ can have order no lower than that specified by ${\cal D}$, thus by
-the first part of this theorem contains nothing but multiples of
-${\cal D}$.  It is thus the integral module desired.
-
-PROOF 2
+\proof
 
 For a given divisor ${\cal D}$, consider the set ${\cal M}({\cal D})$
-of all multiples of ${\cal D}$ except at infinity.
+of all finite multiples of ${\cal D}$.
 Now, adding two
 elements can not reduce their order at any finite place, nor can
 multiplying an element by an integral element $i \in {\cal I}$, so
@@ -277,52 +240,52 @@ the orders of ${\cal M}$'s basis elements at every finite place.
 Therefore $f$ can not have lower order than every basis element at any
 finite place and thus can not exist.
 
-END THEOREM
+\endtheorem
 
-Theorem A gives a constructive proof for forming an integral module
-basis for a given divisor, but we can tighten the result and show that
-only two generators are required, no matter how many generators form
-the integral basis.
+Theorem \ref{divisor-module isomorphism} shows that an
+${\cal I}$-module is associated with every divisor, but
+now we need a constructive procedure for forming an ${\cal I}$-module
+basis for a given divisor.
 
-THEOREM B
-
-For any integral module, the order of its associated divisor at every
-place is the minimum of the orders of the module's generators at that
-place.
-
-END THEOREM
-
-THEOREM F
+\theorem
+\label{divisor basis construction}
 
 Given a divisor ${\cal D}$, a pair of functions can always be
 constructed that generate the divisor's associated integral module.
 
-PROOF
+\proof
 
-Use Theorem E to construct a function $f$ with the divisor's required
-poles and zeros, zero order at all other places conjugate to those
-poles and zeros, and non-negative order elsewhere.  Construct $g$, a
-polynomial in $x$ with n-th order roots at all points under n-th order
-zeros.  $(f,g)$ is the required basis.  The only finite poles are
-those of $f$ and $g$ has zero order everywhere except at $f$'s zeros
-and their conjugates, so by Theorem B, $(f,g)$ forms a basis for
+Use Theorem \ref{finite orders construction} to construct a function
+$f$ with the divisor's required poles and zeros, zero order at all
+other places conjugate to those poles and zeros, and non-negative
+order elsewhere.  Construct $g$, a polynomial in $x$ with n-th order
+roots at all points under n-th order zeros.  $(f,g)$ is the required
+basis.  The only finite poles are those of $f$ and $g$ has zero order
+everywhere except at $f$'s zeros and their conjugates, so by Theorem
+\ref{divisor-module isomorphism}, $(f,g)$ forms a basis for
 ${\cal D}$'s associated ${\cal I}$-module.
 
-END THEOREM
+\endtheorem
 
-Once we have constructed a basis for the integral module, we need to
-determine if the module is principal.  Since the total order of a
-field element is always zero, this only makes sense for divisors of
-zero order.  Futhermore, since an integral module corresponds to
-multiples of a divisor {\it except at infinity}, we can't use this
-technique to find functions with poles or zeros at infinity, but that
-isn't a serious limitation since we can just transform into a field
-with an ordinary point at infinity.
+Of course, the whole point here is to actually find a function with a
+specified set of zeros and poles, so once we have constructed a basis
+for a divisor's associated integral module, we need to determine if
+the module is principal.  Since the total order of a field element is
+always zero, this only makes sense for divisors of zero order, since
+divisors of non-zero order can never be principal.  Futhermore, since
+an integral module corresponds to {\it finite} multiples of a divisor,
+we can't use this technique to find functions with poles or zeros at
+infinity, but that isn't a serious limitation since we need such a
+function, we can just transform into a field with an ordinary point at
+infinity.
 
-A zero order ${\cal I}$-module is principle iff it contains a function
-with no poles at infinity.  We can determine this by expressing the
-${\cal I}$-module as a ${\bf C}[x]$-module, simply by multiplying the
-${\cal I}$-module basis through by an integral basis (remember that an
+Since a finite multiple of a divisor differs from an exact multiple in
+that the finite multiple can have additional finite zeros, and thus
+additional infinite poles (since they always balance), a zero order
+${\cal I}$-module is principle iff it contains a function with no
+poles at infinity.  We can determine this by expressing the ${\cal
+I}$-module as a ${\bf C}[x]$-module, simply by multiplying the ${\cal
+I}$-module basis through by an integral basis (remember that an
 integral basis is simply a basis for ${\cal I}$ as a ${\bf
 C}[x]$-module).
 
@@ -334,6 +297,13 @@ each of the module's basis elements (after inverting them) using this
 inverse basis.  If there are any poles at infinity in the original
 field, they will appear as poles at zero in the inverse field, and can
 easily be detected by checking if $z=0$ is a zero of the denominators.
+
+Finally, let me note that since $g$ in Theorem \ref{divisor basis
+construction} is a polynomial, it always has poles at infinity (unless
+the divisor has no zeros, and is thus trivially constant), and can
+thus be excluded from consideration.  We need only look at the
+function $f$, and perhaps not even all of its integral multiples
+(CHECK THIS).
 
 \example Compute $\int {1\over{\sqrt{1-x^2}}} \,dx$
 
@@ -368,7 +338,7 @@ integration, since it would require constructing a function with a
 pole at infinity, and our algorithm can't handle this.  So we need to
 transform into a field where the differential has no pole at infinity.
 
-We've actually already done this!  Note that the integrand had no pole
+Actually, we've already done this!  Note that the integrand had no pole
 at zero in the original field:
 
  $${1\over y}\,dx = {y\over y^2}\,dx = {1\over{1-x^2}}y \,dx $$

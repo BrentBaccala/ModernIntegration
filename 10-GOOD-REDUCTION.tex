@@ -1,4 +1,6 @@
 
+\chapter{Good Reduction}
+
 At this point, there is only one major missing piece in our
 integration theory for simple radicals --- how do we limit the
 multiples of a divisor to a testable set?  We've seen how to
@@ -14,14 +16,16 @@ same.  Of course, divisors, like polynomials, behave somewhat
 different in finite fields, so our first task is to study
 some of their unique properties in this domain.
 
+\section{Simple Algebraic Extensions over Finite Fields}
+
 Let's start with a simple but crucial observation:
 
-THEOREM
+\theorem
 
 In an algebraic extension over a finite field, the evaluation field is
 also finite.
 
-PROOF
+\proof
 
 Consider a finite field of constants ${\cal F}$, over which we'll
 extend first into a rational function field ${\cal F}(x)$ and then add
@@ -39,9 +43,9 @@ Element, we can collapse all of these into a single finite extension
 field ${\cal F}[\phi]$.  Since all values of $x$ exist in ${\cal F}$,
 and all values of $y$ exist in ${\cal F}[\phi]$, an evaluation
 homomorphism carries any rational function in $x$ and $y$ into
-${\cal F}[\phi]^\infty$.
+${\cal F}[\phi]$.
 
-END THEOREM
+\endtheorem
 
 This theorem leads directly to the single more important difference
 (to us) between divisors in an infinite field versus those in a finite
@@ -50,7 +54,7 @@ principle.}  The reason is that the multiplicative group of the
 evaluation field has finite order.  The simplest way to demonstrate
 this is to construct theorems analogous to Theorems ? and ?:
 
-THEOREM
+\theorem
 
 In an algebraic extension of a finite field with characteristic
 greater than 2, a function can always be constructed with an $m^{\rm
@@ -58,7 +62,7 @@ th}$-order zero at a specified place $(\alpha, \beta)$ and zero order
 at all other finite places, where $m$ is the multiplicative order of
 the evaluation field.
 
-PROOF
+\proof
 
 The desired function is
 
@@ -72,9 +76,9 @@ its field is one.  Thus the value of this function will be either
 $1+0$, $0+1$, or $1+1=2$, all finite and non-zero, and thus of zero
 order.
 
-END THEOREM
+\endtheorem
 
-THEOREM
+\theorem
 
 In an algebraic extension of a finite field with characteristic
 greater than 2, a function can always be constructed with an $m^{\rm
@@ -82,7 +86,7 @@ th}$-order pole at a specified place $(\alpha, \beta)$ and zero order
 at all other finite places, where $m$ is the multiplicative order of
 the evaluation field.
 
-PROOF
+\proof
 
 The desired function is
 
@@ -98,10 +102,10 @@ Thus the value of this function at these places will be either
 $0+1$ or $1+1=2$, both finite and non-zero, and thus of zero
 order.
 
-END THEOREM
+\endtheorem
 
 
-EXAMPLE
+\example
 
 Show that some multiple of ${\mathrm Z}(1,1)$ is principle in
 ${\bf Z}_5(x,y); y^2=x$.
@@ -176,3 +180,138 @@ places on the Riemann surface:
 In the final series of calculations, I used $\gamma^2=2$ and reduced
 mod 5 repeatedly.  I think the pattern should be clear, and leave
 further verification as an exercise.
+
+\endexample
+
+\section{Jacobian Varieties}
+
+An algebraic extension is a simple example of what algebraic geometers
+term a {\it variety}, which is the zero locus of a set of polynomials
+defined over some field.  Thus, for example, the unit circle is a
+variety (defined over the real numbers), because it is the zero locus
+of $x^2+y^2=1$.  But the points $(1,0)$ and $(-1,0)$ are also a
+variety, because they are the zero locus of the {\it set} of
+polynomials $\{x^2=1; y=0\}$.
+
+An {\it abelian variety} is a variety accompanied by a commutative
+group structure on its elements, which typically includes picking an
+arbitrary zero point as the identity element.  The circle is an
+abelian variety, if we identify its points with their angles from the
+x-axis and make $(1,0)$ our identity element.  Now any two points can
+be ``added'' or ``subtracted'' (by adding or subtracting their
+respective angles) to obtain a third point, and each point has an
+inverse associated with it (its mirror image across the x-axis).  It
+should be obvious that the choice of a zero point was totally
+arbitrary.  Likewise, the points ${(1,0), (-1,0)}$ also form an
+abelian variety; their group structure is isomorphic to ${\bf Z}_2$ and
+the choice of one of them as the identity is, again, arbitrary.
+
+Is every variety abelian?  No, but any complete, non-singular variety
+can be homomorphicly mapped into an associated abelian variety
+(typically of higher dimension), called its {\it Jacobian variety}.
+This fact, combined with the extensive body of literature on abelian
+varieties ([Mumford], [Birkenhake and Lange], [Lang], to mention a
+few), makes the Jacobian variety an important object of study (though
+David Mumford, in the preface to [Mumford], described it as a
+``crutch'').
+
+We will be needing only a tiny bit of this theory here, so my goal in
+this section is only to demonstrate how the Riemann-Roch Theorem
+allows us to set up an abelian group structures on an algebraic
+extension.
+
+First, let's review the Riemann-Roch theorem:
+
+\theorem {\rm (Riemann-Roch)}
+
+For any divisor $\mathfrak{b}$,
+
+$$l(\mathfrak{b}) = \deg \mathfrak{b} + 1 - g + l(\mathfrak{c}-\mathfrak{b}) $$
+
+where $l(\mathfrak{b})$ is the dimension of the vector space
+$L(\mathfrak{b})$ of multiples of $-\mathfrak{b}$, $g$ is the genus of
+the extension, and $\mathfrak{c}$ is any divisor of the canonical class of
+differentials.
+
+\endtheorem
+
+It immediately follows (from $\mathfrak{b}={\bf 0}$) that
+$l(\mathfrak{c})=g$, which can be taken as the definition of the
+genus.
+
+We can now pick $g$ independent differentials from $\mathfrak{c}$ and
+use them (along with an arbitrary origin) to map into the torus
+${\bf C}/\Lambda^g$.
+
+Now, Abel's Theorem and the Jacobi inversion theorem ([Griffiths and
+Harris], p. 235) shows that ${\rm Pic}^0$, the group of divisors of
+degree zero modulo linear equivalence is isomorphic to ${\bf
+C}/\Lambda^g$.
+
+Alternately, ([Lang], II, \S1, Theorem 3), we can factor a mapping
+of a product into an abelian variety into mappings on each factor.
+
+Lang also characterizes Abel's theorem as follows:
+
+\begin{quote}
+
+Let $\omega_1, ..., \omega_g$ be a basis for the differential forms
+on the first kind of V.  If $\mathfrak{a} = \sum n_i P_i$ is a
+[divisor] of degree 0 on V, and P is a fixed point of V, then
+the map into ${\bf C}/\Lambda^g$ given by:
+
+$$\mathfrak{a} \to \sum n_i (\int_P^{P_i}\omega_1, ..., \int_P^{P_i}\omega_g)$$
+
+is well defined modulo the periods... the kernel consists of those
+divisors that are linearly equivalent to 0 (i.e, principle); this is
+Abel's theorem.
+
+\end{quote}
+
+
+\section{Endomorphism Rings}
+
+Any commutative group $G$ induces a (non-commutative) ring structure
+on its endmorphisms, defined as follows (remember that an
+endomorphism is a homomorphism from an object to itself):
+
+Two endmorphisms $\phi(g): G \to G$ and $\gamma(g): G \to G$ are added
+using $G$'s group operation on the images: $(\phi+\gamma)(g) =
+\phi(g)\cdot\gamma(g)$, where $\cdot$ denotes the group operation.
+The additive identify is the endmorphism that maps the entire group
+onto its identity element.
+
+Two endmorphisms $\phi(g): G \to G$ and $\gamma(g): G \to G$ are
+multiplied using composition of mappings: $(\phi\gamma)(g) =
+\phi(\gamma(g))$.  The multiplicative identity is the endmorphism that
+maps every element in the group onto itself.
+
+Let us now verify that these operations define a ring, the {\it endomorphism
+ring} of G, which we shall denote ${\rm End}(G)$.  The properties
+of the identity elements are fairly obvious, I think.  Almost as
+obvious is that the associative and commutative properties of the
+underlying group translate directly into additive associative and
+commutative properties in the endmorphism ring.  The multiplicative
+properties follow from composition of mappings being associative, but
+not necessarily commutative.  The distributive law follows from the
+easily verified identity $\phi(\gamma(g)\cdot\mu(g)) = \phi(\gamma(g)) \cdot
+\phi(\mu(g))$, using the fact that $\phi$ is an endomorphism, and thus
+a homomorphism, and therefore maps the group operator through.
+
+The ring of integers ${\bf Z}$ can be mapped homomorphicaly\footnote{An easy
+consequence of ${\bf Z}$'s repelling universal property in the category of
+rings, see [Lang], p. ?} into any ring, and an endomorphism ring is no
+exception.  We'll denote by $[m]$ the endmorphism mapped to by the
+integer $m$. $[0]$ is clearly the additive identity mapping all
+elements to the group identity.  $[1]$ is, of course, the
+multiplicative identity mapping all elements to themselves.  $[2]$ is
+$[1]+[1]$, the endmorphism that composes each element with itself
+(using the group operator): $[2]: g \to g\cdot g$.  $[3]$ composes
+each element with itself thrice: $[3]: g \to g\cdot g\cdot g$, etc.
+
+Because ${\bf Z}$ is commutative, the subring $[m]$ it maps to is also
+commutative, even though ${\rm End}(G)$ may not be.
+
+
+
+\section{Good Reduction}
