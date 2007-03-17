@@ -251,7 +251,7 @@ $$  = (a_1 + c_1) b_1 + (a_2 + c_2) b_2 + ... + (a_n + c_n) b_n $$
 So the elements generated from a basis clearly form a module.  R operates
 on them by multiplication by every coefficient.
 
-\example
+\example \quad
 
 An ideal I in a ring R is a R-module, but a subring of R, in
 general, is not, because multiplication by an element of R might
@@ -287,21 +287,111 @@ conveniently characterized using its {\it conjugate matrix}:
 
 \definition
 
-The {\bf conjugate matrix} of $n$ elements in ${\cal C}(x,y)$, where
-$n$ is the degree of ${\cal C}(x,y)$ over ${\cal C}(x)$, is the matrix
-whose each row consists of the $n$ conjugate values of a single element,
-and whose $n$ rows are formed in this way from the $n$ elements.
+The {\bf conjugates} of a rational function $\eta(x,y)$ in ${\bf
+C}(x,y)$ are the functions formed by replacing $y$ with its conjugate
+values.
+
+The {\bf trace} of a rational function $\eta(x,y)$ is the sum of
+its conjugates:
+
+$${\rm T}(\eta(x,y)) = \sum_i \eta(x,y_i)$$
+
+The {\bf norm} of a rational function $\eta(x,y)$ is the product of
+its conjugates:
+
+$${\rm N}(\eta(x,y)) = \prod_i \eta(x,y_i)$$
+
+Both the trace and norm, as symmetric functions in $y_1,...,y_n$, are
+functions in ${\bf C}(x)$.
+
+The {\bf conjugate matrix} ${\bf M}_\omega$ of $n$ elements $\omega_i$
+in ${\cal C}(x,y)$, where $n$ is the degree of ${\cal C}(x,y)$ over
+${\cal C}(x)$, is the matrix whose each row consists of the $n$
+conjugate values of a single element, and whose $n$ rows are formed in
+this way from the $n$ elements.
+
+\enddefinition
+
+\definition
+
+For any function $\eta \in {\bf C}(x,y)$ and any set of $n$ elements
+$\omega_i$, the {\bf trace vector}
+${\bf T}_{\eta/\omega} = \Big({\rm T}(\eta \omega_i)\Big)$ 
+of $\eta$ relative to $\omega$
+is formed from the
+traces of the $n$ products of $\eta$ with the $n$ functions
+$\omega_i$.
+
+The {\bf conjugate vector} ${\bf C}_\eta = (\eta(x,y_i))$ is formed from the
+$n$ conjugates of $\eta$.
 
 \enddefinition
 
 \theorem
+\label{function is zero if trace vector is zero}
 
-A set of $n$ functions forms a ${\cal C}(x)$-module basis for
-${\cal C}(x,y)$, where $n$ is the degree of ${\cal C}(x,y)$
-over ${\cal C}(x)$, iff the determinant of their conjugate
-matrix is not identically zero.
+For any function $\eta \in {\bf C}(x,y)$ and any set of $n$ functions
+$\omega_i \in {\bf C}(x,y)$, if ${\bf T}_{\eta/\omega}$ is the zero vector
+and $|{\bf M}_\omega|$ is non-zero, then $\eta$ is zero.
 
 \proof
+
+${\bf T}_{\eta/\omega}$, ${\bf M}_\omega$ and ${\bf C}_\eta$
+obey the matrix equation
+
+$${\bf T}_{\eta/\omega} = {\bf M}_\omega {\bf C}_\eta$$
+
+since each row of this matrix equation has the form
+
+$$ {\rm T}(\eta \omega_i) = \sum_j \omega_i(x,y_j)\eta(x,y_j) $$
+
+Since ${\bf M}_\omega$ is invertible (since its determinant is
+non-zero), if ${\bf T}_{\eta/\omega}$ is identically zero, then so must be
+${\bf C}_\eta$, and $\eta$ is the first element in ${\bf C}_\eta$.
+
+\endtheorem
+
+\theorem
+\label{|M| != 0 implies C(x) basis}
+
+A set of $n$ functions $\omega_i$ forms a ${\cal C}(x)$-module basis for
+${\cal C}(x,y)$ if $|{\bf M}_\omega|$ is not zero. ([Bliss], Theorem 19.1)
+
+\proof
+
+Note that when we multiply ${\bf M}_\omega$ by its transpose ${\bf
+M}_\omega^T$, the $ij^{\rm th}$ element of ${\bf M}_\omega{\bf
+M}_\omega^T$ is:
+
+$$ \sum_k \omega_i(x, y_k)\omega_j(x, y_k) = {\rm T}(\omega_i \omega_j)$$
+
+Since $|{\bf M}_\omega|$ is non-zero, $|{\bf M}_\omega^T|$ is
+non-zero, and $|{\bf M}_\omega{\bf M}_\omega^T|$ is non-zero, so given
+any function $\eta \in {\bf C}(x,y)$, we can solve the following
+equation for ${\bf R}$:
+
+$${\bf T}_\eta = {\bf M}_\omega {\bf M}_\omega^T {\bf R}$$
+
+each of row of which reads:
+
+$$ {\rm T}(\eta \omega_i) = \sum_j {\rm T}(\omega_i \omega_j) r_j $$
+
+Since both ${\bf T}_\eta$ and ${\bf M}_\omega{\bf M}_\omega^T$ are composed of
+nothing but traces, they exist in ${\bf C}(x)$, so ${\bf R}$ must also
+exist in ${\bf C}(x)$ and its elements therefore commute with the
+trace:
+
+$$ {\rm T}(\eta \omega_i) = \sum_j {\rm T}(r_j \omega_j \omega_i) $$
+
+Since the trace of a sum is the sum of the traces:
+
+$$ {\rm T}(\eta \omega_i) = {\rm T}(\sum_j r_j \omega_j \omega_i) $$
+$$ {\rm T}((\eta - \sum_j r_j \omega_j) \omega_i) = 0 $$
+
+which implies that $\eta = \sum_j r_j \omega_j$, by Theorem
+\ref{function is zero if trace vector is zero}, and since we've
+already shown that the $r_j$ are rational functions in ${\bf C}(x)$,
+this proves the theorem.
 
 \endtheorem
 
@@ -327,7 +417,11 @@ for all rational functions over ${\cal C}(x,y); y^2=x$.
 Notice that I didn't ask whether $-2y$ was zero at some place in the
 field.  The determinant of the conjugate matrix can be zero at certain
 places; in fact, often is.  It just can't be {\it identically} zero;
-i.e, it can't be zero {\it everywhere}.
+i.e, it can't be zero {\it everywhere}.  If this isn't clear, reread
+Theorems \ref{function is zero if trace vector is zero} and \ref{|M|
+!= 0 implies C(x) basis}, noting that all the matrices are defined
+over the {\it fields} ${\bf C}(x)$ and ${\bf C}(x,y)$, where the only
+zero element is 0.
 
 \definition
 
