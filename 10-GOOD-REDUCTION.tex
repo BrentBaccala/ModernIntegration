@@ -220,20 +220,161 @@ this section is only to demonstrate how the Riemann-Roch Theorem
 allows us to set up an abelian group structures on an algebraic
 extension.
 
-First, let's review the Riemann-Roch theorem:
+\section{The Riemann-Roch Theorem}
+
+The Riemann-Roch Theorem is one of the most celebrated theorems in
+mathematics.  Not only does it provide a crucial tool in understanding
+the structure of algebraic extensions, but it does so by tying
+together algebra, analysis, and geometry in one equation.
+
+First, let's review that equation:
 
 \theorem {\rm (Riemann-Roch)}
 
+% For any divisor $\mathfrak{b}$,
+% 
+% $$l(\mathfrak{b}) = \deg \mathfrak{b} + 1 - g + l(\mathfrak{c}-\mathfrak{b}) $$
+% 
+% where $l(\mathfrak{b})$ is the dimension of the vector space
+% $L(\mathfrak{b})$ of multiples of $-\mathfrak{b}$, $g$ is the genus of
+% the extension, and $\mathfrak{c}$ is any divisor of the canonical class of
+% differentials.
+
 For any divisor $\mathfrak{b}$,
 
-$$l(\mathfrak{b}) = \deg \mathfrak{b} + 1 - g + l(\mathfrak{c}-\mathfrak{b}) $$
+% $$l(\mathfrak{b}) = \deg \mathfrak{b} + 1 - g + l(\mathfrak{c}-\mathfrak{b}) $$
+% $$l(-\mathfrak{b}) = \deg \mathfrak{b} + 1 - g + l(\mathfrak{b}-\mathfrak{c}) $$
+% $$l(\mathfrak{b}) = \deg -\mathfrak{b} + 1 - g + l(-\mathfrak{b}-\mathfrak{c}) $$
+% $$l(\mathfrak{b}) = - \deg \mathfrak{b} + 1 - g + l(-\mathfrak{b}-\mathfrak{c}) $$
+
+$$l(\mathfrak{b}) = - \deg \mathfrak{b} + 1 - g + l(-\mathfrak{b}-\mathfrak{c}) $$
 
 where $l(\mathfrak{b})$ is the dimension of the vector space
-$L(\mathfrak{b})$ of multiples of $-\mathfrak{b}$, $g$ is the genus of
+$L(\mathfrak{b})$ of multiples of $\mathfrak{b}$, $g$ is the genus of
 the extension, and $\mathfrak{c}$ is any divisor of the canonical class of
 differentials.
 
 \endtheorem
+
+Interrelated by this theorem is the purely algebraic concept of the
+dimension of the vector space of multiples of a divisor, the geometric
+concept of the genus, and the analytic concept of a differential.
+
+However, this sophistication comes with a price.  Specifically, we
+need a topology to define the genus, and we need a limit to define the
+differential.
+
+Andr\'e Weil showed how the Riemann-Roch theorem can be stripped of
+the analysis and the geometry, and proved as purely a result in
+algebra.  The genus, instead of a topological invariant, now appears
+as merely a least upper bound on a divisor's degree of specialization,
+and a differential becomes an object in a dual space that maps a
+function into the field of constants.  The advantage of this
+formulation is that does not require any topological structure, and is
+therefore well suited to use with finite fields.  It is this
+formulation I will now adopt.
+
+First, at any place in the function field, there is a local valuation
+ring with a maximal prime ideal.  We can normalize the valuation (it
+is discrete) and pick a element of unit valuation to use as a
+uniformizing variable.  By multiplying as necessary by some power of
+this element, we can adjust any field element to be a unit of the
+valuation ring and thus associate an order ${\rm ord}_\mathfrak{p}$
+with that element.  The valuation ring's units are a finite extension
+of the constant subfield; they are the constant subfield if it is
+algebraically closed.  By subtracting out the remainder mod
+$\mathfrak{p}$, we get an element of higher order, which we can again
+subtract out, and so on, building a power series in the uniformizing
+variable.  Each element of the function field thus has a power series
+associated with it at each place $\mathfrak{p}$.
+
+A collection of such power series, one at each place, with arbitrary
+coefficients except that there are only a finite number of
+coefficients with negative powers, is called a {\it vector}.  Each
+individual power series is called a {\it component} of the vector.
+Clearly, every function has a vector associated with it; but the
+converse is not necessarily true.  The mapping from functions to
+vectors is injective, though.  Any two different functions will have a
+non-zero difference that must therefore have a finite value, of finite
+order, at some place $\mathfrak{p}$, and their vectors will differ at
+that point.
+
+We also have a dual space of {\it covectors}.  The coefficients of a
+covector component at a place are dual to the constant field at that
+place; if the constant field is algebraically closed, then the
+covector coefficients are in the constant field.  Like vectors,
+covectors can only have a finite number of negative power
+coefficients.
+
+We define a dot product between a vector $v$ and a covector $\lambda$:
+
+$$ v \cdot \lambda = \sum_\mathfrak{p} \sum_{i+j=-1} v_{\mathfrak{p},i}
+  \lambda_{\mathfrak{p},j} $$
+
+where $v_{\mathfrak{p},i}$ is the coefficient of the $i^{\rm th}$
+power in $v$'s component at $\mathfrak{p}$, and likewise for
+$\lambda_{\mathfrak{p},j}$.  Notice that the second summation requires
+at least one of $i$ or $j$ to be negative, so there will only be a
+finite number of places for the first sum at which the second sum
+contributes anything at all.
+
+Weil also requires the {\it Theorem of Independence}, which states
+that, although an arbitrary (full) vector may not have a function
+associated with it, a function can always be found which matches a set
+of finite prefixes at a finite number of places.  This can be
+demonstrated using Theorem \ref{finite orders construction},
+repeatedly applied a finite number of times.  We also need to know
+that a function without a pole is constant.
+
+With this setup, we can now prove a series of theorems that lead up
+the the Riemann-Roch Theorem.
+
+\theorem
+
+$$l(\mathfrak{p}) \leq \deg \mathfrak{p} +1$$
+
+i.e, $l(\mathfrak{p})$, the dimension (over the constants) of
+$L(\mathfrak{p})$, the multiples of $-\mathfrak{p}$, is no more than
+the degree of the divisor $\mathfrak{p}$, plus one.
+
+\proof
+
+Since $\deg -\mathfrak{p} = - \deg \mathfrak{p}$, there are at least
+$\deg \mathfrak{p}$ poles (counting multiplicities) in
+$-\mathfrak{p}$, and at least $\deg \mathfrak{p}$
+coefficients with negative powers in the vectors corresponding
+to the elements in $L(\mathfrak{p})$
+
+.  We can impose
+
+\endtheorem
+
+\theorem
+
+If $\mathfrak{A}$ is divisible by $\mathfrak{B}$, i.e, if
+$\mathfrak{A}\mathfrak{B}^{-1} \subseteq {\cal I}$, then
+
+$$n(\mathfrak{A}) - l(\mathfrak{A}) \leq n(\mathfrak{B}) - l(\mathfrak{B}) $$
+
+$$n(\mathfrak{p}) \equiv {\rm deg} \mathfrak{p}$$
+
+\proof
+
+Consider $\mathfrak{C} = \mathfrak{A}\mathfrak{B}^{-1}$.
+Now $n(\mathfrak{C}) = n(\mathfrak{A}) - n(\mathfrak{B})$ and since
+$\deg -\mathfrak{C} = - \deg \mathfrak{C}$, and
+$\mathfrak{C}$ is integral (by supposition),
+there are exactly
+$n(\mathfrak{C})$ poles (counting multiplicities) in $-\mathfrak{C}$.
+, and at least $\deg \mathfrak{p}$
+coefficients with negative powers in the vectors corresponding
+to the elements in $L(\mathfrak{p})$
+
+.  We can impose
+
+\endtheorem
+
+Back to the Riemann-Roch Theorem...
 
 It immediately follows (from $\mathfrak{b}={\bf 0}$) that
 $l(\mathfrak{c})=g$, which can be taken as the definition of the
