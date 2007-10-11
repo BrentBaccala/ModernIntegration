@@ -51,6 +51,9 @@
 %\fontsize{14pt}{20pt}
 %\selectfont
 
+\newcommand{\mychapter}[1]{\chapter{#1}\pdfdest name {#1} fitr \pdfoutline goto name {#1} {#1}}
+\newcommand{\mysection}[1]{\section{#1}\pdfdest name {#1} fitr \pdfoutline goto name {#1} count 0 {#1}}
+
 \newtheorem{ttheorem}{Theorem}[chapter]
 \def\theorem{\begin{ttheorem}}
 \def\proof{{\bf Proof}\rm}
@@ -70,14 +73,22 @@
 
 \maketitle
 
-%\input{PREFACE.tex}
-%\input{01-INTRO.tex}
-%\input{02-ALGEBRA.tex}
-\setcounter{chapter}{2}
-%\input{03-DIFFALG.tex}
-%\input{04-RATIONALS.tex}
+\frontmatter
+
+\tableofcontents
+
+\input{00-PREFACE.tex}
+
+\mainmatter
+
+\input{01-INTRO.tex}
+\input{02-ALGEBRA.tex}
+\input{03-DIFFALG.tex}
+\input{04-RATIONALS.tex}
+\input{07-CLASSICAL.tex}
 \input{09-IDEALS.tex}
 %\input{09a-ALGEBRAIC-THEORY.tex}
+%\input{09b-RATIONAL-FUNCTION-BASIS.tex}
 \input{10-GOOD-REDUCTION.tex}
 
 \end{document}
