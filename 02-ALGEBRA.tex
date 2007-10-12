@@ -1,5 +1,5 @@
 
-\chapter{Ring, Fields, and Polynomials}
+\mychapter{Ring, Fields, and Polynomials}
 
 In this chapter I will outline the basic algebraic structures
 necessary to carry out the program sketched out in the previous
@@ -12,7 +12,7 @@ I want to footnote all the missing proofs with references
 back to two or three texts; maybe Lang, van der Waerden,
 and an introductory undergraduate text of some kind.}
 
-\section{Rings and Fields}
+\mysection{Rings and Fields}
 \qquad [van der Waerden], \S3.1
 
 We begin with two key definitions that we will use throughout: the
@@ -111,7 +111,7 @@ there is no integer that when multiplied by 2 forms 1.
 (F1) is not satisfied.
 Thus {\bf Z} forms a ring but not a field.
 
-\section{Quotient fields}
+\mysection{Quotient fields}
 \qquad [van der Waerden], \S3.3
 
 We can remedy this by moving on the {\it rational numbers},
@@ -221,7 +221,7 @@ ${\bf Z}$ to obtain the rationals ${\bf Q}$, but on any integral
 domain to obtain its quotient field.
 
 
-\section{Polynomial rings and rational function fields}
+\mysection{Polynomial rings and rational function fields}
 \qquad [van der Waerden], \S3.4
 
 Having built a field from a ring, can we build a ring from a field?
@@ -293,7 +293,7 @@ relate them to real world problems.
 
 NEED TO INTRODUCE {\bf R} and {\bf C}.
 
-\section{Long Division}
+\mysection{Long Division}
 \qquad [van der Waerden], \S3.4
 
 As we all learned in grade school, polynomials can be divided
@@ -345,7 +345,7 @@ We just need to keep in mind that these degrees are measured relative
 to the polynomial ring variable, not any other variable that might
 appear as part of the underlying field.
 
-\section{GCD Computation}
+\mysection{GCD Computation}
 \qquad [van der Waerden], \S3.7, \S3.8, \S5.4 (multivariate rings)\hfil\break
 \hbox{}\qquad [Geddes], Ch. 7
 
@@ -540,7 +540,7 @@ content $\gcd_y(1,-y)$.  The GCD of the original contents
 
 \vfill\eject
 
-\section{Polynomial Diophantine Equations}
+\mysection{Polynomial Diophantine Equations}
 
 The same long division procedure used for GCD computations can also be
 used solve a certain class of {\it polynomial Diophantine equations}.
@@ -651,7 +651,7 @@ Verify this solution using a computer algebra system.
 \vfill\eject
 
 
-\section{Square-free factorization}
+\mysection{Square-free factorization}
 
 \hbox{}\qquad [Geddes], \S 8.2
 
@@ -702,7 +702,7 @@ factors.
 
 \vfill\eject
 
-\section{Partial Fractions Expansion}
+\mysection{Partial Fractions Expansion}
 \qquad [van der Waerden], \S5.10
 
 As a first application of polynomial Diophantine equations, we use
@@ -827,7 +827,81 @@ Again, verify this result using a computer algebra system.
 \vfill\eject
 
 
-\section{Algebraic Extensions}
+\mysection{Resultants}
+\qquad [van der Waerden], \S5.8
+
+At times, we will want a simple way of testing two polynomials over a
+field to see if they have a GCD, without actually computing it.  This
+is more than just a computational convenience.  The presence of the
+polynomial's variable in the GCD often encumbers us.  On the other
+hand, the {\it resultant} yields a simple element from the underlying
+field that is zero if the polynomials have a non-trivial GCD and
+non-zero otherwise.
+
+The resultant is defined as the determinant of the Sylvester matrix
+$S_x(P,Q)$, which is the $m+n \times m+n$ matrix constructed from two
+polynomials (in ${\cal F}[x]$) $P$ and $Q$ of degrees $m$ and $n$ (all
+the blanks are zeros):
+
+$$ P = \sum_{i=0}^m p_i \, x^i $$
+
+$$ Q = \sum_{i=0}^n q_i \, x^i $$
+
+$$ S_x(P,Q) = \pmatrix{
+  p_m & p_{m-1} & \ldots & p_0 & & & \cr
+  & p_m & p_{m-1} & \ldots & p_0 & & \cr
+  & & \ldots & & \ldots & & \cr
+  & & & p_m & p_{m-1} & \ldots & p_0 \cr
+  \vdots & & & \vdots & & & \vdots \cr
+  q_n & q_{n-1} & \ldots & q_0 & & & \cr
+  & q_n & q_{n-1} & \ldots & q_0 & & \cr
+  & & \ldots & & \ldots & & \cr
+  & & & q_n & q_{n-1} & \ldots & q_0 \cr
+  } $$
+
+In plain English, the matrix is constructed by forming the first row
+from the first polynomial coefficients, adding $n-1$ trailing zeros at
+the end of the row.  The second row is formed by shifting the first
+row one position to the right.  This shifting is repeated a total of
+$m-1$ times to obtain the first $m$ rows.  The last $n$ rows are
+constructed in the same way from the second polynomial.
+
+Now consider the following straightforward matrix identity:
+
+$$ S_x(P,Q) \pmatrix{x^{n+m-1}\cr x^{n+m-2}\cr \vdots \cr x \cr 1}
+ = \pmatrix{P x^{m-1}\cr P x^{m-2}\cr \vdots \cr Q x \cr Q} $$
+
+If $\det S_x(P,Q)$ is non-zero, then the Sylvester matrix is
+invertible, and we can form the following equation:
+
+$$ \pmatrix{x^{n+m-1}\cr x^{n+m-2}\cr \vdots \cr x \cr 1}
+ = S_x(P,Q)^{-1} \pmatrix{P x^{m-1}\cr P x^{m-2}\cr \vdots \cr Q x \cr Q} $$
+
+Since the matrix is formed exclusively from the polynomials'
+underlying field ${\cal F}$, its inverse must also be formed from
+${\cal F}$.  Now consider the bottom element in the last equation.  It
+must have the following form:
+
+$$ 1 = f_0 P x^{n+m-1} + f_1 P x^{n+m-2} + \ldots + f_{n+m-1} Q x + f_{n+m} Q $$
+$$ 1 = A P + B Q \qquad A,B \in {\cal F}[x] $$
+
+The only way this statement can be true is if $P$ and $Q$ have a
+trivial GCD, so a non-zero determinant of $S_x(P,Q)$ imply that $P$ and
+$Q$ have only a trivial GCD.
+
+Conversely, assume that $\gcd(P,Q) = 1$.  Then we can solve a series
+of polynomial Diophantine equations to express $1, x, \ldots,
+x^{n+m-1}$ as $AP+BQ$, where $\deg A \lt \deg Q = n$ and $\deg B \lt
+\deg P = m$, which suffices to construct an inverse of the Sylvester
+matrix.
+
+We have thus proved that the resultant is zero iff the two polynomials
+have a non-trivial GCD.
+
+
+\vfill\eject
+
+\mysection{Algebraic Extensions}
 
 Both our quotient field and polynomial ring constructions are examples
 of {\it extensions}.  Simply put, when we use an algebraic system to
@@ -858,7 +932,7 @@ notation.  Something like the Gaussian integers, which I wrote as
 ${\bf Z}[i]; i^2=-1$, really should be expressed as equivalence
 classes modulo the polynomial $i^2+1$, i.e.  ${\bf Z}[i]/(i^2+1)$.
 
-\section{Simple Field Extensions}
+\mysection{Simple Field Extensions}
 
 A {\it simple} extension of a field ${\cal F}$ is formed by adjoining
 a single new element $\theta$ to the field, and then forming all
@@ -867,7 +941,7 @@ field.  Any such simple extension will be isomorphic to either the
 quotient field ${\cal F}(\theta)$ (if $\theta$ is transcendental) or
 an algebraic extension ${\cal F}[\theta]$ (if $\theta$ is algebraic).
 
-\section{Finite Fields}
+\mysection{Finite Fields}
 
 By using the same reasoning to consider Diophantine equations over the
 integers, it's not that hard to see that $2s+6t=1$ has no solution for
@@ -907,18 +981,15 @@ characteristic zero}).  WHAT ABOUT RINGS OF INFINITE CHARACTERISTIC?
 
 DEFINE ISOMORPHISM.
 
-\section{Symmetric Polynomials}
+\mysection{Symmetric Polynomials}
 \qquad [van der Waerden], \S5.7
 
-\section{Linear Algebra}
+\mysection{Linear Algebra}
 \qquad [van der Waerden], Ch. 4, \S6.11 (trace of an field extension)
 
 Determinants; trace.
 
-\section{Resultants}
-\qquad [van der Waerden], \S5.8
-
-\section{Polynomial factorization (optional)}
+\mysection{Polynomial factorization (optional)}
 \qquad [van der Waerden], \S5.6
 \hbox{}\qquad [Geddes], Chs. 5, 6, 8
 
@@ -996,7 +1067,7 @@ primes can be combined into factors.  The number $3$, for example, can
 be split into two integer factors in only one of four ways: $3\cdot1$,
 $1\cdot3$, $-3\cdot-1$, and $-1\cdot-3$.
 
-\section{Axiom Soup}
+\mysection{Axiom Soup}
 
 At this point, the reader might begin to suspect that we build up a
 theory from our axioms, and whenever we get stuck, we introduce a new
