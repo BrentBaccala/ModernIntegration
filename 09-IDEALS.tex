@@ -89,16 +89,21 @@ If $(\alpha, \beta)$ is non-singular, begin with the function:
 
 $$f(\alpha,y)\over(x-\alpha)(y-\beta)$$
 
-where $f(x,y)=0$ is the defining polynomial of the algebraic extension.
-Note that the division by $(y-\beta)$ will always be exact, since
-$f(\alpha, \beta)=0$.  We now have a rational function
+where $f(x,y)=0$ is the defining polynomial of the algebraic
+extension.  Note that the division by $(y-\beta)$ will always be
+exact, since $f(\alpha, \beta)=0$.  We now have a rational function
 $P(y)\over Q(x)$, where $P(y)$ is a polynomial in $y$ and $Q(x)$ is a
-polynomial in $x$ ($x-\alpha$, to be precise).  It has a simple pole at
-$(\alpha, \beta)$ and non-negative order at all other places, which
-is obvious except for places over $x=\alpha$.
+polynomial in $x$ ($x-\alpha$, to be precise).  It obviously has a
+pole at $(\alpha, \beta)$, and this pole is simple, as can be seen
+from a series expansion in $x-\alpha$ (a uniformizing variable, since
+$(\alpha, \beta)$ is non-singular by assumption).  The numerator is
+non-zero at $(\alpha, \beta)$ (since the $y-\beta$ factor has been
+divided out), so the leading term in the series expansion involves
+$(x-\alpha)^{-1}$, and the pole is thus simple.
 
-If $x=\alpha$ and $y\ne\beta$, $f$ takes the form $0\over0$, so we can
-expand it using L'H\^opital's rule:
+This function is finite at all other places, which is obvious except
+when $x=\alpha$ and $y\ne\beta$, where $f$ takes the form $0\over0$,
+so we can expand it using L'H\^opital's rule:
 
 $$\lim_{(x,y)\to p} {{P(y)}\over{Q(x)}}
   = \lim_{{(x,y)\to p}} {{{dP(y)}\over{dx}}\over{{dQ(x)}\over{dx}}}
@@ -112,9 +117,6 @@ finite.  Since all the numerator terms are finite and the denominator
 is non-zero, it follows that $f$ is at least finite, and thus has
 non-negative order, at places over $x=\alpha$ other than $(\alpha,
 \beta)$.
-
-If $x=\alpha$ and $y=\beta$, then $f$'s numerator is non-zero and its
-denominator is zero, so this is clearly a pole, but of what order?
 
 Now, compute the value of the function at all other places in
 $\Sigma$, using either L'H\^opital's rule or Puiseux expansion if some
