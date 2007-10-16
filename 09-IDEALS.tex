@@ -4,7 +4,10 @@
 
 \input{09a-ALGEBRAIC-THEORY.tex}
 
-\section{Integral Modules}
+\vfill\eject
+\mysection{Divisors and Integral Modules}
+
+%\section{Integral Modules}
 
 In ${\bf C}(x)$, we were working with the quotient field of a
 principal ideal ring, so we could always find a single function to
@@ -44,7 +47,7 @@ I}$-module can be regarded as a fraction of ideals in ${\cal I}$.
 \proof
 
 Since ${\bf C}$ is a field, ${\bf C}[x]$ is a Noetherian ring by the
-Hilbert basis theorem, ${\bf C}[x] \in {\cal I}$, and ${\cal I}$ is
+Hilbert basis theorem, ${\bf C}[x] \subseteq {\cal I}$, and ${\cal I}$ is
 finitely generated as a ${\bf C}[x]$-module, so ${\cal I}$ is a
 Noetherian ring by [Atiyah+McDonald] Proposition 7.2.
 
@@ -54,24 +57,32 @@ Noetherian ring by [Atiyah+McDonald] Proposition 7.2.
 \label{simple zero construction}
 
 A function can always be constructed with a simple zero at a specified
-place $(\alpha, \beta)$, $\alpha$ and $\beta$ both finite, zero order
-at an additional finite set of places $\Sigma$, and non-negative order
-at all other finite places.
+finite, non-singular place $(\alpha, \beta)$, zero order at an
+additional finite set of finite, non-singular places $\Sigma$, and
+non-negative order at all other finite places.
 
 \proof
 
-Begin with the function $(y-\beta)$, which has a simple zero at
-$(\alpha, \beta)$ and non-negative order at all finite places.  If
-none of the other places in $\Sigma$ have y-value $\beta$, then we are
-done, since this function's zeros lie at exactly those places where $y
-= \beta$.
+Begin with the function $(x-\alpha)$, which is a uniformizing variable
+and thus has a simple zero at $(\alpha, \beta)$.  If none of the other
+places in $\Sigma$ have x-value $\alpha$, then we are done, since
+$(x-\alpha)$ has no finite poles.
 
-Otherwise, compute $(y-\beta)\over(x-\alpha)$ at all places in $\Sigma$
-that do {\it not} lie over $x = \alpha$.  Select a number
-$\gamma$ different from all of these values.  The function
-$(y-\beta) - \gamma (x-\alpha)$ has the desired properties, since
-it has non-negative order at all finite places and zero order at
-all places in $\Sigma$.
+Otherwise, compute $(x-\alpha)\over(y-\beta)$ at all places in
+$\Sigma$ that do {\it not} have $y = \beta$.  Select a number
+$\gamma$ different from all of these values.  The function $(x-\alpha)
+- \gamma (y-\beta)$ has no finite poles and
+is non-zero at all places in $\Sigma$, but it may now have a zero of
+higher order at $(\alpha, \beta)$.  Consider a series expansion
+of $y$ in terms of $(x-\alpha)$:
+
+$$y = \beta + c_1 (x-\alpha) + c_2 (x-\alpha)^2 + \cdots$$
+
+So long as $\gamma$ is also selected different from $c_1$, $(x-\alpha)
+- \gamma (y-\beta)$ will have a first order zero at $(\alpha, \beta)$
+and meet all requirements of the theorem.
+
+% SINGULARITIES?
 
 \endtheorem
 
@@ -79,56 +90,52 @@ all places in $\Sigma$.
 \label{simple pole construction}
 
 A function can always be constructed with a simple pole at a specified
-place $(\alpha, \beta)$, $\alpha$ and $\beta$ both finite, zero order
-at an additional finite set of places $\Sigma$, and non-negative order
-at all other places.
+finite, non-singular place $(\alpha, \beta)$, zero order at an
+additional finite set of finite, non-singular places $\Sigma$, and
+non-negative order at all other places.
 
 \proof
 
-If $(\alpha, \beta)$ is non-singular, begin with the function:
+Begin with the function:
 
 $$f(\alpha,y)\over(x-\alpha)(y-\beta)$$
 
-where $f(x,y)=0$ is the defining polynomial of the algebraic
-extension.  Note that the division by $(y-\beta)$ will always be
-exact, since $f(\alpha, \beta)=0$.  We now have a rational function
-$P(y)\over Q(x)$, where $P(y)$ is a polynomial in $y$ and $Q(x)$ is a
-polynomial in $x$ ($x-\alpha$, to be precise).  It obviously has a
-pole at $(\alpha, \beta)$, and this pole is simple, as can be seen
-from a series expansion in $x-\alpha$ (a uniformizing variable, since
-$(\alpha, \beta)$ is non-singular by assumption).  The numerator is
-non-zero at $(\alpha, \beta)$ (since the $y-\beta$ factor has been
-divided out), so the leading term in the series expansion involves
-$(x-\alpha)^{-1}$, and the pole is thus simple.
+where $f(x,y)$ is the minimum polynomial of the algebraic extension.
+Note that the division by $(y-\beta)$ will always be exact, since
+$f(\alpha, \beta)=0$.  So we have a rational function
+$P(y)\over(x-\alpha)$, where $P(y)$ is a polynomial in $y$.  It has a
+simple pole at $(\alpha, \beta)$, as can be seen from a series
+expansion in $x-\alpha$ (again, a uniformizing variable).  Since the
+$y-\beta$ factor has been divided out of $f(\alpha,y)$, the numerator
+is non-zero at $(\alpha, \beta)$, so the leading term in the series
+expansion involves $(x-\alpha)^{-1}$, and the pole is thus simple.
 
 This function is finite at all other places, which is obvious except
-when $x=\alpha$ and $y\ne\beta$, where $f$ takes the form $0\over0$,
+when $x=\alpha$ and $y\ne\beta$, where it takes the form $0\over0$,
 so we can expand it using L'H\^opital's rule:
 
-$$\lim_{(x,y)\to p} {{P(y)}\over{Q(x)}}
-  = \lim_{{(x,y)\to p}} {{{dP(y)}\over{dx}}\over{{dQ(x)}\over{dx}}}
-  = {{P'(y)}\over{Q'(x)}} \, {{dy}\over{dx}} $$
+$$\lim_{(x,y)\to p} {{P(y)}\over(x-\alpha)}
+  = \lim_{{(x,y)\to p}} {{{dP(y)}\over{dx}}\over{{d(x-\alpha)}\over{dx}}}
+  = P'(y) \, {{dy}\over{dx}} $$
 
 where $'$ denotes differentiation with respect to the polynomial's
-variable.  Now, $Q(x)=(x-\alpha)$, so $Q'(x)=1$, and the denominator
-is thus finite.  $P'(y)$ is a polynomial, and is thus also finite.
-$(\alpha, \beta)$ is a finite place, so ${dy}\over{dx}$ is also
-finite.  Since all the numerator terms are finite and the denominator
-is non-zero, it follows that $f$ is at least finite, and thus has
-non-negative order, at places over $x=\alpha$ other than $(\alpha,
-\beta)$.
+variable.  $P'(y)$ is a polynomial, and is thus finite where $y$ is
+finite, as is ${dy}\over{dx}$ (consider a series expansion of $y$ in
+terms of $(x-\alpha)$, since all places in $\Sigma$ are finite and
+non-singular).  It follows that the function is at least finite
+everywhere except at $(\alpha, \beta)$.
 
 Now, compute the value of the function at all other places in
 $\Sigma$, using either L'H\^opital's rule or Puiseux expansion if some
-of these are other places over $\alpha$.  If the value of the function
-is non-zero at all of these places, then we are done.  Otherwise,
-select a number $\gamma$ different from all of these values.  The
-function:
+of these are over $\alpha$.  If the value of the function is non-zero
+at all of these places, then we are done.  Otherwise, select a number
+$\gamma$ different from all of these values.  The function:
 
 $${f(\alpha,y)\over(x-\alpha)(y-\beta)} - \gamma$$
 
 has the desired properties, since it still has a simple pole at
-$(\alpha,\beta)$, and is now non-zero at all places in $\Sigma$.
+$(\alpha,\beta)$, has no other poles, and is now non-zero at all
+places in $\Sigma$.
 
 % SINGULARITIES?
 
@@ -138,8 +145,8 @@ $(\alpha,\beta)$, and is now non-zero at all places in $\Sigma$.
 \label{finite orders construction}
 
 A function can always be constructed with specified integer orders at
-a finite set of places $\Sigma$ and non-negative order at all other finite
-places.
+a finite set of finite, non-singular places $\Sigma$ and non-negative
+order at all other finite places.
 
 \proof
 
@@ -152,12 +159,23 @@ corresponding pole or zero, then multiply them all together.
 
 \endtheorem
 
+\definition
+
+A {\it finite multiple} of a divisor is a function with order equal to
+or greater than that required by the divisor at all {\it finite} places.
+
+\enddefinition
+
+For the remainder of this section, I'll assume that our divisors
+involve only finite, non-singular places, which can always be
+guaranteed in the case of the integration theory.
+
 \theorem
 \label{exact order existance}
 
-For any divisior ${\cal D}$ and any finite place $\mathfrak{p}$,
-at least one finite multiple of ${\cal D}$ exists with order at $\mathfrak{p}$
-exactly that required by ${\cal D}$.
+For any divisior ${\cal D}$ and any finite, non-singular place
+$\mathfrak{p}$, at least one finite multiple of ${\cal D}$ exists with
+order at $\mathfrak{p}$ exactly that required by ${\cal D}$.
 
 \proof
 
@@ -170,10 +188,9 @@ to $\Sigma$ if necessary.
 \theorem
 \label{divisor-module isomorphism}
 
-There is a one-to-one relationship between integral modules and
-divisors; divisors and integral modules are said to be {\it
-associated}.  An integral module consists of all finite multiples of
-its associated divisor, and the order of an associated divisor at
+There is a one-to-one relationship between finitely generated integral
+modules and divisors.  Such a module consists of all finite multiples
+of its associated divisor, and the order of a module's divisor at
 every finite place is the minimum of the orders of the module's
 generators at that place.
 
@@ -193,7 +210,7 @@ at all finite places simply by taking the inverse of the polynomial
 $r=(x-p_1)^{m_1} \cdots (x-p_n)^{m_n}$ where $p_i$ are the x-coordinates
 of the poles in ${\cal D}$ and $m_i$ are their multiplicities.
 For any $m \in {\cal M}({\cal D})$, $mr$ is integral, so ${\cal M}({\cal D})
-\in {\cal I}\{r^{-1}\}$, where ${\cal I}\{r^{-1}\}$ is the ${\cal I}$-module
+\subseteq {\cal I}\{r^{-1}\}$, where ${\cal I}\{r^{-1}\}$ is the ${\cal I}$-module
 generated by $r^{-1}$.  Now, since ${\cal I}\{r^{-1}\}$ is a finitely
 generated module over a Noetherian ring (remember Theorem \ref{I is
 Noetherian}), ${\cal I}\{r^{-1}\}$ is a Noetherian module by
@@ -214,16 +231,10 @@ ${\cal D}$.  Therefore, at each place $\mathfrak{p}$, the minimum of
 the orders of the basis elements must be exactly the order required by
 ${\cal D}$.
 
-Conversely, given an ${\cal I}$-module ${\cal M}$, construct its
-associated divisor ${\cal D}$ by taking at every place the minimum of
-the orders of the module's generators at that place.  Since ${\cal I}$
-is a Noetherian ring, ${\cal M}$ is a Noetherian module, and therefore
-has a finite basis.  Since integral elements have non-negative
-order at all places other than infinity, multiplying a generator by an
-integral element can only raise its orders at finite places.
-Likewise, adding two elements produces orders at each place greater
-than or equal to the minimum of the orders of the summands.  Since all
-elements of an integral module have the form:
+Conversely, given a finitely generated ${\cal I}$-module ${\cal M}$,
+construct its associated divisor ${\cal D}$ by taking at every place
+the minimum of the orders of the module's generators at that place.
+Since all elements of the module have the form:
 
 	$$\sum a_i g_i, \qquad a_i \in {\cal I}, g_i \in {\bf C}(x,y)$$
 
@@ -236,7 +247,7 @@ lower order than $m$ at at least one finite place $\mathfrak{p}$,
 since otherwise $i = fm^{-1}$ would be integral and $f$ would exist in
 ${\cal M}$ as $mi$.  Yet ${\cal D}$, by definition, is the minimum of
 the orders of ${\cal M}$'s basis elements at every finite place.
-Therefore $f$ can not have lower order than every basis element at any
+Therefore $f$ can not have lower order than a basis element at any
 finite place and thus can not exist.
 
 \endtheorem
