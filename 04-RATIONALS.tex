@@ -109,7 +109,89 @@ In {\it Symbolic Integration I}, Manuel Bronstein gave a detailed
 analysis, which was so enlightening to me that I will repeat
 and expand it here, of the following definite integral:
 
+\vfill\eject
+
 $$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
+
+{\small\begin{verbatim}
+
+(%i165) a: x^4-3*x^2+6;
+
+                                            4      2
+(%o165)                                    x  - 3 x  + 6
+(%i166) b: x^6-5*x^4+5*x^2+4;
+
+                                         6      4      2
+(%o166)                                 x  - 5 x  + 5 x  + 4
+(%i167) gcd(b,diff(b,x));
+
+(%o167)                                          1
+(%i168) m: sylvester[a-z*diff(b,x),b,x];
+
+         [ - 6 z    1    20 z    - 3   - 10 z    6       0       0       0       0     0 ]
+         [                                                                               ]
+         [   0    - 6 z    1    20 z    - 3    - 10 z    6       0       0       0     0 ]
+         [                                                                               ]
+         [   0      0    - 6 z    1     20 z    - 3    - 10 z    6       0       0     0 ]
+         [                                                                               ]
+         [   0      0      0    - 6 z    1      20 z    - 3    - 10 z    6       0     0 ]
+         [                                                                               ]
+         [   0      0      0      0    - 6 z     1      20 z    - 3    - 10 z    6     0 ]
+         [                                                                               ]
+(%o168)  [   0      0      0      0      0     - 6 z     1      20 z    - 3    - 10 z  6 ]
+         [                                                                               ]
+         [   1      0     - 5     0      5       0       4       0       0       0     0 ]
+         [                                                                               ]
+         [   0      1      0     - 5     0       5       0       4       0       0     0 ]
+         [                                                                               ]
+         [   0      0      1      0     - 5      0       5       0       4       0     0 ]
+         [                                                                               ]
+         [   0      0      0      1      0      - 5      0       5       0       4     0 ]
+         [                                                                               ]
+         [   0      0      0      0      1       0      - 5      0       5       0     4 ]
+(%i169) d: ratsimp(determinant(m));
+
+                                     6            4           2
+(%o169)                     2930944 z  + 2198208 z  + 549552 z  + 45796
+(%i170) gcd(d,diff(d,z));
+
+                                           4           2
+(%o170)                            732736 z  + 366368 z  + 45796
+(%i171) gcd(e, diff(e,z));
+
+                                                 2
+(%o171)                                  183184 z  + 45796
+(%i172) expand(gcd(e, diff(e,z)) / 45796);
+
+                                                 2
+(%o172)                                       4 z  + 1
+(%i173) expand((4*z^2+1)^3*45796);
+
+                                     6            4           2
+(%o173)                     2930944 z  + 2198208 z  + 549552 z  + 45796
+
+
+\end{verbatim}}
+
+\vfill\eject
+
+{\small\begin{verbatim}
+(%i198) ratexpand((-%i*256/963)*gcdex(expand(a-(%i/2)*diff(b,x)),b,x));
+
+                         2
+                  16 %I x     x    27 %I    48 x   13 %I   3       2
+(%o198)          [-------- + --- - -----, - ---- - -----, x  + %I x  - 3 x - 2 %I]
+                    107      107    107     107     107
+(%i200) ratexpand((%i*256/963)*gcdex(expand(a+(%i/2)*diff(b,x)),b,x));
+
+                           2
+                    16 %I x     x    27 %I  13 %I   48 x   3       2
+(%o200)          [- -------- + --- + -----, ----- - ----, x  - %I x  - 3 x + 2 %I]
+                      107      107    107    107    107
+\end{verbatim}}
+
+$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
+   {i\over2}\log(x^3+ix^2-3x-2i) - {i\over2}\log(x^3-ix^2-3x+2i)$$
 
 Let us note briefly that the integrand is clearly positive over the
 entire real line.  Now, using a straightforward application of
