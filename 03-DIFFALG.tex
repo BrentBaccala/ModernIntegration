@@ -1,18 +1,23 @@
 
-\chapter{Differential Algebra}
+\setcounter{chapter}{2}
+\mychapter{Differential Algebra}
 
 \section{Differential Fields}
 
-Ritt proposed, in the 1940s, the concepts of {\it differential rings}
-and {\it differential fields}.  They are exactly analogous to ordinary
-rings and fields, except that they are equipped with a third basic
-operator (addition and multiplication are the first two), called a
-{\it derivation}.  A derivation is a unary operator (the other two are
-binary), which we shall typically denote by $D$.  Since algebra is
-fundamentally concerned with how operators commute with each other,
-the first question we are lead to ask are, ``How does derivation
-commute with addition and multiplication?''  The answer
-is to be found in two basic axioms:
+The advent of the modern, axiomatized approach to mathematics at the
+turn of the twentieth century led directly to the development of
+abstract algebra, with its rings and fields, in the 1920s.  By 1940, a
+Columbia University professor named J.F. Ritt had proposed the
+concepts of {\it differential rings} and {\it differential fields}.
+They are exactly analogous to ordinary rings and fields, except that
+they are equipped with a third basic operator (addition and
+multiplication are the first two), called {\it derivation}.  A
+derivation is a unary operator (the other two are binary), which we
+shall typically denote by $D$.  Since algebra is fundamentally
+concerned with how operators commute with each other, the first
+question we are lead to ask are, ``How does derivation commute with
+addition and multiplication?''  The answer is to be found in two basic
+axioms:
 
 \begin{center}
 \begin{supertabular}{l l l r}
@@ -39,17 +44,15 @@ algebra derivation, so any theory we develop for the algebra
 derivation will apply immediately to the calculus version.
 
 What can we determine from these two axioms?  A surprising lot,
-in my opinion:
+in my opinion.
 
-THEOREM
+\vfill\eject
 
-$$D(0) = 0$$
+\theorem
 
-$$D(1) = 0$$
+$D(0) = 0$, $D(1) = 0$, and $\displaystyle{D({1\over a}) = - {1\over a^2}D(a)}$
 
-$$ D({1\over a}) = - {1\over a^2}D(a)$$
-
-PROOF
+\proof
 
 $$D(0) = D(0) + D(0) - D(0) = D(0+0) - D(0) = D(0) - D(0) = 0$$
 
@@ -63,14 +66,40 @@ $$ a D({1\over a}) = - {1\over a}D(a)$$
 
 $$ D({1\over a}) = - {1\over a^2}D(a)$$
 
-END THEOREM
+\endtheorem
 
-THEOREM
+\theorem
 
 The derivation of an element algebraic over a subfield is completely
 defined by the subfield's derivation.
 
-END THEOREM
+\proof
+
+The algebraic extension is governed by a primitive polynomial of the form:
+
+$$\sum_i a_i \xi^i = 0$$
+
+Differentiating this polynomial (using the D1 and D2 axioms), we obtain:
+
+$$\sum_i (a_i' \xi^i + i a_i \xi^{i-1} \xi') = 0 $$
+
+$$\sum_i i a_i \xi^{i-1} \xi' = - \sum_i a_i' \xi^i $$
+
+$$\xi' = - {\sum_i a_i' \xi^i \over {\sum_i i a_i \xi^{i-1}}} $$
+
+
+Now, by theorem ??, any element $r \in {\cal A}$ can be written:
+
+$$r = b_n \xi^n + \cdots + b_1 \xi + b_0 = \sum_i b_i \xi^i$$
+
+Differentiating $r$ (again using the D1 and D2 axioms), we obtain:
+
+$$r' = \sum_i (b_i' \xi^i + i b_i \xi^{i-1} \xi') $$
+
+Since we already have an expression for $\xi'$, this equation
+gives the derivation of any element in ${\cal A}$.
+
+\endtheorem
 
 It follows immediately from these theorem that our entire prime
 subfield, as well as any purely algebraic extension thereof, must map
@@ -129,48 +158,56 @@ These two clearly correspond to $\theta = \ln\phi$ (in the logrithmic
 case) and $\theta = \exp\phi$ (in the exponential case).  The key
 point I want to made immediately is that these are {\it
 transcendental} extensions\ldots and not all logarithms and
-exponentials are transcendental!  ADD EXAMPLE.  If we're dealing with
-an algebraic extension, even if defined using logarithms and
-exponentials, we have to use our algebraic theory.  Transcendental
-extensions are defined by exclusion --- any extension that isn't
-algebraic is transcendental.
+exponentials are transcendental!  Transcendental extensions are
+defined by exclusion --- any extension that isn't algebraic is
+transcendental.  If we're dealing with an algebraic extension, even if
+defined using logarithms and exponentials, we have to use our
+algebraic theory.
 
-DISCUSS TESTING FOR TRANSCENDENCE
+\example Represent $\displaystyle {{4^x+1}\over{2^x+1}}$ in a form suitable for Risch Integration.
 
-That's it!  The basic two differential axioms, plus these four types
-of transcendentals, round out the entire base algebraic structure
-we'll need to construct our theory.  Now, how can this be?  What
-about sines and cosines, all those arc-functions, raising things
-to powers, and all that?  Obviously, we'll need to express those
-operations using our basic extensions...
+There are three ways to do this --- the easy way, the hard way, and the wrong way.
 
-\vfill\eject
+Let me first note that $4^x = (2^2)^x = (2^x)^2$.  The existence of
+this algebraic relationship between $4^x$ and $2^x$ means that we {\it
+can not} use two seperate transcendental extensions.  So this:
 
-\section{Root/Logarithm/Exponential Form}
+$${{\theta+1}\over{\phi+1}}; \theta = \exp(x \ln 4); \phi = \exp(x \ln 2)$$
 
-The key here is Euler's famous identify $e^{i\theta}=i\sin\theta+\cos\theta$.
+is the {\it wrong} way.
 
-\begin{center}
-\begin{tabular}{c c @{\bigskip}}
-Elementary expression & \multicolumn{1}{c}{Expansion} \\
-\hline
-$\sin x$ & $\displaystyle {-i \,{{e^{ix} - e^{-ix}}\over 2}}$ \vbox to20pt{}\\
-$\cos x$ & $\displaystyle {{e^{ix} + e^{-ix}}\over 2}$ \\
-$\tan x$ & $\displaystyle {-i \,{{e^{ix}-e^{-ix}}\over {e^{ix}+e^{-ix}}}}$ \\
-$\arcsin x$ & $\displaystyle -i \,\ln (ix + \sqrt{1-x^2})$ \\
-$\arccos x$ & $\displaystyle -i \,\ln (x + i\sqrt{1-x^2})$ \\
-$\arctan x$ & $\displaystyle {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$ \\
-$f^g$ & $\displaystyle e^{\,g \ln f}$ \\
-\end{tabular}
-\end{center}
+The {\it easy} way is to set up $2^x$ first and then construct $4^x$
+as its square:
 
-\vfill\eject
+$${{\phi^2+1}\over{\phi+1}}; \phi = \exp(x \ln 2)$$
 
-EXAMPLE
+You can also do this the {\it hard} way, setting up $4^x$ first and
+then using an additional algebraic extension to get its square root,
+$2^x$:
+
+$${{\theta+1}\over{\phi+1}}; \theta = \exp(x \ln 4); \phi^2 = \theta$$
+
+\endexample
+
+That's it!  The basic two differential axioms, algebraic extensions,
+quotient fields, and these four types of transcendentals, round out
+the entire base algebraic structure we'll need to construct our
+theory.  We do need to be careful, though, as the last example
+illustrated.  In these simple examples, figuring out which elements
+are algebraic and which are transcendental is easy, but in more
+complex expressions this may not be obvious.  We'll discuss in Chapter
+?? how to test new elements for transcendence.
+
+What about sines and cosines, all those arc-functions, raising things
+to powers, and all that?  Turns out we can express all those
+operations using just our basic extensions.  The key here is Euler's
+famous identity $e^{i\theta}=i\sin\theta+\cos\theta$.
+
+\example
 
 Express $\sin x$ in a form suitable for Risch Integration.
 
-Looking up $\sin x$ in the preceding table, we immediately find:
+Euler's identity immediately gives:
 
 $$\sin x = {-i \,{{e^{ix} - e^{-ix}}\over 2}}$$
 
@@ -182,20 +219,84 @@ $${{\theta^2 - 1}\over 2i\theta}$$
 
 in the field ${\bf C}(x,\theta); \theta=\exp(ix)$.
 
-END EXAMPLE
+\endexample
+
+If trigonometric functions can be represented using complex
+exponentials, then it should come as no real surprise that inverse
+trigonometric functions can be represented with complex logarithms.
+
+\example Represent $\arcsin x$ in a form suitable for Risch Integration.
+
+Let's start with Euler's identity and take its logarithm:
+
+$$e^{i\theta}=i\sin\theta+\cos\theta$$
+
+$$i\theta=\ln(i\sin\theta+\cos\theta)$$
+
+Now, if $\theta = \arcsin x$, then $x = \sin \theta$, and we can use
+the basic $\sin^2 \theta + \cos^2 \theta = 1$ identity to compute
+$\cos \theta = \sqrt{1-\sin^2\theta} = \sqrt{1-x^2}$.  Substituting above:
+
+$$i\theta=\ln(i x+\sqrt{1-x^2})$$
+
+$$\theta=-i\ln(i x+\sqrt{1-x^2})$$
+
+$$\arcsin x=-i\ln(i x+\sqrt{1-x^2})$$
+
+Thus, we need first an algebraic extension to construct $\phi = \sqrt{1-x^2}$,
+followed by a logarithm extension to construct $\arcsin x = -i\ln(ix+\phi)$.
+
+\endexample
+
+I think the details of further constructions along these lines are
+straightforward enough that I will simply summarize them in a table.
+
+\vfill\eject
+
+\section{Root/Logarithm/Exponential Form}
+
+
+\begin{center}
+\begin{tabular}{c c @{\bigskip}}
+Elementary expression & \multicolumn{1}{c}{Expansion} \\
+\hline
+& \\
+$f^g$ & $\displaystyle e^{\,g \ln f}$ \\
+$\sin x$ & $\displaystyle {-i \,{{e^{ix} - e^{-ix}}\over 2}}$ \vbox to20pt{}\\
+$\cos x$ & $\displaystyle {{e^{ix} + e^{-ix}}\over 2}$ \\
+$\tan x$ & $\displaystyle {-i \,{{e^{ix}-e^{-ix}}\over {e^{ix}+e^{-ix}}}}$ \\
+
+$\sec x$ & $\displaystyle {2\over{e^{ix} + e^{-ix}}}$ \\
+$\csc x$ & $\displaystyle {{2i}\over{e^{ix} - e^{-ix}}}$ \vbox to20pt{}\\
+$\cot x$ & $\displaystyle {i \,{{e^{ix}+e^{-ix}}\over {e^{ix}-e^{-ix}}}}$ \\
+
+$\arcsin x$ & $\displaystyle -i \,\ln (ix + \sqrt{1-x^2})$ \\
+$\arccos x$ & $\displaystyle -i \,\ln (x + i\sqrt{1-x^2})$ \\
+$\arctan x$ & $\displaystyle {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$ \\
+
+$\sec^{-1} x$ & $\displaystyle -i \,\ln {{1 + i\sqrt{x^2-1}}\over{x}}$ \\
+$\csc^{-1} x$ & $\displaystyle -i \,\ln {{i + \sqrt{x^2-1}}\over{x}}$ \\
+$\cot^{-1} x$ & $\displaystyle {1\over2}\,i\,\ln {{i+x}\over{i-x}}$ \\
+
+$\sinh x$ & $\displaystyle {{e^{x} - e^{-x}}\over 2}$ \vbox to20pt{}\\
+$\cosh x$ & $\displaystyle {{e^{x} + e^{-x}}\over 2}$ \vbox to20pt{}\\
+$\tanh x$ & $\displaystyle {{e^{x}-e^{-x}}\over {e^{x}+e^{-x}}}$ \\
+
+\end{tabular}
+\end{center}
 
 \vfill\eject
 
 \section{Liouville's Theorem}
 
 The next problem we must confront is to limit the number of possible
-fields in which we can find solutions to our problem.  So far, we can
-only conclude that there is an infinity of possible systems that can
-be used to express elementary (Liouvillian) functions.  Searching them
+fields in which we can find solutions to our problem.  So far, we have
+seen how to construct an algebraic system to express any elementary
+function, but there are an infinity of such systems.  Searching them
 exhaustively for the solution to a given integral is out of the
 question.  Fortunately, it's been known for almost 200 years that
-there are severe restrictions on what extensions can appear above and
-beyond those in the original integrand.
+there are severe restrictions on what extensions can appear in an
+integral above and beyond those used in the original integrand.
 
 For example, consider the expression $e^x$.  Differentiating it
 yields, well, $e^x$.  Now the key thing to note is that the
@@ -231,7 +332,37 @@ provides context and concrete examples to understand what has become
 known as {\it Liouville's Theorem} --- the only new extensions that
 can appear are simple logarithms.  Let's nail this down, now.
 
-INSERT PROOFS HERE!
+\definition
+
+A {\it trivial} element in an extension is one that only involves
+terms from the underlying field.  For example, in the field ${\bf
+C}(x)$, the only trivial elements are those in ${\bf C}$.
+Anything involving $x$ is non-trivial.
+
+\enddefinition
+
+\theorem
+
+Differentiating a non-trivial element in an algebraic extension always
+produces a non-trivial element.
+
+\proof
+
+Consider an algebraic extension ${\cal A} = {\cal F}(\xi)$.
+By theorem ??, any element $r \in {\cal A}$ can be written:
+
+$$r = a_n \xi^n + \cdots + a_1 \xi + a_0 = \sum_i a_i \xi^i$$
+
+where $a_n$ is non-zero and $n \ne 0$ (otherwise the element would be
+trivial), and $r'$ is:
+
+$$r' = \sum_i (a_i' \xi^i + i a_i \xi^{i-1} \xi') $$
+
+$$r' = \sum_i a_i' \xi^i + (\sum_i i a_i \xi^{i-1}) \xi' $$
+
+$$r' = \sum_i a_i' \xi^i - (\sum_i i a_i \xi^{i-1}) {\sum_i m_i' \xi^i \over {\sum_i i m_i \xi^{i-1}}} $$
+
+\endtheorem
 
 EXAMPLE
 
