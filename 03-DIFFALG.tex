@@ -256,31 +256,44 @@ straightforward enough that I will simply summarize them in a table.
 \section{Root/Logarithm/Exponential Form}
 
 
+\def\sech{{\rm sech}}
+\def\csch{{\rm csch}}
+
 \begin{center}
-\begin{tabular}{c c @{\bigskip}}
+\begin{tabular}{c c c c @{\bigskip}}
+Elementary expression & \multicolumn{1}{c}{Expansion} &
 Elementary expression & \multicolumn{1}{c}{Expansion} \\
 \hline
 & \\
-$f^g$ & $\displaystyle e^{\,g \ln f}$ \\
-$\sin x$ & $\displaystyle {-i \,{{e^{ix} - e^{-ix}}\over 2}}$ \vbox to20pt{}\\
-$\cos x$ & $\displaystyle {{e^{ix} + e^{-ix}}\over 2}$ \\
-$\tan x$ & $\displaystyle {-i \,{{e^{ix}-e^{-ix}}\over {e^{ix}+e^{-ix}}}}$ \\
+$f^g$ & $\displaystyle e^{\,g \ln f}$ &
+ & \\
+$\sin x$ & $\displaystyle {-i \,{{e^{ix} - e^{-ix}}\over 2}}$ \vbox to20pt{}&
+ $\sinh x$ & $\displaystyle {{e^{x} - e^{-x}}\over 2}$ \vbox to20pt{} \\
+$\cos x$ & $\displaystyle {{e^{ix} + e^{-ix}}\over 2}$ &
+ $\cosh x$ & $\displaystyle {{e^{x} + e^{-x}}\over 2}$ \vbox to20pt{} \\
+$\tan x$ & $\displaystyle {-i \,{{e^{ix}-e^{-ix}}\over {e^{ix}+e^{-ix}}}}$ &
+ $\tanh x$ & $\displaystyle {{e^{x}-e^{-x}}\over {e^{x}+e^{-x}}}$ \\
 
-$\sec x$ & $\displaystyle {2\over{e^{ix} + e^{-ix}}}$ \\
-$\csc x$ & $\displaystyle {{2i}\over{e^{ix} - e^{-ix}}}$ \vbox to20pt{}\\
-$\cot x$ & $\displaystyle {i \,{{e^{ix}+e^{-ix}}\over {e^{ix}-e^{-ix}}}}$ \\
+$\sec x$ & $\displaystyle {2\over{e^{ix} + e^{-ix}}}$ &
+ $\sech x$ & $\displaystyle {2\over{e^{x} + e^{-x}}}$ \vbox to20pt{} \\
+$\csc x$ & $\displaystyle {{2i}\over{e^{ix} - e^{-ix}}}$ \vbox to20pt{}&
+ $\csch x$ & $\displaystyle {2\over{e^{x} - e^{-x}}}$ \vbox to20pt{} \\
+$\cot x$ & $\displaystyle {i \,{{e^{ix}+e^{-ix}}\over {e^{ix}-e^{-ix}}}}$ &
+ $\coth x$ & $\displaystyle {{e^{x}+e^{-x}}\over {e^{x}-e^{-x}}}$ \\
 
-$\arcsin x$ & $\displaystyle -i \,\ln (ix + \sqrt{1-x^2})$ \\
-$\arccos x$ & $\displaystyle -i \,\ln (x + i\sqrt{1-x^2})$ \\
-$\arctan x$ & $\displaystyle {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$ \\
+$\arcsin x$ & $\displaystyle -i \,\ln (ix + \sqrt{1-x^2})$ &
+ $\sinh^{-1} x$ & $\displaystyle \ln (x + \sqrt{x^2+1})$ \\
+$\arccos x$ & $\displaystyle -i \,\ln (x + i\sqrt{1-x^2})$ &
+ $\cosh^{-1} x$ & $\displaystyle \ln (x + \sqrt{x^2-1})$ \\
+$\arctan x$ & $\displaystyle {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$ &
+ & \\
 
-$\sec^{-1} x$ & $\displaystyle -i \,\ln {{1 + i\sqrt{x^2-1}}\over{x}}$ \\
-$\csc^{-1} x$ & $\displaystyle -i \,\ln {{i + \sqrt{x^2-1}}\over{x}}$ \\
-$\cot^{-1} x$ & $\displaystyle {1\over2}\,i\,\ln {{i+x}\over{i-x}}$ \\
-
-$\sinh x$ & $\displaystyle {{e^{x} - e^{-x}}\over 2}$ \vbox to20pt{}\\
-$\cosh x$ & $\displaystyle {{e^{x} + e^{-x}}\over 2}$ \vbox to20pt{}\\
-$\tanh x$ & $\displaystyle {{e^{x}-e^{-x}}\over {e^{x}+e^{-x}}}$ \\
+$\sec^{-1} x$ & $\displaystyle -i \,\ln {{1 + i\sqrt{x^2-1}}\over{x}}$ &
+ & \\
+$\csc^{-1} x$ & $\displaystyle -i \,\ln {{i + \sqrt{x^2-1}}\over{x}}$ &
+ & \\
+$\cot^{-1} x$ & $\displaystyle {1\over2}\,i\,\ln {{i+x}\over{i-x}}$ &
+ & \\
 
 \end{tabular}
 \end{center}
