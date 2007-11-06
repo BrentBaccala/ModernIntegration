@@ -111,7 +111,7 @@ and expand it here, of the following definite integral:
 
 \vfill\eject
 
-$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
+$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
 
 {\small\begin{verbatim}
 
@@ -153,7 +153,7 @@ $$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
 
                                      6            4           2
 (%o169)                     2930944 z  + 2198208 z  + 549552 z  + 45796
-(%i170) gcd(d,diff(d,z));
+(%i170) e: gcd(d,diff(d,z));
 
                                            4           2
 (%o170)                            732736 z  + 366368 z  + 45796
@@ -176,148 +176,200 @@ $$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
 \vfill\eject
 
 {\small\begin{verbatim}
-(%i198) ratexpand((-%i*256/963)*gcdex(expand(a-(%i/2)*diff(b,x)),b,x));
+(%i225) ratexpand((-%i*256/963)*gcdex(expand(a-(%i/2)*diff(b,x)),b,x))[3];
 
-                         2
-                  16 %I x     x    27 %I    48 x   13 %I   3       2
-(%o198)          [-------- + --- - -----, - ---- - -----, x  + %I x  - 3 x - 2 %I]
-                    107      107    107     107     107
-(%i200) ratexpand((%i*256/963)*gcdex(expand(a+(%i/2)*diff(b,x)),b,x));
+                                       3       2
+(%o225)                               x  + %I x  - 3 x - 2 %I
+(%i226) ratexpand((%i*256/963)*gcdex(expand(a+(%i/2)*diff(b,x)),b,x))[3];
 
-                           2
-                    16 %I x     x    27 %I  13 %I   48 x   3       2
-(%o200)          [- -------- + --- + -----, ----- - ----, x  - %I x  - 3 x + 2 %I]
-                      107      107    107    107    107
+                                       3       2
+(%o226)                               x  - %I x  - 3 x + 2 %I
 \end{verbatim}}
 
 $$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
-   {i\over2}\log(x^3+ix^2-3x-2i) - {i\over2}\log(x^3-ix^2-3x+2i)$$
+   {i\over2}\ln(x^3+ix^2-3x-2i) - {i\over2}\ln(x^3-ix^2-3x+2i)$$
+$$=\tan^{-1}({{x^3-3x}\over{x^2-2}})$$
 
-Let us note briefly that the integrand is clearly positive over the
-entire real line.  Now, using a straightforward application of
-the method of partial fractions, we conclude:
-
-$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
-   \sum_{\alpha\mid 4\alpha^2+1=0} \alpha \log(x^3+2\alpha x^2-3x-4\alpha)$$
-
-Since the zeros of $4\alpha^2+1$ are $\alpha=\pm i/2$, we evaluate the
-definite integral using the indefinite integral, expand the complex
-logarithms, and obtain:
-
-$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
-$$= \Big({i\over2}\log(2+2i)-{i\over2}\log(2-2i)\Big)
- -\Big({i\over2}\log(-2-i)-{i\over2}\log(-2+i)\Big)$$
-$$=-{5\pi\over4}+\arctan({1\over2}) \approx -3.46$$
-
-Since the integral was positive over the entire range of integration,
-this answer can not possibly be correct.
-
-Alternately, we can apply the $\arctan$ identity from the last
-chapter and conclude:
-
-$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
-$$=\sum_{\alpha\mid 4\alpha^2+1=0} \alpha \log(x^3+2\alpha x^2-3x-4\alpha)$$
-$$={i\over2}\ln(x^3+ix^2-3x-2i)-{i\over2}\ln(x^3-ix^2-3x+2i)
-  ={i\over2}\ln{\Big({{x^3-3x+(x^2-2)i}\over{x^3-3x-(x^2-2)i}}\Big)}$$
-$$={i\over2}\ln{\Big({{(x^3-3x)i-(x^2-2)}\over{(x^3-3x)i+(x^2-2)}}\Big)}
-  =\arctan{\Big({{x^3-3x}\over{x^2-2}}\Big)}$$
-
-$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx = \arctan 1 - \arctan 2 \approx -0.32$$
-
-What went wrong?  We gain a
-key insight, as is so often the case, by graphing first the integrand:
-
-\begin{center}
-\includegraphics[width=0.7\textwidth]{04-RATIONALS-EXAMPLE1e.pdf}
-\end{center}
-
-And now the (indefinite) integral:
-
-\begin{center}
-\includegraphics[width=0.7\textwidth]{04-RATIONALS-EXAMPLE1f.pdf}
-\end{center}
-
-A discontinuity has appeared, seemingly out of nowhere.  A closer
-inspection reveals that the break occurs suspiciously close to
-$\sqrt{2}$ --- exactly where a plot of $(x^3-3x)+(x^2-2)i$ in
-the complex plane crosses the negative real axis:
+\vfill
 
 \begin{center}
 \includegraphics[width=0.7\textwidth]{04-RATIONALS-EXAMPLE1a.pdf}
 \end{center}
+$$(x^3-3x)+(x^2-2)i$$
 
-OK, so here's what happened.  When we evaluate a complex logarithm, we
-implicitly select one blade of $\ln$'s Riemann surface.  There's no
-way to avoid this.  $\ln$ is a multi-valued function, the different
-values corresponding to different blades of the Riemann surface, and
-if we want to actually obtain a numerical result from $\ln$ we need to
-pick one of those values.  In the context of an indefinite integral,
-which is only defined within an unspecified additive constant, the
-choice is completely arbitrary.
+%Let us note briefly that the integrand is clearly positive over the
+%entire real line.  Now, using a straightforward application of
+%the method of partial fractions, we conclude:
+%
+%$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
+%   \sum_{\alpha\mid 4\alpha^2+1=0} \alpha \log(x^3+2\alpha x^2-3x-4\alpha)$$
+%
+%Since the zeros of $4\alpha^2+1$ are $\alpha=\pm i/2$, we evaluate the
+%definite integral using the indefinite integral, expand the complex
+%logarithms, and obtain:
+%
+%$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
+%$$= \Big({i\over2}\log(2+2i)-{i\over2}\log(2-2i)\Big)
+% -\Big({i\over2}\log(-2-i)-{i\over2}\log(-2+i)\Big)$$
+%$$=-{5\pi\over4}+\arctan({1\over2}) \approx -3.46$$
+%
+%Since the integral was positive over the entire range of integration,
+%this answer can not possibly be correct.
+%
+%Alternately, we can apply the $\arctan$ identity from the last
+%chapter and conclude:
+%
+%$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
+%$$=\sum_{\alpha\mid 4\alpha^2+1=0} \alpha \log(x^3+2\alpha x^2-3x-4\alpha)$$
+%$$={i\over2}\ln(x^3+ix^2-3x-2i)-{i\over2}\ln(x^3-ix^2-3x+2i)
+%  ={i\over2}\ln{\Big({{x^3-3x+(x^2-2)i}\over{x^3-3x-(x^2-2)i}}\Big)}$$
+%$$={i\over2}\ln{\Big({{(x^3-3x)i-(x^2-2)}\over{(x^3-3x)i+(x^2-2)}}\Big)}
+%  =\arctan{\Big({{x^3-3x}\over{x^2-2}}\Big)}$$
+%
+%$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx = \arctan 1 - \arctan 2 \approx -0.32$$
+%
+%What went wrong?
+%We gain a
+%key insight, as is so often the case, by graphing first the integrand:
 
-So far, so good.  Yet now we want a definite integral.  Now we're
-going to evaluate not just a single logarithm, but we're going to
-trace out a curve along the Riemann surface.  As I noted above, if we
-assign a single fixed value to $\ln x$, then there's no way to avoid a
-discontinuity {\it somewhere} in the Riemann surface.  In this
-specific case, we used the identity $\ln(a+bi) = \ln\sqrt{a^2+b^2}
-+i\arctan{b\over a}$, which just converts the discontinuity in $\ln$
-to one expressed in terms of $\arctan$, also a multi-valued function.
-See, there's no way to completely avoid this.
+\vfill\eject
 
-Where's the discontinuity in $\arctan$?  Typically, the function is
-defined so that it ranges from $-{\pi\over2}$ to ${\pi\over2}$ and is
-continuous over finite numbers, so its discontinuity is where its
-argument becomes infinite; i.e, where its denominator goes to zero.
-In the $\ln(a+bi)$ expansion, this occurs where $a$ becomes zero; i.e,
-where $a+bi$ crosses the negative real axis.  This is easier to visualize
-if we reproduce that last graph in 3-D, superimposing $(x^3-3x)+(x^2-2)i$
-on $\arctan$'s Riemann surface:
-
-\begin{center}
-\includegraphics[width=\textwidth]{04-RATIONALS-EXAMPLE1c.pdf}
-\end{center}
-
-The z-axis is now the value of $\arctan$.  Along the x-axis, it is
-zero, and it grows positive as we move counter-clockwise, and negative
-as we move clockwise.  The resulting discontinuity along the negative
-real axis, where $\arctan$ jumps from $\pi\over2$ to $-{\pi\over2}$,
-clearly creates a matching discontinuity in the plot of
-$(x^3-3x)+(x^2-2)i$.
-
-\begin{center}
-\includegraphics[width=\textwidth]{04-RATIONALS-EXAMPLE1b.pdf}
-\end{center}
-
-Of course, this isn't really $\arctan$'s Riemann surface, only a slice
-of it, and now we begin to find our solution.  $\arctan$'s complete
-Riemann surface looks like an infinite screw, with an infinite series
-of blades, each spaced $2\pi$ apart in the z-direction.  So, when we
-plot our function, what we really want is something more like this,
-moving smoothly along the Riemann surface without any discontinuity.
+$${{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}}$$
 
 \begin{center}
-\includegraphics[width=\textwidth]{04-RATIONALS-EXAMPLE1d.pdf}
+\includegraphics[width=0.65\textwidth]{04-RATIONALS-EXAMPLE1e.pdf}
 \end{center}
 
-Alas, while easy enough to graph, and easy enough to understand once
-you're thinking about the continuity of a Riemann surface, this is
-just asking a bit much from poor old $\ln$ (or $\arctan$).  There's no
-way for the function to know which result is needed based solely on a
-single value as the argument.
+%And now the (indefinite) integral:
 
-However, there is a way out, at least in the case of rational
-functions.  The method, due to R. Rioboo, is to take advantage of two
-things.  First, the addition law of logarithms ($\ln ab = \ln a + \ln
-b$), combined with Euler-?? interpretation of complex numbers, lets us
-split a complex logarithm into two logarithms, each of which require
-only half the range of angles of the original logarithm.  Second,
-since a rational function only intersects the real axis in a finite
-number of points (the finite number of zeros of its real component), a
-finite (and easily computed) number of reductions converts the
-logarithm into a sum of logarithms, none of whose arguments cross
-the real axis.
+$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
+\tan^{-1}({{x^3-3x}\over{x^2-2}})$$
 
+\begin{center}
+\includegraphics[width=0.65\textwidth]{04-RATIONALS-EXAMPLE1f.pdf}
+\end{center}
+
+%A discontinuity has appeared, seemingly out of nowhere.  A closer
+%inspection reveals that the break occurs suspiciously close to
+%$\sqrt{2}$ --- exactly where a plot of $(x^3-3x)+(x^2-2)i$ in
+%the complex plane crosses the negative real axis:
+
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{04-RATIONALS-EXAMPLE1a.pdf}
+%\end{center}
+
+%OK, so here's what happened.  When we evaluate a complex logarithm, we
+%implicitly select one blade of $\ln$'s Riemann surface.  There's no
+%way to avoid this.  $\ln$ is a multi-valued function, the different
+%values corresponding to different blades of the Riemann surface, and
+%if we want to actually obtain a numerical result from $\ln$ we need to
+%pick one of those values.  In the context of an indefinite integral,
+%which is only defined within an unspecified additive constant, the
+%choice is completely arbitrary.
+%
+%So far, so good.  Yet now we want a definite integral.  Now we're
+%going to evaluate not just a single logarithm, but we're going to
+%trace out a curve along the Riemann surface.  As I noted above, if we
+%assign a single fixed value to $\ln x$, then there's no way to avoid a
+%discontinuity {\it somewhere} in the Riemann surface.  In this
+%specific case, we used the identity $\ln(a+bi) = \ln\sqrt{a^2+b^2}
+%+i\arctan{b\over a}$, which just converts the discontinuity in $\ln$
+%to one expressed in terms of $\arctan$, also a multi-valued function.
+%See, there's no way to completely avoid this.
+%
+%Where's the discontinuity in $\arctan$?  Typically, the function is
+%defined so that it ranges from $-{\pi\over2}$ to ${\pi\over2}$ and is
+%continuous over finite numbers, so its discontinuity is where its
+%argument becomes infinite; i.e, where its denominator goes to zero.
+%In the $\ln(a+bi)$ expansion, this occurs where $a$ becomes zero; i.e,
+%where $a+bi$ crosses the negative real axis.  This is easier to visualize
+%if we reproduce that last graph in 3-D, superimposing $(x^3-3x)+(x^2-2)i$
+%on $\arctan$'s Riemann surface:
+
+\begin{center}
+\includegraphics[width=0.81\textwidth]{04-RATIONALS-EXAMPLE1c.pdf}
+\end{center}
+
+%The z-axis is now the value of $\arctan$.  Along the x-axis, it is
+%zero, and it grows positive as we move counter-clockwise, and negative
+%as we move clockwise.  The resulting discontinuity along the negative
+%real axis, where $\arctan$ jumps from $\pi\over2$ to $-{\pi\over2}$,
+%clearly creates a matching discontinuity in the plot of
+%$(x^3-3x)+(x^2-2)i$.
+
+%\begin{center}
+%\includegraphics[width=\textwidth]{04-RATIONALS-EXAMPLE1b.pdf}
+%\end{center}
+
+%Of course, this isn't really $\arctan$'s Riemann surface, only a slice
+%of it, and now we begin to find our solution.  $\arctan$'s complete
+%Riemann surface looks like an infinite screw, with an infinite series
+%of blades, each spaced $2\pi$ apart in the z-direction.  So, when we
+%plot our function, what we really want is something more like this,
+%moving smoothly along the Riemann surface without any discontinuity.
+
+\begin{center}
+\includegraphics[width=0.81\textwidth]{04-RATIONALS-EXAMPLE1d.pdf}
+\end{center}
+
+%Alas, while easy enough to graph, and easy enough to understand once
+%you're thinking about the continuity of a Riemann surface, this is
+%just asking a bit much from poor old $\ln$ (or $\arctan$).  There's no
+%way for the function to know which result is needed based solely on a
+%single value as the argument.
+%
+%However, there is a way out, at least in the case of rational
+%functions.  The method, due to R. Rioboo, is to take advantage of two
+%things.  First, the addition law of logarithms ($\ln ab = \ln a + \ln
+%b$), combined with Euler-?? interpretation of complex numbers, lets us
+%split a complex logarithm into two logarithms, each of which require
+%only half the range of angles of the original logarithm.  Second,
+%since a rational function only intersects the real axis in a finite
+%number of points (the finite number of zeros of its real component), a
+%finite (and easily computed) number of reductions converts the
+%logarithm into a sum of logarithms, none of whose arguments cross
+%the real axis.
+
+\vfill\eject
+
+$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
+   {i\over2}\ln(x^3+ix^2-3x-2i) - {i\over2}\ln(x^3-ix^2-3x+2i)$$
+
+{\small\begin{verbatim}
+(%i205) gcdex(x^3-3*x,x^2-2);
+
+                                                 2
+                                             x  x  - 1
+(%o205)/R/                                [- -, ------, 1]
+                                             2    2
+
+(%i214) expand(((x^3-3*x)+(x^2-2)*%i)*((x^2-1)-x*%i));
+
+                                         5      3
+(%o214)                                 x  - 3 x  + x + 2 %I
+\end{verbatim}}
+
+% $$[(x^3-3x)+(x^2-2)i][(x^2-1)-xi] = x^5-3x^3+x+2i$$
+
+$$\ln\Big[(x^3-3x)+(x^2-2)i\Big] = \ln\Big[x^5-3x^3+x+2i\Big] - \ln\Big[(x^2-1)-xi\Big]$$
+
+$$\ln(x^3+ix^2-3x-2i) = \ln(x^5-3x^3+x+2i) - \ln(x^3-i) + \ln(x+i)$$
+
+$$\ln(x^3-ix^2-3x+2i) = \ln(x^5-3x^3+x-2i) - \ln(x^3+i) + \ln(x-i)$$
+
+%$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
+%   {i\over2}\ln(x^5-3x^3+x+2i) - {i\over2}\ln(x^5-3x^3+x-2i)$$
+%$$   + {i\over2}\ln(x^3+i) - {i\over2}\ln(x^3-i)
+%   + {i\over2}\ln(x+i) - {i\over2}\ln(x-i)$$
+
+$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
+\tan^{-1}({{x^5-3x^2+x}\over2}) + \tan^{-1}(x^3) + \tan^{-1}(x)$$
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{04-RATIONALS-EXAMPLE1g.pdf}
+\end{center}
+
+\vfill\eject
 
 
 \section{A Bit Of Perspective}
