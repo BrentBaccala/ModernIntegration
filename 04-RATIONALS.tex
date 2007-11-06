@@ -38,24 +38,24 @@ $$\arctan x = {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$$
 Interesting, but not very illuminating.  Nevertheless, as Sherlock
 Holmes was wont to say, ``once you have eliminated the impossible\ldots''
 
-Let's examine the improbable remains in an attempt to find the truth:
+% Let's examine the improbable remains in an attempt to find the truth:
 
 \begin{eqnarray*}
 \int{1\over{x^2-1}} dx &=& \int{1\over{(x+i)(x-i)}} dx \\
 \end{eqnarray*}
 
-Applying one or another of our techniques for partial fractions
-expansion, we compute:
+%Applying one or another of our techniques for partial fractions
+%expansion, we compute:
 
 \begin{eqnarray*}
 {1\over{(x+i)(x-i)}} &=& {1\over2}\Big[{i\over{x+i}} - {i\over{x-i}}\Big]\\
               &=& -{1\over2}i\Big[{i\over{-ix+1}} - {i\over{-ix-1}}\Big]\\
 \end{eqnarray*}
 
-On that last step, I multiplied through by 1 in the form
-${-i}\over{-i}$ for reasons that I'll explain later.
-But now, since each numerator is just the negative
-of its denominator's derivative, we proceed:
+%On that last step, I multiplied through by 1 in the form
+%${-i}\over{-i}$ for reasons that I'll explain later.
+%But now, since each numerator is just the negative
+%of its denominator's derivative, we proceed:
 
 \begin{eqnarray*}
 \int{1\over{x^2-1}}dx &=& -{1\over2}i\int\Big[{i\over{-ix+1}} - {i\over{-ix-1}}\Big]dx\\
@@ -63,35 +63,35 @@ of its denominator's derivative, we proceed:
 	&=& -{1\over2}i\Big[\ln(-ix-1) - \ln(-ix+1)\Big] \\
 \end{eqnarray*}
 
-How do we evaluate something like $\ln(-ix-1)$?  Well, Euler's identity
-is a good place to start:
+%How do we evaluate something like $\ln(-ix-1)$?  Well, Euler's identity
+%is a good place to start:
 
 \begin{eqnarray*}
 e^{i\theta} &=& i\sin\theta + \cos\theta \\
 {i\theta} &=& \ln[i\sin\theta + \cos\theta] \\
 \end{eqnarray*}
 
-We can always factor a complex number into its modulus and its angle:
+%We can always factor a complex number into its modulus and its angle:
 
 \begin{eqnarray*}
 a+bi &=& \sqrt{a^2+b^2}\Big({a\over\sqrt{a^2+b^2}} + {b\over\sqrt{a^2+b^2}}i\Big) \\
 \end{eqnarray*}
 
-Now, the expression in parenthesis on the right is just an x-y
-coordinate pair on the unit circle, which form the sine and cosine of
-an angle.  What angle?  Well, the tangent of the angle is going to be
-the ratio between the y (imaginary) and x (real) coordinates, so its
-$b\over a$, and therefore the angle must be $\arctan {b\over a}$.
-Combining this logic with the last two equations and the addition law
-of logarithms lets us obtain a general expression for imaginary
-logarithms:
+%Now, the expression in parenthesis on the right is just an x-y
+%coordinate pair on the unit circle, which form the sine and cosine of
+%an angle.  What angle?  Well, the tangent of the angle is going to be
+%the ratio between the y (imaginary) and x (real) coordinates, so its
+%$b\over a$, and therefore the angle must be $\arctan {b\over a}$.
+%Combining this logic with the last two equations and the addition law
+%of logarithms lets us obtain a general expression for imaginary
+%logarithms:
 
 \begin{eqnarray*}
 \ln(a+bi) &=& \ln\sqrt{a^2+b^2} +i\arctan{b\over a} \\
 \end{eqnarray*}
 
-Plugging this back into our integral, and using the fact that
-$\arctan$ is an odd function, we conclude:
+%Plugging this back into our integral, and using the fact that
+%$\arctan$ is an odd function, we conclude:
 
 \begin{eqnarray*}
 \int{1\over{x^2-1}}dx &=& -{1\over2}i\Big[\ln(-ix-1) - \ln(-ix+1)\Big] \\
