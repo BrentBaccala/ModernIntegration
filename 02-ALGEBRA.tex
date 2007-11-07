@@ -617,17 +617,23 @@ $$s(4x^4+13x^3+15x^2+7x+1) + t(2x^3+x^2-4x-3) = x^3 + 5x^2 + 7x +3$$
 %These are the same polynomials used for the first GCD example.
 %Using the notation
 
-\begin{eqnarray*}
-a &=& 4x^4+13x^3+15x^2+7x+1, \cr
-b &=& 2x^3+x^2-4x-3, {\rm\,and} \cr
-c &=& x^3 + 5x^2 + 7x +3 \cr
-\end{eqnarray*}
+%\begin{eqnarray*}
+%a &=& 4x^4+13x^3+15x^2+7x+1, \cr
+%b &=& 2x^3+x^2-4x-3, {\rm\,and} \cr
+%c &=& x^3 + 5x^2 + 7x +3 \cr
+%\end{eqnarray*}
+
+$$a = 4x^4+13x^3+15x^2+7x+1; \qquad
+b = 2x^3+x^2-4x-3; \qquad
+c = x^3 + 5x^2 + 7x +3$$
 
 %we are trying to solve $sa+tb=c$.  The first step in the GCD
 %calculation yielded:
 
 \begin{eqnarray*}
-a &=& (2x+{11\over2})b + ({35\over2}x^2+35x+{35\over2}){\rm,\,or} \cr\cr
+a &=& (2x+{11\over2})b + ({35\over2}x^2+35x+{35\over2})
+ %{\rm,\,or}
+ \cr\cr
 x^2+2x+1 &=& {2\over35}a - {1\over35}(4x+11)b \cr
 \end{eqnarray*}
 
@@ -640,25 +646,40 @@ x^2+2x+1 &=& {2\over35}a - {1\over35}(4x+11)b \cr
 %We substitute our expansion for $x^2+2x+1$ above into $c=(x+3)(x^2+2x+1)$
 %and obtain:
 
-\begin{eqnarray*}
-c &=& {2\over35}(x+3)a - {1\over35}(x+3)(4x+11)b \cr\cr
-  &=& {2\over35}(x+3)a - {1\over35}(4x^2+23x+33)b \cr
-\end{eqnarray*}
+%\begin{eqnarray*}
+%c &=& {2\over35}(x+3)a - {1\over35}(x+3)(4x+11)b \cr\cr
+%  &=& {2\over35}(x+3)a - {1\over35}(4x^2+23x+33)b \cr
+%\end{eqnarray*}
 
-$\deg({2\over35}(x+3)) = 1 < \deg(b) = 3$ and $\deg({1\over35}(4x^2+23x+33))
-= 2 < \deg(a) = 4$, so the degree bounds are already met.
+$$c = (x+3)(x^2+2x+1)
+%= {2\over35}(x+3)a - {1\over35}(x+3)(4x+11)b
+ = {2\over35}(x+3)a - {1\over35}(4x^2+23x+33)b $$
 
-Now verify this solution using Maxima, a computer algebra system:
+%$\deg({2\over35}(x+3)) = 1 < \deg(b) = 3$ and $\deg({1\over35}(4x^2+23x+33))
+%= 2 < \deg(a) = 4$, so the degree bounds are already met.
+
+%Now verify this solution using Maxima, a computer algebra system:
 
 {\small\begin{verbatim}
-(%i24) a: 4*x^4+13*x^3+15*x^2+7*x+1;
+(%i22) a: 4*x^4+13*x^3+15*x^2+7*x+1;
 
                            4       3       2
-(%o24)                  4 x  + 13 x  + 15 x  + 7 x + 1
-(%i25) b: 2*x^3+x^2-4*x-3;
+(%o22)                  4 x  + 13 x  + 15 x  + 7 x + 1
+(%i23) b: 2*x^3+x^2-4*x-3;
 
                                  3    2
-(%o25)                        2 x  + x  - 4 x - 3
+(%o23)                        2 x  + x  - 4 x - 3
+(%i24) divide(a,b);
+
+                                                  2
+                                   4 x + 11  35 x  + 70 x + 35
+(%o24)                            [--------, -----------------]
+                                      2              2
+(%i25) divide(b,divide(a,b)[2]);
+
+                                            4 x - 6
+(%o25)                                     [-------, 0]
+                                              35
 (%i26) gcdex(a,b);
 
                                           2
