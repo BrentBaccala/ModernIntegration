@@ -327,57 +327,59 @@ thus be excluded from consideration.  We need only look at the
 function $f$, and perhaps not even all of its integral multiples
 (CHECK THIS).
 
+\vfill\eject
+
 \example Compute $\int {1\over{\sqrt{1-x^2}}} \,dx$
 
-The obvious attempt is to use the algebraic extension $y^2=1-x^2$ and
-integrate ${1\over y}\,dx$.
-
-But we first need to determine if this differential has any poles at
-infinity, by inverting the field and looking for poles at zero.
-Setting $u={1\over x}$, we convert our minimal polynomial into
-$u^2y^2=u^2-1$ (after multiplying through by $u^2$), and using
-$v=uy$ we obtain our inverse field ${\bf C}(u,v); v^2=u^2-1$.
-
-Since $x={1\over u}$ and $y={v\over u}$, we convert our differential as follows:
+%The obvious attempt is to use the algebraic extension $y^2=1-x^2$ and
+%integrate ${1\over y}\,dx$.
+%
+%But we first need to determine if this differential has any poles at
+%infinity, by inverting the field and looking for poles at zero.
+%Setting $u={1\over x}$, we convert our minimal polynomial into
+%$u^2y^2=u^2-1$ (after multiplying through by $u^2$), and using
+%$v=uy$ we obtain our inverse field ${\bf C}(u,v); v^2=u^2-1$.
+%
+%Since $x={1\over u}$ and $y={v\over u}$, we convert our differential as follows:
 
  $${1\over y}\,dx ={u\over v} (-{1\over{u^2}} \, du) = -{1\over{uv}} \, du$$
 
-Now, $\{1, v\}$ is an integral basis for the inverse field, so we
-multiply through by $v\over v$ to obtain:
+%Now, $\{1, v\}$ is an integral basis for the inverse field, so we
+%multiply through by $v\over v$ to obtain:
 
  $$= -{v\over{uv^2}} du = -{1\over{u(u^2-1)}}v \, du $$
 
-which is now in normal form and clearly has a pole at $u=0$, or $x=\infty$.  Note that
+%which is now in normal form and clearly has a pole at $u=0$, or $x=\infty$.  Note that
 
  $${1\over y} = {u\over v} = {{uv}\over{v^2}}
  = {u\over{u^2-1}} v$$
 
-has no pole at $u=0$, a clear example of a differential having a pole
-at a place where its constituent function has none.
+%has no pole at $u=0$, a clear example of a differential having a pole
+%at a place where its constituent function has none.
 
-In any event, we clearly can not use the original field to conduct the
-integration, since it would require constructing a function with a
-pole at infinity, and our algorithm can't handle this.  So we need to
-transform into a field where the differential has no pole at infinity.
+%In any event, we clearly can not use the original field to conduct the
+%integration, since it would require constructing a function with a
+%pole at infinity, and our algorithm can't handle this.  So we need to
+%transform into a field where the differential has no pole at infinity.
 
-Actually, we've already done this!  Note that the integrand had no pole
-at zero in the original field:
+%Actually, we've already done this!  Note that the integrand had no pole
+%at zero in the original field:
 
  $${1\over y}\,dx = {y\over y^2}\,dx = {1\over{1-x^2}}y \,dx $$
 
-Since the inverse field swapped zero with infinity, it follows that
-there is no pole at infinity in the inverse field, so we can proceed
-to integrate $-{1\over{u(u^2-1)}}v \,du$ in ${\bf C}(u,v)$;
-$v^2=u^2-1$.
+%Since the inverse field swapped zero with infinity, it follows that
+%there is no pole at infinity in the inverse field, so we can proceed
+%to integrate $-{1\over{u(u^2-1)}}v \,du$ in ${\bf C}(u,v)$;
+%$v^2=u^2-1$.
 
-Simple inspection of the integrand (already in normal form) shows that
-its poles are at $(0, i)$, $(0, -i)$, $(1, 0)$, and $(-1, 0)$.
-Remember that we're now working on the Riemann surface of an algebraic
-extension, so we need to specify $\it both$ $u$ and $v$ to
-specify a place.
+%Simple inspection of the integrand (already in normal form) shows that
+%its poles are at $(0, i)$, $(0, -i)$, $(1, 0)$, and $(-1, 0)$.
+%Remember that we're now working on the Riemann surface of an algebraic
+%extension, so we need to specify $\it both$ $u$ and $v$ to
+%specify a place.
 
-The next step is to compute the residues at each of these places,
-using the Theorem on p. 56 of Trager's thesis:
+%The next step is to compute the residues at each of these places,
+%using the Theorem on p. 56 of Trager's thesis:
 
 \begin{center}
 \begin{supertabular}{l l l}
@@ -388,45 +390,45 @@ using the Theorem on p. 56 of Trager's thesis:
 \end{supertabular}
 \end{center}
 
-The poles with zero residues can be ignored.  We're interested in the
-other two, which exist in ${\bf Q}[i]$, which can be regarded as a
-vector field over ${\bf Q}$ with basis $\{1, i\}$, and we want to
-construct a function whose poles and zeros match the $i$-component of
-the residues (the 1-component is uniformly zero).
+%The poles with zero residues can be ignored.  We're interested in the
+%other two, which exist in ${\bf Q}[i]$, which can be regarded as a
+%vector field over ${\bf Q}$ with basis $\{1, i\}$, and we want to
+%construct a function whose poles and zeros match the $i$-component of
+%the residues (the 1-component is uniformly zero).
 
-We start by constructing an ${\cal I}$-module basis for the divisor
-with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.  Theorem
-\ref{simple pole construction} shows that:
+%We start by constructing an ${\cal I}$-module basis for the divisor
+%with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.  Theorem
+%\ref{simple pole construction} shows that:
 
 $$f = {{v^2+1}\over{u(v+i)}} = {{v-i}\over{u}} $$
 
-has a simple pole at $(0,-i)$.  At $(0,i)$, L'H\^opital's rule gives:
+%has a simple pole at $(0,-i)$.  At $(0,i)$, L'H\^opital's rule gives:
 
 $$ \lim_{(u,v)\to (0,i)} {{v-i}\over{u}}
    = {{(v-i)'}\over{u'}} {{dv}\over{du}} = {{dv}\over{du}} = {u\over v} = 0 $$
 
-where the last transformation was accomplished by differentiating the
-mimimal polynomial.  So $f$ has a zero at $(0,i)$, and I'll note that
-we've just stumbled into the solution.  Theorem \ref{simple pole
-construction} already assures us that $f$ has only a single finite
-simple pole, and we can see that its only zeros occur when
-$v-i=0$, which, according to the minimum polynomial, can only
-occur at $u=0$, thus $(0,i)$ is its only finite zero, and it is
-simple, as we can verify by showing that the corresponding pole in its
-inverse is simple:
+%where the last transformation was accomplished by differentiating the
+%mimimal polynomial.  So $f$ has a zero at $(0,i)$, and I'll note that
+%we've just stumbled into the solution.  Theorem \ref{simple pole
+%construction} already assures us that $f$ has only a single finite
+%simple pole, and we can see that its only zeros occur when
+%$v-i=0$, which, according to the minimum polynomial, can only
+%occur at $u=0$, thus $(0,i)$ is its only finite zero, and it is
+%simple, as we can verify by showing that the corresponding pole in its
+%inverse is simple:
 
 $$ {1\over f} = {u\over{v-i}} = {{u(v+i)}\over{v^2+1}}
   = {{u(v+i)}\over{u^2}} = {1\over u}v + {i\over u} $$
 
 
-So we've found the function we're looking for by accident.  Let's save the
-general case for the next example, and convert back to
-our original field:
+%So we've found the function we're looking for by accident.  Let's save the
+%general case for the next example, and convert back to
+%our original field:
 
 $${{v-i}\over{u}} = x({y\over x}-i) = y - ix $$
 
-Remembering that our residues came multiplied by a factor of $i$, we
-conclude that our solution is $i\,\ln(y-ix)$, or:
+%Remembering that our residues came multiplied by a factor of $i$, we
+%conclude that our solution is $i\,\ln(y-ix)$, or:
 
 \begin{eqnarray*}
 \int {1\over{\sqrt{1-x^2}}} \,dx &=& i\,\ln(\sqrt{1-x^2}-ix) \\
@@ -436,22 +438,24 @@ conclude that our solution is $i\,\ln(y-ix)$, or:
                                  &=& \arcsin x \\
 \end{eqnarray*}
 
-where I used the negative of a logarithm being the logarithm of
-the inverse, and the last transformation came from section ?.
+%where I used the negative of a logarithm being the logarithm of
+%the inverse, and the last transformation came from section ?.
 
 
 \endexample
 
-\mysection{Geddes's example}
+\vfill\eject
+%\mysection{Geddes's example}
 
 \example Compute $\int {1\over{x\sqrt{x^4+1}}} \, dx$
 
-We'll use ${\bf C}(x,y); y^2=x^4+1$ and integrate ${1\over{xy}} =
-{y\over{x^5+x}}$.  Inverting this field ($z={1\over x}$) shows that
-this integrand has no poles at infinity, so we can proceed directly:
+%We'll use ${\bf C}(x,y); y^2=x^4+1$ and integrate ${1\over{xy}} =
+%{y\over{x^5+x}}$.  Inverting this field ($z={1\over x}$) shows that
+%this integrand has no poles at infinity, so we can proceed directly:
 
 $$ {y\over{x^5+x}} = {y\over{x(x+\omega)(x-\omega)(x+i\omega)(x-i\omega)}} \qquad \omega = \sqrt{i} = {\sqrt{2}\over2} + {\sqrt{2}\over2} i $$
 
+\bigskip
 \begin{center}
 \begin{supertabular}{l l l}
   $(0, 1)$  &  $\displaystyle {y\over{x^4+1}}$ @ $(0, 1)$     & = $1$    \cr
@@ -461,13 +465,14 @@ $$ {y\over{x^5+x}} = {y\over{x(x+\omega)(x-\omega)(x+i\omega)(x-i\omega)}} \qqua
 \end{supertabular}
 \end{center}
 
-We now use theorem \ref{simple pole construction} to construct a
-function with a simple pole at $(0,-1)$:
+\vfill\eject
+%We now use theorem \ref{simple pole construction} to construct a
+%function with a simple pole at $(0,-1)$:
 
 $${{f(0,y)}\over{x(y+1)}} = {{y^2-1}\over{x(y+1)}} = {{y-1}\over{x}} $$
 
-This function has a zero at $(0,1)$, but, unfortunately, it is third order,
-as can be seen from either L'H\^opital's rule:
+%This function has a zero at $(0,1)$, but, unfortunately, it is third order,
+%as can be seen from either L'H\^opital's rule:
 
 $$y^2=x^4+1$$
 $$2y\,dy=4x^3\,dx$$
@@ -478,7 +483,7 @@ $${{y-1}\over{x^2}} @ (0,1) = \lim {1\over{2x}}{{dy}\over{dx}} = {{x^2}\over y} 
 $${{y-1}\over{x^3}} @ (0,1) = \lim {1\over{3x^2}}{{dy}\over{dx}} = {2\over3}{{x}\over y} = 0$$
 $${{y-1}\over{x^4}} @ (0,1) = \lim {1\over{4x^3}}{{dy}\over{dx}} = {1\over2}{1\over y} = {1\over2}$$
 
-or from a series expansion of $y$ at (0,1):
+%or from a series expansion of $y$ at (0,1):
 
 $$y^2 = x^4 + 1 $$
 $$(y-1)^2 = x^4 - 2(y-1)$$
@@ -495,20 +500,21 @@ $$ (y-1) = {1\over2} x^4 - {1\over8} x^8 + \cdots$$
 
 $$ {(y-1)\over x} = {1\over2} x^3 - {1\over8} x^7 + \cdots$$
 
-We can eliminate the inconvenient zero by adding a constant to the
-function, say 1: ${{x+y-1}\over x}$.  We can now use theorem
-\ref{simple zero construction} to create a simple zero at
-(0,1) by multiplying by $x+y-1$:
+%We can eliminate the inconvenient zero by adding a constant to the
+%function, say 1: ${{x+y-1}\over x}$.  We can now use theorem
+%\ref{simple zero construction} to create a simple zero at
+%(0,1) by multiplying by $x+y-1$:
 
+\vfill\eject
 $${{x+y-1}\over x} (x+y-1) = {{2x-2}\over x} y + {{x^4+x^2-2x+2}\over x} $$
 
-This function has a simple pole at (0,-1) and a simple zero at (0,1),
-but, alas, also has a zero (somewhere?).  In fact, there is no
-function in this field with a simple pole at (0, -1), a simple zero at
-(0,1), and no other poles or zeros.
+%This function has a simple pole at (0,-1) and a simple zero at (0,1),
+%but, alas, also has a zero (somewhere?).  In fact, there is no
+%function in this field with a simple pole at (0, -1), a simple zero at
+%(0,1), and no other poles or zeros.
 
-So, let's try a double pole at (0,-1) and a double zero at (0,1).  We
-can square our previous function (I used Macaulay 2) to obtain:
+%So, let's try a double pole at (0,-1) and a double zero at (0,1).  We
+%can square our previous function (I used Macaulay 2) to obtain:
 
 {\small\begin{verbatim}
 
@@ -573,7 +579,7 @@ o14 : frac(Fxy)
 % $${{4x^5  - 4x^4  + 4x^3  - 12x^2  + 16x - 8}\over{x^2}} y
 %  + {{x^8  + 6x^6  - 12x^5  + 9x^4  - 4x^3  + 12x^2  - 16x + 8}\over{x^2}} $$
 
-Forming a ${\bf C}[x]$-module basis from this and $x^2$, we obtain:
+%Forming a ${\bf C}[x]$-module basis from this and $x^2$, we obtain:
 
 $${1\over{x^2}} \pmatrix{
 - 4x^3  + 12x^2  - 16x + 8 &
@@ -583,10 +589,10 @@ $${1\over{x^2}} \pmatrix{
 x^4 & 0 \cr
 0 & x^4 \cr}$$
 
-where I already anticipated the presence of the $x^4$ terms in the
-bottom rows of the matrix by eliminating all terms of $x^4$ and higher
-from the first two rows.  Now we need the GCD of the first column in
-$ra+sb$ form (I'm now using Maxima):
+%where I already anticipated the presence of the $x^4$ terms in the
+%bottom rows of the matrix by eliminating all terms of $x^4$ and higher
+%from the first two rows.  Now we need the GCD of the first column in
+%$ra+sb$ form (I'm now using Maxima):
 
 {\small\begin{verbatim}
 (%i76) a:4*x^3-12*x^2+16*x-8;
@@ -614,15 +620,15 @@ $ra+sb$ form (I'm now using Maxima):
                                         4
 \end{verbatim}}
 
-In other words,
+%In other words,
 
 $$ - {{5x^3+5x^2+4x+2}\over{16}}(4x^3-12x^2+16x-8) + {{5x^2-10x+9}\over4}x^4 = 1$$
 
-and
+%and
 
 $$ - {{5x^3+5x^2+4x+2}\over{16}} (4x^3-12x^2+16x-8) = -{{5 x^6 - 10 x^5 + 9 x^4 - 4}\over 4}$$
 
-so the matrix is row-equivalent to:
+%so the matrix is row-equivalent to:
 
 $${1\over{x^2}} \pmatrix{
 - 4x^3  + 12x^2  - 16x + 8 &
@@ -631,7 +637,7 @@ x^4 & 0 \cr
 0 & x^4 \cr
 1 & -1}$$
 
-and now some straightforward operations give:
+%and now some straightforward operations give:
 
 $${1\over{x^2}} \pmatrix{
 1 & -1 \cr
@@ -639,9 +645,11 @@ $${1\over{x^2}} \pmatrix{
 0 & 0 \cr
 0 & 0}$$
 
-In other words, $\{ {{1-y}\over{x^2}}, x^2 y \}$ is a basis for this
-${\bf C}[x]$-module.  We now rewrite it using a basis normal at
-infinity, specifically, $\{1, {y\over{x^2}}\}$:
+%In other words, $\{ {{1-y}\over{x^2}}, x^2 y \}$ is a basis for this
+%${\bf C}[x]$-module.  We now rewrite it using a basis normal at
+%infinity, specifically, $\{1, {y\over{x^2}}\}$:
+
+\vfill\eject
 
 $$\pmatrix{
 {1\over{x^2}} & -1 \cr
@@ -663,18 +671,19 @@ $$\det_{@\infty}\pmatrix{1 & \cr & x^2}\pmatrix{
 {1\over{x^2}} & -1 \cr
 -1 & 0} = -1$$
 
-So, $\{{{1-y}\over{x^2}}, x^2\}$ is a ${\bf C}[x]$-basis for our
-module, normal at infinity.  $x^2$ clearly has a pole at infinity, but
-does ${1-y}\over{x^2}$?  Switching to $x={1\over z}; y={u\over{z^2}};
-u^2 = z^4 + 1$ and Writing it as $z^2(1-{u\over{z^2}}) = z^2 - u$
-shows that it has no zero at $(z,u) = (0, \pm 1)$, and thus no pole at
-$x = \infty$.  It is, therefore, the function we are looking for:
+%So, $\{{{1-y}\over{x^2}}, x^2\}$ is a ${\bf C}[x]$-basis for our
+%module, normal at infinity.  $x^2$ clearly has a pole at infinity, but
+%does ${1-y}\over{x^2}$?  Switching to $x={1\over z}; y={u\over{z^2}};
+%u^2 = z^4 + 1$ and Writing it as $z^2(1-{u\over{z^2}}) = z^2 - u$
+%shows that it has no zero at $(z,u) = (0, \pm 1)$, and thus no pole at
+%$x = \infty$.  It is, therefore, the function we are looking for:
 
 $$\int {1\over{x\sqrt{x^4+1}}} \, dx
    = {1\over2} \ln{{1-\sqrt{x^4+1}}\over{x^2}}$$
 
 \endexample
 
+\vfill\eject
 \section{Se\~nor Gonzalez, otra vez}
 
 The Rothstein-Trager resultant allows us to compute all the residues
