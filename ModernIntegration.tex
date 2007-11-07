@@ -22,23 +22,26 @@
 \setmarginsrb{0.5in}{1in}{0.5in}{0.5in}{20pt}{20pt}{20pt}{20pt}
 %\setmargnohfrb{0.5in}{1in}{0.5in}{0.5in}
 
-%\pagestyle{empty}
-\pagestyle{fancy}
+% fancy for book; empty for slides
+\pagestyle{empty}
+%\pagestyle{fancy}
 
 \fancyhead{}
 \fancyfoot{}
 %\fancyhead[LE,RO]{\thepage}
 %\fancyhead[RE,LO]{DRAFT}
-\lhead{DRAFT}
-\chead{\today}
-\rhead{DRAFT}
-\cfoot{\thepage}
+
+% these are the headings for the book... not the slides
+%\lhead{DRAFT}
+%\chead{\today}
+%\rhead{DRAFT}
+%\cfoot{\thepage}
 
 % Get rid of section numbers
 \def\thesection{}
 
 % Get rid of page numbers
-% \def\thepage{}
+\def\thepage{}
 
 \begin{document}
 
