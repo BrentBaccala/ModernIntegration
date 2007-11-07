@@ -646,7 +646,50 @@ c &=& {2\over35}(x+3)a - {1\over35}(x+3)(4x+11)b \cr\cr
 
 $\deg({2\over35}(x+3)) = 1 < \deg(b) = 3$ and $\deg({1\over35}(4x^2+23x+33))
 = 2 < \deg(a) = 4$, so the degree bounds are already met.
-Verify this solution using a computer algebra system.
+
+Now verify this solution using Maxima, a computer algebra system:
+
+{\small\begin{verbatim}
+(%i24) a: 4*x^4+13*x^3+15*x^2+7*x+1;
+
+                           4       3       2
+(%o24)                  4 x  + 13 x  + 15 x  + 7 x + 1
+(%i25) b: 2*x^3+x^2-4*x-3;
+
+                                 3    2
+(%o25)                        2 x  + x  - 4 x - 3
+(%i26) gcdex(a,b);
+
+                                          2
+                            4 x + 11  35 x  + 70 x + 35
+(%o26)/R/             [1, - --------, -----------------]
+                               2              2
+(%i27) c: x^3+5*x^2+7*x+3;
+
+                               3      2
+(%o27)                        x  + 5 x  + 7 x + 3
+(%i28) d: c/gcdex(a,b)[3];
+
+                                    2 x + 6
+(%o28)/R/                           -------
+                                      35
+(%i29) gcdex(a,b)[1]*d;
+
+                                    2 x + 6
+(%o29)/R/                           -------
+                                      35
+(%i30) gcdex(a,b)[2]*d;
+
+                                   2
+                                4 x  + 23 x + 33
+(%o30)/R/                     - ----------------
+                                       35
+(%i31) gcdex(a,b)[1]*d*a + gcdex(a,b)[2]*d*b;
+
+                               3      2
+(%o31)/R/                     x  + 5 x  + 7 x + 3
+\end{verbatim}}
+
 
 \vfill\eject
 
