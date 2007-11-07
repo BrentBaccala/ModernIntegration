@@ -1,2 +1,121 @@
 
-The Logarithmic Extension
+\mychapter{The Logarithmic Extension}
+
+\vfill\eject
+
+$$\int{{x(x+1)\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{((x+1)\ln^2(x+1) - (x^3+x^2)e^{2x^2})^2}} dx$$
+
+$$\psi = \exp(x^2) \qquad \theta = \ln (x+1)$$
+
+$$\int{{x(x+1)\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{((x+1)\theta^2 - (x^3+x^2)\psi^2)^2}} dx$$
+
+$$\int{{x\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
+
+
+{\small\begin{verbatim}
+
+(%i235) divide(expand(x*((x^2*p^2-t^2)^2 + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t))),
+                expand((x+1)*(t^2-x^2*p^2)^2), t);
+
+                      x            3  5      3  4      3  3      3  2       3  3
+(%o235)            [-----, t (- 4 p  x  - 4 p  x  - 2 p  x  - 2 p  x ) + 2 p  x ]
+                    x + 1
+
+\end{verbatim}}
+
+{\LARGE$$\int {x\over{x+1}} dx +  \int{{{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}\over{(\theta^2 - x^2\psi^2)^2}} dx$$}
+
+\vfill\eject
+{\LARGE$$\int {x\over{x+1}} dx +  \int{{{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}\over{(\theta^2 - x^2\psi^2)^2}} dx$$}
+
+$$V = \theta^2 - x^2\psi^2 \qquad V' = {2\over{x+1}}\theta - (2x+4x^3)\psi^2$$
+
+$${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
+  = sV + tV'$$
+
+{\small\begin{verbatim}
+
+(%i353) v: t^2-x^2*p^2;
+
+                                              2    2  2
+(%o353)                                      t  - p  x
+(%i354) vtick: (2/(x+1))*t-(2*x+4*x^3)*p^2;
+
+                                       2 t     2     3
+(%o354)                               ----- - p  (4 x  + 2 x)
+                                      x + 1
+(%i355) r: gcdex(v,vtick,t) * (((-4*x^5-4*x^4-2*x^3-2*x^2)/(x+1))*p^3*t + (2*x^3/(x+1))*p^3);
+
+                   3         5      4      3      2       3  3
+                  p  t (- 4 x  - 4 x  - 2 x  - 2 x )   2 p  x
+                  ---------------------------------- + -------
+                                x + 1                   x + 1
+(%o355)/R/ [---------------------------------------------------------,
+             4     8      7      6      5      4      3    2     2  2
+            p  (4 x  + 8 x  + 8 x  + 8 x  + 5 x  + 2 x  + x ) - p  x
+
+     3      2             2        7      6      5      4      3      2       3
+((2 x  + 2 x  + x + 1) p t  + ((4 x  + 8 x  + 8 x  + 8 x  + 5 x  + 2 x  + x) p  - x p) t
+
+         5      4    3    2   3       6      5      4      3      2             2
+ + (- 2 x  - 2 x  - x  - x ) p )/((4 x  + 8 x  + 8 x  + 8 x  + 5 x  + 2 x + 1) p  - 1),
+
+      5      4      3      2   3        3  3
+  (4 x  + 4 x  + 2 x  + 2 x ) p  t - 2 x  p
+- ------------------------------------------]
+                    x + 1
+(%i356) ratsimp(r[1] - divide(r[1],vtick,t)[1]*vtick);
+
+                                                2 p x
+(%o356)                                       - -----
+                                                x + 1
+(%i357) ratsimp(r[2] + divide(r[1],vtick,t)[1]*v);
+
+(%o357)                                        p t x
+
+\end{verbatim}}
+
+$${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
+  = {-2x\over{x+1}}\psi V + x\psi\theta V'$$
+
+
+
+$$\int {N\over{V^n}} = {A\over{V^{n-1}}} + \int {B\over{V^{n-1}}}$$
+
+$${N\over{V^n}} = {A'\over{V^{n-1}}} - (n-1){AV'\over{V^n}} + {B\over{V^{n-1}}}$$
+
+$$N = VA' - (n-1)AV' + BV$$
+$$N = (A'+B)V - (n-1)AV'$$
+
+$$A = -x\psi\theta$$
+$$A' = -\psi\theta - x(2x)\psi\theta - x\psi{1\over{x+1}}$$
+$$A' + B = {-2x\over{x+1}}\psi$$
+$$B = (2x^2+1)\psi\theta - {x\over{x+1}}\psi$$
+
+{\LARGE$$\int {x\over{x+1}} dx  - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}}$$}
+
+{\LARGE$$x - \theta - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}}$$}
+
+\vfill\eject
+
+{\LARGE$$x - \theta - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}}$$}
+
+{\small\begin{verbatim}
+
+(%i374) resultant((2*x^2+1)*p*t-(x/(x+1))*p-z*vtick,v,t);
+
+         2  2     2  6      2  5      2  4      2  3      2  2      2      2          2
+(%o374) p  x  (4 p  x  + 8 p  x  + 8 p  x  + 8 p  x  + 5 p  x  + 2 p  x + p  - 1) (4 z  - 1)
+(%i375) gcd((2*x^2+1)*p*t-(x/(x+1))*p-(1/2)*vtick,v);
+
+                                              p x + t
+(%o375)                                       -------
+                                               x + 1
+(%i376) gcd((2*x^2+1)*p*t-(x/(x+1))*p+(1/2)*vtick,v);
+
+                                              p x - t
+(%o376)                                       -------
+                                               x + 1
+\end{verbatim}}
+
+{\LARGE$$x - \theta - {x\psi\theta\over{\theta^2-x^2\psi^2}} + {1\over2}\ln({{\theta + x \psi}\over{x+1}}) - {1\over2}\ln({{\theta - x \psi}\over{x+1}})$$}
