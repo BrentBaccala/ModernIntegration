@@ -513,13 +513,58 @@ $$ {(y-1)\over x} = {1\over2} x^3 - {1\over8} x^7 + \cdots$$
 \vfill\eject
 $${{x+y-1}\over x} (x+y-1) = {{2x-2}\over x} y + {{x^4+x^2-2x+2}\over x} $$
 
-%This function has a simple pole at (0,-1) and a simple zero at (0,1),
-%but, alas, also has a zero (somewhere?).  In fact, there is no
-%function in this field with a simple pole at (0, -1), a simple zero at
-%(0,1), and no other poles or zeros.
+This function has a simple pole at (0,-1) and a simple zero at (0,1),
+but does it have other poles and zeros?  If so, can it be modified to
+eliminate them?  To find out, we form the basis of an ${\cal I}$-module:
 
-%So, let's try a double pole at (0,-1) and a double zero at (0,1).  We
-%can square our previous function (I used Macaulay 2) to obtain:
+$$\{ {{2x-2}\over x} y + {{x^4+x^2-2x+2}\over x}, x \}$$
+
+Noting that ${{x^4+x^2}\over{x^2}} = x^2+1 \in {\cal I}$, we can simplify this:
+
+$$\{ {{2x-2}\over x} y - {{2x-2}\over x}, x \}$$
+
+Using the integral basis $\{1, y \}$, we convert this to a
+${\bf C}[x]$-module:
+
+$$\{ {{2x-2}\over x} y - {{2x-2}\over x}, {{2x-2}\over x} (x^4+1) - {{2x-2}\over x} y, x, xy \}$$
+
+and since $(2x-2){{x^4}\over{x^2}} = 2x^3-2x^2 \in {\bf C}[x]$, we simplify:
+
+$$\{ {{2x-2}\over x} y - {{2x-2}\over x}, {{2x-2}\over x} - {{2x-2}\over x} y, x, xy \}$$
+
+and write it in matrix form:
+
+% $$\pmatrix{-{{2x-2}\over{x}} & {{2x-2}\over{x}} \cr {{2x-2}\over{x}} & -{{2x-2}\over{x}} \cr x & 0 \cr 0 & x} \pmatrix{1 \cr y}$$
+
+$${1\over x}\pmatrix{-(2x-2) & 2x-2 \cr 2x-2 & -(2x-2) \cr x^2 & 0 \cr 0 & x^2} \pmatrix{1 \cr y}$$
+
+Elementary row operations $R_{4,3,x^2} R_{1,3,(2x-2)} R_{3,4,-1} R_{3,1,{1\over2}(x+1)} R_{2,1,1} $ yield:
+
+$${1\over x}\pmatrix{1 & -1 \cr x^2 & 0} \pmatrix{1 \cr y} = \pmatrix{{{1-y}\over{x}} \cr x} $$
+
+so $\{ {{1-y}\over{x}}, x \} $ forms a basis for
+the ${\bf C}[x]$-module of the finite multiples of Z(0,1)P(0,-1).
+We convert to a basis normal at infinity: $\{1, v\} = \{1, {y\over x^2}\}$:
+
+$$\pmatrix{{{1-y}\over{x}} \cr x} = \pmatrix{{1\over x} & -x \cr x & 0} \pmatrix{1 \cr {y\over x^2}}
+= \pmatrix{x & \cr & x} \pmatrix{{1\over x^2} & -1 \cr 1 & 0} \pmatrix{1 \cr {y\over x^2}}$$
+
+$$\det_{@ \infty} \pmatrix{{1\over x^2} & -1 \cr 1 & 0} = 1$$
+
+so $\{ {{1-y}\over{x}}, x \} $ is normal at infinity.  $x$ clearly has
+a pole at infinity, so it can't be the function we're looking for, but
+what about ${{1-y}\over{x}}$?  Switching back to $\{u,v\}$
+coordinates, we obtain ${{1-y}\over{x}} = {{u^2-v}\over u}$, which has
+$\{u,v\}$ poles at both $\{0,1\}$ and $\{0,-1\}$, which translate into
+poles at $x=\infty$.  Therefore, no rational function on this
+algebraic curve has a simple pole at (0, -1), a simple zero at (0,1),
+and no other poles or zeros.
+
+\vfill\eject
+
+So, let's try a double pole at (0,-1) and a double zero at (0,1).  We
+can square our previous function (now I give up on pencil and paper
+and start using Macaulay 2) to obtain:
 
 {\small\begin{verbatim}
 
@@ -592,7 +637,7 @@ $${1\over{x^2}} \pmatrix{
 4x^3  - 12x^2  + 16x - 8 &
 - 4x^3  + 12x^2  - 16x + 8 \cr
 x^4 & 0 \cr
-0 & x^4 \cr}$$
+0 & x^4 \cr} \pmatrix{1 \cr y}$$
 
 %where I already anticipated the presence of the $x^4$ terms in the
 %bottom rows of the matrix by eliminating all terms of $x^4$ and higher
@@ -646,9 +691,8 @@ x^4 & 0 \cr
 
 $${1\over{x^2}} \pmatrix{
 1 & -1 \cr
-0 & x^4 \cr
-0 & 0 \cr
-0 & 0}$$
+0 & x^4}
+\pmatrix{1 \cr y}$$
 
 \vfill\eject
 
@@ -658,7 +702,7 @@ infinity, specifically, $\{1, {y\over{x^2}}\}$:
 
 $$\pmatrix{
 {1\over{x^2}} & -1 \cr
-0 & x^4}
+0 & x^4} \pmatrix{1 \cr {y\over{x^2}}}
 =
 \pmatrix{1 & \cr & x^4}\pmatrix{
 {1\over{x^2}} & -1 \cr
@@ -672,16 +716,18 @@ $$\pmatrix{1 & 1}\pmatrix{
 {1\over{x^2}} & -1 \cr
 0 & 1} = 0 \quad @\infty$$
 
-$${x^4\over{\pmatrix{1 & \cr & x^4}}} = \pmatrix{x^4 & \cr & 1}$$
+$$\pmatrix{1 & 1} x^4 \pmatrix{1 & \cr & x^4}^{-1} = \pmatrix{x^4 & 1}$$
 
-$$\pmatrix{1 & 1} \pmatrix{x^4 & \cr & 1}
-  \pmatrix{{1\over{x^2}} & -1 \cr 0 & x^4} = \pmatrix{x^2 & 0}$$
+$$\pmatrix{1 & 0 \cr x^4 & 1}
+  \pmatrix{{1\over{x^2}} & -1 \cr 0 & x^4} =
+\pmatrix{{1\over{x^2}} & -1 \cr x^2 & 0}$$
 
 $$\pmatrix{
 {1\over{x^2}} & -1 \cr
-x^2 & 0} = \pmatrix{1 & \cr & x^2}\pmatrix{
+x^2 & 0} \pmatrix{1 \cr {y\over{x^2}}} = \pmatrix{1 & \cr & x^2}\pmatrix{
 {1\over{x^2}} & -1 \cr
-1 & 0}$$
+1 & 0}
+\pmatrix{1 \cr {y\over{x^2}}} $$
 
 $$\det_{@\infty}\pmatrix{
 {1\over{x^2}} & -1 \cr
