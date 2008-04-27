@@ -519,7 +519,8 @@ eliminate them?  To find out, we form the basis of an ${\cal I}$-module:
 
 $$\{ {{2x-2}\over x} y + {{x^4+x^2-2x+2}\over x}, x \}$$
 
-Noting that ${{x^4+x^2}\over{x^2}} = x^2+1 \in {\cal I}$, we can simplify this:
+Noting that ${{x^4+x^2}\over{x}} = x(x^2+1)$ and $x^2+1 \in {\cal I}$,
+we can simplify this:
 
 $$\{ {{2x-2}\over x} y - {{2x-2}\over x}, x \}$$
 
@@ -528,7 +529,8 @@ ${\bf C}[x]$-module:
 
 $$\{ {{2x-2}\over x} y - {{2x-2}\over x}, {{2x-2}\over x} (x^4+1) - {{2x-2}\over x} y, x, xy \}$$
 
-and since $(2x-2){{x^4}\over{x^2}} = 2x^3-2x^2 \in {\bf C}[x]$, we simplify:
+and since $(2x-2){{x^4}\over{x}} = x(2x^3-2x^2)$ and
+$2x^3-2x^2 \in {\bf C}[x]$, we simplify:
 
 $$\{ {{2x-2}\over x} y - {{2x-2}\over x}, {{2x-2}\over x} - {{2x-2}\over x} y, x, xy \}$$
 
@@ -538,12 +540,12 @@ and write it in matrix form:
 
 $${1\over x}\pmatrix{-(2x-2) & 2x-2 \cr 2x-2 & -(2x-2) \cr x^2 & 0 \cr 0 & x^2} \pmatrix{1 \cr y}$$
 
-Elementary row operations $R_{4,3,x^2} R_{1,3,(2x-2)} R_{3,4,-1} R_{3,1,{1\over2}(x+1)} R_{2,1,1} $ yield:
+Elementary row operations\footnote{Read right to left; $R_{i,j,\lambda}$ adds $\lambda$ times row $j$ to row $i$; $R_{i,\alpha}$ multiplies row $i$ by $\alpha$ (a unit)} $R_{4,3,x^2} R_{1,3,(2x-2)} R_{3,4,-1} R_{3,1,{1\over2}(x+1)} R_{2,1,1} $ yield:
 
 $${1\over x}\pmatrix{1 & -1 \cr x^2 & 0} \pmatrix{1 \cr y} = \pmatrix{{{1-y}\over{x}} \cr x} $$
 
 so $\{ {{1-y}\over{x}}, x \} $ forms a basis for
-the ${\bf C}[x]$-module of the finite multiples of Z(0,1)P(0,-1).
+the ${\bf C}[x]$-module of the finite multiples of $Z(0,1)P(0,-1)$.
 We convert to a basis normal at infinity: $\{1, v\} = \{1, {y\over x^2}\}$:
 
 $$\pmatrix{{{1-y}\over{x}} \cr x} = \pmatrix{{1\over x} & -x \cr x & 0} \pmatrix{1 \cr {y\over x^2}}
@@ -563,164 +565,13 @@ and no other poles or zeros.
 \vfill\eject
 
 So, let's try a double pole at (0,-1) and a double zero at (0,1).  We
-can square our previous function (now I give up on pencil and paper
-and start using Macaulay 2) to obtain:
-
-{\small\begin{verbatim}
-
-Macaulay 2, version 0.9.95
-with packages: Classic, Core, Elimination, IntegralClosure, LLLBases, Parsing,
-               PrimaryDecomposition, SchurRings, TangentCone
-
-i1 : Rx = QQ[x]
-
-o1 = Rx
-
-o1 : PolynomialRing
-
-i2 : Fx = frac Rx
-
-o2 = Fx
-
-o2 : FractionField
-
-i3 : Fxy = Fx[y]/(y^2-x^4-1)
-
-o3 = Fxy
-
-o3 : QuotientRing
-
-
-
-i13 : ((x+y-1)^2/x)^2
-
-        5     4     3      2
-      4x  - 4x  + 4x  - 12x  + 16x - 8
-o13 = --------------------------------*y +
-                      2
-                     x
-      --------------------------------------------------------------------------
-       8     6      5     4     3      2
-      x  + 6x  - 12x  + 9x  - 4x  + 12x  - 16x + 8
-      --------------------------------------------
-                            2
-                           x
-
-o13 : frac(Fxy)
-
-i14 : ((x+y-1)^2/x)^2 * y
-
-       8     6      5     4     3      2
-      x  + 6x  - 12x  + 9x  - 4x  + 12x  - 16x + 8
-o14 = --------------------------------------------*y +
-                            2
-                           x
-      --------------------------------------------------------------------------
-        9     8     7      6      5      4     3      2
-      4x  - 4x  + 4x  - 12x  + 20x  - 12x  + 4x  - 12x  + 16x - 8
-      -----------------------------------------------------------
-                                    2
-                                   x
-
-o14 : frac(Fxy)
-
-\end{verbatim}}
-
-% $${{4x^5  - 4x^4  + 4x^3  - 12x^2  + 16x - 8}\over{x^2}} y
-%  + {{x^8  + 6x^6  - 12x^5  + 9x^4  - 4x^3  + 12x^2  - 16x + 8}\over{x^2}} $$
-
-%Forming a ${\bf C}[x]$-module basis from this and $x^2$, we obtain:
-
-$${1\over{x^2}} \pmatrix{
-- 4x^3  + 12x^2  - 16x + 8 &
-4x^3  - 12x^2  + 16x - 8 \cr
-4x^3  - 12x^2  + 16x - 8 &
-- 4x^3  + 12x^2  - 16x + 8 \cr
-x^4 & 0 \cr
-0 & x^4 \cr} \pmatrix{1 \cr y}$$
-
-%where I already anticipated the presence of the $x^4$ terms in the
-%bottom rows of the matrix by eliminating all terms of $x^4$ and higher
-%from the first two rows.  Now we need the GCD of the first column in
-%$ra+sb$ form (I'm now using Maxima):
-
-{\small\begin{verbatim}
-(%i76) a:4*x^3-12*x^2+16*x-8;
-
-                               3       2
-(%o76)                      4 x  - 12 x  + 16 x - 8
-(%i77) b:x^4;
-
-                                       4
-(%o77)                                x
-
-
-(%i81) gcdex(a,b);
-
-                       3      2               2
-                    5 x  + 5 x  + 4 x + 2  5 x  - 10 x + 9
-(%o81)/R/        [- ---------------------, ---------------, 1]
-                             16                   4
-
-(%i83) gcdex(a,b)[1]*a;
-
-                                6       5      4
-                             5 x  - 10 x  + 9 x  - 4
-(%o83)/R/                  - -----------------------
-                                        4
-\end{verbatim}}
-
-%In other words,
-
-$$ - {{5x^3+5x^2+4x+2}\over{16}}(4x^3-12x^2+16x-8) + {{5x^2-10x+9}\over4}x^4 = 1$$
-
-%and
-
-$$ - {{5x^3+5x^2+4x+2}\over{16}} (4x^3-12x^2+16x-8) = -{{5 x^6 - 10 x^5 + 9 x^4 - 4}\over 4}$$
-
-%so the matrix is row-equivalent to:
-
-$${1\over{x^2}} \pmatrix{
-- 4x^3  + 12x^2  - 16x + 8 &
-4x^3  - 12x^2  + 16x - 8 \cr
-x^4 & 0 \cr
-0 & x^4 \cr
-1 & -1}$$
-
-%and now some straightforward operations give:
-
-$${1\over{x^2}} \pmatrix{
-1 & -1 \cr
-0 & x^4}
-\pmatrix{1 \cr y}$$
-
-\vfill\eject
-
-In other words, $\{ {{1-y}\over{x^2}}, x^2 y \}$ is a basis for this
-${\bf C}[x]$-module.  We now rewrite it using a basis normal at
-infinity, specifically, $\{1, {y\over{x^2}}\}$:
-
-$$\pmatrix{
-{1\over{x^2}} & -1 \cr
-0 & x^4} \pmatrix{1 \cr {y\over{x^2}}}
-=
-\pmatrix{1 & \cr & x^4}\pmatrix{
-{1\over{x^2}} & -1 \cr
-0 & 1}$$
-
-$$\det_{@\infty}\pmatrix{
-{1\over{x^2}} & -1 \cr
-0 & 1} = 0$$
-
-$$\pmatrix{1 & 1}\pmatrix{
-{1\over{x^2}} & -1 \cr
-0 & 1} = 0 \quad @\infty$$
-
-$$\pmatrix{1 & 1} x^4 \pmatrix{1 & \cr & x^4}^{-1} = \pmatrix{x^4 & 1}$$
-
-$$\pmatrix{1 & 0 \cr x^4 & 1}
-  \pmatrix{{1\over{x^2}} & -1 \cr 0 & x^4} =
-\pmatrix{{1\over{x^2}} & -1 \cr x^2 & 0}$$
+can square our previous basis of
+$\{ {{1-y}\over{x}}, x \} $
+to obtain: 
+$\{ {{1-y}^2\over{x^2}}, x^2 \} = \{ {{1-2y+x^4+1}\over{x^2}}, x^2 \}$
+which simplifies to
+$\{ {{1-y}\over{x^2}}, x^2 \}$.  We again check for normalcy
+at infinity:
 
 $$\pmatrix{
 {1\over{x^2}} & -1 \cr
@@ -733,12 +584,13 @@ $$\det_{@\infty}\pmatrix{
 {1\over{x^2}} & -1 \cr
 1 & 0} = 1$$
 
-So, $\{{{1-y}\over{x^2}}, x^2\}$ is a ${\bf C}[x]$-basis for our
-module, normal at infinity.  $x^2$ clearly has a pole at infinity, but
-does ${1-y}\over{x^2}$?  Switching to $x={1\over z}; y={u\over{z^2}};
-u^2 = z^4 + 1$ and Writing it as $z^2(1-{u\over{z^2}}) = z^2 - u$
-shows that it has no zero at $(z,u) = (0, \pm 1)$, and thus no pole at
-$x = \infty$.  It is, therefore, the function we are looking for:
+So, $\{{{1-y}\over{x^2}}, x^2\}$ is a ${\bf C}[x]$-basis, normal at
+infinity, for the module of finite multiples of $Z^2(0,1)P^2(0,-1)$.
+$x^2$ has a pole at infinity, but does ${1-y}\over{x^2}$?
+Switching to $x={1\over z}; y={u\over{z^2}}; u^2 = z^4 + 1$ and
+Writing it as $z^2(1-{u\over{z^2}}) = z^2 - u$ shows that it has no
+zero at $(z,u) = (0, \pm 1)$, and thus no pole at $x = \infty$.  It
+is, therefore, the function we are looking for:
 
 $$\int {1\over{x\sqrt{x^4+1}}} \, dx
    = {1\over2} \ln{{1-\sqrt{x^4+1}}\over{x^2}}$$
