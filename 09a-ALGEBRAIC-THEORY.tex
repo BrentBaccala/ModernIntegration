@@ -3,61 +3,17 @@
 
 \definition
 
-A field's {\bf local ring} at a place $p$ is the set of
-all functions in the field with no pole at $p$; that
-is, $ \lim_{x\to p} f(x) \ne \infty $.
-
-A function is {\bf locally integral} at a place $p$
-if it belongs to its field's local ring at $p$.
+An element $f \in {\rm K}(\theta,y)$ is {\bf integral} if it satisfies a
+monic polynomial with coefficients in ${\rm K}[\theta]$.
 
 \enddefinition
 
-Remember the distinction I drew between a {\it pole} and a {\it
-removable singularity} is Chapter ?.  That's the reason for the limit
-in the definition; removable singularities are specifically included
-in a local ring.  Thus, $x\over\sqrt{x}$ is locally integral at $x=0$,
-despite the fact that it has a zero denominator, because
-$\lim_{x\to0}{x\over\sqrt{x}}=\sqrt{x}=0$, a finite value.
-
-It is often important, however, to specify which field we are
-refering to when we discuss a local ring.
-
-\example \quad
-
-In the field ${\cal C}(x)$, the function $x$ is locally integral at $x=0$.
-
-In the field $F = {{\cal C}(x,y); y^2=x+1}$, the function $x$ is locally integral
-at both $(x=0, y=1)$ and $(x=0, y=-1)$.  There is no place $x=0$ in
-this field; to speak of it so is ambiguous, as there are two places
-in $F$ where $x=0$.
-
-Likewise, $y$ is locally integral in $F$ at both $(x=0, y=1)$ and
-$(x=0, y=-1)$.  It is not locally integral in ${\cal C}(x)$ at $x=0$ simply
-because $y$ does not exist in the field ${\cal C}(x)$.
-
-\endexample
-
-Thus, a function like $x$ can be locally integral in both ${\cal C}(x)$ and
-${\cal C}(x,y)$; it is important to specify which we are talking about.
-
-Since the fields ${\cal C}(x)$ and ${\cal C}(x,y)$ are distinct, and have different
-places, they also have different local rings.  There is an important
-connection between them, however.
-
-\theorem
-\label{local integral polynomial}
-
-A function $f$ is locally integral at a place $p$ in ${\cal C}(x,y)$ if it
-satisfies a monic polynomial with coefficients in the local ring of
-${\cal C}(x)$ at the corresponding place in that field.
-
-\proof
-
-Define $z = {1 \over f}$ and consider what would happen if $f$ had a
-pole at $p$.  Then $\lim_{(x,y)\to p} f(x) = \infty$, so $z(x,y) = 0$
-(we are justified in discarding the limit by the principle of isolated
-singularities).  Yet $f$ satisfies a monic polynomial with coefficients
-in ${\cal C}(x)$'s local ring under $p$:
+Intuitively, an integral element is one with no finite poles.
+To see this, at least in the case where $K = {\bf C}$, define
+$z = {1 \over f}$ and consider what would happen if $f$ had a
+pole at some finite place $p$.
+Now $f$ satisfies a monic polynomial with coefficients
+$a_i \in {\bf C}[x]$:
 
 	$$f^n + a_{n-1} f^{n-1} + \cdots + a_1 f + a_0 = 0$$
 
@@ -65,144 +21,185 @@ in ${\cal C}(x)$'s local ring under $p$:
 
 	$$1 + a_{n-1} z + \cdots + a_1 z^{n-1} + a_0 z^n = 0$$
 
-Now, since $z$ is zero at a place over $p$, at least one of this
-polynomial's roots must be zero.  Since all of the $a_i$ are finite at
-$p$ (they are in ${\cal C}(x)$'s local ring there), multiplying
-any of them by zero yields zero, so substituting in
-$z=0$ yields $1=0$. We conclude that $z$ can not be zero, and thus
-$f$ can not have a pole over $p$.
-
-\endtheorem
-
-The converse is not true; just because a function does not satisfy
-such a monic polynomial does not mean that it is not locally integral.
-A slightly weaker converse does hold, however:
-
-\theorem
-
-A function $f$ in ${\cal C}(x,y)$ which is locally integral at all
-places in ${\cal C}(x,y)$ over a place $p$ in ${\cal C}(x)$ satisfies
-a monic polynomial with coefficients in the local ring of ${\cal C}(x)$
-under $p$.
-
-\proof
-
-Construct the polynomial
-
-$$(z - f(x,y))(z - f(x,y_2)) \cdots (z - f(x,y_n)) = 0$$
-
-$f$ clearly satisfies this polynomial at every place over $p$.
-Furthermore, multiplying out the terms yields:
-
-$$\matrix{z^n & - (f(x,y)+f(x,y_2)+\cdots+f(x,y_n)) z^{n-1} \hfill\cr
-   & + \quad (f(x,y)f(x,y_2)+f(x,y)f(x,y_3)+\cdots+f(x,y_{n-1})f(x,y_n)) z^{n-2} \hfill\cr
-   & + \cdots + f(x,y)f(x,y_2)\cdots f(x,y_n) = 0 \hfill\cr}$$
-
-All of these coefficients are symmetric functions in $y_i$, and thus
-exist in ${\cal C}(x)$.  Furthermore, since $f$ is finite (by
-assumption) at all conjugate values over $p$, each of these
-coefficients must also be finite at $p$ (since they are constructed by
-addition and multiplication from the conjugate values of $f$), and are
-thus in the local ring of ${\cal C}(x)$ at $p$.
-
-\endtheorem
-
-In short, a function in ${\cal C}(x,y)$ which satisfies a monic
-polynomial whose coefficients are in a local ring of ${\cal C}(x)$ at
-a point $p$ is locally integral in ${\cal C}(x,y)$ at all places over
-$p$.  A function which does not satisfy such a polynomial has
-a pole at at least one place over $p$.
-
-A more advanced, more purely algebraic approach to this subject would
-{\it define} local rings using Theorem \ref{local integral
-polynomial}, then use valuations and completions to {\it prove} the
-connection between local rings and poles (or the lack thereof).  See
-[van der Waerden], Chapter 18.  I will forego this in favor of this
-simpler, more analytic (note the use of the limit) approach.
-
-
-Having established the existence and basic properties of {\it locally}
-integral elements, we can now discuss {\it globally} integral
-elements.  Obviously, elements in a field will be locally integral at
-more than one place.  In fact, field elements will be locally integral
-at almost all places (because they only have a finite number of
-poles).  So, intuitively, a {\it globally} integral element would be
-one that is integral at every place in a field.  However, Theorem ?
-immediately tell us that the only such functions (those which have no
-poles anywhere) are the constants, so this turns out to be too
-restrictive to be useful.  Instead, we exclude infinity and define:
-
-\definition
-
-A function is {\bf globally integral} in a field if it is locally
-integral at all {\it finite} places in the field.
-
-\enddefinition
+Now, if $z$ is zero at a place $p$ over $x=x_0$, at least one of this
+polynomial's roots must be zero at $x=x_0$.  Since all of the $a_i$
+are finite at $x=x_0$ (they are polynomials), multiplying any of them
+by zero yields zero, so substituting in $z=0$ yields $1=0$. We
+conclude that $z$ can not be zero, and thus $f$ can not have a pole
+over $p$.
 
 What's special about infinity?  Why not exclude some other place?
 Well, nothing's all that special about infinity.  We've already seen
 how a birational transformation can be used to swap infinity with any
-finite point.  We use infinity because it's convenient.  For example,
+finite point.  Demanding that a field element have no poles anywhere
+is too restrictive, because Theorem ? tells us that such an element
+must be constant.  So we want to relax this requirement slightly by
+allowing poles over a single point.  We use infinity because it's
+convenient.
 
-\theorem
+It's not always obvious from inspection which functions are integral.
+Something like $y \over x$, which appears to have a pole at $x=0$, is
+actually integral if, for example, $y^2=x^3$.  Then we can consider
+squaring $y \over x$ to obtain ${y^2 \over x^2} = {x^3 \over x^2} =
+x$.  If the square is finite, then the original function had to be
+finite (you can't square infinity and get a finite value), so we
+conclude that $y \over x$ is, in fact, globally integral in ${\bf
+C}(x,y); y^2=x^3$, as it satisfies the monic polynomial $f^2 - x = 0$.
 
-The globally integral functions in ${\cal C}(x)$ are the polynomials.
+Unfortunately, we have no straightforward means to construct such a
+polynomial, or prove that one doesn't exist, for any particular
+function $f$.  To test a function to determine if it is integral,
+we'll need a more advanced approach.
 
-\proof
-
-The elements of ${\cal C}(x)$ are fractions of polynomials with no
-common factors between numerator and denominator.  Since {\cal C} is
-algebraically closed, both numerator and denominator factor into
-linear terms with no cancelation between them.  To avoid any finite
-poles, the denominator must be a constant.  Since polynomials
-have no finite poles, there is no restriction on the numerator.
-
-\endtheorem
-
-Pretty straightforward, huh?
-
-While it's obvious from inspection which functions are globally
-integral in ${\cal C}(x)$, the situation in ${\cal C}(x,y)$ is more
-difficult.  Something like $y \over x$, which appears to have a pole
-at $x=0$, is actually globally integral if, for example, $y^2=x^3$.
-Then we can consider squaring $y \over x$ to obtain ${y^2 \over x^2} =
-{x^3 \over x^2} = x$.  If the square is finite, then the original
-function had to be finite (you can't square infinity and get a
-finite value), so we conclude that $y \over x$ is, in fact,
-globally integral in ${\cal C}(x,y); y^2=x^3$.
-
-We could use Theorem \ref{local integral polynomial} and the fact
-that, in ${\cal C}(x,y); y^2=x^3$,
-
-	$$ \left({y \over x}\right)^2 - x = 0 $$
-
-to conclude that, since this is a monic polynomial with coefficients
-globally integral in ${\cal C}(x)$, $y \over x$ must be globally
-integral in ${\cal C}(x,y); y^2=x^3$.  Theorem \ref{local integral
-polynomial} can be easily generalized:
-
-\theorem
-
-A function $f$ is globally integral in ${\cal C}(x,y)$ if it
-satisfies a monic polynomial with globally integral coefficients in
-${\cal C}(x)$.
-
-\proof
-
-\endtheorem
-
-Proof that globally integral elements form a finite extension:
-[Eichler], p. 54
-
-Proof that field elements are determined by their divisors, up to a
-constant multiple: [Eicher], p. 84
-
-[Eicher], p. 86: Prime divisors are isomorphic with special local rings.
-
-The problem is that we have no straightforward means to construct
-such a polynomial, or prove that one doesn't exist, for any
-particular function $f$.  To test a function to determine
-if it is integral, we'll use a different approach.
+%\definition
+%
+%A field's {\bf local ring} at a place $p$ is the set of
+%all functions in the field with no pole at $p$; that
+%is, $ \lim_{x\to p} f(x) \ne \infty $.
+%
+%A function is {\bf locally integral} at a place $p$
+%if it belongs to its field's local ring at $p$.
+%
+%\enddefinition
+%
+%Remember the distinction I drew between a {\it pole} and a {\it
+%removable singularity} is Chapter ?.  That's the reason for the limit
+%in the definition; removable singularities are specifically included
+%in a local ring.  Thus, $x\over\sqrt{x}$ is locally integral at $x=0$,
+%despite the fact that it has a zero denominator, because
+%$\lim_{x\to0}{x\over\sqrt{x}}=\sqrt{x}=0$, a finite value.
+%
+%It is often important, however, to specify which field we are
+%refering to when we discuss a local ring.
+%
+%\example \quad
+%
+%In the field ${\cal C}(x)$, the function $x$ is locally integral at $x=0$.
+%
+%In the field $F = {{\cal C}(x,y); y^2=x+1}$, the function $x$ is locally integral
+%at both $(x=0, y=1)$ and $(x=0, y=-1)$.  There is no place $x=0$ in
+%this field; to speak of it so is ambiguous, as there are two places
+%in $F$ where $x=0$.
+%
+%Likewise, $y$ is locally integral in $F$ at both $(x=0, y=1)$ and
+%$(x=0, y=-1)$.  It is not locally integral in ${\cal C}(x)$ at $x=0$ simply
+%because $y$ does not exist in the field ${\cal C}(x)$.
+%
+%\endexample
+%
+%Thus, a function like $x$ can be locally integral in both ${\cal C}(x)$ and
+%${\cal C}(x,y)$; it is important to specify which we are talking about.
+%
+%Since the fields ${\cal C}(x)$ and ${\cal C}(x,y)$ are distinct, and have different
+%places, they also have different local rings.  There is an important
+%connection between them, however.
+%
+%\theorem
+%\label{local integral polynomial}
+%
+%A function $f$ is locally integral at a place $p$ in ${\cal C}(x,y)$ if it
+%satisfies a monic polynomial with coefficients in the local ring of
+%${\cal C}(x)$ at the corresponding place in that field.
+%
+%\proof
+%
+%
+%\endtheorem
+%
+%The converse is not true; just because a function does not satisfy
+%such a monic polynomial does not mean that it is not locally integral.
+%A slightly weaker converse does hold, however:
+%
+%\theorem
+%
+%A function $f$ in ${\cal C}(x,y)$ which is locally integral at all
+%places in ${\cal C}(x,y)$ over a place $p$ in ${\cal C}(x)$ satisfies
+%a monic polynomial with coefficients in the local ring of ${\cal C}(x)$
+%under $p$.
+%
+%\proof
+%
+%Construct the polynomial
+%
+%$$(z - f(x,y))(z - f(x,y_2)) \cdots (z - f(x,y_n)) = 0$$
+%
+%$f$ clearly satisfies this polynomial at every place over $p$.
+%Furthermore, multiplying out the terms yields:
+%
+%$$\matrix{z^n & - (f(x,y)+f(x,y_2)+\cdots+f(x,y_n)) z^{n-1} \hfill\cr
+%   & + \quad (f(x,y)f(x,y_2)+f(x,y)f(x,y_3)+\cdots+f(x,y_{n-1})f(x,y_n)) z^{n-2} \hfill\cr
+%   & + \cdots + f(x,y)f(x,y_2)\cdots f(x,y_n) = 0 \hfill\cr}$$
+%
+%All of these coefficients are symmetric functions in $y_i$, and thus
+%exist in ${\cal C}(x)$.  Furthermore, since $f$ is finite (by
+%assumption) at all conjugate values over $p$, each of these
+%coefficients must also be finite at $p$ (since they are constructed by
+%addition and multiplication from the conjugate values of $f$), and are
+%thus in the local ring of ${\cal C}(x)$ at $p$.
+%
+%\endtheorem
+%
+%In short, a function in ${\cal C}(x,y)$ which satisfies a monic
+%polynomial whose coefficients are in a local ring of ${\cal C}(x)$ at
+%a point $p$ is locally integral in ${\cal C}(x,y)$ at all places over
+%$p$.  A function which does not satisfy such a polynomial has
+%a pole at at least one place over $p$.
+%
+%A more advanced, more purely algebraic approach to this subject would
+%{\it define} local rings using Theorem \ref{local integral
+%polynomial}, then use valuations and completions to {\it prove} the
+%connection between local rings and poles (or the lack thereof).  See
+%[van der Waerden], Chapter 18.  I will forego this in favor of this
+%simpler, more analytic (note the use of the limit) approach.
+%
+%
+%Having established the existence and basic properties of {\it locally}
+%integral elements, we can now discuss {\it globally} integral
+%elements.  Obviously, elements in a field will be locally integral at
+%more than one place.  In fact, field elements will be locally integral
+%at almost all places (because they only have a finite number of
+%poles).  So, intuitively, a {\it globally} integral element would be
+%one that is integral at every place in a field.  However, Theorem ?
+%immediately tell us that the only such functions (those which have no
+%poles anywhere) are the constants, so this turns out to be too
+%restrictive to be useful.  Instead, we exclude infinity and define:
+%
+%\definition
+%
+%A function is {\bf globally integral} in a field if it is locally
+%integral at all {\it finite} places in the field.
+%
+%\enddefinition
+%
+%
+%We could use Theorem \ref{local integral polynomial} and the fact
+%that, in ${\cal C}(x,y); y^2=x^3$,
+%
+%	$$ \left({y \over x}\right)^2 - x = 0 $$
+%
+%to conclude that, since this is a monic polynomial with coefficients
+%globally integral in ${\cal C}(x)$, $y \over x$ must be globally
+%integral in ${\cal C}(x,y); y^2=x^3$.  Theorem \ref{local integral
+%polynomial} can be easily generalized:
+%
+%\theorem
+%
+%A function $f$ is globally integral in ${\cal C}(x,y)$ if it
+%satisfies a monic polynomial with globally integral coefficients in
+%${\cal C}(x)$.
+%
+%\proof
+%
+%\endtheorem
+%
+%Proof that globally integral elements form a finite extension:
+%[Eichler], p. 54
+%
+%Proof that field elements are determined by their divisors, up to a
+%constant multiple: [Eicher], p. 84
+%
+%[Eicher], p. 86: Prime divisors are isomorphic with special local rings.
+%
 
 \section{Modules}
 
@@ -241,7 +238,7 @@ case, these rules are obvious, but that's not always the case.}
 
 Not all modules have a finite set of generators, and not all those
 have a linearly independent set of generators.  Elements formed from a
-basis can be added by using the module's distributive property (!!) to
+basis can be added by using the module's distributive property to
 factor out the coefficients from of each basis element and then
 performing the addition in the ring R:
 
@@ -271,14 +268,15 @@ an S-module.
 
 Note that it is vitally important to specify the ring used for the
 coefficients.  For example, consider the basis $\{1, y\}$.  Treating
-this as a ${\cal C}(x)$-module, I can form ${y \over x} = {1 \over x}
-y$, since ${1 \over x} \in {\cal C}(x)$.  However, $y \over x$ does {\it
-not} belong to the ${\cal C}[x]$-module generated by $\{1, y\}$.  I
-would need to use polynomial coefficients to form a ${\cal
+this as a ${\bf C}(x)$-module, I can form ${y \over x} = {1 \over x}
+y$, since ${1 \over x} \in {\bf C}(x)$.  However, $y \over x$ does
+{\it not} belong to the ${\bf C}[x]$-module generated by $\{1, y\}$.
+I would need to use polynomial coefficients to form a ${\bf
 C}[x]$-module, not the rational functions coefficients allowed in a
-${\cal C}(x)$-module.  We'll be primarily interested in ${\cal C}[x]$-modules,
-${\cal C}(x)$-modules, and ${\cal I}$-modules, where ${\cal I}$ is the ring
-of globally integral elements in ${\cal C}(x,y)$.
+${\bf C}(x)$-module.  We'll be primarily interested in ${\rm
+K}[\theta]$-modules, ${\rm K}(\theta)$-modules, and ${\cal
+I}$-modules, where ${\cal I}$ is the ring of integral elements in
+${\rm K}(\theta,y)$.
 
 
 \input{09b-RATIONAL-FUNCTION-BASIS.tex}
