@@ -225,7 +225,7 @@ as a multiplication.
 
 \definition
 
-A {\it free R-module} is an R-module spanned by a basis
+A {\it free R-module} is an R-module spanned by a linearly independent basis
 $\{b_1, b_2, ... b_n\}$.  It consists of all elements formed as follows:
 \footnote{I'll also note that a multiplication rule needs to be specified
 between the basis elements and the elements of the ring, and an
@@ -239,11 +239,11 @@ case, these rules are obvious, but that's not always the case.}
 
 \enddefinition
 
-Not all modules have a basis, but for those that do the two
-definitions are basically identical.  Elements formed from a basis can
-be added by using the module's distributive property (!!) to factor out the
-coefficients from of each basis element and then performing the addition
-in the ring R:
+Not all modules have a finite set of generators, and not all those
+have a linearly independent set of generators.  Elements formed from a
+basis can be added by using the module's distributive property (!!) to
+factor out the coefficients from of each basis element and then
+performing the addition in the ring R:
 
 $$ (a_1 b_1 + a_2 b_2 + ... + a_n b_n) + (c_1 b_1 + c_2 b_2 + ... + c_n b_n) $$
 $$  = (a_1 + c_1) b_1 + (a_2 + c_2) b_2 + ... + (a_n + c_n) b_n $$
@@ -252,10 +252,19 @@ So the elements generated from a basis clearly form a module.  R operates
 on them by multiplication by every coefficient.
 
 \example \quad
+\label{sample modules}
 
-An ideal I in a ring R is a R-module, but a subring of R, in
-general, is not, because multiplication by an element of R might
-not produce a result in the subring.
+An ideal I in a ring R is a R-module, but a subring S of R, in
+general, is not, because multiplication by an element of R might not
+produce a result in the subring.  R, however, can always be viewed as
+an S-module.
+
+% XXX
+% If R is a principal ideal ring, then every ideal is also a
+% free R-module, admitting a basis consisting of a single
+% element, a generator of the ideal.
+%
+% Is this true?  Any zero divisor counterexamples?
 
 \endexample
 
@@ -274,6 +283,197 @@ of globally integral elements in ${\cal C}(x,y)$.
 
 \input{09b-RATIONAL-FUNCTION-BASIS.tex}
 
+\vfil\eject
+
+Since polynomials have no finite poles, they are integral elements,
+and thus ${\rm K}[x] \subseteq {\cal I}$.  Thus, ${\cal I}$ (the ring of
+integral elements) is trivially a ${\rm K}[x]$-module (see Example
+\ref{sample modules}), but what is not nearly so obvious is that it is
+also a free module, a fact which underlies a great deal of our theory.
+I'll prove this first by showing that ${\cal I}$ is finitely generated
+as a ${\rm K}[x]$-module, then showing the existance of a linearly
+independent set of generators.
+
+Let's start with a preliminary theorem.
+
+\theorem
+\label{construction of dual basis}
+
+If $\{w_1,\ldots,w_n\}$ is a basis for a finite separable field
+extension $E/K$, then a dual basis $\{u_1,\ldots,u_n\}$ can be
+constructed such that ${\rm Tr}(w_i u_j) = \delta_{ij}$.
+([Lang] Corollary VI.5.3)
+
+\proof
+
+Consider the following matrix:
+
+$$M = \pmatrix{{\rm Tr}(w_1 w_1) & & \cr \vdots & \ddots & \cr {\rm Tr}(w_1 w_n) & \cdots & {\rm Tr}(w_n w_n)}$$
+
+Now take an element $x \in E$, and represent it relative to the basis
+$\{w_1,\ldots,w_n\}$ as a row vector $X = (x_i)$.  Multiplying $X M$
+produces a row vector whose $j^{\rm th}$ element can be written:
+
+$$\sum_i x_i {\rm Tr}(w_j w_i) = {\rm Tr}(w_j \sum_i x_i w_i) = {\rm Tr}(w_j x) = {\rm Tr}_x(w_j)$$
+
+where I used first the $K$-linearity and additive distributive
+properties of ${\rm Tr}$, then wrote ${\rm Tr}_x: f(a) = {\rm Tr}(ax)$
+to emphasize that I'm regarding ${\rm Tr}_x$ as a linear form in ${\rm
+Hom}_E(E,K)$.  So, if $M$ is singular, then there exists some non-zero
+element $x$ such that ${\rm Tr}_x$ is zero for all of $w_i$, which
+form a basis set, so ${\rm Tr}_x$ must therefore be the zero map.
+This can only happen if ${\rm Tr}$ is identically zero, which would be
+the case for an inseparable extension.  For the separable case,
+therefore, $M$ must be invertible, and we can write:
+
+$$M^{-1} M = \pmatrix{1 & & \cr & \ddots & \cr & & 1}$$
+
+A moment's thought now shows that the rows of $M^{-1}$ are the desired
+dual basis elements, written with respect to $\{w_1,\ldots,w_n\}$.
+
+\endtheorem
+
+\vfil\eject
+
+\theorem
+\label{I is finitely generated}
+
+${\cal I}$ is a finitely generated ${\rm K}$-module.
+([A+MacD] Proposition 5.17; [Lang] Exercise VII.3)
+
+\proof
+
+Regarding ${\rm K}(x,y)$ as a vector space over ${\rm K}(x)$, we can
+easily construct a basis of integral elements by starting with $\{1,
+y, \ldots, y^{n-1}\}$ and multiplying each element (if needed) by a
+polynomial in $x$ which cancels all of its poles:
+
+$${\rm K}(x,y) = {\rm K}(x)\{w_1,\ldots,w_n\} \qquad \forall i(w_i \in {\cal I})$$
+
+Using Theorem \ref{construction of dual basis}, construct a dual basis
+$\{u_1,\ldots,u_n\}$ so that ${\rm Tr}(w_i u_j) = \delta_{ij}$.  Take
+any $x \in {\cal I}$ and write it using the dual basis:
+
+$$x = \sum_i a_i u_i \qquad a_i \in {\rm K}(x)$$
+
+Now consider ${\rm Tr}(x w_j)$.  Now, $x$ and $w_j$ are both in ${\cal
+I}$, so $x w_j$ is in ${\cal I}$, and therefore has a monic minimum
+polynomial with coefficients in ${\rm K}[x]$.  Since ${\rm Tr}$ equals
+some integer multiple of the negative of the second coefficient in a
+monic minimum polynomial, ${\rm Tr}(x w_j) \in {\rm K}[x]$.  But also,
+
+$${\rm Tr}(x w_j) = {\rm Tr}(\sum_i a_i u_i w_j)
+ = \sum_i {\rm Tr}(a_i u_i w_j) %\hfil (Tr an additive homomorphism)
+ = \sum_i a_i {\rm Tr}(u_i w_j) %\hfil (linearity of Tr)
+ = a_i$$
+
+which establishes that $\forall i (a_i \in {\rm K}[x])$, so
+
+$${\cal I} \subseteq {\rm K}[x]\{u_1,\ldots,u_n\} $$
+
+${\rm K}[x]$ is a Noetherian ring (Theorem ??), so ${\rm
+K}[x]\{u_1,\ldots,u_n\}$ is a Noetherian module (Theorem ??),
+which means that ${\cal I}$, as a submodule, is Noetherian
+and thus finitely generated (Theorem ??).
+
+\endtheorem
+
+\vfil\eject
+
+\theorem
+\label{submodules of free modules over PIRs are free}
+
+Any submodule of a finite free module over a principal ideal ring is free.
+([Lang] Theorem III.7.1)
+
+\proof
+
+Let $F = R\{w_1,\ldots,w_n\}$ be a free $R$-module ($R$ a principal
+ideal ring) with a submodule $M$.  Consider $F_i =
+R\{w_1,\ldots,w_i\}$, the free $R$-module generated by the first $i$
+basis elements, and $M_i = F_i \cap M$.  We will show inductively that
+all of the $M_i$ are free $R$-modules, and since $F_i = F$ and $M_i =
+M$, this will prove the theorem.
+
+First, consider $M_1 = R\{w_1\} \cap M$.  If $M_1$ is not empty (and
+thus free), then any $m \in M_1$ can be written $r w_1$.  Since a
+module forms an additive group, and we can operate on the module using
+all the elements of $R$, it follows that all the $r$'s must form an
+ideal, and since $R$ is principal, that ideal can be written with a
+single generator, say $(r_1)$, and $M_1 = R\{r_1 w_1\}$ (or is empty).
+
+Now, assume that $M_j$ is free for all $j<i$.  Consider all $x \in
+M_i$, which can be written $r_1 w_1 + \cdots + r_i w_i$.  Either $M_i
+= M_{i-1}$ (and is therefore free), or at least some of the $r_i$ are
+non-zero.  By the same rationale as the last paragraph, these $r_i$
+form an ideal, which can be written $(r_i)$.  Take any element $x \in
+M_i$ with its $i^{\rm th}$ coefficient $r_i$ and add it to
+$M_{i-1}$'s basis set to form a basis set for $M_i$, since some
+multiple of this element can be used to cancel any $i^{\rm th}$
+coefficient from an element in $M_i$ and leave an element in $M_{i-1}$
+which can be formed using the remaining basis elements.
+
+\endtheorem
+
+A {\it torsion-free} module has no ``zero divisors'', in the sense
+that no non-zero element of its associated ring can operate on a
+non-zero element of the module and produce zero.  Since fields are
+torsion-free, and all of our modules are subsets of the field
+$K(x,y)$, they are all torsion-free.
+
+\theorem
+\label{finitely generated torsion-free modules over a PIR are free}
+
+Any finitely generated, torsion-free module $M$ over a principal ideal
+ring $R$ is free. ([Lang] Theorem III.7.3)
+
+\proof
+
+Take a maximal set of $M$'s linearly independent generators $\{w_1,
+\ldots, w_n\}$ and any remaining generators $\{y_{n+1}, \ldots,
+y_m\}$.  Every $y_i$ is therefore linearly dependant on $\{w_1,
+\ldots, w_n\}$:
+
+$$a_i y_i + r_1 w_1 + \cdots + r_n w_n = 0 \qquad a_i \ne 0$$
+
+Take the product of all the $a_i$'s: $a = a_{n+1} a_{n+2} \cdots a_m$
+and consider the mapping $x \mapsto ax$ which is injective, since $a
+\ne 0$ and the module is torsion-free, so therefore maps $M$ to $aM$,
+an isomorphic image which is a submodule of the free module
+$R\{w_1,\ldots,w_n\}$.  By Theorem \ref{submodules of free modules
+over PIRs are free}, $aM$ is therefore free, and since it is
+isomorphic to $M$, we can take a basis of $aM$, divide all of its
+basis elements by $a$ (they are all multiples of $a$), and obtain
+a basis for $M$.
+
+\endtheorem
+
+Now, since $K[x]$ is a principal ideal ring (Theorem ??), Theorems
+\ref{I is finitely generated} and \ref{finitely generated torsion-free
+modules over a PIR are free} demonstrate that ${\cal I}$
+is a free $K[x]$-module.
+
+\definition
+
+A basis for ${\cal I}$ will be called an {\bf integral basis}.
+
+\enddefinition
+
+\theorem
+
+Any integral basis is also a basis for the $K(x,y)$ field as a
+$K(x)$-module.
+
+\endtheorem
+
+While the preceding theorems offer an existance proof for an integral
+basis, it is not immediately clear how to obtain one for any
+particular field, and in fact the calculation of an integral basis
+ultimately becomes one of the biggest computational barriers in this
+theory.  Therefore, I will defer a more detailed discussion until a
+later chapter, and instead present a simple construction for the
+special case of a simple radical extension.
+
 \definition
 
 A basis is said to be a {\bf locally integral basis} at a place $p$ in
@@ -291,20 +491,6 @@ $p$, using elements from ${\cal C}(x)$ locally integral at $p$.
 
 \endtheorem
 
-\definition
-
-A basis is said to be a {\bf globally integral basis}, or more commonly
-just an {\bf integral basis}, if it is a locally integral basis at
-all finite places in ${\cal C}(x)$
-
-\enddefinition
-
-It is not immediately clear that an (globally) integral basis will
-exist for any particular field, and in fact the calculation of an
-integral basis ultimately becomes one of the biggest computational
-barriers in this theory.  Therefore, I will defer a more detailed
-discussion until a later chapter, and instead present a simple
-construction for the special case of a simple radical extension.
 
 With a local integral basis (no pole at a place), there are 1-to-1
 correspondances:
@@ -312,32 +498,3 @@ correspondances:
 	use coeffs in K(x) w/ no pole at place <=> elem in K(x,y) w/ no pole
 
 	use coeff w/ pole at place <=> elem in K(x,y) w/ pole at place
-
-
-\theorem
-
-${\cal I}$ is a finitely generated ${\bf C}[x]$-module.
-
-\endtheorem
-
-\definition
-
-A {\bf basis for all
-rational functions} spans the entire ${\bf C}(x,y)$ field
-as a ${\bf C}(x)$-module.
-
-\enddefinition
-
-\definition
-
-An {\bf integral basis} spans the ${\cal I}$ ring
-as a ${\bf C}[x]$-module.
-
-\enddefinition
-
-\theorem
-
-Any integral basis is also a rational function basis.
-
-\endtheorem
-
