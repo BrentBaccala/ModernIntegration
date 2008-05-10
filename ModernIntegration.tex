@@ -6,6 +6,8 @@
 \usepackage{graphics}
 \usepackage{amssymb}
 
+%\usepackage{verbatim}
+
 \usepackage{footnote}
 \makesavenoteenv{tabular}
 
@@ -17,6 +19,8 @@
 
 \usepackage[pdftex]{graphicx}
 %\usepackage[dvips]{graphicx}
+
+\input comment.sty
 
 %\setmarginsrb{0.5in}{0.5in}{0.5in}{0.5in}{0.5in}{0.2in}{0pt}{10pt}
 \setmarginsrb{0.5in}{1in}{0.5in}{0.5in}{20pt}{20pt}{20pt}{20pt}
@@ -69,6 +73,8 @@
 \newtheorem{texample}[ttheorem]{Example}
 \def\example{\begin{texample}\begin{quote}\rm}
 \def\endexample{\hfill$\Box$\end{quote}\end{texample}}
+
+\excludecomment{computer-maxima}
 
 \title{Introduction to Differential Algebra}
 \author{Brent Baccala}
