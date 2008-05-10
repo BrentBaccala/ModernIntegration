@@ -702,6 +702,22 @@ is, therefore, the function we are looking for:
 $$\int {1\over{x\sqrt{x^4+1}}} \, dx
    = {1\over2} \ln{{1-\sqrt{x^4+1}}\over{x^2}}$$
 
+I'll now point out to you what's been pointed out to me, and that is a
+traditional solution technique for this integral:
+
+$$\int {1\over{x\sqrt{x^4+1}}} \, dx$$
+$$x^2 = u \qquad 2 x\, dx = du$$
+$$\int {1\over{2u\sqrt{u^2+1}}} \, du$$
+$$u = \tan z \qquad du = \sec^2 z dz$$
+$${1 \over 2} \int \csc z \, dz = {1\over 2} \ln \tan {z\over2}$$
+$$={1\over2} \ln {{\sec z - 1}\over{\tan z}}$$
+$$={1\over2} \ln {{\sqrt{u^2+1}-1}\over{u}}$$
+$$={1\over2} \ln {{\sqrt{x^4+1}-1}\over{x^2}}$$
+
+\vskip 0.5in
+
+$${{1 - \cos z}\over{\sin z}} = {{1 - \cos^2 {z\over2} + \sin^2 {z\over2}}\over{2\sin{z\over2}\cos{z\over2}}} = {{2\sin^2 {z\over2}}\over{2\sin{z\over2}\cos{z\over2}}} = {{\sin {z\over2}}\over{\cos{z\over2}}} $$
+
 \endexample
 
 \vfill\eject
