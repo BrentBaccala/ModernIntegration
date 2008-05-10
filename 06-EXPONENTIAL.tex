@@ -1,2 +1,44 @@
 
-The Expotential Extension
+\setcounter{chapter}{5}
+\mychapter{The Exponential Extension}
+
+\vfil\eject
+
+\example Compute $\int \csc x \, {\rm d}x$
+
+We'll operate in ${\bf C}(x, \phi = \exp \,ix)$ and evaluate
+
+$$\int {{2i}\over{\phi - \phi^{-1}}} \,dx = \int 2i {{\phi}\over{\phi^2 - 1}} \,dx$$
+
+Now we want a partial fractions expansion.  We could use a resultant,
+or the Euclidean G.C.D. algorithm, but it's simpler to just note that
+the denominator's a difference of squares and compute:
+
+$${{c_1}\over{\phi-1}} + {{c_2}\over{\phi+1}} = {{\phi}\over{\phi^2-1}} $$
+
+$${{c_1}(\phi+1)} + {{c_2}(\phi-1)} = \phi \qquad c_1 = c_2 = {1\over2} $$
+
+giving us
+
+$$\int i \big[ {{1}\over{\phi-1}} + {{1}\over{\phi+1}} \big] dx$$
+
+Now, we have irreducible denominators, so the answer (if it exists) must
+be expressed in terms of their logarithms:
+
+$$ {{d(\phi+1)}\over{\phi+1}} = {{i\phi\,dx}\over{\phi+1}} = [1 - {{1}\over{\phi+1}}]i\,dx$$
+
+$$ {{d(\phi-1)}\over{\phi-1}} = {{i\phi\,dx}\over{\phi-1}} = [1 + {{1}\over{\phi-1}}]i\,dx$$
+
+so the integral can be written:
+
+$$\int {{d(\phi-1)}\over{\phi-1}} - {{d(\phi+1)}\over{\phi+1}} = \ln (\phi-1) - \ln(\phi+1) = \ln({{\phi-1}\over{\phi+1}})$$
+$$ = \ln ({{e^{ix}-1}\over{e^{ix}+1}}) = \ln ({{e^{ix/2}-e^{-ix/2}}\over{e^{ix/2}+e^{-ix/2}}}) = \ln i {{\sin {x\over2}}\over{\cos {x\over2}}} = \ln \tan {x\over2} $$
+
+where I dropped the $i$ at the end because, as a constant multiple
+inside a logarithm, it disappears into the constant of integration,
+and we conclude that
+
+$$\int \csc x \,{\rm d}x = \ln \tan {x\over2} $$
+
+
+\endexample
