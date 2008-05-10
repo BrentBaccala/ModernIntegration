@@ -10,10 +10,7 @@ monic polynomial with coefficients in ${\rm K}[\theta]$.
 
 Intuitively, an integral element is one with no finite poles.
 To see this, at least in the case where $K = {\bf C}$, define
-$z = {1 \over f}$ and consider what would happen if $f$ had a
-pole at some finite place $p$.
-Now $f$ satisfies a monic polynomial with coefficients
-$a_i \in {\bf C}[x]$:
+$z = {1 \over f}$ and substitute this into $f$'s monic polynomial:
 
 	$$f^n + a_{n-1} f^{n-1} + \cdots + a_1 f + a_0 = 0$$
 
@@ -205,8 +202,7 @@ we'll need a more advanced approach.
 
 We'll resort now to {\it modules}, a fairly important algebra concept
 backed by a substantial body of theory, upon which I shall only draw
-as needed.  General references included [Atiyah+McDonald], [Lang], and
-about a thousand others.
+as needed.  General references include [Atiyah+McDonald] and [Lang].
 
 \definition
 
@@ -279,18 +275,19 @@ I}$-modules, where ${\cal I}$ is the ring of integral elements in
 ${\rm K}(\theta,y)$.
 
 
-\input{09b-RATIONAL-FUNCTION-BASIS.tex}
+% \input{09b-RATIONAL-FUNCTION-BASIS.tex}
 
-\vfil\eject
+% \vfil\eject
+\section{The ${\rm K}[\theta]$-module ${\cal I}$}
 
 Since polynomials have no finite poles, they are integral elements,
-and thus ${\rm K}[x] \subseteq {\cal I}$.  Thus, ${\cal I}$ (the ring of
-integral elements) is trivially a ${\rm K}[x]$-module (see Example
-\ref{sample modules}), but what is not nearly so obvious is that it is
-also a free module, a fact which underlies a great deal of our theory.
-I'll prove this first by showing that ${\cal I}$ is finitely generated
-as a ${\rm K}[x]$-module, then showing the existance of a linearly
-independent set of generators.
+and thus ${\rm K}[\theta] \subseteq {\cal I}$.  Thus, ${\cal I}$ (the
+ring of integral elements) is trivially a ${\rm K}[\theta]$-module
+(see Example \ref{sample modules}), but what is not nearly so obvious
+is that it is also a free module, a fact which underlies a great deal
+of our theory.  I'll prove this first by showing that ${\cal I}$ is
+finitely generated as a ${\rm K}[\theta]$-module, then showing the
+existance of a linearly independent set of generators.
 
 Let's start with a preliminary theorem.
 
@@ -331,22 +328,22 @@ dual basis elements, written with respect to $\{w_1,\ldots,w_n\}$.
 
 \endtheorem
 
-\vfil\eject
+% \vfil\eject
 
 \theorem
 \label{I is finitely generated}
 
-${\cal I}$ is a finitely generated ${\rm K}$-module.
+${\cal I}$ is a finitely generated ${\rm K}[\theta]$-module.
 ([A+MacD] Proposition 5.17; [Lang] Exercise VII.3)
 
 \proof
 
-Regarding ${\rm K}(x,y)$ as a vector space over ${\rm K}(x)$, we can
-easily construct a basis of integral elements by starting with $\{1,
-y, \ldots, y^{n-1}\}$ and multiplying each element (if needed) by a
-polynomial in $x$ which cancels all of its poles:
+Regarding ${\rm K}(\theta,y)$ as a vector space over ${\rm
+K}(\theta)$, we can easily construct a basis of integral elements by
+starting with $\{1, y, \ldots, y^{n-1}\}$ and multiplying each element
+(if needed) by a polynomial in $\theta$ which cancels all of its poles:
 
-$${\rm K}(x,y) = {\rm K}(x)\{w_1,\ldots,w_n\} \qquad \forall i(w_i \in {\cal I})$$
+$${\rm K}(\theta,y) = {\rm K}(\theta)\{w_1,\ldots,w_n\} \qquad \forall i(w_i \in {\cal I})$$
 
 Using Theorem \ref{construction of dual basis}, construct a dual basis
 $\{u_1,\ldots,u_n\}$ so that ${\rm Tr}(w_i u_j) = \delta_{ij}$.  Take
@@ -356,27 +353,27 @@ $$x = \sum_i a_i u_i \qquad a_i \in {\rm K}(x)$$
 
 Now consider ${\rm Tr}(x w_j)$.  Now, $x$ and $w_j$ are both in ${\cal
 I}$, so $x w_j$ is in ${\cal I}$, and therefore has a monic minimum
-polynomial with coefficients in ${\rm K}[x]$.  Since ${\rm Tr}$ equals
+polynomial with coefficients in ${\rm K}[\theta]$.  Since ${\rm Tr}$ equals
 some integer multiple of the negative of the second coefficient in a
-monic minimum polynomial, ${\rm Tr}(x w_j) \in {\rm K}[x]$.  But also,
+monic minimum polynomial, ${\rm Tr}(x w_j) \in {\rm K}[\theta]$.  But also,
 
 $${\rm Tr}(x w_j) = {\rm Tr}(\sum_i a_i u_i w_j)
  = \sum_i {\rm Tr}(a_i u_i w_j) %\hfil (Tr an additive homomorphism)
  = \sum_i a_i {\rm Tr}(u_i w_j) %\hfil (linearity of Tr)
  = a_i$$
 
-which establishes that $\forall i (a_i \in {\rm K}[x])$, so
+which establishes that $\forall i (a_i \in {\rm K}[\theta])$, so
 
 $${\cal I} \subseteq {\rm K}[x]\{u_1,\ldots,u_n\} $$
 
-${\rm K}[x]$ is a Noetherian ring (Theorem ??), so ${\rm
-K}[x]\{u_1,\ldots,u_n\}$ is a Noetherian module (Theorem ??),
+${\rm K}[\theta]$ is a Noetherian ring (Theorem ??), so ${\rm
+K}[\theta]\{u_1,\ldots,u_n\}$ is a Noetherian module (Theorem ??),
 which means that ${\cal I}$, as a submodule, is Noetherian
 and thus finitely generated (Theorem ??).
 
 \endtheorem
 
-\vfil\eject
+% \vfil\eject
 
 \theorem
 \label{submodules of free modules over PIRs are free}
@@ -417,7 +414,7 @@ A {\it torsion-free} module has no ``zero divisors'', in the sense
 that no non-zero element of its associated ring can operate on a
 non-zero element of the module and produce zero.  Since fields are
 torsion-free, and all of our modules are subsets of the field
-$K(x,y)$, they are all torsion-free.
+${\rm K}(\theta,y)$, they are all torsion-free.
 
 \theorem
 \label{finitely generated torsion-free modules over a PIR are free}
@@ -446,10 +443,10 @@ a basis for $M$.
 
 \endtheorem
 
-Now, since $K[x]$ is a principal ideal ring (Theorem ??), Theorems
-\ref{I is finitely generated} and \ref{finitely generated torsion-free
-modules over a PIR are free} demonstrate that ${\cal I}$
-is a free $K[x]$-module.
+Now, since ${\rm K}[\theta]$ is a principal ideal ring (Theorem ??),
+Theorems \ref{I is finitely generated} and \ref{finitely generated
+torsion-free modules over a PIR are free} demonstrate that ${\cal I}$
+is a free ${\rm K}[\theta]$-module.
 
 \definition
 
@@ -459,8 +456,8 @@ A basis for ${\cal I}$ will be called an {\bf integral basis}.
 
 \theorem
 
-Any integral basis is also a basis for the $K(x,y)$ field as a
-$K(x)$-module.
+Any integral basis is also a basis for the ${\rm K}(\theta,y)$ field as a
+${\rm K}(\theta)$-module.
 
 \endtheorem
 
@@ -472,27 +469,27 @@ theory.  Therefore, I will defer a more detailed discussion until a
 later chapter, and instead present a simple construction for the
 special case of a simple radical extension.
 
-\definition
-
-A basis is said to be a {\bf locally integral basis} at a place $p$ in
-${\cal C}(x)$ if the basis elements are locally integral at all places
-in ${\cal C}(x,y)$ over $p$ and the determinant of its conjugate
-matrix assumes a finite, non-zero value at that place.
-
-\enddefinition
-
-\theorem
-
-A function $f$ in ${\cal C}(x,y)$ has no poles over a place $p$ in
-${\cal C}(x)$ iff $f$ can be formed from a basis locally integral at
-$p$, using elements from ${\cal C}(x)$ locally integral at $p$.
-
-\endtheorem
-
-
-With a local integral basis (no pole at a place), there are 1-to-1
-correspondances:
-
-	use coeffs in K(x) w/ no pole at place <=> elem in K(x,y) w/ no pole
-
-	use coeff w/ pole at place <=> elem in K(x,y) w/ pole at place
+%\definition
+%
+%A basis is said to be a {\bf locally integral basis} at a place $p$ in
+%${\cal C}(x)$ if the basis elements are locally integral at all places
+%in ${\cal C}(x,y)$ over $p$ and the determinant of its conjugate
+%matrix assumes a finite, non-zero value at that place.
+%
+%\enddefinition
+%
+%\theorem
+%
+%A function $f$ in ${\cal C}(x,y)$ has no poles over a place $p$ in
+%${\cal C}(x)$ iff $f$ can be formed from a basis locally integral at
+%$p$, using elements from ${\cal C}(x)$ locally integral at $p$.
+%
+%\endtheorem
+%
+%
+%With a local integral basis (no pole at a place), there are 1-to-1
+%correspondances:
+%
+%	use coeffs in K(x) w/ no pole at place <=> elem in K(x,y) w/ no pole
+%
+%	use coeff w/ pole at place <=> elem in K(x,y) w/ pole at place
