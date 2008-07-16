@@ -1071,6 +1071,53 @@ We have thus proved that the resultant is zero iff the two polynomials
 have a non-trivial GCD.
 
 
+\example Compute the $t-$resultant of $t^2 - 1 -x$ and $t^3-t-y$.
+
+$${\rm res}_t(t^2 - 1 -x, t^3-t-y) =
+\left\vert \matrix{
+1 & 0 & -1 & -y & 0 \cr
+0 & 1 & 0 & -1 & -y \cr
+1 & 0 & -x-1 & 0 & 0 \cr
+0 & 1 & 0 & -x-1 & 0 \cr
+0 & 0 &1 & 0 & -x-1} \right\vert $$
+
+Expanding the first two columns with cofactors, we obtain:
+
+$$= \left\vert \matrix{
+1 & 0 & -1 & -y \cr
+0 & -x-1 & 0 & 0 \cr
+1 & 0 & -x-1 & 0 \cr
+0 &1 & 0 & -x-1} \right\vert
++ \left\vert \matrix{
+0 & -1 & -y & 0 \cr
+1 & 0 & -1 & -y \cr
+1 & 0 & -x-1 & 0 \cr
+0 &1 & 0 & -x-1} \right\vert $$
+
+$$= \left\vert \matrix{
+ -x-1 & 0 & 0 \cr
+ 0 & -x-1 & 0 \cr
+ 1 & 0 & -x-1} \right\vert
++ \left\vert \matrix{
+ 0 & -1 & -y \cr
+ -x-1 & 0 & 0 \cr
+ 1 & 0 & -x-1} \right\vert $$
+
+$$- \left\vert \matrix{
+ -1 & -y & 0 \cr
+ 0 & -x-1 & 0 \cr
+ 1 & 0 & -x-1} \right\vert
++ \left\vert \matrix{
+ -1 & -y & 0 \cr
+ 0 & -1 & -y \cr
+ 1 & 0 & -x-1} \right\vert $$
+
+$$ = -(x+1)^3 + (x+1)^2 - \Big[-(x+1)^2\Big] + \Big[-(x+1) + y^2 \Big] $$
+$$ = y^2 - x^3 - x^2 $$
+
+\endexample
+
+
 \vfill\eject
 
 \mysection{Algebraic Extensions}
