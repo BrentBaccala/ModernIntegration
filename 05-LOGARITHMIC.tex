@@ -3,6 +3,39 @@
 
 \vfill\eject
 
+\example Compute $\int {1\over{x \ln x}} {\rm d}x$
+
+Operating in ${\bf C}(x, \theta = \ln x)$, we evaluate:
+
+$$\int {1\over{\theta x}} = \int {{1\over x}\over{\theta}} = \int {{\theta '}\over{\theta}} = \ln \theta$$
+$$\int {1\over{x \ln x}} {\rm d}x = \ln \ln x$$
+
+\endexample
+
+\example Compute $\int \ln x \,{\rm d}x$
+
+Again we'll use ${\bf C}(x, \theta = \ln x)$
+
+$$\int \theta = a\theta^2 + b\theta + \bar{c}$$
+
+Differentiating both sides and collecting terms, we get:
+
+$$\theta = a'\theta^2 + (2a\theta' + b')\theta + (b\theta' + \bar{c}')$$
+
+Equating like terms:
+
+$$a' = 0$$
+$$2a\theta' + b' = 1 \qquad\Longrightarrow\qquad 2a\theta + b = \int 1 = x + d$$
+$$a = 0 \qquad b=x+d$$
+$$b\theta' + \bar{c}' = 0 \qquad\Longrightarrow\qquad 1 + {d\over x} + \bar{c}' = 0$$
+$$c = -x \qquad d = 0$$
+$$\int \theta = x\theta - x$$
+$$\int \ln x \,{\rm d}x = x \ln x - x$$
+
+\endexample
+
+\vfill\eject
+
 $$\int{{x(x+1)\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{((x+1)\ln^2(x+1) - (x^3+x^2)e^{2x^2})^2}} dx$$
 
 $$\psi = \exp(x^2) \qquad \theta = \ln (x+1)$$
