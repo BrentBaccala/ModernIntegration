@@ -1000,7 +1000,7 @@ Again, verify this result using a computer algebra system.
 
 
 \mysection{Resultants}
-\qquad [van der Waerden], \S5.8
+\qquad [van der Waerden], \S5.8; [Lang], \S IV.8
 
 At times, we will want a simple way of testing two polynomials over a
 field to see if they have a GCD, without actually computing it.  This
@@ -1015,9 +1015,7 @@ $S_x(P,Q)$, which is the $m+n \times m+n$ matrix constructed from two
 polynomials (in ${\cal F}[x]$) $P$ and $Q$ of degrees $m$ and $n$ (all
 the blanks are zeros):
 
-$$ P = \sum_{i=0}^m p_i \, x^i $$
-
-$$ Q = \sum_{i=0}^n q_i \, x^i $$
+$$ P = \sum_{i=0}^m p_i \, x^i \qquad Q = \sum_{i=0}^n q_i \, x^i $$
 
 $$ S_x(P,Q) = \pmatrix{
   p_m & p_{m-1} & \ldots & p_0 & & & \cr
@@ -1054,14 +1052,15 @@ underlying field ${\cal F}$, its inverse must also be formed from
 ${\cal F}$.  Now consider the bottom element in the last equation.  It
 must have the following form:
 
-$$ 1 = f_0 P x^{n+m-1} + f_1 P x^{n+m-2} + \ldots + f_{n+m-1} Q x + f_{n+m} Q $$
+$$ 1 = f_0 P x^{m-1} + f_1 P x^{m-2} + \ldots + f_{n+m-1} Q x + f_{n+m} Q \qquad f_i \in {\cal F}$$
 $$ 1 = A P + B Q \qquad A,B \in {\cal F}[x] $$
 
-The only way this statement can be true is if $P$ and $Q$ have a
+The only way this statement can be true is if $P$ and $Q$ (viewed
+as polynomials in $x$) have a
 trivial GCD, so a non-zero determinant of $S_x(P,Q)$ imply that $P$ and
 $Q$ have only a trivial GCD.
 
-Conversely, assume that $\gcd(P,Q) = 1$.  Then we can solve a series
+Conversely, assume that $\gcd_x(P,Q) = 1$.  Then we can solve a series
 of polynomial Diophantine equations to express $1, x, \ldots,
 x^{n+m-1}$ as $AP+BQ$, where $\deg A < \deg Q = n$ and $\deg B <
 \deg P = m$, which suffices to construct an inverse of the Sylvester
@@ -1070,11 +1069,24 @@ matrix.
 We have thus proved that the resultant is zero iff the two polynomials
 have a non-trivial GCD.
 
+Let me note two points.  First, though we used a field construction
+for the proof, determinants are constructed using only ring
+operations, so resultants can be computed in any ring and the result
+will be a ring element.  The proof depends on the ring having a
+well-defined fraction field, but since UFDs are integral domains, the
+GCD concept doesn't make sense without a fraction field anyway.
+
+Second, if the underlying ring involves multiple variables, the net
+effect of the resultant is to eliminate one of them.  To see this,
+imagine arbitrary values being assigned to the other variables.  The
+resultant yields a condition on the remaining variables for the
+original system to be solvable.
+
 
 \example Compute the $t-$resultant of $t^2 - 1 -x$ and $t^3-t-y$.
 
 $${\rm res}_t(t^2 - 1 -x, t^3-t-y) =
-\left\vert \matrix{
+\det\left\vert \matrix{
 1 & 0 & -1 & -y & 0 \cr
 0 & 1 & 0 & -1 & -y \cr
 1 & 0 & -x-1 & 0 & 0 \cr
@@ -1083,37 +1095,37 @@ $${\rm res}_t(t^2 - 1 -x, t^3-t-y) =
 
 Expanding the first two columns with cofactors, we obtain:
 
-$$= \left\vert \matrix{
+$$= \det\left\vert \matrix{
 1 & 0 & -1 & -y \cr
 0 & -x-1 & 0 & 0 \cr
 1 & 0 & -x-1 & 0 \cr
 0 &1 & 0 & -x-1} \right\vert
-+ \left\vert \matrix{
++ \det\left\vert \matrix{
 0 & -1 & -y & 0 \cr
 1 & 0 & -1 & -y \cr
 1 & 0 & -x-1 & 0 \cr
 0 &1 & 0 & -x-1} \right\vert $$
 
-$$= \left\vert \matrix{
+$$= \det\left\vert \matrix{
  -x-1 & 0 & 0 \cr
  0 & -x-1 & 0 \cr
  1 & 0 & -x-1} \right\vert
-+ \left\vert \matrix{
++ \det\left\vert \matrix{
  0 & -1 & -y \cr
  -x-1 & 0 & 0 \cr
  1 & 0 & -x-1} \right\vert $$
 
-$$- \left\vert \matrix{
+$$- \det\left\vert \matrix{
  -1 & -y & 0 \cr
  0 & -x-1 & 0 \cr
  1 & 0 & -x-1} \right\vert
-+ \left\vert \matrix{
++ \det\left\vert \matrix{
  -1 & -y & 0 \cr
  0 & -1 & -y \cr
  1 & 0 & -x-1} \right\vert $$
 
-$$ = -(x+1)^3 + (x+1)^2 - \Big[-(x+1)^2\Big] + \Big[-(x+1) + y^2 \Big] $$
-$$ = y^2 - x^3 - x^2 $$
+$$ = -(x+1)^3 + (x+1)^2 - \Big[-(x+1)^2\Big] + \Big[-(x+1) + y^2 \Big]
+ = y^2 - x^3 - x^2 $$
 
 \endexample
 
