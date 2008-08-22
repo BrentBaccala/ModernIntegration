@@ -1,0 +1,106 @@
+
+\mychapter{Algebraic Geometry}
+
+\vfill\eject
+{\small\begin{verbatim}
+
+(%i3) diff(sqrt(x^4+1),x);
+                                        3
+                                     2 x
+(%o3)                            ------------
+                                       4
+                                 sqrt(x  + 1)
+(%i4) diff(%o3,x);
+                                 2             6
+                              6 x           4 x
+(%o4)                     ------------ - -----------
+                                4          4     3/2
+                          sqrt(x  + 1)   (x  + 1)
+(%i5) diff(%o4,x);
+                                         5             9
+                       12 x          36 x          24 x
+(%o5)              ------------ - ----------- + -----------
+                         4          4     3/2     4     5/2
+                   sqrt(x  + 1)   (x  + 1)      (x  + 1)
+(%i6) diff(%o5,x);
+                                  4             8             12
+                 12          204 x         432 x         240 x
+(%o6)       ------------ - ----------- + ----------- - -----------
+                  4          4     3/2     4     5/2     4     7/2
+            sqrt(x  + 1)   (x  + 1)      (x  + 1)      (x  + 1)
+
+
+
+
+
+
+
+
+
+(%i19) diff(sqrt(x^3+1),x);
+                                        2
+                                     3 x
+(%o19)                          --------------
+                                        3
+                                2 sqrt(x  + 1)
+(%i20) diff(%o19,x);
+                                               4
+                             3 x            9 x
+(%o20)                   ------------ - -------------
+                               3            3     3/2
+                         sqrt(x  + 1)   4 (x  + 1)
+(%i21) diff(%o20,x);
+                                        3               6
+                      3             27 x            81 x
+(%o21)           ------------ - ------------- + -------------
+                       3            3     3/2       3     5/2
+                 sqrt(x  + 1)   2 (x  + 1)      8 (x  + 1)
+
+
+\end{verbatim}}
+
+\vfill\eject
+
+
+\mysection{Valuations}
+\qquad [van der Waerden], \S18.1
+
+A {\it valuation} is a generalization of the absolute value.  A {\it
+valuation} is a mapping $\phi$ from a field ${\bf K}$ to an ordered
+field ${\cal R}$ (typically the reals) obeying the following axioms:
+
+\begin{center}
+\begin{supertabular}{l l l r}
+   positivity	& $\forall a \in {\bf K},$ & $\phi(a) \ge 0$ &(V1)\cr
+   definiteness & $\forall a \in {\bf K},$ & $\phi(a) > 0 \Longleftrightarrow a \ne 0$ &(V2)\cr
+   homomorphism (on the multiplicative group) & $\forall a,b \in {\bf K},$ & $\phi(ab) = \phi(a)\phi(b)$ &(V3)\cr
+   subadditivity (or triangle inequality) & $\forall a,b \in {\bf K},$ & $\phi(a+b) \le \phi(a) + \phi(b)$ &(V4)\cr
+\end{supertabular}
+\end{center}
+
+A moment's thought will show that the standard absolute value on the
+reals obeys these axioms, as does the modulus on the complex field.
+Valuations are similar to norms, except that norms are defined on
+vector spaces, while valuations are defined on fields.
+
+A valuation is said to be {\it non-Archimedian} if it also satisfies
+the following axiom, stronger than V4:
+
+\begin{center}
+\begin{supertabular}{l l l r}
+   non-Archimedian axiom & $\forall a,b \in {\bf K},$ & $\phi(a+b) \le \max(\phi(a), \phi(b))$ &(V4')\cr
+\end{supertabular}
+\end{center}
+
+In this case, we can switch from a multiplicative to an additive
+notation and obtain {\it exponential valuation} by replacing $\phi(a)$
+with $w(a) = -\ln \phi(a)$:
+
+\begin{center}
+\begin{supertabular}{l l l r}
+   & $\forall a \in {\bf K},$ & $w(a) \in (-\infty, \infty]$ &(E1)\cr
+   & $\forall a \in {\bf K},$ & $w(a) = \infty \Longleftrightarrow a = 0$ &(E2)\cr
+   & $\forall a,b \in {\bf K},$ & $w(ab) = w(a) + w(b)$ &(E3)\cr
+   & $\forall a,b \in {\bf K},$ & $w(a+b) \ge \min(w(a), w(b))$ &(E4)\cr
+\end{supertabular}
+\end{center}
