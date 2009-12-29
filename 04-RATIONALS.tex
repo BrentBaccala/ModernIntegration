@@ -109,7 +109,7 @@ In {\it Symbolic Integration I}, Manuel Bronstein gave a detailed
 analysis, which was so enlightening to me that I will repeat
 and expand it here, of the following definite integral:
 
-\vfill\eject
+% \vfill\eject
 
 $$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
 
@@ -173,8 +173,6 @@ $$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
 
 \end{verbatim}}
 
-\vfill\eject
-
 {\small\begin{verbatim}
 (%i225) ratexpand((-%i*256/963)*gcdex(a-(%i/2)*diff(b,x),b,x))[3];
 
@@ -192,10 +190,12 @@ $$=\tan^{-1}({{x^3-3x}\over{x^2-2}})$$
 
 \vfill
 
+\begin{figure}[h]
 \begin{center}
 \includegraphics[width=0.7\textwidth]{04-RATIONALS-EXAMPLE1a.pdf}
 \end{center}
-$$(x^3-3x)+(x^2-2)i$$
+\caption{$(x^3-3x)+(x^2-2)i$}
+\end{figure}
 
 Let us note briefly that the integrand is clearly positive over the
 entire real line.  Now, using a straightforward application of
@@ -232,22 +232,24 @@ What went wrong?
 We gain a
 key insight, as is so often the case, by graphing first the integrand:
 
-\vfill\eject
-
-$${{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}}$$
-
+\begin{figure}[!h]
 \begin{center}
 \includegraphics[width=0.65\textwidth]{04-RATIONALS-EXAMPLE1e.pdf}
+$${{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}}$$
 \end{center}
+\end{figure}
 
 And now the (indefinite) integral:
 
-$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
-\tan^{-1}({{x^3-3x}\over{x^2-2}})$$
-
+\begin{figure}[!h]
 \begin{center}
 \includegraphics[width=0.65\textwidth]{04-RATIONALS-EXAMPLE1f.pdf}
 \end{center}
+$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
+\tan^{-1}({{x^3-3x}\over{x^2-2}})$$
+\end{figure}
+
+\vfill\eject
 
 A discontinuity has appeared, seemingly out of nowhere.  A closer
 inspection reveals that the break occurs suspiciously close to
@@ -286,9 +288,11 @@ where $a+bi$ crosses the negative real axis.  This is easier to visualize
 if we reproduce that last graph in 3-D, superimposing $(x^3-3x)+(x^2-2)i$
 on $\arctan$'s Riemann surface:
 
+\begin{figure}[h]
 \begin{center}
 \includegraphics[width=0.81\textwidth]{04-RATIONALS-EXAMPLE1c.pdf}
 \end{center}
+\end{figure}
 
 The z-axis is now the value of $\arctan$.  Along the x-axis, it is
 zero, and it grows positive as we move counter-clockwise, and negative
@@ -297,9 +301,11 @@ real axis, where $\arctan$ jumps from $\pi\over2$ to $-{\pi\over2}$,
 clearly creates a matching discontinuity in the plot of
 $(x^3-3x)+(x^2-2)i$.
 
+\begin{figure}[h]
 \begin{center}
 \includegraphics[width=\textwidth]{04-RATIONALS-EXAMPLE1b.pdf}
 \end{center}
+\end{figure}
 
 Of course, this isn't really $\arctan$'s Riemann surface, only a slice
 of it, and now we begin to find our solution.  $\arctan$'s complete
@@ -308,9 +314,11 @@ of blades, each spaced $2\pi$ apart in the z-direction.  So, when we
 plot our function, what we really want is something more like this,
 moving smoothly along the Riemann surface without any discontinuity.
 
+\begin{figure}[h]
 \begin{center}
 \includegraphics[width=0.81\textwidth]{04-RATIONALS-EXAMPLE1d.pdf}
 \end{center}
+\end{figure}
 
 Alas, while easy enough to graph, and easy enough to understand once
 you're thinking about the continuity of a Riemann surface, this is
