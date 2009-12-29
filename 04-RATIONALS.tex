@@ -38,24 +38,24 @@ $$\arctan x = {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$$
 Interesting, but not very illuminating.  Nevertheless, as Sherlock
 Holmes was wont to say, ``once you have eliminated the impossible\ldots''
 
-% Let's examine the improbable remains in an attempt to find the truth:
+Let's examine the improbable remains in an attempt to find the truth:
 
 \begin{eqnarray*}
 \int{1\over{x^2-1}} dx &=& \int{1\over{(x+i)(x-i)}} dx \\
 \end{eqnarray*}
 
-%Applying one or another of our techniques for partial fractions
-%expansion, we compute:
+Applying one or another of our techniques for partial fractions
+expansion, we compute:
 
 \begin{eqnarray*}
 {1\over{(x+i)(x-i)}} &=& {1\over2}\Big[{i\over{x+i}} - {i\over{x-i}}\Big]\\
               &=& -{1\over2}i\Big[{i\over{-ix+1}} - {i\over{-ix-1}}\Big]\\
 \end{eqnarray*}
 
-%On that last step, I multiplied through by 1 in the form
-%${-i}\over{-i}$ for reasons that I'll explain later.
-%But now, since each numerator is just the negative
-%of its denominator's derivative, we proceed:
+On that last step, I multiplied through by 1 in the form
+${-i}\over{-i}$ for reasons that I'll explain later.
+But now, since each numerator is just the negative
+of its denominator's derivative, we proceed:
 
 \begin{eqnarray*}
 \int{1\over{x^2-1}}dx &=& -{1\over2}i\int\Big[{i\over{-ix+1}} - {i\over{-ix-1}}\Big]dx\\
@@ -63,35 +63,35 @@ Holmes was wont to say, ``once you have eliminated the impossible\ldots''
 	&=& -{1\over2}i\Big[\ln(-ix-1) - \ln(-ix+1)\Big] \\
 \end{eqnarray*}
 
-%How do we evaluate something like $\ln(-ix-1)$?  Well, Euler's identity
-%is a good place to start:
+How do we evaluate something like $\ln(-ix-1)$?  Well, Euler's identity
+is a good place to start:
 
 \begin{eqnarray*}
 e^{i\theta} &=& i\sin\theta + \cos\theta \\
 {i\theta} &=& \ln[i\sin\theta + \cos\theta] \\
 \end{eqnarray*}
 
-%We can always factor a complex number into its modulus and its angle:
+We can always factor a complex number into its modulus and its angle:
 
 \begin{eqnarray*}
 a+bi &=& \sqrt{a^2+b^2}\Big({a\over\sqrt{a^2+b^2}} + {b\over\sqrt{a^2+b^2}}i\Big) \\
 \end{eqnarray*}
 
-%Now, the expression in parenthesis on the right is just an x-y
-%coordinate pair on the unit circle, which form the sine and cosine of
-%an angle.  What angle?  Well, the tangent of the angle is going to be
-%the ratio between the y (imaginary) and x (real) coordinates, so its
-%$b\over a$, and therefore the angle must be $\arctan {b\over a}$.
-%Combining this logic with the last two equations and the addition law
-%of logarithms lets us obtain a general expression for imaginary
-%logarithms:
+Now, the expression in parenthesis on the right is just an x-y
+coordinate pair on the unit circle, which form the sine and cosine of
+an angle.  What angle?  Well, the tangent of the angle is going to be
+the ratio between the y (imaginary) and x (real) coordinates, so its
+$b\over a$, and therefore the angle must be $\arctan {b\over a}$.
+Combining this logic with the last two equations and the addition law
+of logarithms lets us obtain a general expression for imaginary
+logarithms:
 
 \begin{eqnarray*}
 \ln(a+bi) &=& \ln\sqrt{a^2+b^2} +i\arctan{b\over a} \\
 \end{eqnarray*}
 
-%Plugging this back into our integral, and using the fact that
-%$\arctan$ is an odd function, we conclude:
+Plugging this back into our integral, and using the fact that
+$\arctan$ is an odd function, we conclude:
 
 \begin{eqnarray*}
 \int{1\over{x^2-1}}dx &=& -{1\over2}i\Big[\ln(-ix-1) - \ln(-ix+1)\Big] \\
@@ -197,40 +197,40 @@ $$=\tan^{-1}({{x^3-3x}\over{x^2-2}})$$
 \end{center}
 $$(x^3-3x)+(x^2-2)i$$
 
-%Let us note briefly that the integrand is clearly positive over the
-%entire real line.  Now, using a straightforward application of
-%the method of partial fractions, we conclude:
-%
-%$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
-%   \sum_{\alpha\mid 4\alpha^2+1=0} \alpha \log(x^3+2\alpha x^2-3x-4\alpha)$$
-%
-%Since the zeros of $4\alpha^2+1$ are $\alpha=\pm i/2$, we evaluate the
-%definite integral using the indefinite integral, expand the complex
-%logarithms, and obtain:
-%
-%$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
-%$$= \Big({i\over2}\log(2+2i)-{i\over2}\log(2-2i)\Big)
-% -\Big({i\over2}\log(-2-i)-{i\over2}\log(-2+i)\Big)$$
-%$$=-{5\pi\over4}+\arctan({1\over2}) \approx -3.46$$
-%
-%Since the integral was positive over the entire range of integration,
-%this answer can not possibly be correct.
-%
-%Alternately, we can apply the $\arctan$ identity from the last
-%chapter and conclude:
-%
-%$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
-%$$=\sum_{\alpha\mid 4\alpha^2+1=0} \alpha \log(x^3+2\alpha x^2-3x-4\alpha)$$
-%$$={i\over2}\ln(x^3+ix^2-3x-2i)-{i\over2}\ln(x^3-ix^2-3x+2i)
-%  ={i\over2}\ln{\Big({{x^3-3x+(x^2-2)i}\over{x^3-3x-(x^2-2)i}}\Big)}$$
-%$$={i\over2}\ln{\Big({{(x^3-3x)i-(x^2-2)}\over{(x^3-3x)i+(x^2-2)}}\Big)}
-%  =\arctan{\Big({{x^3-3x}\over{x^2-2}}\Big)}$$
-%
-%$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx = \arctan 1 - \arctan 2 \approx -0.32$$
-%
-%What went wrong?
-%We gain a
-%key insight, as is so often the case, by graphing first the integrand:
+Let us note briefly that the integrand is clearly positive over the
+entire real line.  Now, using a straightforward application of
+the method of partial fractions, we conclude:
+
+$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
+   \sum_{\alpha\mid 4\alpha^2+1=0} \alpha \log(x^3+2\alpha x^2-3x-4\alpha)$$
+
+Since the zeros of $4\alpha^2+1$ are $\alpha=\pm i/2$, we evaluate the
+definite integral using the indefinite integral, expand the complex
+logarithms, and obtain:
+
+$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
+$$= \Big({i\over2}\log(2+2i)-{i\over2}\log(2-2i)\Big)
+ -\Big({i\over2}\log(-2-i)-{i\over2}\log(-2+i)\Big)$$
+$$=-{5\pi\over4}+\arctan({1\over2}) \approx -3.46$$
+
+Since the integral was positive over the entire range of integration,
+this answer can not possibly be correct.
+
+Alternately, we can apply the $\arctan$ identity from the last
+chapter and conclude:
+
+$$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx $$
+$$=\sum_{\alpha\mid 4\alpha^2+1=0} \alpha \log(x^3+2\alpha x^2-3x-4\alpha)$$
+$$={i\over2}\ln(x^3+ix^2-3x-2i)-{i\over2}\ln(x^3-ix^2-3x+2i)
+  ={i\over2}\ln{\Big({{x^3-3x+(x^2-2)i}\over{x^3-3x-(x^2-2)i}}\Big)}$$
+$$={i\over2}\ln{\Big({{(x^3-3x)i-(x^2-2)}\over{(x^3-3x)i+(x^2-2)}}\Big)}
+  =\arctan{\Big({{x^3-3x}\over{x^2-2}}\Big)}$$
+
+$$\int_1^2 {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx = \arctan 1 - \arctan 2 \approx -0.32$$
+
+What went wrong?
+We gain a
+key insight, as is so often the case, by graphing first the integrand:
 
 \vfill\eject
 
@@ -240,7 +240,7 @@ $${{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}}$$
 \includegraphics[width=0.65\textwidth]{04-RATIONALS-EXAMPLE1e.pdf}
 \end{center}
 
-%And now the (indefinite) integral:
+And now the (indefinite) integral:
 
 $$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
 \tan^{-1}({{x^3-3x}\over{x^2-2}})$$
@@ -249,86 +249,86 @@ $$\int {{x^4-3x^2+6}\over{x^6-5x^4+5x^2+4}} dx =
 \includegraphics[width=0.65\textwidth]{04-RATIONALS-EXAMPLE1f.pdf}
 \end{center}
 
-%A discontinuity has appeared, seemingly out of nowhere.  A closer
-%inspection reveals that the break occurs suspiciously close to
-%$\sqrt{2}$ --- exactly where a plot of $(x^3-3x)+(x^2-2)i$ in
-%the complex plane crosses the negative real axis:
+A discontinuity has appeared, seemingly out of nowhere.  A closer
+inspection reveals that the break occurs suspiciously close to
+$\sqrt{2}$ --- exactly where a plot of $(x^3-3x)+(x^2-2)i$ in
+the complex plane crosses the negative real axis:
 
-%\begin{center}
-%\includegraphics[width=0.7\textwidth]{04-RATIONALS-EXAMPLE1a.pdf}
-%\end{center}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{04-RATIONALS-EXAMPLE1a.pdf}
+\end{center}
 
-%OK, so here's what happened.  When we evaluate a complex logarithm, we
-%implicitly select one blade of $\ln$'s Riemann surface.  There's no
-%way to avoid this.  $\ln$ is a multi-valued function, the different
-%values corresponding to different blades of the Riemann surface, and
-%if we want to actually obtain a numerical result from $\ln$ we need to
-%pick one of those values.  In the context of an indefinite integral,
-%which is only defined within an unspecified additive constant, the
-%choice is completely arbitrary.
-%
-%So far, so good.  Yet now we want a definite integral.  Now we're
-%going to evaluate not just a single logarithm, but we're going to
-%trace out a curve along the Riemann surface.  As I noted above, if we
-%assign a single fixed value to $\ln x$, then there's no way to avoid a
-%discontinuity {\it somewhere} in the Riemann surface.  In this
-%specific case, we used the identity $\ln(a+bi) = \ln\sqrt{a^2+b^2}
-%+i\arctan{b\over a}$, which just converts the discontinuity in $\ln$
-%to one expressed in terms of $\arctan$, also a multi-valued function.
-%See, there's no way to completely avoid this.
-%
-%Where's the discontinuity in $\arctan$?  Typically, the function is
-%defined so that it ranges from $-{\pi\over2}$ to ${\pi\over2}$ and is
-%continuous over finite numbers, so its discontinuity is where its
-%argument becomes infinite; i.e, where its denominator goes to zero.
-%In the $\ln(a+bi)$ expansion, this occurs where $a$ becomes zero; i.e,
-%where $a+bi$ crosses the negative real axis.  This is easier to visualize
-%if we reproduce that last graph in 3-D, superimposing $(x^3-3x)+(x^2-2)i$
-%on $\arctan$'s Riemann surface:
+OK, so here's what happened.  When we evaluate a complex logarithm, we
+implicitly select one blade of $\ln$'s Riemann surface.  There's no
+way to avoid this.  $\ln$ is a multi-valued function, the different
+values corresponding to different blades of the Riemann surface, and
+if we want to actually obtain a numerical result from $\ln$ we need to
+pick one of those values.  In the context of an indefinite integral,
+which is only defined within an unspecified additive constant, the
+choice is completely arbitrary.
+
+So far, so good.  Yet now we want a definite integral.  Now we're
+going to evaluate not just a single logarithm, but we're going to
+trace out a curve along the Riemann surface.  As I noted above, if we
+assign a single fixed value to $\ln x$, then there's no way to avoid a
+discontinuity {\it somewhere} in the Riemann surface.  In this
+specific case, we used the identity $\ln(a+bi) = \ln\sqrt{a^2+b^2}
++i\arctan{b\over a}$, which just converts the discontinuity in $\ln$
+to one expressed in terms of $\arctan$, also a multi-valued function.
+See, there's no way to completely avoid this.
+
+Where's the discontinuity in $\arctan$?  Typically, the function is
+defined so that it ranges from $-{\pi\over2}$ to ${\pi\over2}$ and is
+continuous over finite numbers, so its discontinuity is where its
+argument becomes infinite; i.e, where its denominator goes to zero.
+In the $\ln(a+bi)$ expansion, this occurs where $a$ becomes zero; i.e,
+where $a+bi$ crosses the negative real axis.  This is easier to visualize
+if we reproduce that last graph in 3-D, superimposing $(x^3-3x)+(x^2-2)i$
+on $\arctan$'s Riemann surface:
 
 \begin{center}
 \includegraphics[width=0.81\textwidth]{04-RATIONALS-EXAMPLE1c.pdf}
 \end{center}
 
-%The z-axis is now the value of $\arctan$.  Along the x-axis, it is
-%zero, and it grows positive as we move counter-clockwise, and negative
-%as we move clockwise.  The resulting discontinuity along the negative
-%real axis, where $\arctan$ jumps from $\pi\over2$ to $-{\pi\over2}$,
-%clearly creates a matching discontinuity in the plot of
-%$(x^3-3x)+(x^2-2)i$.
+The z-axis is now the value of $\arctan$.  Along the x-axis, it is
+zero, and it grows positive as we move counter-clockwise, and negative
+as we move clockwise.  The resulting discontinuity along the negative
+real axis, where $\arctan$ jumps from $\pi\over2$ to $-{\pi\over2}$,
+clearly creates a matching discontinuity in the plot of
+$(x^3-3x)+(x^2-2)i$.
 
-%\begin{center}
-%\includegraphics[width=\textwidth]{04-RATIONALS-EXAMPLE1b.pdf}
-%\end{center}
+\begin{center}
+\includegraphics[width=\textwidth]{04-RATIONALS-EXAMPLE1b.pdf}
+\end{center}
 
-%Of course, this isn't really $\arctan$'s Riemann surface, only a slice
-%of it, and now we begin to find our solution.  $\arctan$'s complete
-%Riemann surface looks like an infinite screw, with an infinite series
-%of blades, each spaced $2\pi$ apart in the z-direction.  So, when we
-%plot our function, what we really want is something more like this,
-%moving smoothly along the Riemann surface without any discontinuity.
+Of course, this isn't really $\arctan$'s Riemann surface, only a slice
+of it, and now we begin to find our solution.  $\arctan$'s complete
+Riemann surface looks like an infinite screw, with an infinite series
+of blades, each spaced $2\pi$ apart in the z-direction.  So, when we
+plot our function, what we really want is something more like this,
+moving smoothly along the Riemann surface without any discontinuity.
 
 \begin{center}
 \includegraphics[width=0.81\textwidth]{04-RATIONALS-EXAMPLE1d.pdf}
 \end{center}
 
-%Alas, while easy enough to graph, and easy enough to understand once
-%you're thinking about the continuity of a Riemann surface, this is
-%just asking a bit much from poor old $\ln$ (or $\arctan$).  There's no
-%way for the function to know which result is needed based solely on a
-%single value as the argument.
-%
-%However, there is a way out, at least in the case of rational
-%functions.  The method, due to R. Rioboo, is to take advantage of two
-%things.  First, the addition law of logarithms ($\ln ab = \ln a + \ln
-%b$), combined with Euler-?? interpretation of complex numbers, lets us
-%split a complex logarithm into two logarithms, each of which require
-%only half the range of angles of the original logarithm.  Second,
-%since a rational function only intersects the real axis in a finite
-%number of points (the finite number of zeros of its real component), a
-%finite (and easily computed) number of reductions converts the
-%logarithm into a sum of logarithms, none of whose arguments cross
-%the real axis.
+Alas, while easy enough to graph, and easy enough to understand once
+you're thinking about the continuity of a Riemann surface, this is
+just asking a bit much from poor old $\ln$ (or $\arctan$).  There's no
+way for the function to know which result is needed based solely on a
+single value as the argument.
+
+However, there is a way out, at least in the case of rational
+functions.  The method, due to R. Rioboo, is to take advantage of two
+things.  First, the addition law of logarithms ($\ln ab = \ln a + \ln
+b$), combined with Euler-?? interpretation of complex numbers, lets us
+split a complex logarithm into two logarithms, each of which require
+only half the range of angles of the original logarithm.  Second,
+since a rational function only intersects the real axis in a finite
+number of points (the finite number of zeros of its real component), a
+finite (and easily computed) number of reductions converts the
+logarithm into a sum of logarithms, none of whose arguments cross
+the real axis.
 
 \vfill\eject
 
