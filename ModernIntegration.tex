@@ -1,6 +1,8 @@
 
 \documentclass{book}
 
+\usepackage{nopageno}
+
 \usepackage{vmargin}
 \usepackage{times}
 \usepackage{graphics}
@@ -8,17 +10,24 @@
 
 %\usepackage{verbatim}
 
-\usepackage{footnote}
-\makesavenoteenv{tabular}
+%\usepackage{footnote}
+%\makesavenoteenv{tabular}
 
-\usepackage[light]{draftcopy}
+% \usepackage[light]{draftcopy}
 
-\usepackage{fancyhdr}
+%\usepackage{fancyhdr}
 
 \usepackage{supertabular}
 
 \usepackage[pdftex]{graphicx}
 %\usepackage[dvips]{graphicx}
+
+% This lets me put a title banner right before the table of contents
+\usepackage{tocloft}
+
+% Footnotes break this package, 
+\usepackage[pdftitle = {Modern Integration}, colorlinks=true, hyperfootnotes=false]{hyperref}
+%\def\footnote#1{}
 
 \input comment.sty
 
@@ -30,16 +39,18 @@
 %\setmarginsrb{0.5in}{0.5in}{0.5in}{0.5in}{0.5in}{0.2in}{0pt}{10pt}
 %\setmarginsrb{0.5in}{1in}{0.5in}{0.5in}{20pt}{20pt}{20pt}{20pt}
 
-% eReader format
+% eReader format (Left, Top, Right, Bottom)
 \setpapersize{A5}
-\setmargnohfrb{0in}{0in}{0in}{0.1in}
+\setmargnohfrb{0in}{0.1in}{0in}{0.1in}
 
 % fancy for book; empty for slides
-\pagestyle{empty}
+%\pagestyle{empty}
 %\pagestyle{fancy}
 
-\fancyhead{}
-\fancyfoot{}
+%\fancyhf{}
+%\cfoot{x}
+%\renewcommand{\headrulewidth}{0.0pt}
+
 %\fancyhead[LE,RO]{\thepage}
 %\fancyhead[RE,LO]{DRAFT}
 
@@ -53,7 +64,7 @@
 \def\thesection{}
 
 % Get rid of page numbers
-\def\thepage{}
+%\def\thepage{}
 
 \begin{document}
 
@@ -66,8 +77,8 @@
 %\fontsize{14pt}{20pt}
 %\selectfont
 
-\newcommand{\mychapter}[1]{\chapter{#1}\pdfdest name {#1} fitr \pdfoutline goto name {#1} {#1}}
-\newcommand{\mysection}[1]{\section{#1}\pdfdest name {#1} fitr \pdfoutline goto name {#1} count 0 {#1}}
+\newcommand{\mychapter}[1]{\chapter{#1}}
+\newcommand{\mysection}[1]{\section{#1}}
 
 \newtheorem{ttheorem}{Theorem}[chapter]
 \def\theorem{\begin{ttheorem}}
@@ -88,9 +99,15 @@
 \author{Brent Baccala}
 \date{}
 
-\maketitle
+% No title page for e-reader version
+% \maketitle
 
 \frontmatter
+
+\begin{center}
+{\Huge Modern Integration}
+\vskip 0.5in {\Large Brent Baccala}
+\end{center}
 
 \tableofcontents
 
