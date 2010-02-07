@@ -718,6 +718,45 @@ $$={1\over2} \ln {{\sqrt{x^4+1}-1}\over{x^2}}$$
 
 $${{1 - \cos z}\over{\sin z}} = {{1 - \cos^2 {z\over2} + \sin^2 {z\over2}}\over{2\sin{z\over2}\cos{z\over2}}} = {{2\sin^2 {z\over2}}\over{2\sin{z\over2}\cos{z\over2}}} = {{\sin {z\over2}}\over{\cos{z\over2}}} $$
 
+\vfill\eject
+
+We can also proceed like this:
+
+$$\int {1\over{x\sqrt{x^4+1}}} \, dx$$
+$$x^4 = u \qquad 4 x^3\, dx = du$$
+$$\int {1\over{4u\sqrt{u+1}}} \, du$$
+$$v = u + 1 \qquad dv = du$$
+$$\int {1\over{4(v-1)\sqrt{v}}} \, dv$$
+$$z^2 = v \qquad 2 z dz = dv$$
+$$\int {1\over{4(z^2-1)z}} \, 2z\, dz$$
+$$\int {1\over{2(z^2-1)}} \, dz$$
+$${1\over{z^2-1}} = {1\over2}{1\over{z-1}} - {1\over2}{1\over{z+1}}$$
+$${1\over4} \int {1\over{z-1}} - {1\over{z+1}} \, dz$$
+$${1\over4} \ln (z-1) - \ln (z+1)$$
+$${1\over4} \ln {{z-1}\over{z+1}}$$
+$${1\over4} \ln {{\sqrt{v}-1}\over{\sqrt{v}+1}}$$
+$${1\over4} \ln {{\sqrt{u+1}-1}\over{\sqrt{u+1}+1}}$$
+$${1\over4} \ln {{\sqrt{x^4+1}-1}\over{\sqrt{x^4+1}+1}}$$
+
+so from the previous page and this one, we conclude
+
+$$\int {1\over{x\sqrt{x^4+1}}} \, dx
+={1\over2} \ln {{\sqrt{x^4+1}-1}\over{x^2}}
+={1\over4} \ln {{\sqrt{x^4+1}-1}\over{\sqrt{x^4+1}+1}}$$
+
+Is this last equality true?  Well, $\ln f^2 = 2\ln f$, so
+${1\over4}\ln f^2 = {1\over2}\ln f$, and\ldots
+
+$$\Big({{\sqrt{x^4+1}-1}\over{x^2}}\Big)^2
+= {{(\sqrt{x^4+1}-1)^2}\over{x^4}}$$
+
+$${{\sqrt{x^4+1}-1}\over{\sqrt{x^4+1}+1}} \cdot
+{{\sqrt{x^4+1}-1}\over{\sqrt{x^4+1}-1}}
+= {{(\sqrt{x^4+1}-1)^2}\over{x^4+1-1}}$$
+
+
+
+
 \endexample
 
 \vfill\eject
