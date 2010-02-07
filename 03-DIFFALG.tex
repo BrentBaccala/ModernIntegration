@@ -344,38 +344,39 @@ logarithms with constant coefficients.
 
 \theorem
 Let $E=K(\theta)$ be a simple transcendental logarithmic extension of
-a differential field $K$, and let $x=\sum a_i \theta^i$ be a
-polynomial in $K[\theta]$.  Then:
+a differential field $K$, let $p=\sum p_i \theta^i$ be a polynomial in
+$K[\theta]$, and let $r = a/b$ be a rational function in $K(\theta)$
+($a, b \in K[\theta]$).  Then:
 
 \begin{enumerate}
-\item If $x$'s leading coefficient is constant ($a_n' = 0$), then ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x - 1$
-\item If $x$'s leading coefficient is not constant ($a_n' \ne 0$), then ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x$
-\item If $x$ is monic and irreducible, then $x' \nmid x$
+\item If $p$'s leading coefficient is constant ($p_n' = 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p - 1$
+\item If $p$'s leading coefficient is not constant ($p_n' \ne 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p$
+\item If $p$ is monic and irreducible, then $p' \nmid p$
 \end{enumerate}
 
 \proof
 
-The first two statements follow easily from considering $x'$:
+The first two statements follow easily from considering $p'$:
 
-$$x'=\sum_{i=0}^n (a_i' \theta^i + i a_i \theta' \theta^{i-1}) = \sum_{i=0}^n
-\left(a_i' + \left(i+1\right)a_{i+1} \theta'\right) \theta^i$$
+$$p'=\sum_{i=0}^n (p_i' \theta^i + i p_i \theta' \theta^{i-1}) = \sum_{i=0}^n
+\left(p_i' + \left(i+1\right)p_{i+1} \theta'\right) \theta^i$$
 
 Note that since $K(\theta)$ is a logarithmic extension, $\theta'
-\in K$, so for all $i$ the entire expression $(a_i' + (i+1)a_{i+1} \theta')$
-is in $K$.  In particular, since $a_{n+1}$ is zero, the $n^{\rm th}$
-coefficient of $x'$ is just $a_n'$ and the $\theta$-degree of $x'$
-will be $n$ if $a_n'$ is non-zero.  On the other hand, if $a_n'$ is
-zero, then the $n-1^{\rm th}$ coefficient of $x'$ is $(a_{n-1}' + n
-a_n \theta')$ which would be zero only if $\theta' =
--\frac{a_{n-1}'}{n a_n} = (-\frac{a_{n-1}}{n a_n})'$ (by Theorem
-\ref{basic difalg} since $a_n$ is constant), which implies
-an algebraic relationship between $\theta$ and $-\frac{a_{n-1}}{n
-a_n}$ (specifically, they differ only by a constant), contradicting
+\in K$, so for all $i$ the entire expression $(p_i' + (i+1)p_{i+1} \theta')$
+is in $K$.  In particular, since $p_{n+1}$ is zero, the $n^{\rm th}$
+coefficient of $p'$ is just $p_n'$ and the $\theta$-degree of $p'$
+will be $n$ if $p_n'$ is non-zero.  On the other hand, if $p_n'$ is
+zero, then the $n-1^{\rm th}$ coefficient of $p'$ is $(p_{n-1}' + n
+p_n \theta')$ which would be zero only if $\theta' =
+-\frac{p_{n-1}'}{n p_n} = (-\frac{p_{n-1}}{n p_n})'$ (by Theorem
+\ref{basic difalg} since $p_n$ is constant), which implies
+an algebraic relationship between $\theta$ and $-\frac{p_{n-1}}{n
+p_n}$ (specifically, they differ only by a constant), contradicting
 the transcendence of $E$ over $K$.
 
-Finally, if $x$ is monic and irreducible, then ${\rm Deg}_\theta\, x' =
-{\rm Deg}_\theta\, x - 1$, and no lower degree polynomial can divide
-an irreducible polynomial.
+Next, if $p$ is monic and irreducible, then ${\rm Deg}_\theta\, p' =
+{\rm Deg}_\theta\, p - 1$, and no lower degree polynomial can divide
+an irreducible polynomial, establishing the third claim.
 
 \endtheorem
 
