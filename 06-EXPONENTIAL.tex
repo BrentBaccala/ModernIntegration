@@ -37,7 +37,7 @@ $$\int \frac{\phi - \phi^{-1}}{2i} \,dx = -\frac{1}{2}(\phi + \phi^{-1})
 
 \example Compute $\int \csc x \, {\rm d}x$
 
-We'll operate in ${\bf C}(x, \phi = \exp \,ix)$ and evaluate
+We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
 
 $$\int {{2i}\over{\phi - \phi^{-1}}} \,dx = \int 2i {{\phi}\over{\phi^2 - 1}} \,dx$$
 
@@ -70,5 +70,39 @@ inside a logarithm, it disappears into the constant of integration,
 and we conclude that
 
 $$\int \csc x \,{\rm d}x = \ln \tan {x\over2} $$
+
+\endexample
+
+\example Prove that $\int e^{-x^2}\, {\rm d}x$ has no elementary form
+
+We'll use ${\mathbb C}(x, \phi = \exp\, -x^2)$, so $\phi' = -2x$ and
+study
+
+$$\int \phi \, {\rm d}x$$
+
+We know from Theorem \ref{basic exponential properties} that our
+solution, if it exists, must have the form $a\phi$, where $a \in
+{\mathbb C}(x)$, and $a$ must satisfy the Risch equation:
+
+$$a' - 2x a = 1$$
+
+As Risch equations go, this one is easy!  Let's first note that
+$a$ can not have a non-trivial denominator, since
+
+$$a' = 1 + 2x a$$
+
+We factor $a$'s denominator into irreducible factors, recall that in
+${\mathbb C}(x)$, irreducible factors in the denominator always
+increase in degree on differentiation, and see that the right hand
+side of this equation has no denominator, therefore neither can the
+left hand side ($a'$) or $a$ itself.
+
+So $a$ must be a polynomial.  Returning to the original Risch
+equation, we see that $a'$ will have degree ${\rm Deg\,} a - 1$ while
+$2xa$ will have degree ${\rm Deg\,} a + 1$, so the left hand side must
+have degree ${\rm Deg\,} a + 1$, while the right hand side has degree 0.
+
+We conclude that no solution to this equation exists in ${\mathbb C}(x)$,
+so the integral can not be expressed in elementary form.
 
 \endexample
