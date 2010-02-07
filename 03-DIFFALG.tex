@@ -550,3 +550,24 @@ acceptable.  Notice that the new logarithm has a constant coefficient
 ($-i$), is not nested, and appears to the first power.
 
 \endexample
+
+Notice the extra condition on the algebraic extension, that the
+extension has to preserve the constant subfield.  The theorem would
+fail without this condition, as shown by numerous examples of roots
+appearing in integrals where only rational numbers were needed in the
+integrand.  The simplest way to handle this situation is to use an
+algebraically closed constant subfield (like ${\mathbb C}$), but
+this is not always practical.
+
+\example
+
+$$\int \frac{1}{x^2-2} dx = \int \frac{1}{2\sqrt{2}} \left[ \frac{1}{x-\sqrt{2}} - \frac{1}{x+\sqrt{2}} \right] dx$$
+$$= \frac{1}{2\sqrt{2}} \left[ \ln(x-\sqrt{2}) - \ln(x+\sqrt{2}) \right]$$
+
+This integrand can be expressed in ${\mathbb Q}(x)$, but the integral
+requires ${\mathbb Q}(x,\xi,\theta,\psi)$; $\xi$ is algebraic
+with minimal polynomial $\xi^2-2=0$; $\theta$ and $\psi$ are
+logarithmic transcendental with $\theta' = 1/(x-\xi)$
+and $\psi' = 1/(x+\xi)$.
+
+\endexample
