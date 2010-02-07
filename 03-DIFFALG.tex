@@ -411,62 +411,63 @@ leading coefficient must be constant.
 \theorem
 Let $E=K(\theta)$ be a simple transcendental exponential extension of
 a differential field $K$ with the same constant subfield as $K$, and
-let $x=\sum a_i \theta^i$ be a polynomial in $K[\theta]$.  Then:
+let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$.  Then:
 
 \begin{enumerate}
 \item ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x$
-\item $x' \mid x$ if and only if $x$ is monomial.
+\item $p' \mid p$ if and only if $p$ is monomial.
 \end{enumerate}
 
 \proof
 
 Again,
 
-$$x' = \sum_{i=0}^n (a_i' \theta^i + i a_i \theta' \theta^{i-1})$$
+$$p' = \sum_{i=0}^n (p_i' \theta^i + i p_i \theta' \theta^{i-1})$$
 
 This time, however, $\theta' = k'\theta$, so
 
-$$x' = \sum_{i=0}^n (a_i' + i a_i k') \theta^i$$
+$$p' = \sum_{i=0}^n (p_i' + i p_i k') \theta^i$$
 
-Assume that one of these coefficients, say $(a_i' + i a_i k')$, was
-zero but $a_i$ was non-zero.  Then $D(a_i \theta^i) = (a_i' + i a_i
-k') = 0$, so $a_i \theta^i$ would be a constant, which must be in $K$,
+Assume that one of these coefficients, say $(p_i' + i p_i k')$, was
+zero but $p_i$ was non-zero.  Then $D(p_i \theta^i) = (p_i' + i p_i
+k') = 0$, so $p_i \theta^i$ would be a constant, which must be in $K$,
 contradicting the transcendence of $E$.  Therefore, none of these
 coefficients can be zero, establishing the first claim.
 
-To establish the second claim, assume first that $x' \mid x$.  Since
-$x'$ has the same degree as $x$ (by the first claim), it can only
-divide $x$ if it has the form $mx$, where $m \in K$.  Equating
+To establish the second claim, assume first that $p' \mid p$.  Since
+$p'$ has the same degree as $p$ (by the first claim), it can only
+divide $p$ if it has the form $mp$, where $m \in K$.  Equating
 coefficients of $\theta$ in the above sums leads us to conclude that
 
-$$m = (\frac{a_i'}{a_i} + i k')$$
+$$m = (\frac{p_i'}{p_i} + i k')$$
 
-If $x$ was not monomial, then all of its coefficients must
+If $p$ was not monomial, then all of its coefficients must
 yield the same value for $m$, i.e,
 
-$$m = (\frac{a_i'}{a_i} + i k') = (\frac{a_j'}{a_j} + j k')$$
+$$m = (\frac{p_i'}{p_i} + i k') = (\frac{p_j'}{p_j} + j k')$$
 
-$$a_i' a_j - a_i a_j' + (i - j) k' a_i a_j = 0$$
+$$p_i' p_j - p_i p_j' + (i - j) k' p_i p_j = 0$$
 
-$$\frac{a_i' a_j - a_i a_j'}{a_j^2} + (i - j) k' \frac{a_i}{a_j} = 0$$
-$$\left(\frac{a_i}{a_j}\right)' + (i - j) k' \frac{a_i}{a_j} = 0$$
+$$\frac{p_i' p_j - p_i p_j'}{p_j^2} + (i - j) k' \frac{p_i}{p_j} = 0$$
+$$\left(\frac{p_i}{p_j}\right)' + (i - j) k' \frac{p_i}{p_j} = 0$$
 
-Then $D(\frac{a_i}{a_j} \theta^{j-i}) = \left(\frac{a_i}{a_j}\right)'
-+ (i - j) \frac{a_i}{a_j} k' = 0$, again contradicting the
-transcendence of $E$ over $K$.  So $x$ most be monomial.
+Then $D(\frac{p_i}{p_j} \theta^{j-i}) = \left(\frac{p_i}{p_j}\right)'
++ (i - j) \frac{p_i}{p_j} k' = 0$, again contradicting the
+transcendence of $E$ over $K$.  So $p$ most be monomial.
 
-Conversely, assume $x$ is monomial, say $a\theta^n$.  Then $x' = (a' +
-n a k') \theta^n = \frac{a' + n a k'}{a} x$ and $x' \mid x$.
+Conversely, assume $p$ is monomial, say $a\theta^n$.  Then $p' = (a' +
+n a k') \theta^n = \frac{a' + n a k'}{a} p$ and $p' \mid p$.
 
 \endtheorem
 
-\example Let $x = x e^x$.  Then
+\example Let $p = x e^x$.  Then
 $\frac{d}{dx} x e^x = e^x + x e^x = (x+1) e^x = \frac{x+1}{x} e^x$.
 
 We start with the rational function field $K = {\mathbb C}(x)$, and
 extend by the transcendental exponential $\theta = \exp(x)$ to form
-the ring $K[\theta]$.  Both $x$ and $x'$ are in $K[\theta]$; note
-that $\frac{x+1}{x} \in K$, so $x' \mid x$ in this ring.
+the ring $K[\theta]$.  Both $p$ and $p'$ are in $K[\theta]$;
+$p=x\theta$ is monomial (in $\theta$); note that $\frac{x+1}{x} \in
+K$, so $p' \mid p$ in this ring.
 
 \endexample
 
