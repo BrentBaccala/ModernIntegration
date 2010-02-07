@@ -352,6 +352,7 @@ $K[\theta]$, and let $r = a/b$ be a rational function in $K(\theta)$
 \item If $p$'s leading coefficient is constant ($p_n' = 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p - 1$
 \item If $p$'s leading coefficient is not constant ($p_n' \ne 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p$
 \item If $p$ is monic and irreducible, then $p' \nmid p$
+\item $r' \in K$ only if $r$ has the form $c\theta + k$, where $c$ is a constant
 \end{enumerate}
 
 \proof
@@ -377,6 +378,33 @@ the transcendence of $E$ over $K$.
 Next, if $p$ is monic and irreducible, then ${\rm Deg}_\theta\, p' =
 {\rm Deg}_\theta\, p - 1$, and no lower degree polynomial can divide
 an irreducible polynomial, establishing the third claim.
+
+Finally, consider a rational function $r=a(\theta)/b(\theta)$ in its
+normalized form, so $\gcd(a,b) = 1$ and $b$ is monic.  Now we can
+factor $b$ into irreducible factors ($b=\prod b_i(\theta)^{m_i}$)
+and expand $r$ using partial fractions:
+
+$$r = a_0(\theta) + \sum_{i=1}^\mu \sum_{j=1}^{m_i} \frac{a_{ij}(\theta)}{b_i(\theta)^j}$$
+
+where $a_0, a_{ij}, b_i \in K[\theta]$ and ${\rm Deg}_\theta\, a_{ij} < {\rm
+Deg}_\theta\, b_i$.  Now let's differentiate:
+
+$$r' = a_0'(\theta) + \sum_{i=1}^\mu \sum_{j=1}^{m_i} \left[
+\frac{a'_{ij}(\theta)}{b_i(\theta)^j} - \frac{j\, a_{ij}(\theta)\,
+b_i'(\theta)}{b_i(\theta)^{j+1}} \right]$$
+
+$a_{ij}$ does not divide $b_i$ (since ${\rm Deg}_\theta\, a_{ij} <
+{\rm Deg}_\theta\, b_i$, and we proved above that $b'_i$ does not
+divide $b_i$ (since $b_i$ is monic and irreducible), so there is
+exactly one term on the right hand side with $b_i(\theta)^{m_i + 1}$
+in its denominator and no other terms with higher powers.  Therefore,
+$r'$ must have a $b_i(\theta)^{m_i +1}$ in its denominator.  Since our
+hypothesis states that $r$ is in $K$, it can not have any $\theta$
+terms in its denominator (or anywhere else), so there can not be any
+$b_i(\theta)$ factors, and $r$ must be a polynomial.  Futhermore, our
+first two claims imply that if ${\rm Deg}_\theta\, r' = 0$ (since
+$r'\in K$), then ${\rm Deg}_\theta\, r$ can be at most 1, and its
+leading coefficient must be constant.
 
 \endtheorem
 
