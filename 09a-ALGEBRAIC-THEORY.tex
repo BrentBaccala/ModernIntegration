@@ -303,7 +303,7 @@ constructed such that ${\rm Tr}(w_i u_j) = \delta_{ij}$.
 
 Consider the following matrix:
 
-$$M = \pmatrix{{\rm Tr}(w_1 w_1) & & \cr \vdots & \ddots & \cr {\rm Tr}(w_1 w_n) & \cdots & {\rm Tr}(w_n w_n)}$$
+$$M = \begin{pmatrix}{\rm Tr}(w_1 w_1) & & \cr \vdots & \ddots & \cr {\rm Tr}(w_1 w_n) & \cdots & {\rm Tr}(w_n w_n)\end{pmatrix}$$
 
 Now take an element $x \in E$, and represent it relative to the basis
 $\{w_1,\ldots,w_n\}$ as a row vector $X = (x_i)$.  Multiplying $X M$
@@ -321,7 +321,7 @@ This can only happen if ${\rm Tr}$ is identically zero, which would be
 the case for an inseparable extension.  For the separable case,
 therefore, $M$ must be invertible, and we can write:
 
-$$M^{-1} M = \pmatrix{1 & & \cr & \ddots & \cr & & 1}$$
+$$M^{-1} M = \begin{pmatrix}1 & & \cr & \ddots & \cr & & 1\end{pmatrix}$$
 
 A moment's thought now shows that the rows of $M^{-1}$ are the desired
 dual basis elements, written with respect to $\{w_1,\ldots,w_n\}$.

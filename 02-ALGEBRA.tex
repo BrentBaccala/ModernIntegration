@@ -1017,7 +1017,7 @@ the blanks are zeros):
 
 $$ P = \sum_{i=0}^m p_i \, x^i \qquad Q = \sum_{i=0}^n q_i \, x^i $$
 
-$$ S_x(P,Q) = \pmatrix{
+$$ S_x(P,Q) = \begin{pmatrix}
   p_m & p_{m-1} & \ldots & p_0 & & & \cr
   & p_m & p_{m-1} & \ldots & p_0 & & \cr
   & & \ldots & & \ldots & & \cr
@@ -1027,7 +1027,7 @@ $$ S_x(P,Q) = \pmatrix{
   & q_n & q_{n-1} & \ldots & q_0 & & \cr
   & & \ldots & & \ldots & & \cr
   & & & q_n & q_{n-1} & \ldots & q_0 \cr
-  } $$
+  \end{pmatrix} $$
 
 In plain English, the matrix is constructed by forming the first row
 from the first polynomial coefficients, adding $n-1$ trailing zeros at
@@ -1038,14 +1038,14 @@ constructed in the same way from the second polynomial.
 
 Now consider the following straightforward matrix identity:
 
-$$ S_x(P,Q) \pmatrix{x^{n+m-1}\cr x^{n+m-2}\cr \vdots \cr x \cr 1}
- = \pmatrix{P x^{m-1}\cr P x^{m-2}\cr \vdots \cr Q x \cr Q} $$
+$$ S_x(P,Q) \begin{pmatrix}x^{n+m-1}\cr x^{n+m-2}\cr \vdots \cr x \cr 1\end{pmatrix}
+ = \begin{pmatrix}P x^{m-1}\cr P x^{m-2}\cr \vdots \cr Q x \cr Q\end{pmatrix} $$
 
 If $\det S_x(P,Q)$ is non-zero, then the Sylvester matrix is
 invertible, and we can form the following equation:
 
-$$ \pmatrix{x^{n+m-1}\cr x^{n+m-2}\cr \vdots \cr x \cr 1}
- = S_x(P,Q)^{-1} \pmatrix{P x^{m-1}\cr P x^{m-2}\cr \vdots \cr Q x \cr Q} $$
+$$ \begin{pmatrix}x^{n+m-1}\cr x^{n+m-2}\cr \vdots \cr x \cr 1\end{pmatrix}
+ = S_x(P,Q)^{-1} \begin{pmatrix}P x^{m-1}\cr P x^{m-2}\cr \vdots \cr Q x \cr Q\end{pmatrix} $$
 
 Since the matrix is formed exclusively from the polynomials'
 underlying field ${\cal F}$, its inverse must also be formed from
@@ -1086,43 +1086,43 @@ original system to be solvable.
 \example Compute the $t-$resultant of $t^2 - 1 -x$ and $t^3-t-y$.
 
 $${\rm res}_t(t^2 - 1 -x, t^3-t-y) =
-\det\left\vert \matrix{
+\det\left\vert \begin{matrix}
 1 & 0 & -1 & -y & 0 \cr
 0 & 1 & 0 & -1 & -y \cr
 1 & 0 & -x-1 & 0 & 0 \cr
 0 & 1 & 0 & -x-1 & 0 \cr
-0 & 0 &1 & 0 & -x-1} \right\vert $$
+0 & 0 &1 & 0 & -x-1\end{matrix} \right\vert $$
 
 Expanding the first two columns with cofactors, we obtain:
 
-$$= \det\left\vert \matrix{
+$$= \det\left\vert \begin{matrix}
 1 & 0 & -1 & -y \cr
 0 & -x-1 & 0 & 0 \cr
 1 & 0 & -x-1 & 0 \cr
-0 &1 & 0 & -x-1} \right\vert
-+ \det\left\vert \matrix{
+0 &1 & 0 & -x-1 \end{matrix} \right\vert
++ \det\left\vert \begin{matrix}
 0 & -1 & -y & 0 \cr
 1 & 0 & -1 & -y \cr
 1 & 0 & -x-1 & 0 \cr
-0 &1 & 0 & -x-1} \right\vert $$
+0 &1 & 0 & -x-1 \end{matrix} \right\vert $$
 
-$$= \det\left\vert \matrix{
+$$= \det\left\vert \begin{matrix}
  -x-1 & 0 & 0 \cr
  0 & -x-1 & 0 \cr
- 1 & 0 & -x-1} \right\vert
-+ \det\left\vert \matrix{
+ 1 & 0 & -x-1 \end{matrix} \right\vert
++ \det\left\vert \begin{matrix}
  0 & -1 & -y \cr
  -x-1 & 0 & 0 \cr
- 1 & 0 & -x-1} \right\vert $$
+ 1 & 0 & -x-1 \end{matrix} \right\vert $$
 
-$$- \det\left\vert \matrix{
+$$- \det\left\vert \begin{matrix}
  -1 & -y & 0 \cr
  0 & -x-1 & 0 \cr
- 1 & 0 & -x-1} \right\vert
-+ \det\left\vert \matrix{
+ 1 & 0 & -x-1 \end{matrix} \right\vert
++ \det\left\vert \begin{matrix}
  -1 & -y & 0 \cr
  0 & -1 & -y \cr
- 1 & 0 & -x-1} \right\vert $$
+ 1 & 0 & -x-1 \end{matrix} \right\vert $$
 
 $$ = -(x+1)^3 + (x+1)^2 - \Big[-(x+1)^2\Big] + \Big[-(x+1) + y^2 \Big]
  = y^2 - x^3 - x^2 $$
