@@ -4,6 +4,37 @@
 
 \vfil\eject
 
+\example Compute $\int \sin x \, {\rm d}x$
+
+We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
+
+$$\int \frac{\phi - \phi^{-1}}{2i} \,dx$$
+
+The first step is to normalize the integrand, first by transforming it
+into a rational function:
+
+$$\int \frac{\phi^2 - 1}{2i \phi} \,dx $$
+
+and next by using polynomial division to split it into a polynomial
+and a proper fraction with a monic denominator:
+
+$$\int \left[ \frac{1}{2i} \phi - \frac{1}{2i} \frac{1}{\phi} \right] \,dx $$
+
+The integral must have the form $a_1 \phi + a_{-1} \frac{1}{\phi}$
+with $a_1, a_{-1} \in {\mathbb C}(x)$ and must satisfy the equations:
+
+$$\frac{1}{2i} = a_1' + i a_1 \qquad - \frac{1}{2i} = a_{-1}' - i a_{-1}$$ 
+
+These are very simple Risch equations that can be solved by inspection
+to obtain $a_1 = a_{-1} = -\frac{1}{2}$, so
+
+$$\int \frac{\phi - \phi^{-1}}{2i} \,dx = -\frac{1}{2}(\phi + \phi^{-1})
+ = -\frac{1}{2}(e^{ix} + e^{-ix}) = -\cos x$$
+
+\endexample
+
+\vfil\eject
+
 \example Compute $\int \csc x \, {\rm d}x$
 
 We'll operate in ${\bf C}(x, \phi = \exp \,ix)$ and evaluate
@@ -22,12 +53,12 @@ giving us
 
 $$\int i \big[ {{1}\over{\phi-1}} + {{1}\over{\phi+1}} \big] dx$$
 
-Now, we have irreducible denominators, so the answer (if it exists) must
-be expressed in terms of their logarithms:
+Now, we have irreducible, square-free, non-monic denominators, so the
+answer (if it exists) must be expressed in terms of their logarithms:
 
-$$ {{d(\phi+1)}\over{\phi+1}} = {{i\phi\,dx}\over{\phi+1}} = [1 - {{1}\over{\phi+1}}]i\,dx$$
+$$ d \ln(\phi+1) = {{d(\phi+1)}\over{\phi+1}} = {{i\phi\,dx}\over{\phi+1}} = [1 - {{1}\over{\phi+1}}]i\,dx$$
 
-$$ {{d(\phi-1)}\over{\phi-1}} = {{i\phi\,dx}\over{\phi-1}} = [1 + {{1}\over{\phi-1}}]i\,dx$$
+$$ d \ln(\phi-1) = {{d(\phi-1)}\over{\phi-1}} = {{i\phi\,dx}\over{\phi-1}} = [1 + {{1}\over{\phi-1}}]i\,dx$$
 
 so the integral can be written:
 
@@ -39,6 +70,5 @@ inside a logarithm, it disappears into the constant of integration,
 and we conclude that
 
 $$\int \csc x \,{\rm d}x = \ln \tan {x\over2} $$
-
 
 \endexample
