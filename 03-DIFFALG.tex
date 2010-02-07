@@ -46,11 +46,16 @@ derivation will apply immediately to the calculus version.
 What can we determine from these two axioms?  A surprising lot,
 in my opinion.
 
-\vfill\eject
+% \vfill\eject
 
-\theorem
+\theorem\label{basic difalg}
 
-$D(0) = 0$, $D(1) = 0$, and $\displaystyle{D({1\over a}) = - {1\over a^2}D(a)}$
+\begin{itemize}
+\item $D(0) = 0$
+\item $D(1) = 0$
+\item $\displaystyle{D({1\over a}) = - {1\over a^2}D(a)}$
+\item $D(cx) = c\, D(x)$ if $D(c)=0$
+\end{itemize}
 
 \proof
 
@@ -68,14 +73,35 @@ $$ D({1\over a}) = - {1\over a^2}D(a)$$
 
 \endtheorem
 
+It follows immediately from this theorem that our entire prime
+subfield, as well as any purely algebraic extension thereof, must map
+to zero under derivation.
+
+\theorem
+
+The set of all elements in a differential field which map to zero
+under derivation forms a subfield.
+
+\endtheorem
+
+The subfield which maps to zero is called the {\it constant subfield}.
+It necessarily includes the prime subfield and any elements algebraic
+over the prime subfield, but may include other transcendental elements
+as well.  For example, consider ${\bf R}$, the real numbers.  $2$ is
+in the prime subfield, so $D(2)=0$; $\sqrt{2}$ is algebraic over the
+prime subfield, so $D({\sqrt 2})=0$; $\pi$ is transcendental over the
+prime subfield, so doesn't {\it have} to map to zero, but we will
+(obviously) set $D(\pi)=0$.  All three elements --- $2$, ${\sqrt 2}$,
+$\pi$ --- are in the constant subfield.
+
 \theorem
 
 The derivation of an element algebraic over a subfield is completely
-defined by the subfield's derivation.
+defined by the subfield's derivation and the element's minimal polynomial.
 
 \proof
 
-The algebraic extension is governed by a primitive polynomial of the form:
+Given an element $\xi$, let its minimal polynomial be:
 
 $$\sum_i a_i \xi^i = 0$$
 
@@ -87,40 +113,7 @@ $$\sum_i i a_i \xi^{i-1} \xi' = - \sum_i a_i' \xi^i $$
 
 $$\xi' = - {\sum_i a_i' \xi^i \over {\sum_i i a_i \xi^{i-1}}} $$
 
-
-Now, by theorem ??, any element $r \in {\cal A}$ can be written:
-
-$$r = b_n \xi^n + \cdots + b_1 \xi + b_0 = \sum_i b_i \xi^i$$
-
-Differentiating $r$ (again using the D1 and D2 axioms), we obtain:
-
-$$r' = \sum_i (b_i' \xi^i + i b_i \xi^{i-1} \xi') $$
-
-Since we already have an expression for $\xi'$, this equation
-gives the derivation of any element in ${\cal A}$.
-
 \endtheorem
-
-It follows immediately from these theorem that our entire prime
-subfield, as well as any purely algebraic extension thereof, must map
-to zero under derivation.
-
-THEOREM
-
-The set of all elements in a differential field which map to zero
-under derivation forms a subfield.
-
-END THEOREM
-
-The subfield which maps to zero is called the {\it constant subfield}.
-It necessarily includes the prime subfield and any elements algebraic
-over the prime subfield, but may include other transcendental elements
-as well.  For example, consider ${\bf R}$, the real numbers.  $2$ is
-in the prime subfield, so $D(2)=0$; $\sqrt{2}$ is algebraic over the
-prime subfield, so $D({\sqrt 2})=0$; $\pi$ is transcendental over the
-prime subfield, so doesn't {\it have} to map to zero, but we will
-(obviously) set $D(\pi)=0$.  All three elements --- $2$, ${\sqrt 2}$,
-$\pi$ --- are in the constant subfield.
 
 The upshot of all this is that our basic D1 and D2 axioms completely
 define a derivation both for our prime subfield as well as any purely
@@ -340,44 +333,153 @@ $1 + \ln x$), can not appear in powers or in denominators (${d\over
 dx} \ln^2x = 2{\ln x\over x}$), and can not be nested (${d\over dx}
 \ln(\ln x) = {1\over{x\ln x}}$).
 
-Of course, all of this is hand-waving so far, but I hope that it
-provides context and concrete examples to understand what has become
-known as {\it Liouville's Theorem} --- the only new extensions that
-can appear are simple logarithms.  Let's nail this down, now.
+% Of course, all of this is hand-waving so far, but I hope that it
+% provides context and concrete examples to understand what has become
+% known as {\it Liouville's Theorem} --- the only new extensions that
+% can appear are simple logarithms.  Let's nail this down, now.
 
-\definition
-
-A {\it trivial} element in an extension is one that only involves
-terms from the underlying field.  For example, in the field ${\bf
-C}(x)$, the only trivial elements are those in ${\bf C}$.
-Anything involving $x$ is non-trivial.
-
-\enddefinition
+These examples are all special cases of {\it Liouville's Theorem} ---
+the only new extensions that can appear in an integral are simple
+logarithms with constant coefficients.
 
 \theorem
+Let $E=K(\theta)$ be a simple transcendental logarithmic extension of
+a differential field $K$, and let $x=\sum a_i \theta^i$ be a
+polynomial in $K[\theta]$.  Then:
 
-Differentiating a non-trivial element in an algebraic extension always
-produces a non-trivial element.
+\begin{enumerate}
+\item If $x$'s leading coefficient is constant ($a_n' = 0$), then ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x - 1$
+\item If $x$'s leading coefficient is not constant ($a_n' \ne 0$), then ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x$
+\item If $x$ is monic and irreducible, then $x' \nmid x$
+\end{enumerate}
 
 \proof
 
-Consider an algebraic extension ${\cal A} = {\cal F}(\xi)$.
-By theorem ??, any element $r \in {\cal A}$ can be written:
+The first two statements follow easily from considering $x'$:
 
-$$r = a_n \xi^n + \cdots + a_1 \xi + a_0 = \sum_i a_i \xi^i$$
+$$x'=\sum_{i=0}^n (a_i' \theta^i + i a_i \theta' \theta^{i-1}) = \sum_{i=0}^n
+\left(a_i' + \left(i+1\right)a_{i+1} \theta'\right) \theta^i$$
 
-where $a_n$ is non-zero and $n \ne 0$ (otherwise the element would be
-trivial), and $r'$ is:
+Note that since $K(\theta)$ is a logarithmic extension, $\theta'
+\in K$, so for all $i$ the entire expression $(a_i' + (i+1)a_{i+1} \theta')$
+is in $K$.  In particular, since $a_{n+1}$ is zero, the $n^{\rm th}$
+coefficient of $x'$ is just $a_n'$ and the $\theta$-degree of $x'$
+will be $n$ if $a_n'$ is non-zero.  On the other hand, if $a_n'$ is
+zero, then the $n-1^{\rm th}$ coefficient of $x'$ is $(a_{n-1}' + n
+a_n \theta')$ which would be zero only if $\theta' =
+-\frac{a_{n-1}'}{n a_n} = (-\frac{a_{n-1}}{n a_n})'$ (by Theorem
+\ref{basic difalg} since $a_n$ is constant), which implies
+an algebraic relationship between $\theta$ and $-\frac{a_{n-1}}{n
+a_n}$ (specifically, they differ only by a constant), contradicting
+the transcendence of $E$ over $K$.
 
-$$r' = \sum_i (a_i' \xi^i + i a_i \xi^{i-1} \xi') $$
-
-$$r' = \sum_i a_i' \xi^i + (\sum_i i a_i \xi^{i-1}) \xi' $$
-
-$$r' = \sum_i a_i' \xi^i - (\sum_i i a_i \xi^{i-1}) {\sum_i m_i' \xi^i \over {\sum_i i m_i \xi^{i-1}}} $$
+Finally, if $x$ is monic and irreducible, then ${\rm Deg}_\theta\, x' =
+{\rm Deg}_\theta\, x - 1$, and no lower degree polynomial can divide
+an irreducible polynomial.
 
 \endtheorem
 
-EXAMPLE
+\theorem
+Let $E=K(\theta)$ be a simple transcendental exponential extension of
+a differential field $K$ with the same constant subfield as $K$, and
+let $x=\sum a_i \theta^i$ be a polynomial in $K[\theta]$.  Then:
+
+\begin{enumerate}
+\item ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x$
+\item $x' \mid x$ if and only if $x$ is monomial.
+\end{enumerate}
+
+\proof
+
+Again,
+
+$$x' = \sum_{i=0}^n (a_i' \theta^i + i a_i \theta' \theta^{i-1})$$
+
+This time, however, $\theta' = k'\theta$, so
+
+$$x' = \sum_{i=0}^n (a_i' + i a_i k') \theta^i$$
+
+Assume that one of these coefficients, say $(a_i' + i a_i k')$, was
+zero but $a_i$ was non-zero.  Then $D(a_i \theta^i) = (a_i' + i a_i
+k') = 0$, so $a_i \theta^i$ would be a constant, which must be in $K$,
+contradicting the transcendence of $E$.  Therefore, none of these
+coefficients can be zero, establishing the first claim.
+
+To establish the second claim, assume first that $x' \mid x$.  Since
+$x'$ has the same degree as $x$ (by the first claim), it can only
+divide $x$ if it has the form $mx$, where $m \in K$.  Equating
+coefficients of $\theta$ in the above sums leads us to conclude that
+
+$$m = (\frac{a_i'}{a_i} + i k')$$
+
+If $x$ was not monomial, then all of its coefficients must
+yield the same value for $m$, i.e,
+
+$$m = (\frac{a_i'}{a_i} + i k') = (\frac{a_j'}{a_j} + j k')$$
+
+$$a_i' a_j - a_i a_j' + (i - j) k' a_i a_j = 0$$
+
+$$\frac{a_i' a_j - a_i a_j'}{a_j^2} + (i - j) k' \frac{a_i}{a_j} = 0$$
+$$\left(\frac{a_i}{a_j}\right)' + (i - j) k' \frac{a_i}{a_j} = 0$$
+
+Then $D(\frac{a_i}{a_j} \theta^{j-i}) = \left(\frac{a_i}{a_j}\right)'
++ (i - j) \frac{a_i}{a_j} k' = 0$, again contradicting the
+transcendence of $E$ over $K$.  So $x$ most be monomial.
+
+Conversely, assume $x$ is monomial, say $a\theta^n$.  Then $x' = (a' +
+n a k') \theta^n = \frac{a' + n a k'}{a} x$ and $x' \mid x$.
+
+\endtheorem
+
+\example Let $x = x e^x$.  Then
+$\frac{d}{dx} x e^x = e^x + x e^x = (x+1) e^x = \frac{x+1}{x} e^x$.
+
+We start with the rational function field $K = {\mathbb C}(x)$, and
+extend by the transcendental exponential $\theta = \exp(x)$ to form
+the ring $K[\theta]$.  Both $x$ and $x'$ are in $K[\theta]$; note
+that $\frac{x+1}{x} \in K$, so $x' \mid x$ in this ring.
+
+\endexample
+
+\theorem
+
+Let $A$ be an algebraic extension of a differential field $K$ with the
+same constant subfield as $K$.  Then for all $a\in A$, $a' \in K
+\leftrightarrow a \in K$.
+
+\proof
+
+The right-to-left implication is obvious (since differential fields
+are closed under derivation), so we need only to prove the
+left-to-right implication.
+
+Extend $A$ to its algebraic closure $\bar{A}$.  Since derivation of an
+algebraic element is determined solely by its minimum polynomial,
+$A$'s derivation extends uniquely to define $\bar{A}$'s.  Now
+consider $({\rm Tr\,} a)'$ (the derivation of $a$'s trace):
+
+$$({\rm Tr\,} a)' = (\sum a_i)'$$
+
+where the $a_i$ are the conjugates of $a$ in $\bar{A}$.  Now apply the
+differential addition axiom to $(\sum a_i)'$ and note that since
+derivation of an algebraic element is determined solely by its minimum
+polynomial, and all of the conjugate elements have the same minimum
+polynomial, then
+
+$$({\rm Tr\,} a)' = (\sum a_i)' = \sum a_i' = ({\rm Deg\,}a) a'$$
+
+$$(\frac{1}{{\rm Deg\,} a}{\rm Tr\,} a)' = a'$$
+
+Since the trace (a symmetric polynomial of conjugates) exists in the
+underlying field $K$, so does $\frac{1}{{\rm Deg\,} a}{\rm Tr\,}$, so
+we have identified an element in $K$ with the same derivation as $a$,
+which therefore can differ from $a$ solely by a constant.  Since $A$
+and $K$ have the same constant subfield, all of our constants are in
+$K$, so $a$ is therefore also in $K$.
+
+\endtheorem
+
+\example
 
 Explain the ``disappearance'' of the square root in:
 
@@ -391,3 +493,5 @@ That's where it went!  It ``disappeared'' into the complex logarithm
 that $\arcsin x$ is formed from.  New logarithms, of course, are
 acceptable.  Notice that the new logarithm has a constant coefficient
 ($-i$), is not nested, and appears to the first power.
+
+\endexample
