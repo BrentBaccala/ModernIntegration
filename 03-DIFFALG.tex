@@ -344,9 +344,10 @@ logarithms with constant coefficients.
 
 \theorem
 Let $E=K(\theta)$ be a simple transcendental logarithmic extension of
-a differential field $K$, let $p=\sum p_i \theta^i$ be a polynomial in
-$K[\theta]$, and let $r = a/b$ be a rational function in $K(\theta)$
-($a, b \in K[\theta]$).  Then:
+a differential field $K$ with the same constant subfield as $K$, let
+$p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$, and let $r =
+a/b$ be a rational function in $K(\theta)$ ($a, b \in K[\theta]$).
+Then:
 
 \begin{enumerate}
 \item If $p$'s leading coefficient is constant ($p_n' = 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p - 1$
@@ -372,8 +373,8 @@ p_n \theta')$ which would be zero only if $\theta' =
 -\frac{p_{n-1}'}{n p_n} = (-\frac{p_{n-1}}{n p_n})'$ (by Theorem
 \ref{basic difalg} since $p_n$ is constant), which implies
 an algebraic relationship between $\theta$ and $-\frac{p_{n-1}}{n
-p_n}$ (specifically, they differ only by a constant), contradicting
-the transcendence of $E$ over $K$.
+p_n}$ (specifically, they differ only by a constant, which must be in
+$K$), contradicting the transcendence of $E$ over $K$.
 
 Next, if $p$ is monic and irreducible, then ${\rm Deg}_\theta\, p' =
 {\rm Deg}_\theta\, p - 1$, and no lower degree polynomial can divide
@@ -456,7 +457,7 @@ $$\left(\frac{p_i}{p_j}\right)' + (i - j) k' \frac{p_i}{p_j} = 0$$
 
 Then $D(\frac{p_i}{p_j} \theta^{j-i}) = \left(\frac{p_i}{p_j}\right)'
 + (i - j) \frac{p_i}{p_j} k' = 0$, again contradicting the
-transcendence of $E$ over $K$.  So $p$ most be monomial.
+transcendence of $E$ over $K$.  So $p$ must be monomial.
 
 Conversely, if $p$ is monomial, say $a\theta^n$, then $p' = (a' +
 n a k') \theta^n = \frac{a' + n a k'}{a} p$ and $p' \mid p$.
