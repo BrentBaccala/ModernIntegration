@@ -352,7 +352,7 @@ $K[\theta]$, and let $r = a/b$ be a rational function in $K(\theta)$
 \item If $p$'s leading coefficient is constant ($p_n' = 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p - 1$
 \item If $p$'s leading coefficient is not constant ($p_n' \ne 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p$
 \item If $p$ is monic and irreducible, then $p' \nmid p$
-\item $r' \in K$ only if $r$ has the form $c\theta + k$, where $c$ is a constant
+\item $r' \in K$ if and only if $r$ has the form $c\theta + k$, where $c$ is a constant
 \end{enumerate}
 
 \proof
@@ -410,12 +410,15 @@ leading coefficient must be constant.
 
 \theorem
 Let $E=K(\theta)$ be a simple transcendental exponential extension of
-a differential field $K$ with the same constant subfield as $K$, and
-let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$.  Then:
+a differential field $K$ with the same constant subfield as $K$,
+let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$,
+and let $r=a/b$ be a rational function in $K(\theta)$
+($a, b \in K[\theta]$).  Then:
 
 \begin{enumerate}
 \item ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x$
 \item $p' \mid p$ if and only if $p$ is monomial.
+\item $r' \in K$ if and only if $r \in K$
 \end{enumerate}
 
 \proof
@@ -455,8 +458,30 @@ Then $D(\frac{p_i}{p_j} \theta^{j-i}) = \left(\frac{p_i}{p_j}\right)'
 + (i - j) \frac{p_i}{p_j} k' = 0$, again contradicting the
 transcendence of $E$ over $K$.  So $p$ most be monomial.
 
-Conversely, assume $p$ is monomial, say $a\theta^n$.  Then $p' = (a' +
+Conversely, if $p$ is monomial, say $a\theta^n$, then $p' = (a' +
 n a k') \theta^n = \frac{a' + n a k'}{a} p$ and $p' \mid p$.
+
+To prove the final claim, we proceed as before, expanding $r$ using
+partial fractions:
+
+$$r = a_0(\theta) + \sum_{i=1}^\mu \sum_{j=1}^{m_i} \frac{a_{ij}(\theta)}{b_i(\theta)^j}$$
+
+and taking the derivative:
+
+$$r' = a_0'(\theta) + \sum_{i=1}^\mu \sum_{j=1}^{m_i} \left[
+\frac{a'_{ij}(\theta)}{b_i(\theta)^j} - \frac{j\, a_{ij}(\theta)\,
+b_i'(\theta)}{b_i(\theta)^{j+1}} \right]$$
+
+This time, however, $b_i'$ can divide $b_i$ if $b_i$ is monomial.  All
+other possibilities are excluded as before, so $r$ can now have the
+form:
+
+$$r = \sum_{i=-m}^n r_i \theta^i$$
+
+where $r_i \in K$.  We've already established that if $r_i$ is
+non-zero, then the corresponding term in the derivative
+is also non-zero, so the only way for $r'$ to be in $K$ is if
+$r$ is in $K$.
 
 \endtheorem
 
