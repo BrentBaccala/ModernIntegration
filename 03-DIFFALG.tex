@@ -342,7 +342,7 @@ These examples are all special cases of {\it Liouville's Theorem} ---
 the only new extensions that can appear in an integral are simple
 logarithms with constant coefficients.
 
-\theorem
+\theorem\label{basic logarithmic properties}
 Let $E=K(\theta)$ be a simple transcendental logarithmic extension of
 a differential field $K$ with the same constant subfield as $K$, let
 $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$, and let $r =
@@ -497,7 +497,7 @@ K$, so $p' \mid p$ in this ring.
 
 \endexample
 
-\theorem
+\theorem\label{basic algebraic properties}
 
 Let $A$ be an algebraic extension of a differential field $K$ with the
 same constant subfield as $K$.  Then for all $a\in A$, $a' \in K
@@ -572,3 +572,27 @@ logarithmic transcendental with $\theta' = 1/(x-\xi)$
 and $\psi' = 1/(x+\xi)$.
 
 \endexample
+
+\theorem (Liouville) Let $L$ be a Liouvillian extension of
+a differential field $K$ with the same constant subfield as $K$.
+Then $\forall l \in L$, $l' \in K$ iff $l$ has the form:
+
+$$k + \sum_{i=1}^n c_i \theta_i$$
+
+where $k\in K$, $K(\theta_i)$ are simple logarithmic extensions of $K$ and $c_i$
+are constants.
+
+\proof
+
+Since $L$ is formed from $K$ by a finite number of extensions,
+consider the last extension and call it $\theta$, i.e, $L=M(\theta)$
+where $K \subset M \subset L$.  Since $l' \in K$, $l' \in M$.  If
+$\theta$ were either exponential or algebraic, then by Theorems
+\ref{basic exponential properties} and \ref{basic algebraic properties}
+$l$ would have to be in $M$.  On the other hand, if $\theta$ were
+logarithmic, then by Theorem \ref{basic logarithmic properties} $l$
+must have the form $c\theta + m$, where $m\in M$.  Applying this
+argument inductively leads us to conclude that $l$ must have the
+form...  (FIX AND FINISH THIS PROOF)
+
+\endtheorem

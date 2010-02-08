@@ -1,2 +1,103 @@
 
-Classical Algebraic Function Theory
+\mychapter{Classical Algebraic Function Theory}
+
+The roots of algebraic geometry lie in studying the zeros of
+polynomial equations.  We began with a single polynomial in a single
+variable, $\sum a_n x^n = 0$, and have learnt a great deal about
+it.  We know how to solve it (at least in terms of radicals) if $n$ is
+less than 5, and Galois proved that no such solution exists (in the
+general case) for $n$ equal to or greater than 5.  Simple long
+division tells us that it can have no more than $n$ roots, i.e, $\sum
+a_n x^n = \prod (x-\gamma_n)$, and Gauss showed that if all of the
+$a_n$ are complex numbers, then so are all of the $\gamma_n$.
+
+The next logical step is to consider zeros of a single polynomial in
+two variables: $\sum a_{ij} x^i y^j = 0$, and this equation has also
+received a great deal of attention from mathematicians.  Like the
+univariate case, we have theories devoted to low-order special cases
+--- {\it linear equations} (all terms first degree or constant), the
+{\it conic sections} (all terms second degree or less), and the {\it
+elliptic curves} (one term third degree; all others second degree or
+less).  In the general case, $\sum a_{ij} x^i y^j = 0$ is called an
+{\it algebraic curve}, and a rational function in $x$ and $y$ is
+called an {\it algebraic function}.  These will be our main focus of
+attention in this chapter.
+
+In this book, our major interest in algebraic curves and functions is
+that they provide an elegant way to handle roots in our integrand.
+Thus, to integrate something like $\sqrt{x+1}$, we would construct the
+algebraic curve $y^2 = x + 1$ and then integrate the algebraic
+function $y$.  To carry out this procedure in general, we will need a
+fair amount of modern algebraic function theory.  To set the stage for
+the modern theory, however, a chapter on classical algebraic function
+theory seems to be in order.
+
+\section{Riemann Surfaces and Puiseux Expansions}
+
+The first problem we face when dealing with algebraic curves is the
+multi-valued nature of their solutions.  Consider, once again, the
+algebraic function $y$ defined on the algebraic curve $y^2 = x + 1$.
+There are, in fact, two seperate algebraic functions that solve this
+equation --- both $y$ and $-y$ are solutions.  Conventionally, we
+express this by writing something like $y = \pm\sqrt{x+1}$, but for
+higher degree curves this kind of notation becomes quite unsuitable.
+How, for example, do you express the three possible solutions to a
+cube root?
+
+Bernhard Riemann's elegant solution to this problem was to regard the
+entire algebraic curve as a two-dimensional surface in a
+four-dimensional space.  Why four dimensions?  Well, just as in the
+univariate case, we find it convenient to work with complex numbers,
+so as to deal easily with roots of negative numbers.  Regarding both
+$x$ and $y$ as complex numbers (two dimensions each), and plotting
+them against each other, we obtain a four dimensional space.  Just as
+in the real case, where an equation like $x^2 + y^2 = 1$ defines a
+circle, an algebraic curve defines a surface, the loci of $x$ and $y$
+that satisfy the defining polynomial, called the curve's {\it Riemann
+surface}.  An algebraic curve's Riemann surface is, in fact, a
+two-dimensional manifold, as I shall now demonstrate.
+
+The defining polynomial can be regarded as a polynomial in $y$, whose
+coefficients are polynomials in $x$, simply by collecting terms with
+like powers of $y$.  For any given value of $x$, we have a polynomial
+in $y$ with complex coefficients that yields at most $n$ solutions.
+We can be more specific.  For any given value of $x$, we have {\it
+exactly} $n$ solutions for $y$ {\it unless} one of two things happen.
+Either the leading ($y^n$) coefficient is zero, in which case we have
+less than $n$ solutions due to having a polynomial of degree less than
+$n$, or the polynomial has multiple identical roots.  Any point $x$
+that generates exactly $n$ roots of $y$ is called an {\it ordinary}
+point of the algebraic curve; any point $x$ that generates less than
+$n$ roots, for one of these two reasons, is called a {\it singular}
+point of the curve.
+
+Now, the coefficient of $y^n$ in the defining polynomial will be a
+polynomial in $x$, which has a finite number of roots at which it is
+zero, so there are only a finite number of singular points where the
+defining polynomial is of degree less than $n$ in $y$.
+
+Likewise, there are only a finite number of singular points with
+multiple identical roots, as can be seen by considering the
+discriminant of defining polynomial (Theorem ?), regarded as a
+polynomial in $y$, with coefficients in ${\bf C}[x]$.  The
+discriminant, as the determinant of a matrix with coefficients in
+${\bf C}[x]$, exists itself in ${\bf C}[x]$, and therefore will have
+only a finite number of points where it is zero.  Thus, an algebraic
+curve has only a finite number of singular points, which can be found
+by computing the zeros of simple, univariate polynomials.
+
+\example Find the singular points of $y^2 = x + 1$
+
+We normalize the defining polynomial by writing it as $y^2 - x - 1 =
+0$, and begin by noting that the coefficient of $y^2$ is 1, so the
+defining polynomial is second degree for all finite values of $x$.
+Where does it have multiple roots?  We compute the discriminant:
+
+INSERT DISCRIMINANT HERE
+
+Thus, we conclude that the only singular point of $y^2 = x + 1$ lies at
+$x = -1$.
+
+\endexample
+
+Any ordinary point can be expanded using a power series in $(x-\alpha)$.
