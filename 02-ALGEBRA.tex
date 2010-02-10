@@ -1215,6 +1215,25 @@ DEFINE ISOMORPHISM.
 \mysection{Symmetric Polynomials}
 \qquad [van der Waerden], \S5.7
 
+\definition
+Given an algebraic extension $E$ of a field $F$, the {\it trace} of an
+element $x$ in $E$ (written ${\rm Tr}(x)$) is the sum of the element
+and all of its conjugates.
+\enddefinition
+
+\theorem\label{trace in underlying field}
+
+${\rm Tr}(x) \in F$ {\rm [Wikipedia article ``Newton's identities'']}
+
+\proof
+
+Write $x$'s minimal polynomial in the form:
+$$\prod_{i=1}^n \left( t - x_i \right) = \sum_{k=0}^n (-1)^{k} a_k t^{n-k}$$
+and note that the $n-1^{\rm th}$ coefficient in the polynomial is
+${\rm Tr}(x)$, and that all of the coefficients are in $F$.
+
+\endtheorem
+
 \mysection{Linear Algebra}
 \qquad [van der Waerden], Ch. 4, \S6.11 (trace of an field extension)
 
