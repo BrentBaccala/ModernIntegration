@@ -107,3 +107,74 @@ We conclude that no solution to this equation exists in ${\mathbb C}(x)$,
 so the integral can not be expressed in elementary form.
 
 \endexample
+
+\vfil\eject
+
+\example Compute $\int {{4^x-1}\over{2^x+1}} {\rm d}x$
+\label{integrate 4^x-1/2^x+1}
+
+We'll use the field ${\mathbb C}(x,\Psi = \exp(x \ln 2))$; $\Psi' =
+(\ln 2)\Psi$ and the representation (see Example
+\ref{represent 4^x+1/2^x+1}):
+
+$$ \frac{\Psi^2-1}{\Psi+1} = \Psi-1$$
+
+So we need to find a solution of the form $a\Psi + \bar{b}$ ($\bar{b}$
+can include additional logarithmic elements) that satisfy the Risch
+equations:
+
+$$a'\Psi + a\Psi' = a'\Psi + a(\ln 2)\Psi = \Psi \qquad a' + a(\ln 2) = 1$$
+$$\bar{b}' = -1$$
+
+Both equations have fairly obvious solutions:
+
+$$a = \frac{1}{\ln 2} \qquad \bar{b}=-x$$
+
+So our solution is
+
+$$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\Psi - x =
+\frac{1}{\ln 2}2^x - x$$
+
+\endexample
+
+
+\vfil\eject
+
+\example Compute $\int {{4^x+1}\over{2^x+1}} {\rm d}x$
+\label{integrate 4^x+1/2^x+1}
+
+We'll use the field ${\mathbb C}(x,\Psi = \exp(x \ln 2))$; $\Psi' =
+(\ln 2)\Psi$ and the representation (see Example
+\ref{represent 4^x+1/2^x+1}):
+
+$$ \frac{\Psi^2+1}{\Psi+1} = \Psi-1+\frac{2}{\Psi+1}$$
+
+Let's do the fractional part first since it will modify the polynomial
+part.
+
+$$\left[\ln(\Psi+1)\right]' = \frac{(\Psi + 1)'}{\Psi+1} = \frac{(\ln
+2)\Psi}{\Psi + 1} = \ln 2 - \frac{\ln 2}{\Psi+1}$$
+
+$$-\frac{2}{\ln 2}\left[\ln(\Psi+1)\right]' = \frac{2}{\Psi+1} - 2$$
+
+We can rewrite our integrand as:
+
+$$ \Psi + 1 - \frac{2}{\ln 2}\left[\ln(\Psi+1)\right]'$$
+
+So we need to find a solution of the form $a\Psi + \bar{b}$ ($\bar{b}$
+can include additional logarithmic elements) that satisfy the Risch
+equations:
+
+$$a'\Psi + a\Psi' = a'\Psi + a(\ln 2)\Psi = \Psi \qquad a' + a(\ln 2) = 1$$
+$$\bar{b}' = 1$$
+
+Both equations have fairly obvious solutions:
+
+$$a = \frac{1}{\ln 2} \qquad \bar{b}=x$$
+
+So our solution is
+
+$$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\Psi + x  - \frac{2}{\ln 2}\left[\ln(\Psi+1)\right] =
+\frac{2^x}{\ln 2} + x - \frac{2}{\ln 2}\ln(2^x+1) $$
+
+\endexample
