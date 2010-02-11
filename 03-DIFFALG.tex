@@ -357,6 +357,8 @@ Then:
 \item If $p$'s leading coefficient is constant ($p_n' = 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p - 1$
 \item If $p$'s leading coefficient is not constant ($p_n' \ne 0$), then ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p$
 \item If $p$ is monic and irreducible, then $p' \nmid p$
+\item If an irreducible factor appears in $r$'s denominator with multiplicity
+$m$, then it appears in $r'$'s denominator with multiplicity $m+1$
 \item $r' \in K$ if and only if $r$ has the form $c\theta + k$, where $c$ is a constant
 \end{enumerate}
 
@@ -384,7 +386,7 @@ Next, if $p$ is monic and irreducible, then ${\rm Deg}_\theta\, p' =
 {\rm Deg}_\theta\, p - 1$, and no lower degree polynomial can divide
 an irreducible polynomial, establishing the third claim.
 
-Finally, consider a rational function $r=a(\theta)/b(\theta)$ in its
+Now consider a rational function $r=a(\theta)/b(\theta)$ in its
 normalized form, so $\gcd(a,b) = 1$ and $b$ is monic.  Now we can
 factor $b$ into irreducible factors ($b=\prod b_i(\theta)^{m_i}$)
 and expand $r$ using partial fractions:
@@ -403,13 +405,16 @@ $a_{ij}$ does not divide $b_i$ (since ${\rm Deg}_\theta\, a_{ij} <
 divide $b_i$ (since $b_i$ is monic and irreducible), so there is
 exactly one term on the right hand side with $b_i(\theta)^{m_i + 1}$
 in its denominator and no other terms with higher powers.  Therefore,
-$r'$ must have a $b_i(\theta)^{m_i +1}$ in its denominator.  Since our
-hypothesis states that $r$ is in $K$, it can not have any $\theta$
-terms in its denominator (or anywhere else), so there can not be any
-$b_i(\theta)$ factors, and $r$ must be a polynomial.  Futhermore, our
-first two claims imply that if ${\rm Deg}_\theta\, r' = 0$ (since
-$r'\in K$), then ${\rm Deg}_\theta\, r$ can be at most 1, and its
-leading coefficient must be constant.
+$r'$ must have a $b_i(\theta)^{m_i +1}$ in its denominator, establishing
+the fourth claim.
+
+Finally, since the hypothesis of the fifth claim states that $r'$ is in
+$K$, it can not have any $\theta$ terms in its denominator (or
+anywhere else), so there can not be any $b_i(\theta)$ factors, and $r$
+must be a polynomial.  Futhermore, our first two claims imply that if
+${\rm Deg}_\theta\, r' = 0$ (since $r'\in K$), then ${\rm
+Deg}_\theta\, r$ can be at most 1, and its leading coefficient must be
+constant.
 
 \endtheorem
 
