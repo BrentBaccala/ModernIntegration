@@ -36,6 +36,78 @@ $$\int \ln x \,{\rm d}x = x \ln x - x$$
 
 \vfill\eject
 
+\example Compute $\int \tan^{-1} x\, {\rm d}x$
+
+The ``standard'' approach to this integral would be to note that the
+derivative of $\tan^{-1} x$ is $1/(x^2+1)$ and use integration by parts:
+
+$$\int \tan^{-1} x\, {\rm d}x = x\, \tan^{-1}x - \int \frac{x\, {\rm d}x}{x^2+1}
+= x\, \tan^{-1}x - \ln(x^2+1) + C$$
+
+Using the differential algebra identity $\tan^{-1} x =
+{1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$, we use the differential field
+${\mathbb C}(x,\theta)$; $\theta = \ln {{ix-1}\over{ix+1}}$;
+$\theta' = - \frac{2i}{x^2+1}$ and compute
+
+% {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}
+
+$$\int {1\over2}\,i\,\theta\, {\rm d}x$$
+
+Because our integrand has no denominator in $\theta$, Theorem
+\ref{basic logarithmic properties} tells us both that our
+integral can have no denominator in $\theta$ and that its
+$\theta$-degree can be at most two, so it must have the form
+
+$$a_2\theta^2 + a_1\theta + a_0\qquad a_2,a_1 \in {\mathbb C}(x);\;
+a_0 \in {\mathbb C}(x,\ldots)$$
+
+Now let's differentiate and equate like terms in $\theta$.  First,
+
+$$a_2' = 0$$
+
+so $a_2$ must be a constant, say $c_2$.  Next,
+
+$$c_2\theta' + a_1' = {1\over2}\,i$$
+
+Integrating both sides we obtain:
+
+$$c_2\theta + a_1 = {1\over2}\,i\,x + c_1$$
+
+Equating coefficients again (and remembering that
+$a_1 \in {\mathbb C}(x)$) leads us to conclude that
+
+$$c_2=0 \qquad a_1 = {1\over2}\,i\,x + c_1$$
+
+Finally,
+
+$$a_1\theta' + a_0' = 0$$
+$$\left({1\over2}\,i\,x + c_1\right)\theta' + a_0' = 0$$
+
+Since $c_1$ is unknown, we'll leave it on the left-hand side along
+with the unknown $a_0$ and move all of our knowns to the right-hand
+side, taking advantage of our knowledge of $\theta'$:
+
+$$c_1\theta' + a_0' = {1\over2}\,i\,x \frac{2i}{x^2+1}$$
+$$c_1\theta' + a_0' = - \frac{x}{x^2+1}$$
+
+Integrating both side we obtain:
+
+$$c_1\theta + a_0 = - \ln(x^2+1)$$
+
+and remembering that $a_0$ can include new logarithmic extensions, we
+conclude that
+
+$$c_1 = 0 \qquad a_0 = - \ln(x^2+1)$$
+
+and therefore our integral is:
+
+$${1\over2}\,i\,x \theta - \ln(x^2+1) = x\,\tan^{-1} x - \ln(x^2+1)$$
+
+
+\endexample
+
+\vfill\eject
+
 $$\int{{x(x+1)\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{((x+1)\ln^2(x+1) - (x^3+x^2)e^{2x^2})^2}} dx$$
 
 $$\psi = \exp(x^2) \qquad \theta = \ln (x+1)$$
