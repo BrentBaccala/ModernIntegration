@@ -57,8 +57,11 @@ them against each other, we obtain a four dimensional space.  Just as
 in the real case, where an equation like $x^2 + y^2 = 1$ defines a
 circle, an algebraic curve defines a surface, the loci of $x$ and $y$
 that satisfy the defining polynomial, called the curve's {\it Riemann
-surface}.  An algebraic curve's Riemann surface is, in fact, a
-two-dimensional manifold, as I shall now demonstrate.
+surface}.
+
+% An algebraic curve's Riemann surface is, in fact, a
+% two-dimensional manifold, as I shall now demonstrate.
+% NOT TRUE - singularities can exist
 
 The defining polynomial can be regarded as a polynomial in $y$, whose
 coefficients are polynomials in $x$, simply by collecting terms with
@@ -123,65 +126,77 @@ on the t-plane except possibly at the origin.  Then use existence of
 the Laurent series (Silverman 11.2) and continuity of the roots (HOW?)
 to establish analyticity at the multiple point.
 
-\mysection{meromorphic functions are analytic}
+%\mysection{meromorphic functions are analytic}
+%
+%first, trace of a meromorphic function is meromorphic on C(x), and is
+%thus a rational function
+%
+%Liouville's theorem: a bounded entire function is constant
+%
+%Proof A: (Silverman) use a Taylor series expansion around z=0, which
+%is valid in the entire plane (since the function is entire).  Cauchy's
+%inequality $|f| \le M ==> |c_n| \le M/{R^n}$ (eq. 10.8') as R->infty
+%implies that the function is constant.
+%
+%Lemma: A entire function with no singularities, even at infinity, is
+%constant.
+%
+%Proof: We can do a Taylor series expansion at the origin, whose
+%non-zero terms will correspond to the principle part of the expansion
+%at infinity, which must therefore be zero.
+%
+%Next: A entire function with only a pole at infinity is a polynomial.
+%The principle part at infinity will be a polynomial.  Subtract it out
+%to get a function with no singularities, which must be constant.
+%
+%Next: Given a function with only a finite number of finite poles,
+%multiply it by a polynomial (the denominator) matching the poles with
+%zeros.  Now we've got a function with only a pole at infinity, which
+%must be a polynomial (the numerator).
 
-first, trace of a meromorphic function is meromorphic on C(x), and is
-thus a rational function
+\example Find the Puiseux expansions of y at the singular points of the
+curve $y^2 = 1 - x^2$
 
-Liouville's theorem: a bounded entire function is constant
+We'll start with the finite zeros of $y$ at $(x,y)=(\pm 1, 0)$.  The
+analysis is almost the same in both cases, so I'll just do (1,0).
+First, construction of the Newton polygon requires recasting the
+curve's polynomial into a form centered about the point being
+analyzed, i.e, $y^2 + (x-1)^2 + 2(x-1) = 0$.  The polygon's only
+non-trivial line segment has slope -2 and width 1, telling us that
+we'll require a single Puiseux series with ramification index 2:
 
-Proof A: (Silverman) use a Taylor series expansion around z=0, which
-is valid in the entire plane (since the function is entire).  Cauchy's
-inequality $|f| \le M ==> |c_n| \le M/{R^n}$ (eq. 10.8') as R->infty
-implies that the function is constant.
+$$x=t^2+1; \qquad x^2=t^4+2t^2+1$$
 
-Lemma: A entire function with no singularities, even at infinity, is
-constant.
+We know that y can be expressed as a power series in t, so we'll write
+it in that form:
 
-Proof: We can do a Taylor series expansion at the origin, whose
-non-zero terms will correspond to the principle part of the expansion
-at infinity, which must therefore be zero.
+$$y=a_0 + a_1 t + a_2 t^2 + a_3 t^3 + \cdots$$
 
-Next: A entire function with only a pole at infinity is a polynomial.
-The principle part at infinity will be a polynomial.  Subtract it out
-to get a function with no singularities, which must be constant.
+$$y^2 = a_0^2 + 2 a_0 a_1 t + (2 a_0 a_2 + a_1^2) t^2 + (2 a_0 a_3 + 2 a_1 a_2) t^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) t^4 + \cdots$$
 
-Next: Given a function with only a finite number of finite poles,
-multiply it by a polynomial (the denominator) matching the poles with
-zeros.  Now we've got a function with only a pole at infinity, which
-must be a polynomial (the numerator).
+Now, substituting these expressions for $x^2$ and $y^2$ into the
+curve's defining equation $y^2 = 1 - x^2$ and equating coefficients
+of like powers of $t$, we can find the first few terms of the series:
 
-======
+$$a_0=0; \qquad a_1 = \pm\sqrt{2}i; \qquad a_2 = 0; \qquad a_3 = \pm \frac{\sqrt{2}}{4} i$$
 
+$$x = t^2 +1; \qquad y = \pm\sqrt{2}it \pm \frac{\sqrt{2}}{4} it^3 + \cdots$$
+
+It would seem that we have two different series to chose from.  This
+is not really the case, as they differ by only a $180^\circ$ rotation
+in the t-plane, as can been seen by substituting $t=-t$, which
+transforms one of the y-series into the other, while leaving the
+x-series unchanged.
+
+\endexample
+
+\example Find the logarithmic residues of $\frac{1}{y}$ on the curve
 $y^2 = 1 - x^2$
 
-Expand $\frac{1}{y}$ to find its logarithmic residues.
-
-Start with the finite zeros of $y$ (remember $x=t^r+x_0$; $dx=r\,
-t^{r-1}\, dt$, so ramification can only raise orders)
-
-$x=1, y=0$
-
-$x=t^2+1$; $x^2=t^4+2t^2+1$; $dx = 2 t dt$
-
-$y=a_0 + a_1 t + a_2 t^2 + a_3 t^3 + \cdots$
-
-$y^2 = a_0^2 + 2 a_0 a_1 t + (2 a_0 a_2 + a_1^2) t^2 + (2 a_0 a_3 + 2 a_1 a_2) t^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) t^4 + \cdots$
-
-$y^2 = 1 - x^2 = -2t^2 - t^4$
-
-$a_0=0$
-
-$a_1^2 = -2$; $a_1 = \sqrt{2}i$
-
-$a_2 = 0$
-
-$2 a_1 a_3 = -1$; $a_3 = \frac{\sqrt{2}}{4} i$
-
-$y = \sqrt{2}it + \frac{\sqrt{2}}{4} it^3 + \cdots$
-
-$y = t \left[ \sqrt{2}i + \frac{\sqrt{2}}{4} it^2 + \cdots \right]$
+% $y = t \left[ \sqrt{2}i + \frac{\sqrt{2}}{4} it^2 + \cdots \right]$
 
 $\frac{1}{y} = t^{-1} \left[ -\frac{\sqrt{2}}{2}i + \cdots \right]$
 
 $\frac{1}{y} dx = \left[ -\sqrt{2}i + \cdots \right] $
+
+\endexample
