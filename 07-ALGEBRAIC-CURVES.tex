@@ -1,15 +1,17 @@
 
-\mychapter{Classical Algebraic Function Theory}
+\mychapter{Algebraic Curves}
 
 The roots of algebraic geometry lie in studying the zeros of
-polynomial equations.  We began with a single polynomial in a single
-variable, $\sum a_n x^n = 0$, and have learnt a great deal about
-it.  We know how to solve it (at least in terms of radicals) if $n$ is
-less than 5, and Galois proved that no such solution exists (in the
-general case) for $n$ equal to or greater than 5.  Simple long
-division tells us that it can have no more than $n$ roots, i.e, $\sum
-a_n x^n = \prod (x-\gamma_n)$, and Gauss showed that if all of the
-$a_n$ are complex numbers, then so are all of the $\gamma_n$.
+polynomial equations.  We began in high school with a single
+polynomial in a single variable, $\sum a_n x^n = 0$, and have learnt a
+great deal about it.  We know how to solve it (at least in terms of
+radicals) if $n$ is less than 5.  Galois proved that no such solution
+(in radicals) exists (in the general case) for $n$ equal to or greater
+than 5, though abstract algebra provides us with a suitable theory to
+handle these cases.  Simple long division tells us that it can have no
+more than $n$ roots, i.e, $\sum a_n x^n = \prod (x-\gamma_n)$, and
+Gauss showed that if all of the $a_n$ are complex numbers, then so are
+all of the $\gamma_n$ --- the Fundamental Theorem of Algebra.
 
 The next logical step is to consider zeros of a single polynomial in
 two variables: $\sum a_{ij} x^i y^j = 0$, and this equation has also
@@ -25,24 +27,25 @@ attention in this chapter.
 
 In this book, our major interest in algebraic curves and functions is
 that they provide an elegant way to handle roots in our integrand.
-Thus, to integrate something like $\sqrt{x+1}$, we would construct the
-algebraic curve $y^2 = x + 1$ and then integrate the algebraic
-function $y$.  To carry out this procedure in general, we will need a
-fair amount of modern algebraic function theory.  To set the stage for
-the modern theory, however, a chapter on classical algebraic function
-theory seems to be in order.
+Thus, to integrate something like $1/\sqrt{x^2-1}$, we construct the
+algebraic curve $y^2 = x^2 - 1$ and then integrate the algebraic
+function $1/y$.  To carry out this procedure in general, we will need a
+fair amount of modern algebraic geometry.  To set the stage for the
+modern theory, however, a chapter or two on the classical theory seems
+to be in order.
 
 \section{Riemann Surfaces and Puiseux Expansions}
 
 The first problem we face when dealing with algebraic curves is the
 multi-valued nature of their solutions.  Consider, once again, the
-algebraic function $y$ defined on the algebraic curve $y^2 = x + 1$.
+algebraic function $y$ defined on the algebraic curve $y^2 = x^2 - 1$.
 There are, in fact, two seperate algebraic functions that solve this
 equation --- both $y$ and $-y$ are solutions.  Conventionally, we
-express this by writing something like $y = \pm\sqrt{x+1}$, but for
-higher degree curves this kind of notation becomes quite unsuitable.
-How, for example, do you express the three possible solutions to a
-cube root?
+express this by writing something like $y = \pm\sqrt{x-1}$, but for
+higher degree curves this kind of notation becomes unsuitable.  How,
+for example, do you express the three possible solutions to a cube
+root, and how do you deal with the general case where y can appear
+multiple times in the curve's defining polynomial?
 
 Bernhard Riemann's elegant solution to this problem was to regard the
 entire algebraic curve as a two-dimensional surface in a
@@ -86,18 +89,99 @@ only a finite number of points where it is zero.  Thus, an algebraic
 curve has only a finite number of singular points, which can be found
 by computing the zeros of simple, univariate polynomials.
 
-\example Find the singular points of $y^2 = x + 1$
+\example Find the singular points of $y^2 = x^2 - 1$
 
-We normalize the defining polynomial by writing it as $y^2 - x - 1 =
+We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
 0$, and begin by noting that the coefficient of $y^2$ is 1, so the
 defining polynomial is second degree for all finite values of $x$.
 Where does it have multiple roots?  We compute the discriminant:
 
 INSERT DISCRIMINANT HERE
 
-Thus, we conclude that the only singular point of $y^2 = x + 1$ lies at
-$x = -1$.
+Thus, we conclude that the singular points of $y^2 = x^2 - 1$ lie at
+$x = \pm 1$.
 
 \endexample
 
-Any ordinary point can be expanded using a power series in $(x-\alpha)$.
+Any ordinary point can be expanded using a power series in
+$(x-\alpha)$, which is a straightforward application of the Implicit
+Function Theorem.
+
+IFT: [Baby Rudin 9.28; 2-dim complex version] Let f be an analytic
+mapping of an open set $E \in {\mathbb C}^2$ into ${\mathbb C}$, such
+that $f(x,y)=0$ and $\frac{df}{dx} \ne 0$, then an analytic
+function $g(y)$ exists such that $f(x,g(y))=0$.
+
+For infinity and/or poles, substitute z=1/x or v=1/y.
+
+For multiple points, use isolation of the multiple point to justify a
+substitution of the form $x=t^r+x_0$, then use composition of analytic
+functions (x is analytic everywhere; y is analytic as a function of x
+everywhere except at t=0, so y is analytic as a function of t
+everywhere except at t=0) to establish that y is analytic everywhere
+on the t-plane except possibly at the origin.  Then use existence of
+the Laurent series (Silverman 11.2) and continuity of the roots (HOW?)
+to establish analyticity at the multiple point.
+
+\mysection{meromorphic functions are analytic}
+
+first, trace of a meromorphic function is meromorphic on C(x), and is
+thus a rational function
+
+Liouville's theorem: a bounded entire function is constant
+
+Proof A: (Silverman) use a Taylor series expansion around z=0, which
+is valid in the entire plane (since the function is entire).  Cauchy's
+inequality $|f| \le M ==> |c_n| \le M/{R^n}$ (eq. 10.8') as R->infty
+implies that the function is constant.
+
+Lemma: A entire function with no singularities, even at infinity, is
+constant.
+
+Proof: We can do a Taylor series expansion at the origin, whose
+non-zero terms will correspond to the principle part of the expansion
+at infinity, which must therefore be zero.
+
+Next: A entire function with only a pole at infinity is a polynomial.
+The principle part at infinity will be a polynomial.  Subtract it out
+to get a function with no singularities, which must be constant.
+
+Next: Given a function with only a finite number of finite poles,
+multiply it by a polynomial (the denominator) matching the poles with
+zeros.  Now we've got a function with only a pole at infinity, which
+must be a polynomial (the numerator).
+
+======
+
+$y^2 = 1 - x^2$
+
+Expand $\frac{1}{y}$ to find its logarithmic residues.
+
+Start with the finite zeros of $y$ (remember $x=t^r+x_0$; $dx=r\,
+t^{r-1}\, dt$, so ramification can only raise orders)
+
+$x=1, y=0$
+
+$x=t^2+1$; $x^2=t^4+2t^2+1$; $dx = 2 t dt$
+
+$y=a_0 + a_1 t + a_2 t^2 + a_3 t^3 + \cdots$
+
+$y^2 = a_0^2 + 2 a_0 a_1 t + (2 a_0 a_2 + a_1^2) t^2 + (2 a_0 a_3 + 2 a_1 a_2) t^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) t^4 + \cdots$
+
+$y^2 = 1 - x^2 = -2t^2 - t^4$
+
+$a_0=0$
+
+$a_1^2 = -2$; $a_1 = \sqrt{2}i$
+
+$a_2 = 0$
+
+$2 a_1 a_3 = -1$; $a_3 = \frac{\sqrt{2}}{4} i$
+
+$y = \sqrt{2}it + \frac{\sqrt{2}}{4} it^3 + \cdots$
+
+$y = t \left[ \sqrt{2}i + \frac{\sqrt{2}}{4} it^2 + \cdots \right]$
+
+$\frac{1}{y} = t^{-1} \left[ -\frac{\sqrt{2}}{2}i + \cdots \right]$
+
+$\frac{1}{y} dx = \left[ -\sqrt{2}i + \cdots \right] $
