@@ -1,6 +1,49 @@
 
 \mychapter{Algebraic Curves}
 
+Having addressed logarithmic and exponential extensions, we now turn
+to the algebraic extension, which turns out to be completely different
+in character from the two transcendental cases.
+
+Let's begin by looking at how we might handle a simple algebraic
+extension.  Liouvile's theorem tells us that any solution exists in
+the original extension, plus a finite number of additional logarithmic
+terms.  A crucial property of {\it algebraic functions}, as elements
+of an algebraic extension are called, is that admit series expansions
+everywhere, including infinity, so long as we allow a finite number of
+negative exponents.  Such functions are called {\it meromorphic}.  The
+logarithm function fails to be meromorphic at the origin, and the
+exponential function fails to be meromorphic at infinity, but
+algebraic functions are meromorphic everywhere.
+
+This means that around any specific point, we can construct a series
+expansion of the integrand and integrate termwise to obtain a series
+expansion for the integral.  At first this doesn't seem terribly
+useful, because series expansions are infinite and we're trying to
+construct closed-form solutions, but it turns out that on any
+algebraic function, only a finite number of places will have negative
+exponents in their series expansions, and that the function is
+completely specified, up to an additive constant, by the coefficients
+of the negative powers.
+
+Thus, the basic strategy is first to identify the function's {\it
+poles}, which are the places where its value becomes infinite and
+negative coefficients appear in its series expansion.  This is fairly
+straightforward, though there are issues of computational complexity
+that make it non-trivial.  Then we integrate termwise, which is
+trivial, and obtain local series expansions at the poles of the
+solution.  Next, we need to reassemble this local information into a
+global function (if one exists), a {\it Mittag-Leffler problem}.
+Finally, we need to handle any logarithmic terms, which turns out to
+be the most difficult part of the problem.  We can begin to analyze
+them using the same techniques, but the only known complete algorithm
+requires reducing modulo a prime.
+
+Before heading into {characteristic p}, let's see how far we can get
+with the classical algebraic geometry of the nineteenth century.
+
+\section{Basic Alegebraic Geometry}
+
 The roots of algebraic geometry lie in studying the zeros of
 polynomial equations.  We began in high school with a single
 polynomial in a single variable, $\sum a_n x^n = 0$, and have learnt a
@@ -71,26 +114,34 @@ We can be more specific.  For any given value of $x$, we have {\it
 exactly} $n$ solutions for $y$ {\it unless} one of two things happen.
 Either the leading ($y^n$) coefficient is zero, in which case we have
 less than $n$ solutions due to having a polynomial of degree less than
-$n$, or the polynomial has multiple identical roots.  Any point $x$
-that generates exactly $n$ roots of $y$ is called an {\it ordinary}
-point of the algebraic curve; any point $x$ that generates less than
-$n$ roots, for one of these two reasons, is called a {\it singular}
-point of the curve.
+$n$, or the polynomial has multiple identical roots, a {\it multiple
+point} of the algebraic curve.
 
 Now, the coefficient of $y^n$ in the defining polynomial will be a
 polynomial in $x$, which has a finite number of roots at which it is
-zero, so there are only a finite number of singular points where the
-defining polynomial is of degree less than $n$ in $y$.
+zero, so there are only a finite number of points where the defining
+polynomial is of degree less than $n$ in $y$.  As $x$ approaches one
+of these points, the value of the $y^n$ coefficient approaches zero,
+which causes at least one of the roots to approach infinity.  We'll
+deal with these points by introducing a line at infinity, forming
+{\it projective space} and creating a {\it compact} Riemann surface.
 
-Likewise, there are only a finite number of singular points with
+Likewise, there are only a finite number of multiple points with
 multiple identical roots, as can be seen by considering the
 discriminant of defining polynomial (Theorem ?), regarded as a
 polynomial in $y$, with coefficients in ${\bf C}[x]$.  The
 discriminant, as the determinant of a matrix with coefficients in
 ${\bf C}[x]$, exists itself in ${\bf C}[x]$, and therefore will have
 only a finite number of points where it is zero.  Thus, an algebraic
-curve has only a finite number of singular points, which can be found
+curve has only a finite number of multiple points, which can be found
 by computing the zeros of simple, univariate polynomials.
+
+Multiple points are further classified according to whether or not
+they are locally Euclidean.  This analysis is facilitated by Newton
+polygons.
+
+A {\it Riemann surface}, more precisely, is a two-dimensional manifold
+with a {\it complex analytic structure}.
 
 \example Find the singular points of $y^2 = x^2 - 1$
 
@@ -101,8 +152,17 @@ Where does it have multiple roots?  We compute the discriminant:
 
 INSERT DISCRIMINANT HERE
 
-Thus, we conclude that the singular points of $y^2 = x^2 - 1$ lie at
-$x = \pm 1$.
+Thus, we conclude that the multiple points of $y^2 = x^2 - 1$ lie at
+$x = \pm 1$.  The partial derivative of the polynomial with respect to
+$x$ is $-2x$, which is non-zero, so neither of these multiple points
+are singular.
+
+What about the points at infinity?  Introducing the subsitutions
+$u=x^{-1}$ and $v=y^{-1}$, our curve becomes $u^2 - v^2 + u^2 v^2 =
+v^2 (u^2 - 1) + u^2 = 0$, which has a multiple point at $(0,0)$,
+since when $u=0$, both of the roots of $-v^2 = 0$ are identical.
+Also, both partial derivatives are zero, so this is a singular
+point of the curve.
 
 \endexample
 
@@ -187,6 +247,47 @@ is not really the case, as they differ by only a $180^\circ$ rotation
 in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
 x-series unchanged.
+
+\endexample
+
+\example Find the Puiseux expansions of y at infinity on the
+curve $y^2 = 1 - x^2$
+
+First, we'll move infinity to a finite point (0) with the substitution
+$x=u^{-1}$.  Our curve becomes:
+
+$$u^2 y^2 - u^2 + 1 = 0$$
+
+The $u^2$ coefficient of $y^2$ indicates that $y$ will have poles at
+$u=0$, so we are also led to substitute $v=y^{-1}$ and obtain:
+
+$$(u^2 - 1) v^2 - u^2 = 0$$
+
+The Newton polygon has a single line segment, slope -1, length 2,
+telling us that we'll have two separate cycles, each with ramification
+index 1.  Thus, $u$ can be used directly as a uniformizing variable,
+and we postulate an expansion for $v$ in the form:
+
+$$v = a_0 + a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
+
+$$v^2 = a_0^2 + 2 a_0 a_1 u + (2 a_0 a_2 + a_1^2) u^2 + (2 a_0 a_3 + 2 a_1 a_2) u^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) u^4 + \cdots$$
+
+Plugging this into $(u^2 - 1) v^2 - u^2$ and setting all the resulting
+coefficients to zero, we conclude:
+
+$$a_0 = 0; \qquad a_1 = \pm i; \qquad a_2 = 0; \qquad a_3 = \pm \frac{1}{2}i$$
+
+$$v = \pm i u \pm \frac{1}{2} i u^3 + \cdots$$
+
+This time, without ramification, we actually have two distinct series
+that will yield two different values of $v$ for each value of $u$.
+Inverting back to our original coordinates, we obtain:
+
+$$y^{-1} = \pm i x^{-1} \pm \frac{1}{2} i x^{-3} + \cdots$$
+
+Yet this is not an expansion for $y$, nor is it a Puiseux series,
+since it has an infinite number of negative exponents.  We can invert
+the series (HOW?) to obtain our final result:
 
 \endexample
 
