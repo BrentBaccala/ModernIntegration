@@ -1,5 +1,8 @@
 
-all: file.pdf
+all: ModernIntegration.pdf
+
+clean:
+	rm *.inc *.ps *.pdf
 
 %.inc: %.sh
 	sh $< > $@
@@ -8,14 +11,14 @@ all: file.pdf
 %.pdf: %.ps
 	ps2pdf $<
 
-file.pdf: [0-9]*.tex file.tex
-	pdflatex file
+ModernIntegration.pdf: [0-9]*.tex ModernIntegration.tex
+	pdflatex ModernIntegration
 
-out.pdf: slides.pdf toc.pdf file.pdf
-	pdftk A=slides.pdf B=toc.pdf C=file.pdf cat A B1 C46-49 C59-64 output out.pdf
+out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
+	pdftk A=slides.pdf B=toc.pdf C=ModernIntegration.pdf cat A B1 C46-49 C59-64 output out.pdf
 
 
 dep depend .depend: [0-9]*.tex
-	grep -e includegraphics -e input [0-9]*.tex | sed 's/^[^{]*{/file.pdf:/' | sed 's/}.*//' > .depend
+	grep -e includegraphics -e input [0-9]*.tex | sed 's/^[^{]*{/ModernIntegration.pdf:/' | sed 's/}.*//' > .depend
 
 include .depend
