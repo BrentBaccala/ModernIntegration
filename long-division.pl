@@ -5,7 +5,7 @@ use strict;
 use Data::Dumper;
 
 # for debugging messages
-open(DEBUG, ">&STDERR");
+#open(DEBUG, ">&STDERR");
 
 my $use_parens = 1;
 
@@ -367,6 +367,11 @@ sub parse_poly {
     my ($polytext) = @_;
     my @poly;
 
+    print DEBUG "parse_poly $polytext\n";
+
+    # Garbage collection might get us a reused @poly, so we delete...
+    delete $poly_var{\@poly};
+
     while (1) {
 
 	my $coeff;
@@ -387,15 +392,17 @@ sub parse_poly {
 	    $power = $4;
 	}
 
-	#print DEBUG "cpp: '$coeff' '$polyvar' '$power' '$polytext'\n";
+	print DEBUG "coeff: '$coeff' polyvar: '$polyvar' power: '$power' remaining text: '$polytext'\n";
 
 	last if ($coeff eq "" and $polyvar eq "" and $power eq "");
 
 	if ($polyvar ne "") {
 	    if (not exists $poly_var{\@poly}) {
 		$poly_var{\@poly} = $polyvar;
+		print DEBUG "Setting \$poly_var{" . \@poly . "} to $polyvar\n";
 	    } else {
-		die "inconsistent poly vars in parse" if $poly_var{\@poly} ne $polyvar;
+		print DEBUG "NOT Setting \$poly_var{" . \@poly . "} to $polyvar\n";
+		die "inconsistent poly vars in parse: $poly_var{\@poly}, $polyvar" if $poly_var{\@poly} ne $polyvar;
 	    }
 	}
 
