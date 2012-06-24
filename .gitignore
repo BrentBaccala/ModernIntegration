@@ -1,0 +1,11 @@
+02-ALGEBRA-EXAMPLE*.inc
+04-RATIONALS-EXAMPLE*.pdf
+
+# TeX litter
+ModernIntegration.aux
+ModernIntegration.log
+ModernIntegration.out
+ModernIntegration.pdf
+ModernIntegration.toc
+
+.depend
