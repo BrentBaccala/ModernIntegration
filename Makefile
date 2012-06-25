@@ -11,6 +11,8 @@ clean:
 %.pdf: %.ps
 	ps2pdf $<
 
+.DELETE_ON_ERROR:
+
 ModernIntegration.pdf: [0-9]*.tex ModernIntegration.tex
 	pdflatex ModernIntegration
 
