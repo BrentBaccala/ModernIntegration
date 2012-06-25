@@ -5,79 +5,86 @@ Having addressed logarithmic and exponential extensions, we now turn
 to the algebraic extension, which turns out to be completely different
 in character from the two transcendental cases.
 
-Let's begin by looking at how we might handle a simple algebraic
-extension.  Liouvile's theorem tells us that any solution exists in
-the original extension, plus a finite number of additional logarithmic
-terms.  A crucial property of {\it algebraic functions}, as elements
-of an algebraic extension are called, is that admit series expansions
-everywhere, including infinity, so long as we allow a finite number of
-negative exponents.  Such functions are called {\it meromorphic}.  The
-logarithm function fails to be meromorphic at the origin, and the
-exponential function fails to be meromorphic at infinity, but
-algebraic functions are meromorphic everywhere.
+How might we handle a simple algebraic extension?  A crucial property
+of {\it algebraic functions}, as elements of an algebraic extension
+are called, is that they admit series expansions everywhere, including
+infinity, so long as we allow a finite number of negative exponents.
+Such functions are called {\it meromorphic}.  The logarithm function
+fails to be meromorphic at the origin, and the exponential function
+fails to be meromorphic at infinity, but algebraic functions are
+meromorphic everywhere, including infinity.
 
 This means that around any specific point, we can construct a series
 expansion of the integrand and integrate termwise to obtain a series
 expansion for the integral.  At first this doesn't seem terribly
 useful, because series expansions are infinite and we're trying to
-construct closed-form solutions, but it turns out that on any
-algebraic function, only a finite number of places will have negative
-exponents in their series expansions, and that the function is
-completely specified, up to an additive constant, by the coefficients
-of the negative powers.
+construct closed-form solutions, but it turns out that only a finite
+number of places will have negative exponents in their series
+expansions and that the function is completely specified, up to an
+additive constant, by the coefficients of the negative powers.
 
 Thus, the basic strategy is first to identify the function's {\it
-poles}, which are the places where its value becomes infinite and
-negative coefficients appear in its series expansion.  This is fairly
+poles}, the places where its value becomes infinite, and compute the
+{\it principal part} of the series expansions there, which are the
+negative exponents and their coefficients.  This is fairly
 straightforward, though there are issues of computational complexity
 that make it non-trivial.  Then we integrate termwise, which is
 trivial, and obtain local series expansions at the poles of the
 solution.  Next, we need to reassemble this local information into a
-global function (if one exists), a {\it Mittag-Leffler problem}.
-Finally, we need to handle any logarithmic terms, which turns out to
-be the most difficult part of the problem.  We can begin to analyze
-them using the same techniques, but the only known complete algorithm
-requires reducing modulo a prime.
+global function (if one exists), a {\it Mittag-Leffler problem}, for
+which I will present a basic algorithm in this chapter, although more
+efficient techniques have been developed.
 
-Before heading into {characteristic p}, let's see how far we can get
-with the classical algebraic geometry of the nineteenth century.
+What about the logarithmic terms?  This turns out to be the most
+difficult part of the problem.  We can begin to analyze them using the
+same techniques, by noting that the $t^{-1}$ terms in the principal
+parts of the integrand lead directly to logarithms in the integral,
+and furthermore that the coefficients of these terms give us the
+locations and orders of the poles and zeros in the logarithms.  This
+information specifies an algebraic function up to a multiplicative
+constant\footnote{Of course.  Due to the presence of a constant of
+integration, we expect to specify the main part of the integral up to
+an {\it additive} constand, and the logarithmic parts of the integral
+up to a {\it multiplicative} constant.}, and our algorithm can be
+adapted without too much trouble to handle this case.
 
-\section{Basic Alegebraic Geometry}
+The problem is that no algebraic function might exist that match a
+given set of zeros and poles, but increasing the order of the zeros
+and poles might produce a solution.  This corresponds to raising the
+logarithm term to powers, i.e, $\ln f$ is the same as $\frac{1}{2} \ln
+f^2$, which is the same as $\frac{1}{3} \ln f^3$, except that in our
+case the lower powers might not exist in our function field, even
+though higher powers do.  What powers should we use?  We could go on
+raising to higher and higher powers, hoping that something will work,
+but the only known algorithm to limit this search requires reducing
+modulo a prime, and that requires techniques that weren't developed
+until the 1960s.  Before heading into {\it modern algebraic geometry},
+let's see how far we can get with the classical algebraic geometry of
+the nineteenth century.
+
+\section{Basic Algebraic Geometry}
 
 The roots of algebraic geometry lie in studying the zeros of
-polynomial equations.  We began in high school with a single
-polynomial in a single variable, $\sum a_n x^n = 0$, and have learnt a
-great deal about it.  We know how to solve it (at least in terms of
-radicals) if $n$ is less than 5.  Galois proved that no such solution
-(in radicals) exists (in the general case) for $n$ equal to or greater
-than 5, though abstract algebra provides us with a suitable theory to
-handle these cases.  Simple long division tells us that it can have no
-more than $n$ roots, i.e, $\sum a_n x^n = \prod (x-\gamma_n)$, and
-Gauss showed that if all of the $a_n$ are complex numbers, then so are
-all of the $\gamma_n$ --- the Fundamental Theorem of Algebra.
+polynomial equations.  We began with a single polynomial in a single
+variable, and have learnt a great deal about it.  We know how to solve
+it (at least in terms of radicals) if its degree is less than 5.
+Galois proved that no such solution (in radicals) exists (in the
+general case) for larger degree, though abstract algebra provides us
+with a suitable general theory to handle this case.  Simple long
+division tells us that it can have no more roots than its degree, and
+Gauss showed that all of the roots exist as complex numbers --- the
+Fundamental Theorem of Algebra.
 
 The next logical step is to consider zeros of a single polynomial in
-two variables: $\sum a_{ij} x^i y^j = 0$, and this equation has also
-received a great deal of attention from mathematicians.  Like the
-univariate case, we have theories devoted to low-order special cases
---- {\it linear equations} (all terms first degree or constant), the
-{\it conic sections} (all terms second degree or less), and the {\it
-elliptic curves} (one term third degree; all others second degree or
-less).  In the general case, $\sum a_{ij} x^i y^j = 0$ is called an
-{\it algebraic curve}, and a rational function in $x$ and $y$ is
-called an {\it algebraic function}.  These will be our main focus of
-attention in this chapter.
-
-In this book, our major interest in algebraic curves and functions is
-that they provide an elegant way to handle roots in our integrand.
-Thus, to integrate something like $1/\sqrt{x^2-1}$, we construct the
-algebraic curve $y^2 = x^2 - 1$ and then integrate the algebraic
-function $1/y$.  To carry out this procedure in general, we will need a
-fair amount of modern algebraic geometry.  To set the stage for the
-modern theory, however, a chapter or two on the classical theory seems
-to be in order.
-
-\section{Riemann Surfaces and Puiseux Expansions}
+two variables, and this equation has also received a great deal of
+attention from mathematicians.  Like the univariate case, we have
+theories devoted to low-order special cases --- {\it linear equations}
+(all terms first degree or constant), the {\it conic sections} (all
+terms second degree or less), and the {\it elliptic curves} (one term
+third degree; all others second degree or less).  In the general case,
+$\sum a_{ij} x^i y^j = 0$ is called an {\it algebraic curve}, and a
+rational function in $x$ and $y$ is called an {\it algebraic
+function}.  These will be our main focus of attention in this chapter.
 
 The first problem we face when dealing with algebraic curves is the
 multi-valued nature of their solutions.  Consider, once again, the
@@ -90,21 +97,16 @@ for example, do you express the three possible solutions to a cube
 root, and how do you deal with the general case where y can appear
 multiple times in the curve's defining polynomial?
 
-Bernhard Riemann's elegant solution to this problem was to regard the
-entire algebraic curve as a two-dimensional surface in a
-four-dimensional space.  Why four dimensions?  Well, just as in the
-univariate case, we find it convenient to work with complex numbers,
-so as to deal easily with roots of negative numbers.  Regarding both
-$x$ and $y$ as complex numbers (two dimensions each), and plotting
-them against each other, we obtain a four dimensional space.  Just as
-in the real case, where an equation like $x^2 + y^2 = 1$ defines a
-circle, an algebraic curve defines a surface, the loci of $x$ and $y$
-that satisfy the defining polynomial, called the curve's {\it Riemann
-surface}.
-
-% An algebraic curve's Riemann surface is, in fact, a
-% two-dimensional manifold, as I shall now demonstrate.
-% NOT TRUE - singularities can exist
+Our solution to this problem was to regard the entire algebraic curve
+as a two-dimensional surface in a four-dimensional space.  Why four
+dimensions?  Well, just as in the univariate case, we find it
+convenient to work with complex numbers, so as to deal easily with
+roots of negative numbers.  Regarding both $x$ and $y$ as complex
+numbers (two dimensions each), and plotting them against each other,
+we obtain a four dimensional space.  Just as in the real case, where
+an equation like $x^2 + y^2 = 1$ defines a circle, an algebraic curve
+defines a surface, the loci of $x$ and $y$ that satisfy the defining
+polynomial.
 
 The defining polynomial can be regarded as a polynomial in $y$, whose
 coefficients are polynomials in $x$, simply by collecting terms with
@@ -124,7 +126,7 @@ polynomial is of degree less than $n$ in $y$.  As $x$ approaches one
 of these points, the value of the $y^n$ coefficient approaches zero,
 which causes at least one of the roots to approach infinity.  We'll
 deal with these points by introducing a line at infinity, forming
-{\it projective space} and creating a {\it compact} Riemann surface.
+{\it projective space} and creating a {\it compact} surface.
 
 Likewise, there are only a finite number of multiple points with
 multiple identical roots, as can be seen by considering the
@@ -136,12 +138,17 @@ only a finite number of points where it is zero.  Thus, an algebraic
 curve has only a finite number of multiple points, which can be found
 by computing the zeros of simple, univariate polynomials.
 
-Multiple points are further classified according to whether or not
-they are locally Euclidean.  This analysis is facilitated by Newton
-polygons.
-
-A {\it Riemann surface}, more precisely, is a two-dimensional manifold
-with a {\it complex analytic structure}.
+Multiple points are further classified according to whether or not the
+curve is locally Euclidean in their neighborhood.  Geometrically, this
+corresponds to looping around the point until you return to your
+starting point.  If a single such {\it cycle} covers all the sheets of
+the curve, the curve is locally Euclidean, and we have an {\it
+ordinary point} of the curve, albeit one with {\it ramification}.
+Otherwise, multiple cycles are required to cover all of the sheets,
+and we have a {\it singular point}.  Analytically, both partial
+derivatives of the curve's polynomial are zero at a singular point,
+while at least one is non-zero at ordinary points.  This analysis is
+facilitated by Newton polygons.
 
 \example Find the singular points of $y^2 = x^2 - 1$
 
@@ -150,12 +157,16 @@ We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
 defining polynomial is second degree for all finite values of $x$.
 Where does it have multiple roots?  We compute the discriminant:
 
-INSERT DISCRIMINANT HERE
+$${\rm disc}_y(y^2 - x^2 +1) = {\rm res}_y(y^2-x^2+1, 2y) =
+\det\left\vert \begin{matrix}
+1 & 0 & -x^2+1 \cr
+2 & 0 & 0 \cr
+0 & 2 & 0\end{matrix} \right\vert = 4(x^2-1)$$
 
 Thus, we conclude that the multiple points of $y^2 = x^2 - 1$ lie at
-$x = \pm 1$.  The partial derivative of the polynomial with respect to
-$x$ is $-2x$, which is non-zero, so neither of these multiple points
-are singular.
+the roots of the discriminant, which are $x = \pm 1$.  The partial
+derivative of the polynomial with respect to $x$ is $-2x$, which is
+non-zero, so neither of these multiple points are singular.
 
 What about the points at infinity?  Introducing the subsitutions
 $u=x^{-1}$ and $v=y^{-1}$, our curve becomes $u^2 - v^2 + u^2 v^2 =
@@ -167,8 +178,8 @@ point of the curve.
 \endexample
 
 Any ordinary point can be expanded using a power series in
-$(x-\alpha)$, which is a straightforward application of the Implicit
-Function Theorem.
+$(x-\alpha)$, which for non-ramified points is a straightforward
+application of the Implicit Function Theorem.
 
 IFT: [Baby Rudin 9.28; 2-dim complex version] Let f be an analytic
 mapping of an open set $E \in {\mathbb C}^2$ into ${\mathbb C}$, such
@@ -177,14 +188,22 @@ function $g(y)$ exists such that $f(x,g(y))=0$.
 
 For infinity and/or poles, substitute z=1/x or v=1/y.
 
-For multiple points, use isolation of the multiple point to justify a
-substitution of the form $x=t^r+x_0$, then use composition of analytic
-functions (x is analytic everywhere; y is analytic as a function of x
-everywhere except at t=0, so y is analytic as a function of t
-everywhere except at t=0) to establish that y is analytic everywhere
-on the t-plane except possibly at the origin.  Then use existence of
-the Laurent series (Silverman 11.2) and continuity of the roots (HOW?)
-to establish analyticity at the multiple point.
+For ramification points, we use substitution of the form
+$x=t^r+\alpha$, where $r$ is the {\it ramification index}, then use
+composition of analytic functions (x is analytic everywhere; y is
+analytic as a function of x everywhere except at t=0, so y is analytic
+as a function of t everywhere except at t=0) to establish that y is
+analytic everywhere on the t-plane except possibly at the origin.
+Then use existence of the Laurent series (Silverman 11.2) and
+continuity of the roots (HOW?) to establish analyticity at the
+multiple point, and consequently existance of a power series, but in
+$t$, not $(x-\alpha)$, a {\it Puiseux series}.
+
+Singular points will admit multiple Puiseux series, each one
+corresponding to a single cycle.  The simplest way to compute Puiseux
+series is to use Newton polygons to determine ramification,
+then setup a trial series with the correct ramification and
+substitute it into the curve's defining equation.
 
 %\mysection{meromorphic functions are analytic}
 %
@@ -214,7 +233,7 @@ to establish analyticity at the multiple point.
 %zeros.  Now we've got a function with only a pole at infinity, which
 %must be a polynomial (the numerator).
 
-\example Find the Puiseux expansions of y at the singular points of the
+\example Find the Puiseux expansions of y at the multiple points of the
 curve $y^2 = 1 - x^2$
 
 We'll start with the finite zeros of $y$ at $(x,y)=(\pm 1, 0)$.  The
@@ -248,18 +267,9 @@ in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
 x-series unchanged.
 
-\endexample
-
-\example Find the Puiseux expansions of y at infinity on the
-curve $y^2 = 1 - x^2$
-
-First, we'll move infinity to a finite point (0) with the substitution
-$x=u^{-1}$.  Our curve becomes:
-
-$$u^2 y^2 - u^2 + 1 = 0$$
-
-The $u^2$ coefficient of $y^2$ indicates that $y$ will have poles at
-$u=0$, so we are also led to substitute $v=y^{-1}$ and obtain:
+Now, let's analyze the singular point at infinity.  Again, we move
+infinity to a finite point (0) with the substitutions $x=u^{-1}$ and
+$y=v^{-1}$.  Our curve becomes:
 
 $$(u^2 - 1) v^2 - u^2 = 0$$
 
@@ -301,3 +311,6 @@ $\frac{1}{y} = t^{-1} \left[ -\frac{\sqrt{2}}{2}i + \cdots \right]$
 $\frac{1}{y} dx = \left[ -\sqrt{2}i + \cdots \right] $
 
 \endexample
+
+% A {\it Riemann surface}, more precisely, is a two-dimensional manifold
+% with a {\it complex analytic structure}.
