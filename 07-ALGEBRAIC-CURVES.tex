@@ -250,17 +250,25 @@ $$x=t^2+1; \qquad x^2=t^4+2t^2+1$$
 We know that y can be expressed as a power series in t, so we'll write
 it in that form:
 
-$$y=a_0 + a_1 t + a_2 t^2 + a_3 t^3 + \cdots$$
+$$y=a_0 + a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + \cdots$$
 
 $$y^2 = a_0^2 + 2 a_0 a_1 t + (2 a_0 a_2 + a_1^2) t^2 + (2 a_0 a_3 + 2 a_1 a_2) t^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) t^4 + \cdots$$
 
 Now, substituting these expressions for $x^2$ and $y^2$ into the
-curve's defining equation $y^2 = 1 - x^2$ and equating coefficients
-of like powers of $t$, we can find the first few terms of the series:
+curve's defining equation $y^2 + x^2 - 1 = 0$ and equating coefficients
+of like powers of $t$, we find:
 
-$$a_0=0; \qquad a_1 = \pm\sqrt{2}i; \qquad a_2 = 0; \qquad a_3 = \pm \frac{\sqrt{2}}{4} i$$
+$$a_0^2=0 \qquad 2 a_0 a_1 = 0 \qquad 2 + 2 a_0 a_2 + a_1^2 = 0$$
+$$2 a_0 a_3 + 2 a_1 a_2 = 0 \qquad 1 + 2 a_0 a_4 + 2 a_1 a_3 + a_2^2 = 0$$
 
-$$x = t^2 +1; \qquad y = \pm\sqrt{2}it \pm \frac{\sqrt{2}}{4} it^3 + \cdots$$
+The first equation tells us that $a_0 = 0$, the second equation tells
+us nothing (becasue $a_0=0$), the third equation tells us that $a_1
+= \pm\sqrt{2}i$, the fourth equation tells us that $a_2=0$ and the
+fifth equation tells us that $a_3 = \pm \frac{\sqrt{2}}{4} i$, so
+
+% $$a_0=0; \qquad a_1 = \pm\sqrt{2}i; \qquad a_2 = 0; \qquad a_3 = \pm \frac{\sqrt{2}}{4} i$$
+
+$$x = t^2 +1; \qquad y = \pm\left[ \sqrt{2}it + \frac{\sqrt{2}}{4} it^3 + \cdots \right]$$
 
 It would seem that we have two different series to chose from.  This
 is not really the case, as they differ by only a $180^\circ$ rotation
