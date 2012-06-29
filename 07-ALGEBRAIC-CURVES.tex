@@ -97,7 +97,7 @@ for example, do you express the three possible solutions to a cube
 root, and how do you deal with the general case where y can appear
 multiple times in the curve's defining polynomial?
 
-Our solution to this problem was to regard the entire algebraic curve
+Our solution to this problem is to regard the entire algebraic curve
 as a two-dimensional surface in a four-dimensional space.  Why four
 dimensions?  Well, just as in the univariate case, we find it
 convenient to work with complex numbers, so as to deal easily with
@@ -143,12 +143,13 @@ curve is locally Euclidean in their neighborhood.  Geometrically, this
 corresponds to looping around the point until you return to your
 starting point.  If a single such {\it cycle} covers all the sheets of
 the curve, the curve is locally Euclidean, and we have an {\it
-ordinary point} of the curve, albeit one with {\it ramification}.
-Otherwise, multiple cycles are required to cover all of the sheets,
-and we have a {\it singular point}.  Analytically, both partial
-derivatives of the curve's polynomial are zero at a singular point,
-while at least one is non-zero at ordinary points.  This analysis is
-facilitated by Newton polygons.
+ordinary point} of the curve, albeit one with {\it ramification}, the
+{\it ramification index} being how many times we had to circle the
+point.  Otherwise, multiple cycles are required to cover all of the
+sheets, and we have a {\it singular point}.  Analytically, both
+partial derivatives of the curve's polynomial are zero at a singular
+point, while at least one is non-zero at ordinary points.  This
+analysis is facilitated by Newton polygons.
 
 \example Find the singular points of $y^2 = x^2 - 1$
 
@@ -301,14 +302,51 @@ the series (HOW?) to obtain our final result:
 
 \endexample
 
-\example Find the logarithmic residues of $\frac{1}{y}$ on the curve
+\example Find the principal parts of $\frac{1}{y}$ on the curve
 $y^2 = 1 - x^2$
 
-% $y = t \left[ \sqrt{2}i + \frac{\sqrt{2}}{4} it^2 + \cdots \right]$
+Remember that principal parts of an algebraic function are the parts
+of its series expansion with negative powers at its poles.  So, the
+first step is to locate the function's poles, which in this case is
+simply the places where the denominator is zero, and that's just
+$x=\pm 1$.  We're already computed a series expansion for $y$ at these
+points, so we can invert that solution to obtain a series for
+$\frac{1}{y}$.  We do this by noting that since $y$ has a simple zero
+at $(\pm 1, 0)$, $\frac{1}{y}$ must have a simple pole at these places,
+postulating a series expansion starting with $t^{-1}$, multiplying
+and equating terms:
 
-$\frac{1}{y} = t^{-1} \left[ -\frac{\sqrt{2}}{2}i + \cdots \right]$
+$$\frac{1}{y} = \pm\left[ -\frac{\sqrt{2}}{2} it^{-1} + \cdots \right]$$
 
-$\frac{1}{y} dx = \left[ -\sqrt{2}i + \cdots \right] $
+\endexample
+
+%\example Find the principal parts of $\frac{1}{y} dx$ on the curve
+%$y^2 = 1 - x^2$
+%
+%Differential forms are different from functions, and have different
+%series expansions.
+%
+%$\frac{1}{y} dx = \left[ -\sqrt{2}i + \cdots \right] $
+%
+%\endexample
+
+\example Find the principal parts of $\frac{x}{y} dx$ on the curve
+$y^2 = 1 - x^2$
+
+Differential forms are different from functions, and have different
+series expansions.  This is primarily due to the presence of the
+differential, which must be adjusted at ramification points.  Thus,
+we've already computed a series expansion for $\frac{1}{y}$ at $x=\pm
+1$, expressed in terms of $t$.  Now $x=\pm 1 + t^2$, so $dx=2t\,dt$
+
+$$\frac{x}{y} dx = \pm \left[\pm 1 + t^2 \right] \left[ -\frac{\sqrt{2}}{2} it^{-1} + \cdots \right] 2t\,dt$$
+
+$$\frac{x}{y} dx = \left[ -\sqrt{2} i + \cdots \right] \,dt$$
+
+In short, even though both $\frac{1}{y}$ and $\frac{x}{y}$ have poles
+at $x=\pm 1$, $\frac{x}{y} dx$ does not!  Its behavior at infinity
+also requires analysis, since $x$ and $dx$ both have poles at
+infinity, but $\frac{1}{y}$ does not.
 
 \endexample
 
