@@ -302,7 +302,7 @@ This time, without ramification, we actually have two distinct series
 that will yield two different values of $v$ for each value of $u$.
 Inverting back to our original coordinates, we obtain:
 
-$$y^{-1} = \pm i x^{-1} \pm \frac{1}{2} i x^{-3} + \cdots$$
+$$y^{-1} = \pm \left[ i x^{-1} + \frac{1}{2} i x^{-3} + \cdots \right]$$
 
 Yet this is not an expansion for $y$, nor is it a Puiseux series,
 since it has an infinite number of negative exponents.  We can invert
@@ -341,11 +341,12 @@ $$\frac{1}{y} = \pm\left[ -\frac{\sqrt{2}}{2} it^{-1} + \cdots \right]$$
 \example Find the principal parts of $\frac{x}{y} \ud x$ on the curve
 $y^2 = 1 - x^2$
 
-Differential forms are different from functions, and have different
-series expansions.  This is primarily due to the presence of the
+Differential forms are not functions, and have different series
+expansions.  This is primarily due to the presence of the
 differential, which must be adjusted at ramification points.  Thus,
 we've already computed a series expansion for $\frac{1}{y}$ at $x=\pm
-1$, expressed in terms of $t$.  Now $x=\pm 1 + t^2$, so $\ud x=2t\ud t$
+1$, expressed in terms of $t$.  Now $x=\pm 1 + t^2$, so $\ud x=2t\ud
+t$
 
 $$\frac{x}{y} \ud x = \pm \left[\pm 1 + t^2 \right] \left[ -\frac{\sqrt{2}}{2} it^{-1} + \cdots \right] 2t \ud t$$
 
@@ -354,7 +355,13 @@ $$\frac{x}{y} \ud x = \left[ -\sqrt{2} i + \cdots \right] \ud t$$
 In short, even though both $\frac{1}{y}$ and $\frac{x}{y}$ have poles
 at $x=\pm 1$, $\frac{x}{y} \ud x$ does not!  Its behavior at infinity
 also requires analysis, since $x$ and $\ud x$ both have poles at
-infinity, but $\frac{1}{y}$ does not.
+infinity, but $\frac{1}{y}$ does not (it has a zero at infinity).
+As before, we'll use $u=\frac{1}{x}$ for a uniformizing variable,
+so $\ud x = -\frac{1}{u^2} \ud u$
+
+$$\frac{x}{y} \ud x = \pm \frac{1}{u} \left[ i u + \frac{1}{2} i u^3 + \cdots \right] \left[-\frac{1}{u^2} \ud u\right]$$
+$$ = \mp \left[ i u^{-2} + \frac{1}{2} i + \cdots \right] \ud u$$
+
 
 \endexample
 
