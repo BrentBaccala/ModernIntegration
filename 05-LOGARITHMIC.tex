@@ -106,6 +106,34 @@ $${1\over2}\,i\,x \theta - \ln(x^2+1) = x\,\tan^{-1} x - \ln(x^2+1)$$
 
 \endexample
 
+\example Determine if $\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is Liouvillian.
+
+We can differentiate the series term wise, and if the resulting series
+can be identified with a Liouvillian function, then we need only to
+decide if that derivative can be integrated into a Liouvillian
+function.  Using a standard identity for the Taylor series of $\ln
+(1-x)$, we determine that
+
+$$\frac{\ud}{\ud x} \left[ \sum_{n=0}^\infty \frac{1}{n^2} x^n \right] = \sum_{n=1}^\infty \frac{1}{n} x^{n-1} = \frac{1}{x}\ln (1-x)$$
+
+so we need to determine if $\int \frac{1}{x}\ln (1-x) \ud x$ is Liouvillian.  Working in the
+differential field ${\mathbb C}(x,\theta = \ln (1-x))$, we're trying to integrate
+$\frac{1}{x}\theta \ud x$.  So, our integral must have the form
+
+$$I = c_2 \theta^2 + a_1 \theta + \bar{a_0}$$
+
+$$I' = \left[ c_2 \frac{1}{1-x} + a_1' \right] \theta + \left[ a_1 \frac{1}{1-x} + \bar{a_0}' \right] = \frac{1}{x}\theta$$
+
+$$c_2 \frac{1}{1-x} + a_1' = \frac{1}{x}$$
+
+$$a_1' = \frac{1}{x} - c_2 \frac{1}{1-x}$$
+
+$\ln x$ is required to express $a_1$, but new logarithms are not
+allowed at this point in the algorithm.  Therefore,
+$\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is not Liouvillian.
+
+\endexample
+
 \vfill\eject
 
 $$\int{{x(x+1)\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{((x+1)\ln^2(x+1) - (x^3+x^2)e^{2x^2})^2}} dx$$
