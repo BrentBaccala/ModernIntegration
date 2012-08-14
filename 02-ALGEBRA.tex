@@ -1,6 +1,21 @@
 
 \mychapter{Ring, Fields, and Polynomials}
 
+The author of a mathematics text, really any text in a technical
+subject, is faced with a difficult choice --- how much to leave out?
+How often to refer readers to references?  How much knowledge
+to presuppose?
+
+Now, in the early twenty-first century, we are faced with
+technological changes that affect the author's approach.  First, we
+have the ability to distribute very large books, file size being a
+slight or absent impediment.  Also, we have a political and economic
+structure that relies heavily on using copyright to restrict and
+control information flow.  These factor have influenced me to decide
+in favor of writing a larger and more comprehensive text, that aims to
+introduce abstract algebra as much it tries to teach integration
+theory.
+
 In this chapter I will outline the basic algebraic structures
 necessary to carry out the program sketched out in the previous
 chapter.  This material is included mainly to provide a starting point
@@ -30,72 +45,98 @@ course, in the general case, any pair of operations that obey the
 axioms will suffice to form a ring or a field, but we won't need to
 concern ourselves with this.
 
-A {\it ring} ${\cal R}$ obeys the following axioms:\footnote{I freely
-use the set-theoretic symbols $\forall$ (read: for all) and $\exists$
-(read: there exists) to abbreviate this table.  Their ordering
-is significant.  $\exists a, \forall b$ means ``there exists an
-$a$ (independent of $b$) so that for all $b$\ldots'', while
-$\forall a, \exists b$ means ``for all $a$, there exists a $b$
-(possibly different for each $a$) so that\ldots''}
+I'm going to use basic set-theoretic notation to define the axioms.
+Read $\forall$ as ``for all'' and $\exists$ as ``there exists''.  Each
+symbol is immediately followed by the new variable or a list of new
+variables that it qualifies.  Their ordering is significant.  The rule
+is that each variable is assigned in left-to-right order.  So,
+``$\exists a, \forall b$'' means ``there exists an $a$ (independent of
+$b$, because $b$ hasn't appeared yet) so that for all $b$\ldots'',
+while ``$\forall b, \exists a$'' means ``for all $b$, there exists an
+$a$ (possibly different for each $b$) so that\ldots''.  In the later
+case, $a$ can be a function of $b$, but not in the first case.
+Sometimes I'll add the set inclusion symbol $\in$, read ``in'', such
+as ``$\forall a,b,c \in {\cal R}$...'', reading ``for all a, b, and c
+that are members of ${\cal R}$...'', but I'll omit this from the next
+table for simplicity, since everything is a member of ${\cal R}$.
+
+A {\it commutative ring with unity} ${\cal R}$ obeys the following axioms:
 
 \begin{center}
-\begin{supertabular}{l l l r}
-   associative law of addition	& $\forall a,b,c \in {\cal R},$ & $(a+b)+c = a+(b+c)$ &(R1)\cr
-   associative law of multiplication & $\forall a,b,c \in {\cal R},$ & $(ab)c = a(bc)$ &(R2)\cr
-   commutative law of addition	& $\forall a,b \in {\cal R},$ & $a+b = b+a$ &(R3)\cr
-   commutative law of multiplication & $\forall a,b \in {\cal R},$ & $ab = ba$ &(R4)\cr
-   distributive law   & $\forall a,b,c \in {\cal R},$ & $a(b+c) = ab + bc$ &(R5)\cr
-   existence of an additive identity (zero) & $\exists 0 \in {\cal R}, \forall a \in {\cal R}$, & $0 + a = a$ &(R6)\cr
-   existence of a multiplicative identity (unity) & $\exists 1 \in {\cal R}, \forall a \in {\cal R},$ & $1a = a$ &(R7)\cr
-   invertibility of addition & $\forall a \in {\cal R}, \exists b \in {\cal R}$, & $a + b = 0$ &(R8)\cr
+\begin{supertabular}{l l @{} l r}
+   associative law of addition	& $\forall a,b,c,$ & $(a+b)+c = a+(b+c)$ &(R1)\cr
+   associative law of multiplication & $\forall a,b,c,$ & $(ab)c = a(bc)$ &(R2)\cr
+   commutative law of addition	& $\forall a,b,$ & $a+b = b+a$ &(R3)\cr
+   distributive law   & $\forall a,b,c,$ & $a(b+c) = ab + bc$ &(R4)\cr
+   existence of an additive identity (zero) & $\exists 0, \forall a$, & $0 + a = a$ &(R5)\cr
+   invertibility of addition & $\forall a, \exists b$, & $a + b = 0$ &(R6)\cr
+   & & &\cr
+   commutative law of multiplication & $\forall a,b,$ & $ab = ba$ &(CR1)\cr
+   existence of a multiplicative identity (unity) & $\exists 1, \forall a,$ & $1a = a$ &(RwU1)\cr
 \end{supertabular}
 \end{center}
 
-Some comments are in order.  Notice in particular that I listed the
-commutative law of multiplication as (R4).  Most authors don't do
-this, because a substantial theory has been developed around {\it
-non-commutative} rings, probably because matrix multiplication (a
-critically important example) is non-commutative.  A commutative ring
-is said to be {\it abelian}, and most authors require a field to be
-commutative; reserving the term {\it skew field} to refer to a
-(possibly) non-commutative field.  Also, I required the existence of a
-multiplicative identity as (R7).  Again, most authors don't require
-rings to have a unity element, but since all of our rings will be
-commutative, and all will have a unity element, I will omit any
-additional terminology and adopt the R4 and R7 axioms to obtain a {\it
-abelian (commutative) ring with unity} (and call it a ``ring'').
+You notice the commutative law of multiplication at the end as (CR1),
+along with the existance of a unity element 1, labeled (RwU1).  A
+substantial theory has been developed around {\it non-commutative}
+rings, probably because matrix multiplication (a critically important
+example) is non-commutative.  Most of our rings are commutative ring,
+or {\it abelian} (the terms are synonymous).  Also, I required the
+existence of a multiplicative identity.  Much of ring theory can be
+developed without this axion, but some theorems require it, and I
+don't want to belabor the point, since all of our rings will have a
+unity element.  Therefore, I will omit any additional terminology,
+adopt the CR1 and RwU1 axioms along with ring axioms R1-R6 to obtain a
+{\it commutative ring with unity}, and call it informally a ``ring''
+for the rest of the book.
 
 A {\it field} ${\cal F}$ obeys all the ring axioms (thus all fields are also
 rings), as well as the following axiom:
 
 \begin{center}
-\begin{tabular}{l l l r}
-   invertibility of multiplication & $\forall a \ne 0 \in {\cal F}, \exists b \in {\cal F},$ & $ab = 1$ &(F1)\cr
+\begin{tabular}{l l r}
+   invertibility of multiplication & $\forall a \ne 0, \exists b, ab = 1$ &(F1)\cr
 \end{tabular}
 \end{center}
 
-In plain English, rings are mathematical systems in which addition,
-multiplication and subtraction are cleanly defined.  Subtraction is
-defined due to (R8), the invertibility of addition.  Division,
-however, is not, since it requires (F1).  Since the ring axioms do not
-require multiplication to be invertible, there is no guarantee that we
-can carry out division in a ring.  A field, on the other hand, is a
+In plain English, rings are mathematical systems in which addition and
+multiplication are cleanly defined.  Subtraction is also defined due
+to (R6), the invertibility of addition, which allows a subtraction
+problem to be turned into an addition problem.  Division, however, is
+not, since it requires (F1).  Since the ring axioms do not require
+multiplication to be invertible, there is no guarantee that we can
+carry out division in a ring.  A field, on the other hand, is a
 mathematical system in which all four elementary operations ---
 addition, subtraction, multiplication, and division --- are defined.
 
 THEOREM (Zero Theorem)
 
-$\forall x\in{\cal R}, 0x=0$
+Given a ring ${\cal R}$, $\forall x\in{\cal R}, 0x=0$
 
 PROOF
 
 From the equation $0x=0x+0x+(-0x)=(0+0)x+(-0x)=0x+(-0x)=0$.
 
-I used
-first R8 (applied to $0x$) to obtain $0x+(-0x)=0$, then applied the
-principle of equality to substitute this equation into $0x=0x+0$
-(obtained from R6 and R3), then used R5 to factor out $(0+0)$ and R6
-to replace this with $0$, then R8 again to conclude that $0x+(-0x)=0$.
+\begin{tabular}{r c l l @{\vbox to20pt{}}}
+
+$0x+(-0x)$ &=& $0$ & R6 applied to $0x$ \cr
+$0+0x$ &=& $0x$ & R5 applied to $0x$ \cr
+$0+0x + (-0x)$ &=& $0$ & principle of equality \cr
+
+   & & &\cr
+
+$(0+0x)+(-0x)$ &=& $0$ & principle of equality\cr
+$(0\cdot 1+0x)+(-0x)$ &=& $0$ & RwU1\cr
+$0(\cdot 1+x)+(-0x)$ &=& $0$ & R4\cr
+
+\end{tabular}
+
+$=(0+0)x+(-0x)=0x+(-0x)=0$.
+
+applied
+into , obtained from R5 applied to $0x$, then used R5 to
+factor out $(0+0)$ and R6 to replace this with $0$, then R6 again to
+conclude that $0x+(-0x)=0$.
 
 Thus, multiplication by zero is a property of all rings.
 
@@ -112,6 +153,7 @@ there is no integer that when multiplied by 2 forms 1.
 Thus {\bf Z} forms a ring but not a field.
 
 \mysection{Quotient fields}
+\subsection*{\qquad The field ${\bf Q}$}
 \qquad [van der Waerden], \S3.3
 
 We can remedy this by moving on the {\it rational numbers},
@@ -222,6 +264,7 @@ domain to obtain its quotient field.
 
 
 \mysection{Polynomial rings and rational function fields}
+\subsection*{\qquad The ring ${\cal F}[x]$ and the field ${\cal F}(x)$}
 \qquad [van der Waerden], \S3.4
 
 Having built a field from a ring, can we build a ring from a field?
@@ -291,7 +334,150 @@ equivalence classes are the real numbers.  I could keep going.  These
 constructions are easy to form; their utility lies in our ability to
 relate them to real world problems.
 
-NEED TO INTRODUCE {\bf R} and {\bf C}.
+\mysection{Algebraic Closure}
+\subsection*{\qquad The fields ${\bf R}$ and ${\bf C}$}
+\qquad [van der Waerden], \S11
+
+It is possible to extend a field (any field?) so that all polynomials
+can be completely factored into linear terms.  Such a field is said to
+be {\it algebraically closed}.  The {\b Fundamental Theorem of
+Algebra} states that the complex field ${\bf C}$ is algebraically
+closed.  There are several proof routes for this theorem.  The most
+common involves complex analysis, and can be found in any standard
+complex analysis text, usually near Liouville's Theorem on the
+behavior of bounded entire functions.
+
+Here I will present another proof, Gauss's second method (cast into
+modern terms by van der Waerden).  Not only is it more algebraic
+in its flavor, but it is in fact a slightly stronger result.
+
+Starting with unordered rings and fields, we introduce the concept of
+{\it ordered} rings and fields field, where every element can be
+compared to zero consistently with the axioms:
+
+\begin{center}
+\begin{supertabular}{l l l r}
+   total order	& $\forall a,$ & one of $a<0, a=0, a>0$ holds &(O1)\cr
+   consistency with negation & $\forall a,$ & one of $-a>0, a=0, a>0$ holds &(O1)\cr
+   consistency with addition & $\forall a,b$ & $a>0 \cap b>0 \implies a+b>0$ &(O2)\cr
+   consistency with multiplication & $\forall a,b$ & $a>0 \cap b>0 \implies ab>0$ &(O3)\cr
+\end{supertabular}
+\end{center}
+
+I've introduced new logic symbols $\cap$ for logical and $\implies$
+for logical implication.  $\cup$ is used for logical or.  Note
+particularly that O2 implies that $1+1$ is always positive, never
+zero, so our field characteristic is always zero.  No finite field can
+be ordered.  This implies that our prime subfield is always ${\bf Q}$.
+
+Squares must be positive, so a maximal real field can be ordered in
+only one way.
+
+We further classify an ordered field as {\it Archemedian} if it
+satisfies:
+
+\begin{center}
+\begin{supertabular}{l l @{} l r}
+   Archemedian property	& $\forall a,$ & $\exists b \in {\bf Q}, b>a$ &(A1)\cr
+\end{supertabular}
+\end{center}
+
+Non-Archemdian fields have ``infinitely large'' and ``infinitely
+small'' numbers, larger and smaller than any rational number, and
+${\bf Q}$ is confined to a narrow region of the field.  We will not
+comsider such fields.
+
+Now we define a {\it real field} as a field where -1 is not
+expressible as a sum of squares.  A {\it maximal real field} is real
+but has no proper algebraic extension that is real.  Any attempt to
+algebraically extend a maximum real field would result in a non-real
+field.  The prototypical example of a maximal real field is the
+intersection of the algebraic closure of ${\bf Q}$ with the real line;
+i.e, all purely real algebraic numbers.
+
+We establish some key properties of a maximal real field, starting
+with the fact that all positive numbers are squares (we're introducing
+order here).  Intuitively, this is because all positive real numbers
+have real roots, but we do not specialize to the real line, instead
+proofing the result for real fields in general.
+
+Considering a positive element $p$ that is not a square, we construct
+an algebraic extension $x^2-p$ which must produce an extension field
+that where -1 can be expressed as a sum of squares, because the
+original field was maximal real.  Furthermore, each element in the
+extension field has the form $a + b \gamma$, where $\gamma$ solves
+$x^2-p$ and $a$ and $b$ are in the original field.  So, we can write:
+
+$$-1 = \sum_1^n (a_i + b_i \gamma)^2 = \sum_1^n (a_i^2 + 2 a_i b_i \gamma + b_i^2 p)$$
+
+The $\gamma$ term must vanish, because otherwise we could solve
+for $\gamma$ as follows:
+
+$$\gamma = \frac{-1 - \sum a_i^2 - \sum b_i^2 p}{2 \sum a_i b_i}$$
+
+would would place $\gamma$ in the original field, an impossibility,
+so the denominator must be 0, and the original expression
+simplies to:
+
+$$-1 = \sum_1^n a_i^2 + \sum_1^n b_i^2 p$$
+
+Solving for $p$ we find that
+
+$$p = \frac{-1 - \sum a_i^2}{\sum b_i^2}$$
+
+This immediately implies that $p$ can not be expressed as a sum of
+squares, because otherwise $-1$ could be.  Since we've only assumed
+that $p$ is not a square, this implies that any sum of squares must
+itself be a square.  Futhermore, since squares are always positive
+(need proof), the expression on the right is strictly negative,
+contradicting the assumption that $p$ is positive.  On the other hand,
+if $p$ were negative, $-p$ would be expressible as a square since both
+the numerator and denominator are sums of squares:
+
+$$-p = \frac{1 + \sum a_i^2}{\sum b_i^2}$$
+
+which implies that any sum of squares is a square.  Solving for $p$,
+we see that its numerator and denominator are both sums of squares, so
+$-p$ must itself be square.  Every element is either a square, or the
+negative of a square, and these cases are exclusive.  This also
+establishes that adjoining $i$ creates a field where every quadratic
+equation is solvable using the quadratic formula.
+
+Next, we want to establish that, in a maximal real field, all
+polynomials of odd degree have at least one root.  We can proceed by
+induction, as this is obviously true for linear polynomials, so
+assuming that the theorem is satisfied for all polynomials of lower
+degree, we can see that the polynomial must be irreducible, otherwise
+we could factor it and apply induction to the factor of odd degree.
+
+By adjoining a root $\alpha$ and getting a non-real field, we arrive
+at a contradiction.
+
+
+
+
+There is only one way to extend an ordered integral domain into an
+ordered quotient field.
+
+Next, we introduce real numbers individually as Cauchy sequences and
+collectively as an extension field, ordered by showing that the
+trailing terms in such a sequence must either converge to zero or
+become uniformly positive or negative, establishing O1.  A little more
+work is then needed to show that O2 and O3 hold, and that the
+Archemedian property carries through.
+
+Next, we show that square roots always exist, as Cauchy sequences, for
+all positive numbers.  This requires constructing a sequence of larger
+and larger numbers, each of which we square, invert, multiply by 2,
+and use A1 to demand an even larger element of {\bf Q}.  Fill in the
+details.  Might need Archmedian property for this.
+
+Next, construct ${\bf C}$ by extending algebraically to adjoin $i$,
+and use the prior result to demonstrate that square roots exist for
+all numbers in ${\bf C}$.  Then introduce the modulus of a complex
+number and establish that $|1+\gamma|\le 1+|\gamma|$.
+
+
 
 \mysection{Long Division}
 \qquad [van der Waerden], \S3.4
