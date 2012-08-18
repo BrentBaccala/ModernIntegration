@@ -338,9 +338,9 @@ relate them to real world problems.
 \subsection*{\qquad The fields ${\bf R}$ and ${\bf C}$}
 \qquad [van der Waerden], \S11
 
-It is possible to extend a field (any field?) so that all polynomials
+There exist fields ${\cal F}$ where all polynomials in ${\cal F}[x]$
 can be completely factored into linear terms.  Such a field is said to
-be {\it algebraically closed}.  The {\b Fundamental Theorem of
+be {\it algebraically closed}.  The {\bf Fundamental Theorem of
 Algebra} states that the complex field ${\bf C}$ is algebraically
 closed.  There are several proof routes for this theorem.  The most
 common involves complex analysis, and can be found in any standard
@@ -366,11 +366,11 @@ compared to zero consistently with the axioms:
 
 I've introduced new logic symbols $\cap$ for logical and $\implies$
 for logical implication.  $\cup$ is used for logical or.  Note
-particularly that O2 implies that $1+1$ is always positive, never
+particularly that O2 implies that $n \cdot 1$ is always positive, never
 zero, so our field characteristic is always zero.  No finite field can
 be ordered.  This implies that our prime subfield is always ${\bf Q}$.
 
-Squares must be positive, so a maximal real field can be ordered in
+O3 implies that squares must be positive, so a maximal real field can be ordered in
 only one way.
 
 We further classify an ordered field as {\it Archemedian} if it
@@ -395,11 +395,11 @@ field.  The prototypical example of a maximal real field is the
 intersection of the algebraic closure of ${\bf Q}$ with the real line;
 i.e, all purely real algebraic numbers.
 
-We establish some key properties of a maximal real field, starting
-with the fact that all positive numbers are squares (we're introducing
-order here).  Intuitively, this is because all positive real numbers
-have real roots, but we do not specialize to the real line, instead
-proofing the result for real fields in general.
+We establish some key properties of an {\it ordered maximal real
+field}, starting with the fact that all positive numbers are squares.
+% Intuitively, this is because all positive real numbers have real
+% roots, but we do not specialize to the real line, instead proofing the
+% result for real fields in general.
 
 Considering a positive element $p$ that is not a square, we construct
 an algebraic extension $x^2-p$ which must produce an extension field
@@ -410,38 +410,25 @@ $x^2-p$ and $a$ and $b$ are in the original field.  So, we can write:
 
 $$-1 = \sum_1^n (a_i + b_i \gamma)^2 = \sum_1^n (a_i^2 + 2 a_i b_i \gamma + b_i^2 p)$$
 
-The $\gamma$ term must vanish, because otherwise we could solve
-for $\gamma$ as follows:
-
-$$\gamma = \frac{-1 - \sum a_i^2 - \sum b_i^2 p}{2 \sum a_i b_i}$$
-
-would would place $\gamma$ in the original field, an impossibility,
-so the denominator must be 0, and the original expression
-simplies to:
+The $\gamma$ term must vanish, since -1 is in the original field, so
 
 $$-1 = \sum_1^n a_i^2 + \sum_1^n b_i^2 p$$
 
+This immediately implies that $p$ can not be expressed as a sum of
+squares in the original field, because otherwise $-1$ could be.
 Solving for $p$ we find that
 
 $$p = \frac{-1 - \sum a_i^2}{\sum b_i^2}$$
 
-This immediately implies that $p$ can not be expressed as a sum of
-squares, because otherwise $-1$ could be.  Since we've only assumed
-that $p$ is not a square, this implies that any sum of squares must
-itself be a square.  Futhermore, since squares are always positive
-(need proof), the expression on the right is strictly negative,
-contradicting the assumption that $p$ is positive.  On the other hand,
-if $p$ were negative, $-p$ would be expressible as a square since both
-the numerator and denominator are sums of squares:
+Since squares are always positive, the expression on the right is
+strictly negative, contradicting the assumption that $p$ is positive,
+and proving the claim.
 
-$$-p = \frac{1 + \sum a_i^2}{\sum b_i^2}$$
-
-which implies that any sum of squares is a square.  Solving for $p$,
-we see that its numerator and denominator are both sums of squares, so
-$-p$ must itself be square.  Every element is either a square, or the
-negative of a square, and these cases are exclusive.  This also
-establishes that adjoining $i$ creates a field where every quadratic
-equation is solvable using the quadratic formula.
+Every element is either a square, or the negative of a square, and
+these cases are exclusive.  This also establishes that any sum of
+squares, being positive, is a square and that adjoining $i$ creates a
+field where every quadratic equation is solvable using the quadratic
+formula.
 
 Next, we want to establish that, in a maximal real field, all
 polynomials of odd degree have at least one root.  We can proceed by
@@ -450,11 +437,57 @@ assuming that the theorem is satisfied for all polynomials of lower
 degree, we can see that the polynomial must be irreducible, otherwise
 we could factor it and apply induction to the factor of odd degree.
 
-By adjoining a root $\alpha$ and getting a non-real field, we arrive
-at a contradiction.
+By adjoining a root $\alpha$ of the $n$ degree polynomial $f(x)$ we
+get a non-real field:
 
+$$-1 = \sum \phi_i(\alpha)^2 = \sum \phi_i(x)^2 + f(x) g(x)$$
 
+All of the polynomials $\phi_i(x)^2$ have even degree, and the highest
+degree terms can not cancel, since their coefficients are squares and
+thus positive.  Thus, the sum has even degree of at most $2(n-1)$ and
+$f(x)$ has odd degree $n$, so $g(x)$ must have odd degree of at most
+$n-2$.  Induction implies that $g(x)$ must have a root $\beta$, so
 
+$$\sum \phi_i(\beta)^2 = -1 - f(\beta) g(\beta) = -1$$
+
+Yet $\beta$, and thus $\sum \phi_i(\beta)^2$, lies in the original
+field, so this expression contradicts the claim that the original
+field was real.
+
+% $$(a_0 + a_1 \gamma + a_2 \gamma^2)^2 = a_0^2 + 2a_0 a_1 \gamma
+% + (a_1^2 + 2a_0 a_2) \gamma^2 + 2a_1a_2\gamma^3 + a_2^2\gamma^4 $$
+% $$= a_0^2 + 2a_0 a_1 \gamma
+% + (a_1^2 + 2a_0 a_2) \gamma^2
+% + 2a_1a_2(b_0 + b_1 \gamma + b_2\gamma^2)
+% + a_2^2[b_0b_2 + (b_0 + b_1 b_2)\gamma + (b_1 + b_2^2)\gamma^2]
+% $$
+% $$= (a_0^2 + 2a_1a_2b_0 + a_2^2b_0b_2)
+% + (2a_0 a_1 +2a_1a_2b_1 + a_2^2b_0 + a_2^2b_1b_2) \gamma
+% + (a_1^2 + 2a_0 a_2
+% + 2a_1a_2b_2
+% + a_2^2b_1 + a_2^2b_2^2)\gamma^2
+% $$
+
+What about polynomials of even degree?  Construct a (non-real)
+splitting field where all of the polynomial's roots $\alpha_i$ exist,
+construct the $n(n-1)/2$ values $r_{ij} = \alpha_i + \alpha_j +
+c \alpha_i \alpha_j$, where $c$ has been selected to make all of these
+values distinct, and then form the polynomial $\prod (x-r_{ij})$,
+which exists in the original field since it's symmetric.  Note that
+this polynomial's degree, while larger, has one less power of two than
+the original.  We repeat this procedure until we get a polynomial of
+odd degree, which has at least one root in the original field, say
+$r_{ij}$.  If neither $\alpha_i + \alpha_j$ nor $\alpha_i \alpha_j$
+existed in the field, then by the Primitive Element Theorem we could
+extend by $r_{ij}$, so at least one of these terms must exist in the
+field, and then the other can be constructed.  Finally, we use the
+quadratic equation (here we might need to extend by $i$) to construct
+the actual roots $\alpha_i$ and $\alpha_j$, and repeat this until
+we've got roots of the original polynomial.  In summary, a field where
+quadratic equations can always be solved and polynomials of odd degree
+have at least one root is algebraically closed.
+
+NEED SYMMETRIC POLYNOMIALS AND THEOREM OF PRIMITIVE ELEMENT
 
 There is only one way to extend an ordered integral domain into an
 ordered quotient field.
