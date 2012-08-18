@@ -386,7 +386,7 @@ We just need to keep in mind that these degrees are measured relative
 to the polynomial ring variable, not any other variable that might
 appear as part of the underlying field.
 
-\mysection{GCD Computation}
+\mysection{Greatest Common Divisors}
 \qquad [van der Waerden], \S3.7, \S3.8, \S5.4 (multivariate rings)\hfil\break
 \hbox{}\qquad [Geddes], Ch. 7
 
@@ -430,8 +430,9 @@ A {\it unique factorization domain} ${\cal U}$ obeys all the ring axioms,
 as well as:
 
 \begin{center}
-\begin{tabular}{l l l r}
-   unique factorization & $\forall a,b,c,d \in {\cal U},ab=cd,$ & $\exists x\in {\cal U}, ax=c$ or $ax=d$ or $bx=c$ or $bx=d$ &(U1)\cr
+\begin{tabular}{l l r}
+   unique factorization & $\forall a,b,c,d \in {\cal U},$ & \cr
+      & $ab=cd \implies \exists x\in {\cal U}, ax=c \cup ax=d \cup bx=c \cup bx=d$ &(U1)\cr
 \end{tabular}
 \end{center}
 
@@ -1315,9 +1316,7 @@ for logical implication.  $\cup$ is used for logical or.  Note
 particularly that O2 implies that $n \cdot 1$ is always positive, never
 zero, so our field characteristic is always zero.  No finite field can
 be ordered.  This implies that our prime subfield is always ${\bf Q}$.
-
-O3 implies that squares must be positive, so a maximal real field can be ordered in
-only one way.
+O3 implies that squares must be positive.
 
 We further classify an ordered field as {\it Archemedian} if it
 satisfies:
@@ -1371,10 +1370,11 @@ strictly negative, contradicting the assumption that $p$ is positive,
 and proving the claim.
 
 Every element is either a square, or the negative of a square, and
-these cases are exclusive.  This also establishes that any sum of
-squares, being positive, is a square and that adjoining $i$ creates a
-field where every quadratic equation is solvable using the quadratic
-formula.
+these cases are exclusive.  Thus, a maximal real field can be ordered
+in only one way.  This also establishes that any sum of squares, being
+positive, is a square and that adjoining $i$ creates a field where
+square roots exist and thus every quadratic equation is solvable using
+the quadratic formula.
 
 Next, we want to establish that, in a maximal real field, all
 polynomials of odd degree have at least one root.  We can proceed by
