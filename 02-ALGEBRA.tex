@@ -1414,26 +1414,32 @@ field was real.
 % + a_2^2b_1 + a_2^2b_2^2)\gamma^2
 % $$
 
-What about polynomials of even degree?  Construct a (non-real)
-splitting field where all of the polynomial's roots $\alpha_i$ exist,
-construct the $n(n-1)/2$ values $r_{ij} = \alpha_i + \alpha_j +
+\theorem
+Any field ${\cal F}$ where quadratic equations can always be solved
+and polynomials of odd degree have at least one root is algebraically
+closed.
+
+\proof
+Our main concern is polynomials of even degree.  Consider a splitting
+field where all of the polynomial's roots $\alpha_i$ exist, construct
+the $n(n-1)/2$ values $r_{ij} = \alpha_i + \alpha_j +
 c \alpha_i \alpha_j$, where $c$ has been selected to make all of these
-values distinct, and then form the polynomial $\prod (x-r_{ij})$,
-which exists in the original field since it's symmetric.  Note that
-this polynomial's degree, while larger, has one less power of two than
-the original.  We repeat this procedure until we get a polynomial of
-odd degree, which has at least one root in the original field, say
-$r_{ij}$.  If neither $\alpha_i + \alpha_j$ nor $\alpha_i \alpha_j$
-existed in the field, then by the Primitive Element Theorem we could
-extend by $r_{ij}$, so at least one of these terms must exist in the
-field, and then the other can be constructed.  Finally, we use the
-quadratic equation (here we might need to extend by $i$) to construct
-the actual roots $\alpha_i$ and $\alpha_j$, and repeat this until
-we've got roots of the original polynomial.  In summary, a field where
-quadratic equations can always be solved and polynomials of odd degree
-have at least one root is algebraically closed.
+values distinct, and then form the polynomial $\Lambda(x) = \prod (x-r_{ij})$,
+which exists in ${\cal F}[x]$ since it's symmetric.  Note that this
+polynomial's degree, while larger, has one less power of two than the
+original.  We repeat this procedure until we get a polynomial of odd
+degree in ${\cal F}[x]$, which has at least one root in ${\cal F}$,
+say $r_{ij}$.  If neither $\alpha_i + \alpha_j$ nor
+$\alpha_i \alpha_j$ existed in the field, then by the Primitive
+Element Theorem we could extend by $r_{ij}$, so at least one of these
+two terms must exist in the field, and then the other can be
+constructed.  Finally, we use the quadratic equation to construct
+$\alpha_i$ and $\alpha_j$, and repeat this until we've got roots of
+the original polynomial.
 
 NEED SYMMETRIC POLYNOMIALS AND THEOREM OF PRIMITIVE ELEMENT
+
+\endtheorem
 
 There is only one way to extend an ordered integral domain into an
 ordered quotient field.
