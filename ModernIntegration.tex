@@ -9,6 +9,8 @@
 \usepackage{amsmath, amscd, amsxtra, amsthm}
 \usepackage{amssymb}
 
+%\usepackage[cspex,bbgreekl]{mathbbol}
+
 %\usepackage{verbatim}
 
 %\usepackage{footnote}
@@ -93,6 +95,14 @@
 \newtheorem{texample}[ttheorem]{Example}
 \def\example{\begin{texample}\begin{quote}\rm}
 \def\endexample{\hfill$\Box$\end{quote}\end{texample}}
+
+% Cribbed from http://tex.stackexchange.com/a/53981
+% to allow theorems to be restated out-of-order
+
+\newtheorem{innercustomthm}{Theorem}
+\newenvironment{customthm}[1]
+  {\renewcommand\theinnercustomthm{#1}\innercustomthm}
+  {\endinnercustomthm}
 
 \newcommand{\ud}{\,\mathrm{d}}
 

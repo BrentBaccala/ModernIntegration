@@ -2,6 +2,93 @@
 \setcounter{chapter}{5}
 \mychapter{The Exponential Extension}
 
+The two distinctive features of exponential extensions are the presence
+of {\it special} polynomials, which are divisible by their own
+derivatives, and the appearance of the Risch differential equation.
+
+Recall our basic theorem on the behavior of exponential extensions:
+
+\begin{customthm}{\ref{basic exponential properties}}
+Let $E=K(\theta)$ be a simple transcendental exponential extension of
+a differential field $K$ with the same constant subfield as $K$,
+let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$,
+and let $r=a/b$ be a rational function in $K(\theta)$
+($a, b \in K[\theta]$).  Then:
+
+\begin{enumerate}
+\item ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x$
+\item $p' \mid p$ if and only if $p$ is a power of $\theta$.
+\item If an irreducible factor other than $\theta$ appears in $r$'s
+denominator with multiplicity $m$,
+then it appears in $r'$'s denominator with multiplicity $m+1$
+\item $r' \in K$ if and only if $r \in K$
+\end{enumerate}
+
+\end{customthm}
+
+Contrast this theorem with the behavior of the ordinary polynomials
+that we're accustomed to.  Ordinary polynomials never behave in the
+manner described in (2); polynomials that do are called {\it special}.
+Instead, ordinary polynomials always behave in the way described in
+(3); such polynomials are called {\it normal}.
+
+Irreducible polynomials are characterized as either normal
+or special, depending on whether they can be divided by
+their derivatives.
+
+In a exponential extension, the only special irreducible polynomial is
+$\theta$ itself.  In a hypertangent extension, the only special
+irreducible polynomial is $(\theta^2+1)$.
+
+We attack integrands in exponential extensions in much the same way as
+we attack ordinary polynomials: we factor the denominator into
+irreducible factors and perform a partial fractions expansion.  In
+this case, however, we have to classify the factors as either normal
+or special.  Normal factors can be handled in much the same way as
+we're used to, but special factors are treated in a manner similar to
+polynomials.
+
+\begin{comment}
+
+t=tan x
+t^2+1 = tan^2 x + 1 = sec^2 x
+d(t^2+1) = 2tdt = 2 tan x sec^2 x
+
+dt/dx = sec^2 x = (1 + tan^2 x)
+Dt = t^2 + 1
+D(t^2+1) = 2t(t^2+1)
+
+\end{comment}
+
+Let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$,
+and take its derivation:
+
+$$p' = \sum_{i=0}^n (p_i' + i p_i k') \theta^i$$
+
+Notice that, unlike the logarithm or rational cases, there is no
+interdependence between the various elements of the sum; each term is
+completely independent.  Instead, each coefficient of $\theta^i$ has
+the form $p_i' + A p_i$, and equating the $p'$ polynomial to the
+integrand's polynomial produces a differential equation of the form:
+
+$$x' + A x = B \qquad A,B \in K$$
+
+This is called a {\tt Risch equation} and is a primary object of our
+study.  Solving Risch equations in a differential extension is the
+principle problem that we need to solve in order to carry out our
+program of symbolic integration.
+
+Notice that special factors in the denominator behave in almost
+exactly the same way as polynomials.  Consider the derivative of
+$p=a \theta^{-i}$:
+
+$$p' = (a' - i a k') \theta^{-i}$$
+
+Thus, polynomial terms and partial fractions terms involving special
+polynomials can both be treated in the same way.  They both give rise
+to Risch equations that need to be solved recursively in the underlying
+field.
+
 \vfil\eject
 
 \example Compute $\int \sin x \, {\rm d}x$
@@ -33,7 +120,66 @@ $$\int \frac{\phi - \phi^{-1}}{2i} \,dx = -\frac{1}{2}(\phi + \phi^{-1})
 
 \endexample
 
+Slightly more complicated are Risch equations in ${\mathbb C}(x)$.
+These arise when our integrand exists in a simple exponential
+extension of ${\mathbb C}(x)$, i.e, an integrand formed as a rational
+function of $x$ and a single exponential.  Consider such a Risch
+equation:
+
+$$x' - A x = B \qquad A,B,x \in {\mathbb C}(x)$$
+
+We can clear our denominators and obtain a polynomial Risch equation:
+
+$$A x' - B x = C \qquad A,B,C \in {\mathbb C}[x] \\qquad x \in {\mathbb C}(x)$$
+
+
+\example Prove that $\int e^{-x^2}\, {\rm d}x$ has no elementary form
+
+We'll use ${\mathbb C}(x, \phi = \exp\, -x^2)$, so $\phi' = -2x$ and
+study
+
+$$\int \phi \, {\rm d}x$$
+
+We know from Theorem \ref{basic exponential properties} that our
+solution, if it exists, must have the form $a\phi$, where $a \in
+{\mathbb C}(x)$, and $a$ must satisfy the Risch equation:
+
+$$a' - 2x a = 1$$
+
+As Risch equations go, this one is easy!  Let's first note that
+$a$ can not have a non-trivial denominator, since
+
+$$a' = 1 + 2x a$$
+
+We factor $a$'s denominator into irreducible factors, recall that in
+${\mathbb C}(x)$, irreducible factors in the denominator always
+increase in degree on differentiation, and see that the right hand
+side of this equation has no denominator, therefore neither can the
+left hand side ($a'$) or $a$ itself.
+
+So $a$ must be a polynomial.  Returning to the original Risch
+equation, we see that $a'$ will have degree ${\rm Deg\,} a - 1$ while
+$2xa$ will have degree ${\rm Deg\,} a + 1$, so the left hand side must
+have degree ${\rm Deg\,} a + 1$, while the right hand side has degree 0.
+
+We conclude that no solution to this equation exists in ${\mathbb C}(x)$,
+so the integral can not be expressed in elementary form.
+
+\endexample
+
 \vfil\eject
+
+Partial fractions terms involving normal polynomials are handled the
+same way as, well, normal polynomials.  Terms with simple denominators
+give rise to logarithms in the solution, while terms with higher
+powered denominators give rise to rational functions in the solution.
+
+One unusual feature of exponential extensions is that the numerator of
+a derivative will have the same degree as the denominator, so a long
+division step is needed to make the fraction proper, and this will
+produce a constant that will modify the integrand.  For this reason,
+it's best to handle the denominator's normal factors first,
+
 
 \example Compute $\int \csc x \, {\rm d}x$
 
@@ -71,40 +217,6 @@ inside a logarithm, it disappears into the constant of integration,
 and we conclude that
 
 $$\int \csc x \,{\rm d}x = \ln \tan {x\over2} $$
-
-\endexample
-
-\example Prove that $\int e^{-x^2}\, {\rm d}x$ has no elementary form
-
-We'll use ${\mathbb C}(x, \phi = \exp\, -x^2)$, so $\phi' = -2x$ and
-study
-
-$$\int \phi \, {\rm d}x$$
-
-We know from Theorem \ref{basic exponential properties} that our
-solution, if it exists, must have the form $a\phi$, where $a \in
-{\mathbb C}(x)$, and $a$ must satisfy the Risch equation:
-
-$$a' - 2x a = 1$$
-
-As Risch equations go, this one is easy!  Let's first note that
-$a$ can not have a non-trivial denominator, since
-
-$$a' = 1 + 2x a$$
-
-We factor $a$'s denominator into irreducible factors, recall that in
-${\mathbb C}(x)$, irreducible factors in the denominator always
-increase in degree on differentiation, and see that the right hand
-side of this equation has no denominator, therefore neither can the
-left hand side ($a'$) or $a$ itself.
-
-So $a$ must be a polynomial.  Returning to the original Risch
-equation, we see that $a'$ will have degree ${\rm Deg\,} a - 1$ while
-$2xa$ will have degree ${\rm Deg\,} a + 1$, so the left hand side must
-have degree ${\rm Deg\,} a + 1$, while the right hand side has degree 0.
-
-We conclude that no solution to this equation exists in ${\mathbb C}(x)$,
-so the integral can not be expressed in elementary form.
 
 \endexample
 
@@ -176,5 +288,44 @@ So our solution is
 
 $$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\Psi + x  - \frac{2}{\ln 2}\left[\ln(\Psi+1)\right] =
 \frac{2^x}{\ln 2} + x - \frac{2}{\ln 2}\ln(2^x+1) $$
+
+\endexample
+
+\example Show that $\int \frac{\sin x}{x} \, {\rm d}x$ has no Liouvillian form
+
+Again, we'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$, use
+Euler's relationship $e^{ix}=i\sin x + \cos x$, and evaluate
+
+$$\int \frac{\phi - \phi^{-1}}{2ix} \,dx$$
+
+Let's begin by writing the integrand in the form of a rational
+function in ${\mathbb C}(x)(\phi)$, i.e, a ratio
+of $\phi$-polynomials, with coefficients in ${\mathbb C}(x)$:
+
+$$2i \int \frac{\frac{1}{x}\phi^2 - \frac{1}{x}}{\phi} \,dx$$
+
+We want to split the denominator into its normal and special
+components, by factoring it into irreducible polynomials and
+classifying each one as normal or special.  In this case, the
+factoriziation is trivial, and we know from theorem \ref{basic
+exponential properties} that $\phi$ is special.
+
+Can we have any logarithms in our integral?  Let's see.
+Any logarithm of a rational function can be factored and
+split into separate logarithms using basic properties
+of a logarithms:
+
+$$\ln ab = \ln a + \ln b \qquad\qquad \ln\frac{a}{b} = \ln a - \ln b$$
+
+So, we need only consider logarithms of irreducible polynomials.
+
+Theorem \ref{basic exponential properties} also tells us that we can
+have no normal polynomials in denominator of our integral,
+
+
+The integral must have the form $a_1 \phi + a_{-1} \frac{1}{\phi}$
+with $a_1, a_{-1} \in {\mathbb C}(x)$ and must satisfy the equations:
+
+$$\frac{1}{2ix} = a_1' + i a_1 \qquad - \frac{1}{2ix} = a_{-1}' - i a_{-1}$$
 
 \endexample

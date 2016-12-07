@@ -95,11 +95,15 @@ prime subfield, so doesn't {\it have} to map to zero, but we will
 $\pi$ --- are in the constant subfield.
 
 \theorem
+\label{derivation of an algebraic element}
 
-The derivation of an element algebraic over a subfield is completely
-defined by the subfield's derivation and the element's minimal polynomial.
+The derivation of an algebraic extension
+is determined uniquely by the derivation of its subfield.
 
 \proof
+
+The derivation of an algebraic element is completely
+defined by the subfield's derivation and the element's minimal polynomial.
 
 Given an element $\xi$, let its minimal polynomial be:
 
@@ -125,7 +129,7 @@ We will use four types of transcendental elements in our theory:
 
 1. Constants.  $D(c)=0$
 
-2. The distinguished variable of integration, $x$.  $D(x)=1$
+2. The distinguished variable of integration.  $D(x)=1$
 
 Since this is an O.D.E. theory, and particularly an integration
 theory, we are always integrating with respect to some variable of
@@ -135,11 +139,10 @@ derivative and not a differential.
 
 Incidently, Ritt had already conceived back in the 1940s of equipping
 a differential field with multiple derivations, one for each of a set
-of independent variables.  This corresponds nicely to what should be
+of independent variables.  This corresponds nicely to what is
 needed for a P.D.E. theory.  Thus, given variables $x$, $y$ and $z$,
 we could construct derivatives $D_x$, $D_y$ and $D_z$ so that
-$D_x(x)=1$, $D_x(y)=0$, $D_x(z)=0$ and so on.  I definitely consider
-this approach to be ripe ``for further study,'' but since our focus is
+$D_x(x)=1$, $D_x(y)=0$, $D_x(z)=0$ and so on.  Since our focus is
 on integration, I'll have nothing more to say about fields with
 multiple derivations.
 
@@ -147,9 +150,11 @@ multiple derivations.
 
 4. Exponential extensions. $D(\theta)=\theta D(\phi)$
 
-These two clearly correspond to $\theta = \ln\phi$ (in the logrithmic
-case) and $\theta = \exp\phi$ (in the exponential case).  The key
-point I want to made immediately is that these are {\it
+$\phi$, in both of these cases, is some element in the underlying field.
+
+These two extentions clearly correspond to $\theta = \ln\phi$ (in the
+logrithmic case) and $\theta = \exp\phi$ (in the exponential case).
+The key point I want to made immediately is that these are {\it
 transcendental} extensions\ldots and not all logarithms and
 exponentials are transcendental!  Transcendental extensions are
 defined by exclusion --- any extension that isn't algebraic is
@@ -157,8 +162,7 @@ transcendental.  If we're dealing with an algebraic extension, even if
 defined using logarithms and exponentials, we have to use our
 algebraic theory.
 
-\example Represent $\displaystyle {{4^x+1}\over{2^x+1}}$ in a form
-suitable for Risch Integration\label{represent 4^x+1/2^x+1}
+\example Represent $\displaystyle {{4^x+1}\over{2^x+1}}$ in Liouvillian form\label{represent 4^x+1/2^x+1}
 
 There are three ways to do this --- the easy way, the hard way, and
 the wrong way.
@@ -195,6 +199,23 @@ are algebraic and which are transcendental is easy, but in more
 complex expressions this may not be obvious.  We'll discuss in Chapter
 ?? how to test new elements for transcendence.
 
+\definition
+
+A {\bf Liouvillian extension} of a differential field
+is a differential extension field constructed using
+a finite number of algebraic, logarithmic, and
+exponential extensions.
+
+\enddefinition
+
+\definition
+
+A {\bf Liouvillian function} of a single variable $x$ over a specified
+field of constants $K$ is a Liovillian extension of the rational
+function field $K(x)$.
+
+\enddefinition
+
 What about sines and cosines, all those arc-functions, raising things
 to powers, and all that?  Turns out we can express all those
 operations using just our basic extensions.  The key here is Euler's
@@ -202,7 +223,7 @@ famous identity $e^{i\theta}=i\sin\theta+\cos\theta$.
 
 \example
 
-Express $\sin x$ in a form suitable for Risch Integration.
+Express $\sin x$ in Liouvillian form
 
 Euler's identity immediately gives:
 
@@ -222,7 +243,7 @@ If trigonometric functions can be represented using complex
 exponentials, then it should come as no real surprise that inverse
 trigonometric functions can be represented with complex logarithms.
 
-\example Represent $\arcsin x$ in a form suitable for Risch Integration.
+\example Represent $\arcsin x$ in Liouvillian form
 
 Let's start with Euler's identity and take its logarithm:
 
@@ -250,7 +271,7 @@ straightforward enough that I will simply summarize them in a table.
 
 \vfill\eject
 
-\mysection{Root/Logarithm/Exponential Form}
+\mysection{Liouvillian Forms}
 
 
 \def\sech{{\rm sech}}
@@ -258,8 +279,8 @@ straightforward enough that I will simply summarize them in a table.
 
 \begin{center}
 \begin{tabular}{c c c c @{\bigskip}}
-Expression & \multicolumn{1}{c}{Expansion} &
-Expression & \multicolumn{1}{c}{Expansion} \\
+Expression & \multicolumn{1}{c}{Liouvillian Form} &
+Expression & \multicolumn{1}{c}{Liouvillian Form} \\
 \hline
 & \\
 $f^g$ & $\displaystyle e^{\,g \ln f}$ &
@@ -344,7 +365,9 @@ dx} \ln^2x = 2{\ln x\over x}$), and can not be nested (${d\over dx}
 
 These examples are all special cases of {\it Liouville's Theorem} ---
 the only new extensions that can appear in an integral are simple
-logarithms with constant coefficients.
+logarithms with constant coefficients.  Let's begin by stating
+and proving some basic properties of our three basic types
+of extensions.
 
 \theorem\label{basic logarithmic properties}
 Let $E=K(\theta)$ be a simple transcendental logarithmic extension of
@@ -518,34 +541,62 @@ K$, so $p' \mid p$ in this ring.
 \theorem\label{basic algebraic properties}
 
 Let $A$ be an algebraic extension of a differential field $K$ with the
-same constant subfield as $K$.  Then for all $a\in A$, $a' \in K
-\leftrightarrow a \in K$.
+same constant subfield as $K$, let $\sigma$ be an automorphism of
+$A/K$, and let $a$ be an element of $A$.
+
+\begin{enumerate}
+\item $D(\sigma x) = \sigma(D x)$,
+\item $D({\rm Tr\,} x) = {\rm Tr\,}(D x)$,
+\item $a' \in K \leftrightarrow a \in K$.
+\end{enumerate}
 
 \proof
 
-The right-to-left implication is obvious (since differential fields
+1. Consider an automorphism $\sigma$ of $A/K$, i.e, an automorphism of $A$
+that fixes the differential field $K$, so that $\sigma x = x$ for
+$x \in K$.  Writing the minimal polynomial of $x$ as $\sum_i a_i x^i =
+0$, applying $\sigma$ to this equation, and remembering that
+automorphism commutes with multiplication and addition and that
+$a_i \in K$, we obtain $\sum_i a_i (\sigma x)^i = 0$, i.e, $\sigma x$
+has the same minimal polynomial as $x$; we say that $\sigma x$
+is a {\it conjugate} of $x$.
+
+Theorem \ref{derivation of an algebraic element} now gives us the derivation of $\sigma x$:
+
+$$D(\sigma x) = - {\sum_i a_i' (\sigma x)^i \over {\sum_i i a_i (\sigma x)^{i-1}}} $$
+
+Applying the operators in the other direction, however, and again using
+the fact that automorphism commutes with our field operators, we obtain:
+
+$$\sigma(D x) = \sigma\left(- {\sum_i a_i' x^i \over {\sum_i i a_i x^{i-1}}} \right)
+= - {\sum_i a_i' (\sigma x)^i \over {\sum_i i a_i (\sigma x)^{i-1}}} $$
+
+i.e, $D(\sigma x) = \sigma(D X)$; automorphisms that fix the base field
+of an algebraic extension commute with derivation.
+
+2. Now let's consider how $\sigma$ interacts with Tr.  Remember that
+trace, in a Galois extension, can be written as a sum over all
+automorphisms that fix the base field:
+
+$${\rm Tr\,} x = \sum_\sigma \sigma x$$
+
+We extend $A$, if necessary, into a Galois extension, and use
+the commutation relationship we just proved to establish:
+
+$$D({\rm Tr\,} x) = D\left(\sum_\sigma \sigma x\right) = \sum_\sigma D(\sigma x)
+= \sum_\sigma \sigma(D x) = {\rm Tr\,}(D x)$$
+
+3. The right-to-left implication is obvious (since differential fields
 are closed under derivation), so we need only to prove the
 left-to-right implication.
 
-Extend $A$ to its algebraic closure $\bar{A}$.  Since derivation of an
-algebraic element is determined solely by its minimum polynomial,
-$A$'s derivation extends uniquely to define $\bar{A}$'s.  Now
-consider $({\rm Tr\,} a)'$ (the derivation of $a$'s trace):
+Consider $a$, with $D a \in K$,
+so ${\rm Tr\,}(D a) = n D a$, where $n$ is the degree of the algebraic extension,
+by Theorem \ref{trace in underlying field}.
+It follows that
+$$D a = \frac{1}{n} {\rm Tr\,}(D a) = \frac{1}{n} D({\rm Tr\,} a)$$
 
-$$({\rm Tr\,} a)' = (\sum a_i)'$$
-
-where the $a_i$ are the conjugates of $a$ in $\bar{A}$.  Now apply the
-differential addition axiom to $(\sum a_i)'$ and note that since
-derivation of an algebraic element is determined solely by its minimum
-polynomial, and all of the conjugate elements have the same minimum
-polynomial, then
-
-$$({\rm Tr\,} a)' = (\sum a_i)' = \sum a_i' = ({\rm Deg\,}a) a'$$
-
-$$(\frac{1}{{\rm Deg\,} a}{\rm Tr\,} a)' = a'$$
-
-Since the trace is in $K$ (Theorem \ref{trace in underlying field}),
-so does $\frac{1}{{\rm Deg\,} a}{\rm Tr\,}$, so we have identified an
+Since ${\rm Tr\,} a \in K$, we have identified an
 element in $K$ with the same derivation as $a$, which therefore can
 differ from $a$ solely by a constant.  Since $A$ and $K$ have the same
 constant subfield, all of our constants are in $K$, so $a$ is
@@ -602,9 +653,12 @@ are constants.
 
 \proof
 
-Since $L$ is formed from $K$ by a finite number of extensions,
+Since $L$ is formed from $K$ by a finite number of simple extensions,
 consider the last extension and call it $\theta$, i.e, $L=M(\theta)$
-where $K \subset M \subset L$.  Since $l' \in K$, $l' \in M$.  If
+where $K \subset M \subset L$, and $\theta$ is either algebraic,
+logarithmic, or exponential over $M$.
+
+Since $l' \in K$, $l' \in M$.  If
 $\theta$ were either exponential or algebraic, then by Theorems
 \ref{basic exponential properties} and \ref{basic algebraic properties}
 $l$ would have to be in $M$.  On the other hand, if $\theta$ were
