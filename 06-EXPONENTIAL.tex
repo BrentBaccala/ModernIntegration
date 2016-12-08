@@ -134,9 +134,30 @@ Consider such a Risch equation:
 
 $$r' - A r = B \qquad A,B,r \in {\mathbb C}(x)$$
 
+First, let's note that we can clear the denominator of $B$ by replacing
+$r$ with $n/d$, where $n$ is as as-yet-undetermined polynomial.  We obtain:
+
+\begin{comment}
+$$r = nd \qquad r' = n d' + n' d$$
+
+$$nd' + n' d - A n d = B$$
+
+$$nd' + (n' - A n) d = B$$
+\end{comment}
+
+$$r = \frac{n}{d} \qquad r' = \frac{n' d - n d'}{d^2}$$
+
+$$\frac{n' d - n d'}{d^2} - A \frac{n}{d} = B$$
+
+$$n' d - n d' - A n d = B d^2$$
+
+$$n' d - n (d' + A d) = B d^2$$
+
 We can clear our denominators and obtain a polynomial Risch equation:
 
-$$A r' - B r = C \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
+$$A r' - \frac{N}{D} r = C \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
+
+$$A D r' - N r = C D \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
 
 Recall that in ${\mathbb C}(x)$, irreducible factors in the
 denominator always increase in degree on differentiation, so $A$'s
