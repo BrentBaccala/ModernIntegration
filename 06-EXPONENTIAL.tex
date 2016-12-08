@@ -73,7 +73,7 @@ integrand's polynomial produces a differential equation of the form:
 
 $$x' + A x = B \qquad A,B \in K$$
 
-This is called a {\tt Risch equation} and is a primary object of our
+This is called a {\it Risch equation} and is a primary object of our
 study.  Solving Risch equations in a differential extension is the
 principle problem that we need to solve in order to carry out our
 program of symbolic integration.
@@ -120,20 +120,82 @@ $$\int \frac{\phi - \phi^{-1}}{2i} \,dx = -\frac{1}{2}(\phi + \phi^{-1})
 
 \endexample
 
-Slightly more complicated are Risch equations in ${\mathbb C}(x)$.
-These arise when our integrand exists in a simple exponential
-extension of ${\mathbb C}(x)$, i.e, an integrand formed as a rational
-function of $x$ and a single exponential.  Consider such a Risch
-equation:
+\vfill\eject
+\section{Risch Equations in ${\mathbb C}(x)$}
 
-$$x' - A x = B \qquad A,B,x \in {\mathbb C}(x)$$
+Risch equations in ${\mathbb C}(x)$ arise when our integrand exists in
+${\mathbb C}(x,\Phi)$, where $\Phi$ is exponential over ${\mathbb
+C}(x)$, i.e, an integrand formed as a rational function of $x$ and $\Phi$, a
+single exponential of a rational function of $x$.  The recursion step
+described above produces Risch equations in the underlying field;
+in this case, ${\mathbb C}(x)$.
+
+Consider such a Risch equation:
+
+$$r' - A r = B \qquad A,B,r \in {\mathbb C}(x)$$
 
 We can clear our denominators and obtain a polynomial Risch equation:
 
-$$A x' - B x = C \qquad A,B,C \in {\mathbb C}[x] \\qquad x \in {\mathbb C}(x)$$
+$$A r' - B r = C \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
+
+Recall that in ${\mathbb C}(x)$, irreducible factors in the
+denominator always increase in degree on differentiation, so $A$'s
+factors are the only factors that can appears in $r$'s denominator,
+because they must cancel against $r'$.
+
+Consider an irreducible factor $f$ in $r$'s denominator, appearing with
+multiplicity $m$, so $r = n/(f^m d)$, and rewrite the Risch equation as:
+
+\begin{comment}
+$$A f^a r' - B f^b r = C f^c$$
+
+$$A f^a \frac{n' f^m d - n(m f^{m-1} d + f^m d')}{f^{2m} d^2} - B f^b \frac{n}{f^m d} = C f^c$$
+
+$$A f^a \frac{n' f d - n(m d + f d')}{f^{m+1} d^2} - B f^b \frac{n}{f^m d} = C f^c$$
+
+$$A f^a (n' f d - n(m d + f d')) - B f^{b+1} n d = C d^2 f^{c+m+1} $$
+
+$$A f^a (n' f d - m n d - f n d') - B f^{b+1} n d = C d^2 f^{c+m+1} $$
+
+$$A n' d f^{a+1} - m A n d f^a - A n d' f^{a+1} - B n d f^{b+1} = C d^2 f^{c+m+1} $$
+\end{comment}
+
+$$A f^a r' - B f^b r = A C f^{a+c}$$
+
+$$A f^a \frac{n' f^m d - n(m f^{m-1} d + f^m d')}{f^{2m} d^2} - B f^b \frac{n}{f^m d} = A C f^{a+c}$$
+
+$$A f^a \frac{n' f d - n(m d + f d')}{f^{m+1} d^2} - B f^b \frac{n}{f^m d} = A C f^{a+c}$$
+
+$$A f^a (n' f d - n(m d + f d')) - B f^{b+1} n d = A C d^2 f^{a+c+m+1} $$
+
+$$A f^a (n' f d - m n d - f n d') - B f^{b+1} n d = A C d^2 f^{a+c+m+1} $$
+
+$$A n' d f^{a+1} - m A n d f^a - A n d' f^{a+1} - B n d f^{b+1} = A C d^2 f^{a+c+m+1} $$
 
 
-\example Prove that $\int e^{-x^2}\, {\rm d}x$ has no elementary form
+
+% Furthermore, $A$ must be square-free, because otherwise 
+
+Also, consider the polynomial portion of $r$.  Differentiating
+will cause its degree to drop by one, so $\max(1 + \deg A, \deg B) = \deg C$.
+If this condition is not met, then the equation has no solution.
+
+Assuming that these two basic conditions are met, we consider 
+the partial fractions expansion of $a$:
+factor $b$ into irreducible factors ($b=\prod b_i(\theta)^{m_i}$) and
+
+$$r = a_0(\theta) + \sum_{i=1}^\mu \sum_{j=1}^{m_i} \frac{a_{ij}(\theta)}{b_i(\theta)^j}$$
+
+$$r' = a_0'(\theta) + \sum_{i=1}^\mu \sum_{j=1}^{m_i} \left[
+\frac{a'_{ij}(\theta)}{b_i(\theta)^j} - \frac{j\, a_{ij}(\theta)\,
+b_i'(\theta)}{b_i(\theta)^{j+1}} \right]$$
+
+Now, $A$ must have the form $\prod b_i$, so substituting it in:
+
+% side of this equation has no denominator, therefore neither can the
+% left hand side ($a'$) or $a$ itself.
+
+\example Prove that $\int e^{-x^2}\, {\rm d}x$ has no Liouvillian form
 
 We'll use ${\mathbb C}(x, \phi = \exp\, -x^2)$, so $\phi' = -2x$ and
 study
@@ -146,24 +208,54 @@ solution, if it exists, must have the form $a\phi$, where $a \in
 
 $$a' - 2x a = 1$$
 
-As Risch equations go, this one is easy!  Let's first note that
-$a$ can not have a non-trivial denominator, since
+This is already a polynomial Risch equation, and $a'$ has only
+a constant coefficient, so $a$ can not have a non-trivial denominator.
+Futhermore, identifying $A$ as $1$, $B$ as $-2x$, and $C$ as $1$, we compute:
 
-$$a' = 1 + 2x a$$
-
-We factor $a$'s denominator into irreducible factors, recall that in
-${\mathbb C}(x)$, irreducible factors in the denominator always
-increase in degree on differentiation, and see that the right hand
-side of this equation has no denominator, therefore neither can the
-left hand side ($a'$) or $a$ itself.
-
-So $a$ must be a polynomial.  Returning to the original Risch
-equation, we see that $a'$ will have degree ${\rm Deg\,} a - 1$ while
-$2xa$ will have degree ${\rm Deg\,} a + 1$, so the left hand side must
-have degree ${\rm Deg\,} a + 1$, while the right hand side has degree 0.
+$$\max(1 + \deg A, \deg B) = 1 \ne \deg C = 0$$
 
 We conclude that no solution to this equation exists in ${\mathbb C}(x)$,
-so the integral can not be expressed in elementary form.
+so the integral can not be expressed in Liouvillian form.
+
+\endexample
+
+
+\example Show that $\int \frac{\sin x}{x} \, {\rm d}x$ has no Liouvillian form
+
+Again, we'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$, use
+Euler's relationship $e^{ix}=i\sin x + \cos x$, and evaluate
+
+$$\int \frac{\phi - \phi^{-1}}{2ix} \,dx$$
+
+Let's begin by writing the integrand in the form of a rational
+function in ${\mathbb C}(x)(\phi)$, i.e, a ratio
+of $\phi$-polynomials, with coefficients in ${\mathbb C}(x)$:
+
+$$2i \int \frac{\frac{1}{x}\phi^2 - \frac{1}{x}}{\phi} \,dx$$
+
+We want to split the denominator into its normal and special
+components, by factoring it into irreducible polynomials and
+classifying each one as normal or special.  In this case, the
+factoriziation is trivial, and we know from theorem \ref{basic
+exponential properties} that $\phi$ is special.
+
+Can we have any logarithms in our integral?  Let's see.
+Any logarithm of a rational function can be factored and
+split into separate logarithms using basic properties
+of a logarithms:
+
+$$\ln ab = \ln a + \ln b \qquad\qquad \ln\frac{a}{b} = \ln a - \ln b$$
+
+So, we need only consider logarithms of irreducible polynomials.
+
+Theorem \ref{basic exponential properties} also tells us that we can
+have no normal polynomials in denominator of our integral,
+
+
+The integral must have the form $a_1 \phi + a_{-1} \frac{1}{\phi}$
+with $a_1, a_{-1} \in {\mathbb C}(x)$ and must satisfy the equations:
+
+$$\frac{1}{2ix} = a_1' + i a_1 \qquad - \frac{1}{2ix} = a_{-1}' - i a_{-1}$$
 
 \endexample
 
@@ -288,44 +380,5 @@ So our solution is
 
 $$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\Psi + x  - \frac{2}{\ln 2}\left[\ln(\Psi+1)\right] =
 \frac{2^x}{\ln 2} + x - \frac{2}{\ln 2}\ln(2^x+1) $$
-
-\endexample
-
-\example Show that $\int \frac{\sin x}{x} \, {\rm d}x$ has no Liouvillian form
-
-Again, we'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$, use
-Euler's relationship $e^{ix}=i\sin x + \cos x$, and evaluate
-
-$$\int \frac{\phi - \phi^{-1}}{2ix} \,dx$$
-
-Let's begin by writing the integrand in the form of a rational
-function in ${\mathbb C}(x)(\phi)$, i.e, a ratio
-of $\phi$-polynomials, with coefficients in ${\mathbb C}(x)$:
-
-$$2i \int \frac{\frac{1}{x}\phi^2 - \frac{1}{x}}{\phi} \,dx$$
-
-We want to split the denominator into its normal and special
-components, by factoring it into irreducible polynomials and
-classifying each one as normal or special.  In this case, the
-factoriziation is trivial, and we know from theorem \ref{basic
-exponential properties} that $\phi$ is special.
-
-Can we have any logarithms in our integral?  Let's see.
-Any logarithm of a rational function can be factored and
-split into separate logarithms using basic properties
-of a logarithms:
-
-$$\ln ab = \ln a + \ln b \qquad\qquad \ln\frac{a}{b} = \ln a - \ln b$$
-
-So, we need only consider logarithms of irreducible polynomials.
-
-Theorem \ref{basic exponential properties} also tells us that we can
-have no normal polynomials in denominator of our integral,
-
-
-The integral must have the form $a_1 \phi + a_{-1} \frac{1}{\phi}$
-with $a_1, a_{-1} \in {\mathbb C}(x)$ and must satisfy the equations:
-
-$$\frac{1}{2ix} = a_1' + i a_1 \qquad - \frac{1}{2ix} = a_{-1}' - i a_{-1}$$
 
 \endexample
