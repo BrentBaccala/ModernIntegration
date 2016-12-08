@@ -155,9 +155,9 @@ $$n' d - n (d' + A d) = B d^2$$
 
 We can clear our denominators and obtain a polynomial Risch equation:
 
-$$A r' - \frac{N}{D} r = C \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
+$$A r' - \frac{S}{T} r = C \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
 
-$$A D r' - N r = C D \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
+$$A T r' - S r = C T \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
 
 Recall that in ${\mathbb C}(x)$, irreducible factors in the
 denominator always increase in degree on differentiation, so $A$'s
@@ -165,13 +165,9 @@ factors are the only factors that can appears in $r$'s denominator,
 because they must cancel against $r'$.
 
 Consider an irreducible factor $f$ in $r$'s denominator, appearing with
-multiplicity $m$, so $r = n/(f^m d)$, and rewrite the Risch equation as:
+multiplicity $m$, so $r = N/(F^m D)$, and rewrite the Risch equation as:
 
 \begin{comment}
-$$A f^a r' - B f^b r = C f^c$$
-
-$$A f^a \frac{n' f^m d - n(m f^{m-1} d + f^m d')}{f^{2m} d^2} - B f^b \frac{n}{f^m d} = C f^c$$
-
 $$A f^a \frac{n' f d - n(m d + f d')}{f^{m+1} d^2} - B f^b \frac{n}{f^m d} = C f^c$$
 
 $$A f^a (n' f d - n(m d + f d')) - B f^{b+1} n d = C d^2 f^{c+m+1} $$
@@ -181,19 +177,37 @@ $$A f^a (n' f d - m n d - f n d') - B f^{b+1} n d = C d^2 f^{c+m+1} $$
 $$A n' d f^{a+1} - m A n d f^a - A n d' f^{a+1} - B n d f^{b+1} = C d^2 f^{c+m+1} $$
 \end{comment}
 
-$$A f^a r' - B f^b r = A C f^{a+c}$$
+\vfill \eject
 
-$$A f^a \frac{n' f^m d - n(m f^{m-1} d + f^m d')}{f^{2m} d^2} - B f^b \frac{n}{f^m d} = A C f^{a+c}$$
+\begin{comment}
+$$A T F^{a+t} r' - S F^s r = C T F^{c+t}$$
 
-$$A f^a \frac{n' f d - n(m d + f d')}{f^{m+1} d^2} - B f^b \frac{n}{f^m d} = A C f^{a+c}$$
+$$A T F^{a+t} \frac{N' F^m D - N(m F^{m-1} D + F^m D')}{F^{2m} D^2} - S F^s \frac{N}{F^m D} = C T F^{c+t}$$
+
+$$A T F^{a+t} \frac{N' F D - N(m D + F D')}{F^{m+1} D^2} - S F^s \frac{N}{F^m D} = C T F^{c+t}$$
+
+% $$A T F^{a+t} (N' F D - N(m D + F D')) - S N F^{s+1} D = C T D^2 F^{c+t+m+1}$$
+
+$$A T F^{a+t} (N' F D - m N D - N F D') - S N F^{s+1} D = C T D^2 F^{c+t+m+1}$$
+
+$$A T F^{a+t+1} (N' D - N D') - m A T F^{a+t} N D - S N F^{s+1} D = C T D^2 F^{c+t+m+1}$$
 
 $$A f^a (n' f d - n(m d + f d')) - B f^{b+1} n d = A C d^2 f^{a+c+m+1} $$
 
 $$A f^a (n' f d - m n d - f n d') - B f^{b+1} n d = A C d^2 f^{a+c+m+1} $$
 
 $$A n' d f^{a+1} - m A n d f^a - A n d' f^{a+1} - B n d f^{b+1} = A C d^2 f^{a+c+m+1} $$
+\end{comment}
 
+$$A F^{a} r' - B F^b r = C F^{c}$$
 
+$$A F^{a} \frac{N' F^m D - N(m F^{m-1} F' D + F^m D')}{F^{2m} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
+
+$$A F^{a} \frac{N' F D - N(m F' D + F D')}{F^{m+1} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
+
+$$A F^{a} (N' F D - m N D F' - N F D') - B N F^{b+1} D = C D^2 F^{c+m+1}$$
+
+$$A F^{a+1} (N' D - N D') - m A F^{a} F' N D - B N F^{b+1} D = C D^2 F^{c+m+1}$$
 
 % Furthermore, $A$ must be square-free, because otherwise 
 
