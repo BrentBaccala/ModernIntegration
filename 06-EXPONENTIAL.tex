@@ -134,47 +134,20 @@ Consider such a Risch equation:
 
 $$r' - S r = T \qquad S,T,r \in {\mathbb C}(x)$$
 
-First, let's note that if we split $T$ into $T_1 + T_2$ and solve
-each of these equations:
-
-$$r' - S r = T_1 \qquad q' - S q = T_2$$
-
-...they can be added to produce the original equation:
-
-$$r' + q' - S r - S q = T_1 + T_2 \qquad \Longrightarrow (r+q)' - S (r+q) = (T_1 + T_2)$$
-
-So a partial fractions decomposition on $T$ splits our equation
-so that we need only consider polynomial $T$'s and $T$'s with
-single irreducible factors in their denominators.
-
-Let's consider polynomial $T$'s first:
-
-$$r' - \frac{N}{D} r = T \qquad N,D,T \in {\mathbb C}[x]$$
-
-$$D r' - N r = D T \qquad N,D,T \in {\mathbb C}[x]$$
-
-$r$ can't have a de
-
-
-Let's start with $T$'s with irreducible denominators:
-
-$$r' - S r = \frac{1}{F^m} \qquad S \in {\mathbb C}(x); F \in {\mathbb C}[x]$$
-
-
 First, let's note that we can clear the denominators of $S$ and $T$ by
-replacing $r$ with $qn/d$:
+replacing $r$ with $qN/D$:
 
-$$r = \frac{qn}{d} \qquad r' = \frac{q n' d + q' n d - q n d'}{d^2}$$
+$$r = \frac{qN}{D} \qquad r' = \frac{q N' D + q' N D - q N D'}{D^2}$$
 
-$$\frac{q n' d + q' n d - q n d'}{d^2} - S \frac{qn}{d} = T$$
+$$\frac{q N' D + q' N D - q N D'}{D^2} - S \frac{qN}{D} = T$$
 
-$$q n' d + q' n d - q n d' - S q n d = T d^2$$
+$$q N' D + q' N D - q N D' - S q N D = T D^2$$
 
-$$(n d) q' + (n' d - n d' - S n d) q = T d^2$$
+$$(N D) q' + (N' D - N D' - S N D) q = T D^2$$
 
-By selecting $S$'s denominator as $n$, and $T$'s denominator as $d$,
-we obtain a polynomial Risch equation, whose solution is related
-to the original by $r=qn/d$:
+By selecting $S$'s denominator as $N$, and $T$'s denominator as $D$,
+we obtain a polynomial Risch equation with a rational solution related
+to the original by $r=qN/D$:
 
 $$A q' - B q = C \qquad A,B,C \in {\mathbb C}[x] \qquad q \in {\mathbb C}(x)$$
 
@@ -186,129 +159,13 @@ because they must cancel against $q'$.  Thus, we can easily identify
 which irreducible factors can appear in $q$'s denominator, and we next
 wish to calculate the multiplicities with which they appear.
 
-Consider an irreducible factor $f$ in $r$'s denominator, appearing with
-multiplicity $m$, so $r = N/(F^m D)$, and rewrite the Risch equation as:
-
-\begin{comment}
-$$A f^a \frac{n' f d - n(m d + f d')}{f^{m+1} d^2} - B f^b \frac{n}{f^m d} = C f^c$$
-
-$$A f^a (n' f d - n(m d + f d')) - B f^{b+1} n d = C d^2 f^{c+m+1} $$
-
-$$A f^a (n' f d - m n d - f n d') - B f^{b+1} n d = C d^2 f^{c+m+1} $$
-
-$$A n' d f^{a+1} - m A n d f^a - A n d' f^{a+1} - B n d f^{b+1} = C d^2 f^{c+m+1} $$
-\end{comment}
-
 \vfill\eject
 
-If we can put the Risch equation in the form:
+Consider an irreducible factor $F$ that appears both as a factor of $A$
+and also in $q$'s denominator, with
+multiplicity $m \ge 1 $, so $q = N/(F^m D)$, and we rewrite the Risch equation:
 
-$$r' - S r = \frac{1}{F^m}$$
-
-then replacing $r$ with $F^m r$ produces:
-
-$$(F^m r)' - (\frac{F'}{F} + S) (F^m r) = 1$$
-
-which is of the form
-
-$$q' - S q = 1$$
-
-clearing the denominator as described above produces:
-
-$$N q' + (N' - SN) q = 1$$
-
-so now we have a polynomial equation:
-
-$$N q' + S q = 1$$
-
-Denominator factors in $q$ must cancel against $N$.
-
-\vfill \eject
-
-\begin{comment}
-$$A T F^{a+t} r' - S F^s r = C T F^{c+t}$$
-
-$$A T F^{a+t} \frac{N' F^m D - N(m F^{m-1} D + F^m D')}{F^{2m} D^2} - S F^s \frac{N}{F^m D} = C T F^{c+t}$$
-
-$$A T F^{a+t} \frac{N' F D - N(m D + F D')}{F^{m+1} D^2} - S F^s \frac{N}{F^m D} = C T F^{c+t}$$
-
-% $$A T F^{a+t} (N' F D - N(m D + F D')) - S N F^{s+1} D = C T D^2 F^{c+t+m+1}$$
-
-$$A T F^{a+t} (N' F D - m N D - N F D') - S N F^{s+1} D = C T D^2 F^{c+t+m+1}$$
-
-$$A T F^{a+t+1} (N' D - N D') - m A T F^{a+t} N D - S N F^{s+1} D = C T D^2 F^{c+t+m+1}$$
-
-$$A f^a (n' f d - n(m d + f d')) - B f^{b+1} n d = A C d^2 f^{a+c+m+1} $$
-
-$$A f^a (n' f d - m n d - f n d') - B f^{b+1} n d = A C d^2 f^{a+c+m+1} $$
-
-$$A n' d f^{a+1} - m A n d f^a - A n d' f^{a+1} - B n d f^{b+1} = A C d^2 f^{a+c+m+1} $$
-\end{comment}
-
-\begin{comment}
-% These equations assume that we've got F's in all three polynomials
-$$A F^{a} r' - B F^b r = C F^{c}$$
-
-% $$A F^{a} \frac{N' F^m D - N(m F^{m-1} F' D + F^m D')}{F^{2m} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
-
-%$$A F^{a} \frac{N' F D - N(m F' D + F D')}{F^{m+1} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
-$$A F^{a} \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
-
-$$A F^{a} (N' F D - m N F' D - N F D') - B N F^{b+1} D = C D^2 F^{c+m+1}$$
-
-$$A F^{a+1} (N' D - N D') - m A F^{a} F' N D - B N F^{b+1} D = C D^2 F^{c+m+1}$$
-\end{comment}
-
-\begin{comment}
-% These equations assume that a might be something other than 1
-$$A F^{a} r' - B r = A F^{a}$$
-
-$$A F^{a} \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B \frac{N}{F^m D} = A F^{a}$$
-
-$$A F^{a} (N' F D - m N F' D - N F D') - B N F D = A D^2 F^{a+m+1}$$
-
-$$A (N' D - N D') F^{a+1} - m A F' N D F^{a} - B N D F = A D^2 F^{a+m+1}$$
-
-$$A (N' D - N D') F^{a} - m A F' N D F^{a-1} - B N D = A D^2 F^{a+m}$$
-
-$$A D^2 F^{a+m} - A (N' D - N D') F^{a} + m A F' N D F^{a-1} = B N D $$
-\end{comment}
-
-
-\begin{comment}
-% Assuming that F has unit multiplicity
-$$A r' - \frac{B}{F} r = C$$
-
-$$A F r' - B r = C F$$
-
-$$A F \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B \frac{N}{F^m D} = C F$$
-
-$$A F N' D - m A F' N D - A F N D' - B N D = C D^2 F^{m+1}$$
-
-$$ - m A F' N D - B N D  = C D^2 F^{m+1} - A F N' D + A F N D'$$
-
-$$ - (m A F' - B ) N D  = F (C D^2 F^{m} - A N' D - A N D')$$
-\end{comment}
-
-\begin{comment}
-% complex
-$$A F^a r' - B F^b r = C F^c$$
-
-$$A F^a \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B F^b \frac{N}{F^m D} = C F^c$$
-
-$$A F^{a+1} N' D - m A F^a F' N D - A F^{a+1} N D' - B F^{b+1} N D = C D^2 F^{c+m+1}$$
-
-$$ - m A F^{a} F' N D - B F^{b+1} N D  = C D^2 F^{c+m+1} - A F^{a+1} N' D + A F^{a+1} N D'$$
-
-%$$ - (m A F' - B ) N D  = A F (D^2 F^{m} - N' D - N D')$$
-\end{comment}
-
-Let's assume that $F$ is an irreducible factor of $A$
-
-$$A F r' - B r = C$$
-
-and that $F$ appears in $r$'s denominator with multiplicity $m$,
-so $r$ can be written as $N/(F^m D)$
+$$A F q' - B q = C$$
 
 $$A F \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B \frac{N}{F^m D} = C$$
 
@@ -320,30 +177,23 @@ $$ - (m A F' - B ) N D  = F (C D^2 F^{m-1} - A N' D - A N D')$$
 
 Now, the right hand side of this equation is a multiple of $F$, so the
 left hand side must also be a multiple of $F$.  However, $F$ is
-irreducible and shares no factors with $N$ and $D$, so 
-the only way the left hand side can be a multiple of $F$
-is if $m A F' - B$ is a multiple of $F$.
+irreducible and is relatively prime to both $N$ and $D$, so the only way
+the left hand side can be a multiple of $F$ is if $m A F' - B$ is a
+multiple of $F$.  The simplest way to enforce this is to use
+the resultant (Theorem \ref{resultant theorem}):
 
-% Furthermore, $A$ must be square-free, because otherwise 
+$${\rm res}_x(m A F' - B, F) = 0$$
 
-Also, consider the polynomial portion of $r$.  Differentiating
-will cause its degree to drop by one, so $\max(1 + \deg A, \deg B) = \deg C$.
-If this condition is not met, then the equation has no solution.
+We calculate this resultant for each irreducible factor $F$ of $A$,
+and this gives us $m$, the power to which $F$ appears in $q$'s
+denominator.  If this resultant equation has no positive integer
+solution, then $F$ does not appear at all in $r$'s denominator.
 
-Assuming that these two basic conditions are met, we consider 
-the partial fractions expansion of $a$:
-factor $b$ into irreducible factors ($b=\prod b_i(\theta)^{m_i}$) and
+Now we have $q$'s denominator, so we can clear it out and obtain
+a polynomial Risch equation with a polynomial solution:
 
-$$r = a_0(\theta) + \sum_{i=1}^\mu \sum_{j=1}^{m_i} \frac{a_{ij}(\theta)}{b_i(\theta)^j}$$
+$$A p' - B p = C \qquad A,B,C,p \in {\mathbb C}[x]$$
 
-$$r' = a_0'(\theta) + \sum_{i=1}^\mu \sum_{j=1}^{m_i} \left[
-\frac{a'_{ij}(\theta)}{b_i(\theta)^j} - \frac{j\, a_{ij}(\theta)\,
-b_i'(\theta)}{b_i(\theta)^{j+1}} \right]$$
-
-Now, $A$ must have the form $\prod b_i$, so substituting it in:
-
-% side of this equation has no denominator, therefore neither can the
-% left hand side ($a'$) or $a$ itself.
 
 \example Prove that $\int e^{-x^2}\, {\rm d}x$ has no Liouvillian form
 
