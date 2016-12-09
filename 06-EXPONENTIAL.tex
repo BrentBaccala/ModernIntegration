@@ -132,37 +132,59 @@ in this case, ${\mathbb C}(x)$.
 
 Consider such a Risch equation:
 
-$$r' - A r = B \qquad A,B,r \in {\mathbb C}(x)$$
+$$r' - S r = T \qquad S,T,r \in {\mathbb C}(x)$$
 
-First, let's note that we can clear the denominator of $B$ by replacing
-$r$ with $n/d$, where $n$ is as as-yet-undetermined polynomial.  We obtain:
+First, let's note that if we split $T$ into $T_1 + T_2$ and solve
+each of these equations:
 
-\begin{comment}
-$$r = nd \qquad r' = n d' + n' d$$
+$$r' - S r = T_1 \qquad q' - S q = T_2$$
 
-$$nd' + n' d - A n d = B$$
+...they can be added to produce the original equation:
 
-$$nd' + (n' - A n) d = B$$
-\end{comment}
+$$r' + q' - S r - S q = T_1 + T_2 \qquad \Longrightarrow (r+q)' - S (r+q) = (T_1 + T_2)$$
 
-$$r = \frac{n}{d} \qquad r' = \frac{n' d - n d'}{d^2}$$
+So a partial fractions decomposition on $T$ splits our equation
+so that we need only consider polynomial $T$'s and $T$'s with
+single irreducible factors in their denominators.
 
-$$\frac{n' d - n d'}{d^2} - A \frac{n}{d} = B$$
+Let's consider polynomial $T$'s first:
 
-$$n' d - n d' - A n d = B d^2$$
+$$r' - \frac{N}{D} r = T \qquad N,D,T \in {\mathbb C}[x]$$
 
-$$n' d - n (d' + A d) = B d^2$$
+$$D r' - N r = D T \qquad N,D,T \in {\mathbb C}[x]$$
 
-We can clear our denominators and obtain a polynomial Risch equation:
+$r$ can't have a de
 
-$$A r' - \frac{S}{T} r = C \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
 
-$$A T r' - S r = C T \qquad A,B,C \in {\mathbb C}[x] \qquad r \in {\mathbb C}(x)$$
+Let's start with $T$'s with irreducible denominators:
+
+$$r' - S r = \frac{1}{F^m} \qquad S \in {\mathbb C}(x); F \in {\mathbb C}[x]$$
+
+
+First, let's note that we can clear the denominators of $S$ and $T$ by
+replacing $r$ with $qn/d$:
+
+$$r = \frac{qn}{d} \qquad r' = \frac{q n' d + q' n d - q n d'}{d^2}$$
+
+$$\frac{q n' d + q' n d - q n d'}{d^2} - S \frac{qn}{d} = T$$
+
+$$q n' d + q' n d - q n d' - S q n d = T d^2$$
+
+$$(n d) q' + (n' d - n d' - S n d) q = T d^2$$
+
+By selecting $S$'s denominator as $n$, and $T$'s denominator as $d$,
+we obtain a polynomial Risch equation, whose solution is related
+to the original by $r=qn/d$:
+
+$$A q' - B q = C \qquad A,B,C \in {\mathbb C}[x] \qquad q \in {\mathbb C}(x)$$
+
 
 Recall that in ${\mathbb C}(x)$, irreducible factors in the
 denominator always increase in degree on differentiation, so $A$'s
-factors are the only factors that can appears in $r$'s denominator,
-because they must cancel against $r'$.
+factors are the only factors that can appears in $q$'s denominator,
+because they must cancel against $q'$.  Thus, we can easily identify
+which irreducible factors can appear in $q$'s denominator, and we next
+wish to calculate the multiplicities with which they appear.
 
 Consider an irreducible factor $f$ in $r$'s denominator, appearing with
 multiplicity $m$, so $r = N/(F^m D)$, and rewrite the Risch equation as:
@@ -176,6 +198,30 @@ $$A f^a (n' f d - m n d - f n d') - B f^{b+1} n d = C d^2 f^{c+m+1} $$
 
 $$A n' d f^{a+1} - m A n d f^a - A n d' f^{a+1} - B n d f^{b+1} = C d^2 f^{c+m+1} $$
 \end{comment}
+
+\vfill\eject
+
+If we can put the Risch equation in the form:
+
+$$r' - S r = \frac{1}{F^m}$$
+
+then replacing $r$ with $F^m r$ produces:
+
+$$(F^m r)' - (\frac{F'}{F} + S) (F^m r) = 1$$
+
+which is of the form
+
+$$q' - S q = 1$$
+
+clearing the denominator as described above produces:
+
+$$N q' + (N' - SN) q = 1$$
+
+so now we have a polynomial equation:
+
+$$N q' + S q = 1$$
+
+Denominator factors in $q$ must cancel against $N$.
 
 \vfill \eject
 
@@ -199,15 +245,84 @@ $$A f^a (n' f d - m n d - f n d') - B f^{b+1} n d = A C d^2 f^{a+c+m+1} $$
 $$A n' d f^{a+1} - m A n d f^a - A n d' f^{a+1} - B n d f^{b+1} = A C d^2 f^{a+c+m+1} $$
 \end{comment}
 
+\begin{comment}
+% These equations assume that we've got F's in all three polynomials
 $$A F^{a} r' - B F^b r = C F^{c}$$
 
-$$A F^{a} \frac{N' F^m D - N(m F^{m-1} F' D + F^m D')}{F^{2m} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
+% $$A F^{a} \frac{N' F^m D - N(m F^{m-1} F' D + F^m D')}{F^{2m} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
 
-$$A F^{a} \frac{N' F D - N(m F' D + F D')}{F^{m+1} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
+%$$A F^{a} \frac{N' F D - N(m F' D + F D')}{F^{m+1} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
+$$A F^{a} \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B F^b \frac{N}{F^m D} = C F^{c}$$
 
-$$A F^{a} (N' F D - m N D F' - N F D') - B N F^{b+1} D = C D^2 F^{c+m+1}$$
+$$A F^{a} (N' F D - m N F' D - N F D') - B N F^{b+1} D = C D^2 F^{c+m+1}$$
 
 $$A F^{a+1} (N' D - N D') - m A F^{a} F' N D - B N F^{b+1} D = C D^2 F^{c+m+1}$$
+\end{comment}
+
+\begin{comment}
+% These equations assume that a might be something other than 1
+$$A F^{a} r' - B r = A F^{a}$$
+
+$$A F^{a} \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B \frac{N}{F^m D} = A F^{a}$$
+
+$$A F^{a} (N' F D - m N F' D - N F D') - B N F D = A D^2 F^{a+m+1}$$
+
+$$A (N' D - N D') F^{a+1} - m A F' N D F^{a} - B N D F = A D^2 F^{a+m+1}$$
+
+$$A (N' D - N D') F^{a} - m A F' N D F^{a-1} - B N D = A D^2 F^{a+m}$$
+
+$$A D^2 F^{a+m} - A (N' D - N D') F^{a} + m A F' N D F^{a-1} = B N D $$
+\end{comment}
+
+
+\begin{comment}
+% Assuming that F has unit multiplicity
+$$A r' - \frac{B}{F} r = C$$
+
+$$A F r' - B r = C F$$
+
+$$A F \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B \frac{N}{F^m D} = C F$$
+
+$$A F N' D - m A F' N D - A F N D' - B N D = C D^2 F^{m+1}$$
+
+$$ - m A F' N D - B N D  = C D^2 F^{m+1} - A F N' D + A F N D'$$
+
+$$ - (m A F' - B ) N D  = F (C D^2 F^{m} - A N' D - A N D')$$
+\end{comment}
+
+\begin{comment}
+% complex
+$$A F^a r' - B F^b r = C F^c$$
+
+$$A F^a \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B F^b \frac{N}{F^m D} = C F^c$$
+
+$$A F^{a+1} N' D - m A F^a F' N D - A F^{a+1} N D' - B F^{b+1} N D = C D^2 F^{c+m+1}$$
+
+$$ - m A F^{a} F' N D - B F^{b+1} N D  = C D^2 F^{c+m+1} - A F^{a+1} N' D + A F^{a+1} N D'$$
+
+%$$ - (m A F' - B ) N D  = A F (D^2 F^{m} - N' D - N D')$$
+\end{comment}
+
+Let's assume that $F$ is an irreducible factor of $A$
+
+$$A F r' - B r = C$$
+
+and that $F$ appears in $r$'s denominator with multiplicity $m$,
+so $r$ can be written as $N/(F^m D)$
+
+$$A F \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B \frac{N}{F^m D} = C$$
+
+$$A F N' D - m A F' N D - A F N D' - B N D = C D^2 F^{m}$$
+
+$$ - m A F' N D - B N D  = C D^2 F^{m} - A F N' D + A F N D'$$
+
+$$ - (m A F' - B ) N D  = F (C D^2 F^{m-1} - A N' D - A N D')$$
+
+Now, the right hand side of this equation is a multiple of $F$, so the
+left hand side must also be a multiple of $F$.  However, $F$ is
+irreducible and shares no factors with $N$ and $D$, so 
+the only way the left hand side can be a multiple of $F$
+is if $m A F' - B$ is a multiple of $F$.
 
 % Furthermore, $A$ must be square-free, because otherwise 
 
