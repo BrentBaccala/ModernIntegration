@@ -187,13 +187,19 @@ $${\rm res}_x(m A F' - B, F) = 0$$
 We calculate this resultant for each irreducible factor $F$ of $A$,
 and this gives us $m$, the power to which $F$ appears in $q$'s
 denominator.  If this resultant equation has no positive integer
-solution, then $F$ does not appear at all in $r$'s denominator.
+solution, then $F$ can not appear at all in $q$'s denominator.
 
-Now we have $q$'s denominator, so we can clear it out and obtain
+Now that we have $q$'s denominator, we can clear it out and obtain
 a polynomial Risch equation with a polynomial solution:
 
 $$A p' - B p = C \qquad A,B,C,p \in {\mathbb C}[x]$$
 
+If $p$ is constant, then $\deg B$ must equal $\deg C$, otherwise
+$\max(\deg A + \deg p - 1, \deg B + \deg p) = \deg C$, so
+
+$$\max(\deg A - 1, \deg B) \le \deg C$$
+
+\vfill\eject
 
 \example Prove that $\int e^{-x^2}\, {\rm d}x$ has no Liouvillian form
 
@@ -212,7 +218,7 @@ This is already a polynomial Risch equation, and $a'$ has only
 a constant coefficient, so $a$ can not have a non-trivial denominator.
 Futhermore, identifying $A$ as $1$, $B$ as $-2x$, and $C$ as $1$, we compute:
 
-$$\max(1 + \deg A, \deg B) = 1 \ne \deg C = 0$$
+$$\max(\deg A - 1, \deg B) = 1 \nleq \deg C = 0$$
 
 We conclude that no solution to this equation exists in ${\mathbb C}(x)$,
 so the integral can not be expressed in Liouvillian form.
@@ -220,10 +226,11 @@ so the integral can not be expressed in Liouvillian form.
 \endexample
 
 
-\example Show that $\int \frac{\sin x}{x} \, {\rm d}x$ has no Liouvillian form
+\example Prove that $\int \frac{\sin x}{x} \, {\rm d}x$ has no Liouvillian form
 
-Again, we'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$, use
-Euler's relationship $e^{ix}=i\sin x + \cos x$, and evaluate
+As we often do with trigonometric integrals, we'll operate in
+${\mathbb C}(x, \phi = \exp \,ix)$, use Euler's relationship
+$e^{ix}=i\sin x + \cos x$, and evaluate
 
 $$\int \frac{\phi - \phi^{-1}}{2ix} \,dx$$
 
@@ -231,8 +238,10 @@ Let's begin by writing the integrand in the form of a rational
 function in ${\mathbb C}(x)(\phi)$, i.e, a ratio
 of $\phi$-polynomials, with coefficients in ${\mathbb C}(x)$:
 
-$$2i \int \frac{\frac{1}{x}\phi^2 - \frac{1}{x}}{\phi} \,dx$$
+$$\frac{1}{2i} \int \left[ \frac{1}{x}\phi - \frac{1}{x}\frac{1}{\phi} \right]\,dx$$
 
+\begin{comment}
+% This text doesn't belong here
 We want to split the denominator into its normal and special
 components, by factoring it into irreducible polynomials and
 classifying each one as normal or special.  In this case, the
@@ -250,12 +259,35 @@ So, we need only consider logarithms of irreducible polynomials.
 
 Theorem \ref{basic exponential properties} also tells us that we can
 have no normal polynomials in denominator of our integral,
+\end{comment}
 
 
 The integral must have the form $a_1 \phi + a_{-1} \frac{1}{\phi}$
 with $a_1, a_{-1} \in {\mathbb C}(x)$ and must satisfy the equations:
 
-$$\frac{1}{2ix} = a_1' + i a_1 \qquad - \frac{1}{2ix} = a_{-1}' - i a_{-1}$$
+$$\left[ a_1 \phi + a_{-1}\frac{1}{\phi} \right]' = (a_1' + i a_1 ) \phi + (a_{-1}' - i a_{-1} ) \frac{1}{\phi}
+= \left[ \frac{1}{x}\phi - \frac{1}{x}\frac{1}{\phi} \right]$$
+
+$$\frac{1}{x} = a_1' + i a_1 \qquad - \frac{1}{x} = a_{-1}' - i a_{-1}$$
+
+$$x a_1' + x a_1 = 1$$
+
+Identifying $A$ as $x$, $B$ as $x$ and $C$ as $1$, we see that
+\begin{comment}
+we've got a polynomial Risch equation with only one irreducible
+factor for $A$: $F=x$.  Computing
+
+$${\rm res}_x(m A F' - B, F) = {\rm res}_x(m + x, x) = m = 0$$
+
+which has no positive integer solution for $m$.  Thus, $F$ can not
+appear in $a_1$'s denominator, and $a_1$, if it exists at all, must be
+a polynomial.
+\end{comment}
+
+$$\max(\deg A - 1, \deg B) = 1 \nleq \deg C = 0$$
+
+Thus, the integral
+can not be expressed in Liouvillian form.
 
 \endexample
 
