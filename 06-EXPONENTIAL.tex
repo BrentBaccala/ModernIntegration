@@ -2,8 +2,8 @@
 \setcounter{chapter}{5}
 \mychapter{The Exponential Extension}
 
-The two distinctive features of exponential extensions are the presence
-of {\it special} polynomials, which are divisible by their own
+The two distinctive features of exponential extensions are the
+presence of {\it special} polynomials, which divide their own
 derivatives, and the appearance of the Risch differential equation.
 
 Recall our basic theorem on the behavior of exponential extensions:
@@ -32,21 +32,24 @@ manner described in (2); polynomials that do are called {\it special}.
 Instead, ordinary polynomials always behave in the way described in
 (3); such polynomials are called {\it normal}.
 
-Irreducible polynomials are characterized as either normal
-or special, depending on whether they can be divided by
-their derivatives.
+Irreducible polynomials are characterized as either normal or special,
+depending on whether they divide their own their derivatives.
+Theorem \ref{basic exponential properties} (2) states that in a
+exponential extension, the only special irreducible polynomial is
+$\theta$ itself.
 
-In a exponential extension, the only special irreducible polynomial is
-$\theta$ itself.  In a hypertangent extension, the only special
+\begin{comment}
+In a hypertangent extension, the only special
 irreducible polynomial is $(\theta^2+1)$.
+\end{comment}
 
 We attack integrands in exponential extensions in much the same way as
 we attack ordinary polynomials: we factor the denominator into
 irreducible factors and perform a partial fractions expansion.  In
-this case, however, we have to classify the factors as either normal
-or special.  Normal factors can be handled in much the same way as
-we're used to, but special factors are treated in a manner similar to
-polynomials.
+this case, however, we have to classify the denominator factors as
+either normal or special.  Normal factors can be handled in much the
+same way as we're used to, but special factors are treated in a manner
+similar to polynomials.
 
 \begin{comment}
 
@@ -151,6 +154,13 @@ to the original by $r=qN/D$:
 
 $$A q' - B q = C \qquad A,B,C \in {\mathbb C}[x] \qquad q \in {\mathbb C}(x)$$
 
+If $q$ is constant, then $C$ must be a constant multiple of $B$,
+otherwise $\max(\deg A + \deg q - 1, \deg B + \deg q) = \deg C$, so
+
+$$\max(\deg A - 1, \deg B) \le \deg C$$
+
+This basic degree bound can often be used to quickly establish
+the unsolvability of Risch equations.
 
 Recall that in ${\mathbb C}(x)$, irreducible factors in the
 denominator always increase in degree on differentiation, so $A$'s
@@ -179,7 +189,20 @@ Now, the right hand side of this equation is a multiple of $F$, so the
 left hand side must also be a multiple of $F$.  However, $F$ is
 irreducible and is relatively prime to both $N$ and $D$, so the only way
 the left hand side can be a multiple of $F$ is if $m A F' - B$ is a
-multiple of $F$.  The simplest way to enforce this is to use
+multiple of $F$.
+
+Why?  All of these variables
+are polynomials in ${\mathbb C}[x]$, so this equation is an equality
+between polynomials.  Because ${\mathbb C}[x]$ is a {\it unique factorization domain}, its
+polynomials can factor in essentially one way only, so if $F$ factors
+the right hand side, it must also factor the left.  If $F$ were not
+irreducible, then it might have two factors, one contributed by $N$
+and the other contributed by $D$.  It's the irreducibility of $F$,
+the unique factorization of polynomials in ${\mathbb C}[x]$, and
+our assumption that $N$ and $D$ are relatively prime to $F$
+that makes this argument work.
+
+The simplest way to enforce this factorization requirement is to use
 the resultant (Theorem \ref{resultant theorem}):
 
 $${\rm res}_x(m A F' - B, F) = 0$$
@@ -194,10 +217,13 @@ a polynomial Risch equation with a polynomial solution:
 
 $$A p' - B p = C \qquad A,B,C,p \in {\mathbb C}[x]$$
 
-If $p$ is constant, then $\deg B$ must equal $\deg C$, otherwise
-$\max(\deg A + \deg p - 1, \deg B + \deg p) = \deg C$, so
+We can easily determine the degree of $p$:
 
-$$\max(\deg A - 1, \deg B) \le \deg C$$
+$$\deg p = \frac{\deg C}{\max(\deg A - 1, \deg B)}$$
+
+From this point, it's straightforward to hypothesize that $p$ is a
+polynomial of degree $\deg p$ and either find its coefficients or
+establish that no such polynomial exists.
 
 \vfill\eject
 
