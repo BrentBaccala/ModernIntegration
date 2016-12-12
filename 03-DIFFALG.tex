@@ -450,8 +450,8 @@ and let $r=a/b$ be a rational function in $K(\theta)$
 ($a, b \in K[\theta]$).  Then:
 
 \begin{enumerate}
-\item ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x$
-\item $p' \mid p$ if and only if $p$ is monomial.
+\item ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p$
+\item $p' \mid p$ if and only if $p$ is monomial (i.e, has the form $p_i \theta^i$)
 \item If an irreducible factor other than $\theta$ appears in $r$'s
 denominator with multiplicity $m$,
 then it appears in $r'$'s denominator with multiplicity $m+1$
@@ -470,7 +470,7 @@ $$p' = \sum_{i=0}^n (p_i' + i p_i k') \theta^i$$
 
 Assume that one of these coefficients, say $(p_i' + i p_i k')$, was
 zero but $p_i$ was non-zero.  Then $D(p_i \theta^i) = (p_i' + i p_i
-k') = 0$, so $p_i \theta^i$ would be a constant, which must be in $K$,
+k')\theta^i = 0$, so $p_i \theta^i$ would be a constant, which must be in $K$,
 contradicting the transcendence of $E$.  Therefore, none of these
 coefficients can be zero, establishing the first claim.
 
@@ -642,9 +642,10 @@ and $\psi' = 1/(x+\xi)$.
 
 \endexample
 
-\theorem (Liouville) Let $L$ be a Liouvillian extension of
-a differential field $K$ with the same constant subfield as $K$.
-Then $\forall l \in L$, $l' \in K$ iff $l$ has the form:
+\theorem\label{weak Liouville theorem} (Liouville)
+Let $L$ be a Liouvillian extension of a differential field $K$ with
+the same constant subfield as $K$.  Then $\forall l \in L$, $l' \in K$
+iff $l$ has the form:
 
 $$k + \sum_{i=1}^n c_i \theta_i$$
 

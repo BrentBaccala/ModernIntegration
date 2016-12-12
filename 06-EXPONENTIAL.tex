@@ -11,14 +11,13 @@ Recall our basic theorem on the behavior of exponential extensions:
 \begin{customthm}{\ref{basic exponential properties}}
 Let $E=K(\theta)$ be a simple transcendental exponential extension of
 a differential field $K$ with the same constant subfield as $K$,
-let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$,
-and let $r=a/b$ be a rational function in $K(\theta)$
-($a, b \in K[\theta]$).  Then:
+let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$ ($p_i \in K$),
+and let $r$ be a rational function in $K(\theta)$. Then:
 
 \begin{enumerate}
-\item ${\rm Deg}_\theta\, x' = {\rm Deg}_\theta\, x$
-\item $p' \mid p$ if and only if $p$ is a power of $\theta$.
-\item If an irreducible factor other than $\theta$ appears in $r$'s
+\item ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p$
+\item If $p$ is monic and irreducible, then $p' \mid p$ if and only if $p = \theta$.
+\item If an irreducible monic factor other than $\theta$ appears in $r$'s
 denominator with multiplicity $m$,
 then it appears in $r'$'s denominator with multiplicity $m+1$
 \item $r' \in K$ if and only if $r \in K$
@@ -92,6 +91,76 @@ polynomials can both be treated in the same way.  They both give rise
 to Risch equations that need to be solved recursively in the underlying
 field.
 
+\theorem
+
+Let $E=K(\theta)$ be a simple transcendental exponential extension of
+a differential field $K$ with the same constant subfield as $K$, and
+let $f$ be in $K(\theta)$.  If $f$ has an antiderivative $F$ in
+a Liouvillian extension of $K(\theta)$, then $F$ has the form:
+
+$$g + \sum_{i=1}^n c_i \theta_i$$
+
+where $g$ is in $K(\theta)$.
+
+\proof
+
+By Theorem \ref{weak Liouville theorem}, a Liouvillian antiderivative
+of $l \in K$ must have the form:
+
+$$k + \sum_{i=1}^n c_i \theta_i$$
+
+where $k\in K$, $K(\theta_i)$ are simple logarithmic extensions of $K$ and $c_i$
+are constants.
+
+$F$ can be determined by constructing a partial fractions expansion of $F$,
+and separating the normal and special components of its denominator:
+
+$$F = \sum_{i=0}^n c_i \theta^i + \sum_{i=1}^\mu \sum_{j=1}^{l_i} \frac{a_{ij}(\theta)}{s_i(\theta)^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}(\theta)}{n_i(\theta)^j}
++ \sum_{i=1}^\eta d_i \Psi_i$$
+
+Let's use the fact that $s_1 = \theta$ is the only
+special irreducible polynomial:
+
+$$F = \sum_{i=0}^n c_i \theta^i + \sum_{j=1}^{l} \frac{a_{j}}{\theta^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}(\theta)}{n_i(\theta)^j}
++ \sum_{i=1}^\eta d_i \Psi_i$$
+
+Now let's differentiate, remembering that $\theta' = k'\theta$, and that 
+
+$$F' = \sum_{i=0}^n (c_i' + i c_i k' )\theta^i
+  + \sum_{j=1}^{l} \frac{a_{j}' - j k' a_{j}}{\theta^j}
+  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}'(\theta) n_i(\theta) - j b_{ij}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta d_i \frac{e_i'}{e_i}$$
+
+Let's examine the logarithmic elements $e_i$.  If $e_i$ doesn't involve $\theta$, i.e, $e_i \in K$,
+then we can collapse $d_i \Psi_i$ into $\bar{c}_0$, with the understanding that when we recurse
+into $K$ to solve for $c_0$, additional logarithm terms are allowed.
+
+Now let's consider what happens if $e_i$ is a polynomial in $K[\theta]$.  If it's reducible, then
+the basic properties of logarithms let us split it into multiple irreducible elements.
+Otherwise, it's irreducible and therefore either normal or special.  If it's special, then it would
+divide its derivative $e_i'$... So it must be normal, and therefore $F'$ must have the form:
+
+$$F' = \bar{c}_0 + \sum_{i=1}^n (c_i' + i c_i k' )\theta^i
+  + \sum_{j=1}^{l} \frac{a_{j}' - j k' a_{j}}{\theta^j}
+  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}'(\theta) n_i(\theta) - j b_{ij}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta d_i \frac{n_i(\theta)'}{n_i(\theta)}$$
+
+Notice that $F'$ has the form of a partial fractions decomposition.  Therefore, we can perform
+a partial fractions decomposition of $f$:
+
+$$f = \sum_{i=0}^n c_i \theta^i + \sum_{j=1}^{l} \frac{a_{j}}{\theta^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}(\theta)}{n_i(\theta)^j}$$
+
+\begin{comment}
+$$F' = \sum_{i=-l}^n (c_i' + i c_i k' )\theta^i
+  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}'(\theta) n_i(\theta) - j b_{ij}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta d_i \frac{n_i(\theta)'}{n_i(\theta)}$$
+\end{comment}
+
+\endtheorem
+
 \vfil\eject
 
 \example Compute $\int \sin x \, {\rm d}x$
@@ -110,8 +179,9 @@ and a proper fraction with a monic denominator:
 
 $$\int \left[ \frac{1}{2i} \phi - \frac{1}{2i} \frac{1}{\phi} \right] \,dx $$
 
-The integral must have the form $a_1 \phi + a_{-1} \frac{1}{\phi}$
-with $a_1, a_{-1} \in {\mathbb C}(x)$ and must satisfy the equations:
+By Theorem \ref{weak Liouville theorem}, the integral must have the
+form $a_1 \phi + a_{-1} \frac{1}{\phi}$ with $a_1, a_{-1} \in {\mathbb
+C}(x)$ and must satisfy the equations:
 
 $$\frac{1}{2i} = a_1' + i a_1 \qquad - \frac{1}{2i} = a_{-1}' - i a_{-1}$$ 
 
