@@ -205,95 +205,87 @@ in this case, ${\mathbb C}(x)$.
 
 Consider such a Risch equation:
 
-$$r' - S r = T \qquad S,T,r \in {\mathbb C}(x)$$
+$$r' + S r = T \qquad S,T,r \in {\mathbb C}(x)$$
 
-First, let's note that we can clear the denominators of $S$ and $T$ by
-replacing $r$ with $qN/D$:
-
-$$r = \frac{qN}{D} \qquad r' = \frac{q N' D + q' N D - q N D'}{D^2}$$
-
-$$\frac{q N' D + q' N D - q N D'}{D^2} - S \frac{qN}{D} = T$$
-
-$$q N' D + q' N D - q N D' - S q N D = T D^2$$
-
-$$(N D) q' + (N' D - N D' - S N D) q = T D^2$$
-
-By selecting $S$'s denominator as $N$, and $T$'s denominator as $D$,
-we obtain a polynomial Risch equation with a rational solution related
-to the original by $r=qN/D$:
-
-$$A q' - B q = C \qquad A,B,C \in {\mathbb C}[x] \qquad q \in {\mathbb C}(x)$$
-
-If $q$ is constant, then $C$ must be a constant multiple of $B$,
-otherwise $\max(\deg A + \deg q - 1, \deg B + \deg q) = \deg C$, so
-
-$$\max(\deg A - 1, \deg B) \le \deg C$$
-
-This basic degree bound can often be used to quickly establish
-the unsolvability of Risch equations.
-
+\begin{comment}
 Recall that in ${\mathbb C}(x)$, irreducible factors in the
 denominator always increase in degree on differentiation, so $A$'s
 factors are the only factors that can appears in $q$'s denominator,
 because they must cancel against $q'$.  Thus, we can easily identify
 which irreducible factors can appear in $q$'s denominator, and we next
 wish to calculate the multiplicities with which they appear.
+\end{comment}
 
-\vfill\eject
+The only poles that can appear in $r$'s denominator must appear in
+either $S$ or $T$'s denominator, so let's consider a single pole at
+$\gamma$, expand $S$, $T$, and $r$ using partial fractions, and look
+at the highest powers of $(x-\gamma)$ in the denominator:
 
-Consider an irreducible factor $F$ that appears both as a factor of $A$
-and also in $q$'s denominator, with
-multiplicity $m \ge 1 $, so $q = N/(F^m D)$, and we rewrite the Risch equation:
+$$r = \frac{a}{(x-\gamma)^j} + \cdots  \qquad  r' = \frac{-ja}{(x-\gamma)^{j+1}} + \cdots$$
 
-$$A F q' - B q = C$$
+$$S = \frac{b}{(x-\gamma)^k} + \cdots$$
 
-$$A F \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B \frac{N}{F^m D} = C$$
+$$T = \frac{c}{(x-\gamma)^l} + \cdots$$
 
-$$A F N' D - m A F' N D - A F N D' - B N D = C D^2 F^{m}$$
+Combining everything into the Risch equation, we find:
 
-$$ - m A F' N D - B N D  = C D^2 F^{m} - A F N' D + A F N D'$$
+$$\frac{-ja}{(x-\gamma)^{j+1}} + \cdots + \frac{ba}{(x-\gamma)^{j+k}} + \cdots = \frac{c}{(x-\gamma)^l} + \cdots$$
 
-$$ - (m A F' - B ) N D  = F (C D^2 F^{m-1} - A N' D - A N D')$$
+We can classify the equation into three basic cases, based on the value of $k$:
 
-Now, the right hand side of this equation is a multiple of $F$, so the
-left hand side must also be a multiple of $F$.  However, $F$ is
-irreducible and is relatively prime to both $N$ and $D$, so the only way
-the left hand side can be a multiple of $F$ is if $m A F' - B$ is a
-multiple of $F$.
+\begin{enumerate}
 
-Why?  All of these variables
-are polynomials in ${\mathbb C}[x]$, so this equation is an equality
-between polynomials.  Because ${\mathbb C}[x]$ is a {\it unique factorization domain}, its
-polynomials can factor in essentially one way only, so if $F$ factors
-the right hand side, it must also factor the left.  If $F$ were not
-irreducible, then it might have two factors, one contributed by $N$
-and the other contributed by $D$.  It's the irreducibility of $F$,
-the unique factorization of polynomials in ${\mathbb C}[x]$, and
-our assumption that $N$ and $D$ are relatively prime to $F$
-that makes this argument work.
+\item $k=0$.  In this case, the $\frac{-ja}{(x-\gamma)^{j+1}}$ term dominates the left hand side,
+and $j = l-1$ in order to match the right hand side.
 
-The simplest way to enforce this factorization requirement is to use
-the resultant (Theorem \ref{resultant theorem}):
+\item $k=1$.  Here, the high order terms on the left are equal, so either $j=l-1$ in order to match
+the right hand side, or $j=b$ and $j>l-1$ in order for the left hand terms to exactly cancel.
 
-$${\rm res}_x(m A F' - B, F) = 0$$
+\item $k>1$.  Now the $\frac{ba}{(x-\gamma)^{j+k}}$ term dominates the left hand side, so $j=l-k$ in
+order to match the right hand side.
 
-We calculate this resultant for each irreducible factor $F$ of $A$,
-and this gives us $m$, the power to which $F$ appears in $q$'s
-denominator.  If this resultant equation has no positive integer
-solution, then $F$ can not appear at all in $q$'s denominator.
+\end{enumerate}
 
-Now that we have $q$'s denominator, we can clear it out and obtain
-a polynomial Risch equation with a polynomial solution:
+By checking all of $S$'s and $T$'s poles using this technique, we can
+identify all the poles in $r$'s denominator and determine the
+multiplicity with which they appear.
 
-$$A p' - B p = C \qquad A,B,C,p \in {\mathbb C}[x]$$
+Having done so, we can multiply through by this common denominator,
+clear the denominators, and produce a polynomial Risch equation:
 
-We can easily determine the degree of $p$:
+$$A p' + B p = C \qquad A,B,C,p \in {\mathbb C}[x]$$
 
-$$\deg p = \frac{\deg C}{\max(\deg A - 1, \deg B)}$$
+There are three cases now.
 
-From this point, it's straightforward to hypothesize that $p$ is a
-polynomial of degree $\deg p$ and either find its coefficients or
-establish that no such polynomial exists.
+First, the highest terms on the left can have higher degree than any term on
+the right, and so must cancel against each other.  For this to occur,
+$\deg A = \deg B + 1$ (since $\deg p$ drops by one on differentiation),
+and we can determine $\deg p$ by looking at the leading
+coefficients in $A$ and $B$:
+
+$$A = a_j x^j + \cdots \qquad B = b_{j-1} x^{j-1} + \cdots \qquad p = p_k x^k \cdots$$
+
+$$A p' + B p = (k a_j p_k + b_{j-1} p_k) x^{j+k-1} \cdots$$
+
+In order for this coefficient to be zero, $k=-b_{j-1}/a_j$.
+So, if these conditions are met:
+
+$$\deg A = \deg B + 1 \qquad k=-\frac{b_{j-1}}{a_j} $$
+
+then $p$ may exist as a $k^{\rm th}$ degree polynomial.
+
+Otherwise, the leading terms of $A p' + B p$ do not cancel out,
+so they must match the leading term of $C$.  This can only
+occur if
+
+$$\deg p = \deg C - \max(\deg A - 1, \deg B)$$
+
+Having determined the degree of $p$, we can now determine its
+coefficients.
+
+The final case we need to consider is when $p$ is a constant, which
+would solve the Risch equation if and only if $C$ was a constant
+multiple of $B$, irregardless of $A$.
 
 \vfill\eject
 
@@ -312,11 +304,18 @@ $$a' - 2x a = 1$$
 
 This is already a polynomial Risch equation, and $a'$ has only
 a constant coefficient, so $a$ can not have a non-trivial denominator.
-Futhermore, identifying $A$ as $1$, $B$ as $-2x$, and $C$ as $1$, we compute:
+Futhermore, identifying $A$ as $1$, $B$ as $-2x$, and $C$ as $1$,
+we see that $\deg A = 0$ and $\deg B = 1$.  Since $\deg A \ne \deg B + 1$,
+the leading terms on the left hand side can not cancel,
+so they must match the leading term on the right.
+We compute:
 
-$$\max(\deg A - 1, \deg B) = 1 \nleq \deg C = 0$$
+$$\deg p = \deg C - \max(\deg A - 1, \deg B) = 0 - 1 = -1$$
 
-We conclude that no solution to this equation exists in ${\mathbb C}(x)$,
+so that doesn't work.  Futhermore, $C$ is not a constant
+multiple of $B$, so a constant $p$ can't solve our equation.
+
+We conclude that no solution to this Risch equation exists in ${\mathbb C}(x)$,
 so the integral can not be expressed in Liouvillian form.
 
 \endexample
@@ -366,21 +365,13 @@ $$\left[ a_1 \phi + a_{-1}\frac{1}{\phi} \right]' = (a_1' + i a_1 ) \phi + (a_{-
 
 $$\frac{1}{x} = a_1' + i a_1 \qquad - \frac{1}{x} = a_{-1}' - i a_{-1}$$
 
-$$x a_1' + x a_1 = 1$$
+$$a_1' + a_1 = \frac{1}{x}$$
 
-Identifying $A$ as $x$, $B$ as $x$ and $C$ as $1$, we see that
-\begin{comment}
-we've got a polynomial Risch equation with only one irreducible
-factor for $A$: $F=x$.  Computing
+We've got a single pole in the denominator of $T$, so $k=0$, $l=1$,
+and $j=l-1=0$, so there are no poles in the denominator of our solution.
+However, there is then no way to produce the denominator on the
+right, so the Risch equation has no solution in ${\mathbb C}(x)$.
 
-$${\rm res}_x(m A F' - B, F) = {\rm res}_x(m + x, x) = m = 0$$
-
-which has no positive integer solution for $m$.  Thus, $F$ can not
-appear in $a_1$'s denominator, and $a_1$, if it exists at all, must be
-a polynomial.
-\end{comment}
-
-$$\max(\deg A - 1, \deg B) = 1 \nleq \deg C = 0$$
 
 Thus, the integral
 can not be expressed in Liouvillian form.
@@ -510,3 +501,50 @@ $$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\Psi + x  - \frac{2}{\ln 
 \frac{2^x}{\ln 2} + x - \frac{2}{\ln 2}\ln(2^x+1) $$
 
 \endexample
+
+
+\begin{comment}
+\vfill\eject
+
+Consider an irreducible factor $F$ that appears both as a factor of $A$
+and also in $q$'s denominator, with
+multiplicity $m \ge 1 $, so $q = N/(F^m D)$, and we rewrite the Risch equation:
+
+$$A F q' - B q = C$$
+
+$$A F \frac{N' F D - m N F' D - N F D'}{F^{m+1} D^2} - B \frac{N}{F^m D} = C$$
+
+$$A F N' D - m A F' N D - A F N D' - B N D = C D^2 F^{m}$$
+
+$$ - m A F' N D - B N D  = C D^2 F^{m} - A F N' D + A F N D'$$
+
+$$ - (m A F' - B ) N D  = F (C D^2 F^{m-1} - A N' D - A N D')$$
+
+Now, the right hand side of this equation is a multiple of $F$, so the
+left hand side must also be a multiple of $F$.  However, $F$ is
+irreducible and is relatively prime to both $N$ and $D$, so the only way
+the left hand side can be a multiple of $F$ is if $m A F' - B$ is a
+multiple of $F$.
+
+Why?  All of these variables
+are polynomials in ${\mathbb C}[x]$, so this equation is an equality
+between polynomials.  Because ${\mathbb C}[x]$ is a {\it unique factorization domain}, its
+polynomials can factor in essentially one way only, so if $F$ factors
+the right hand side, it must also factor the left.  If $F$ were not
+irreducible, then it might have two factors, one contributed by $N$
+and the other contributed by $D$.  It's the irreducibility of $F$,
+the unique factorization of polynomials in ${\mathbb C}[x]$, and
+our assumption that $N$ and $D$ are relatively prime to $F$
+that makes this argument work.
+
+The simplest way to enforce this factorization requirement is to use
+the resultant (Theorem \ref{resultant theorem}):
+
+$${\rm res}_x(m A F' - B, F) = 0$$
+
+We calculate this resultant for each irreducible factor $F$ of $A$,
+and this gives us $m$, the power to which $F$ appears in $q$'s
+denominator.  If this resultant equation has no positive integer
+solution, then $F$ can not appear at all in $q$'s denominator.
+
+\end{comment}
