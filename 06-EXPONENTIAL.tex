@@ -73,7 +73,7 @@ completely independent.  Instead, each coefficient of $\theta^i$ has
 the form $p_i' + A p_i$, and equating the $p'$ polynomial to the
 integrand's polynomial produces a differential equation of the form:
 
-$$x' + A x = B \qquad A,B \in K$$
+$$p_i' + A p_i = B \qquad A,B,p_i \in K$$
 
 This is called a {\it Risch equation} and is a primary object of our
 study.  Solving Risch equations in a differential extension is the
@@ -89,49 +89,39 @@ $$p' = (a' - i a k') \theta^{-i}$$
 Thus, polynomial terms and partial fractions terms involving special
 polynomials can both be treated in the same way.  They both give rise
 to Risch equations that need to be solved recursively in the underlying
-field.
+field.  On the other hand, partial fractions terms involving
+normal polynomials give rise to rational functions and logarithms
+in the result.
 
-\theorem
+Let's see how to integrate a function $f$ in an exponential extension
+$K(\theta)$, $\theta = \exp(k)$.  By Theorem \ref{weak Liouville
+theorem}, a Liouvillian antiderivative of $f$ must have the form:
 
-Let $E=K(\theta)$ be a simple transcendental exponential extension of
-a differential field $K$ with the same constant subfield as $K$, and
-let $f$ be in $K(\theta)$.  If $f$ has an antiderivative $F$ in
-a Liouvillian extension of $K(\theta)$, then $F$ has the form:
+$$F = R + \sum_{i=1}^n D_i \Psi_i$$
 
-$$g + \sum_{i=1}^n c_i \theta_i$$
+where $R \in K(\theta)$, $K(\theta, \Psi_i)$ are simple logarithmic
+extensions of $K(\theta)$ and $D_i$ are constants.
 
-where $g$ is in $K(\theta)$.
+Now let's construct a partial fractions expansion of $r$,
+separating the normal and special components of its denominator:
 
-\proof
-
-By Theorem \ref{weak Liouville theorem}, a Liouvillian antiderivative
-of $l \in K$ must have the form:
-
-$$k + \sum_{i=1}^n c_i \theta_i$$
-
-where $k\in K$, $K(\theta_i)$ are simple logarithmic extensions of $K$ and $c_i$
-are constants.
-
-$F$ can be determined by constructing a partial fractions expansion of $F$,
-and separating the normal and special components of its denominator:
-
-$$F = \sum_{i=0}^n c_i \theta^i + \sum_{i=1}^\mu \sum_{j=1}^{l_i} \frac{a_{ij}(\theta)}{s_i(\theta)^j}
-+ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}(\theta)}{n_i(\theta)^j}
-+ \sum_{i=1}^\eta d_i \Psi_i$$
+$$F = \sum_{i=0}^n A_i \theta^i + \sum_{i=1}^\mu \sum_{j=1}^{l_i} \frac{B_{ij}(\theta)}{s_i(\theta)^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
++ \sum_{i=1}^\eta D_i \Psi_i$$
 
 Let's use the fact that $s_1 = \theta$ is the only
 special irreducible polynomial:
 
-$$F = \sum_{i=0}^n c_i \theta^i + \sum_{j=1}^{l} \frac{a_{j}}{\theta^j}
-+ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}(\theta)}{n_i(\theta)^j}
-+ \sum_{i=1}^\eta d_i \Psi_i$$
+$$F = \sum_{i=0}^n A_i \theta^i + \sum_{j=1}^{l} \frac{B_{j}}{\theta^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
++ \sum_{i=1}^\eta D_i \Psi_i$$
 
-Now let's differentiate, remembering that $\theta' = k'\theta$, and that 
+Now let's differentiate, remembering that $\theta' = k'\theta$:
 
-$$F' = \sum_{i=0}^n (c_i' + i c_i k' )\theta^i
-  + \sum_{j=1}^{l} \frac{a_{j}' - j k' a_{j}}{\theta^j}
-  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}'(\theta) n_i(\theta) - j b_{ij}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
-  + \sum_{i=1}^\eta d_i \frac{e_i'}{e_i}$$
+$$F' = \sum_{i=0}^n (A_i' + i A_i k' )\theta^i
+  + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j}
+  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}'(\theta) n_i(\theta) - j C_{i,j}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta D_i \frac{E_i'(\theta)}{E_i(\theta)}$$
 
 Let's examine the logarithmic elements $e_i$.  If $e_i$ doesn't involve $\theta$, i.e, $e_i \in K$,
 then we can collapse $d_i \Psi_i$ into $\bar{c}_0$, with the understanding that when we recurse
@@ -142,24 +132,110 @@ the basic properties of logarithms let us split it into multiple irreducible ele
 Otherwise, it's irreducible and therefore either normal or special.  If it's special, then it would
 divide its derivative $e_i'$... So it must be normal, and therefore $F'$ must have the form:
 
-$$F' = \bar{c}_0 + \sum_{i=1}^n (c_i' + i c_i k' )\theta^i
-  + \sum_{j=1}^{l} \frac{a_{j}' - j k' a_{j}}{\theta^j}
-  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}'(\theta) n_i(\theta) - j b_{ij}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
-  + \sum_{i=1}^\eta d_i \frac{n_i(\theta)'}{n_i(\theta)}$$
+$$F' = \bar{A}_0 + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
+  + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j}
+  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}'(\theta) n_i(\theta) - j C_{i,j}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta D_i \frac{n_i(\theta)'}{n_i(\theta)}$$
 
-Notice that $F'$ has the form of a partial fractions decomposition.  Therefore, we can perform
+$F'$ has the form of a partial fractions decomposition, but it is not
+a partial fractions decomposition because the numerators in the $C$
+terms violate the partial fractions degree bounds.  To fix this, let's
+divide the $-jC_{i,j}(\theta)n_i'(\theta)$ terms by $n_i(\theta)$
+(think polynomial long division) and rewrite them as a quotient
+and a remainder:
+
+$$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
+
+\begin{comment}
+
+\begin{multline*}
+F' = \sum_{i=-l}^n (A_i' + i A_i k' )\theta^i \\
+  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j+1}'(\theta) + Q_{i,j+1}(\theta) + R_{i,j}(\theta) }{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)'}{n_i(\theta)}
+\end{multline*}
+
+\begin{multline*}
+F' = \sum_{i=-l}^n (A_i' + i A_i k' )\theta^i \\
+  + \sum_{i=1}^\nu \frac{R_{i,m_i}(\theta) }{n_i(\theta)^{m_i}}
+  + \sum_{i=1}^\nu \sum_{j=2}^{m_i+1} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}}
+  + \sum_{i=1}^\eta \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)'}{n_i(\theta)}
+\end{multline*}
+
+\end{comment}
+
+\begin{multline*}
+F' = \bar{A}_0 + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
+  + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
+  + \sum_{i=1}^\nu \left[ \frac{R_{i,m_i}(\theta) }{n_i(\theta)^{m_i+1}}
+  + \sum_{j=2}^{m_i} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}}
+  + \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)'}{n_i(\theta)} \right]
+\end{multline*}
+
+Now $F'$ is an actual partial fractions decomposition.  It not only has
+the right form, but all of the other conditions, specifically
+the degree bounds, are met.
+Therefore, we can perform
 a partial fractions decomposition of $f$:
 
-$$f = \sum_{i=0}^n c_i \theta^i + \sum_{j=1}^{l} \frac{a_{j}}{\theta^j}
-+ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}(\theta)}{n_i(\theta)^j}$$
+$$f = \sum_{i=0}^n a_i \theta^i + \sum_{j=1}^{l} \frac{b_{j}}{\theta^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{c_{ij}(\theta)}{n_i(\theta)^j}$$
+
+Setting $F' = f$ and equating like terms, we see that the polynomial terms
+and special denominators give rise to Risch equations:
+
+$$A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j$$
+
+Normal denominators give rise to terms:
+
+\begin{align*}
+R_{i,m_i}(\theta) & = c_{i,m_i+1} \\
+C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) & = c_{i,j} \qquad {}_{1<j\le m_i}\\
+C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)' & = c_{i,1}
+\end{align*}
+
+The highest order term gives us an $R_{i,j}$.  If we have a method of
+computing $C_{i,j}$ and $Q_{i,j}$ from $R_{i,j}$, then we can just
+move down the list, solving this system of equations from highest
+order terms to lowest.  Once we get to the end, we need to see if the
+bottom equation can be solved using a constant $D_i$.  If not,
+then the equation has no solution.
+
+So how can we calculate $C_{i,j}$?  Remember the definition of
+$R_{i,j}$ and $Q_{i,j}$:
+
+$$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
+
+Reducing this equation modulo $n_i(\theta)$, we obtain:
+
+$$-jC_{i,j}(\theta)n_i'(\theta) \equiv R_{i,j}(\theta) \mod n_i(\theta)$$
+
+Now we use the fact that $n_i(\theta)$ is {\it irreducible},
+and invoke Theorem ??, which states the quotient ring
+modulo a prime ideal is a field, so we can perform division:
+
+$$C_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{jn_i'(\theta)} \mod n_i(\theta)$$
+
+This equation seems to identify $C_{i,j}(\theta)$ up to a multiple of $n_i(\theta)$,
+but if we remember our degree bound on partial fractions expansions,
+$\deg_\theta C_{i,j}(\theta) < \deg_\theta n_i(\theta)$, we see
+that in fact we've completely determined $C_{i,j}(\theta)$ from
+$R_{i,j}(\theta)$.
+
+This analysis wouldn't be terribly useful if we lacked an algorithm to
+perform the calculation.  Then we'd have an existence proof without a
+constructive procedure, a unfortunate situation that does arise at
+times in mathematics.  In this case, fortunately, we do have an
+algorithm: the extended Euclidean algorithm from
+Section \ref{sec:Polynomial Diophantine Equations}, which is our major
+computational tool for calculating inverses in quotient rings.
+
+
 
 \begin{comment}
 $$F' = \sum_{i=-l}^n (c_i' + i c_i k' )\theta^i
   + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{ij}'(\theta) n_i(\theta) - j b_{ij}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
   + \sum_{i=1}^\eta d_i \frac{n_i(\theta)'}{n_i(\theta)}$$
 \end{comment}
-
-\endtheorem
 
 \vfil\eject
 
@@ -199,7 +275,7 @@ $$\int \frac{\phi - \phi^{-1}}{2i} \,dx = -\frac{1}{2}(\phi + \phi^{-1})
 Risch equations in ${\mathbb C}(x)$ arise when our integrand exists in
 ${\mathbb C}(x,\Phi)$, where $\Phi$ is exponential over ${\mathbb
 C}(x)$, i.e, an integrand formed as a rational function of $x$ and $\Phi$, a
-single exponential of a rational function of $x$.  The recursion step
+single exponential of a rational function of $x$.  The integration step
 described above produces Risch equations in the underlying field;
 in this case, ${\mathbb C}(x)$.
 
