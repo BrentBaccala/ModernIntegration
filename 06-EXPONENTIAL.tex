@@ -2,11 +2,11 @@
 \setcounter{chapter}{5}
 \mychapter{The Exponential Extension}
 
-The two distinctive features of exponential extensions are the
-presence of {\it special} polynomials, which divide their own
+The two distinctive features of integration in exponential extensions
+are the presence of {\it special} polynomials, which divide their own
 derivatives, and the appearance of the Risch differential equation.
 
-Recall our basic theorem on the behavior of exponential extensions:
+Let's recall our basic theorem on the behavior of exponential extensions:
 
 \begin{customthm}{\ref{basic exponential properties}}
 Let $E=K(\theta)$ be a simple transcendental exponential extension of
@@ -16,7 +16,7 @@ and let $r$ be a rational function in $K(\theta)$. Then:
 
 \begin{enumerate}
 \item ${\rm Deg}_\theta\, p' = {\rm Deg}_\theta\, p$
-\item If $p$ is monic and irreducible, then $p' \mid p$ if and only if $p = \theta$.
+\item If $p$ is monic and irreducible, then $p \mid p'$ if and only if $p = \theta$.
 \item If an irreducible monic factor other than $\theta$ appears in $r$'s
 denominator with multiplicity $m$,
 then it appears in $r'$'s denominator with multiplicity $m+1$
@@ -26,7 +26,7 @@ then it appears in $r'$'s denominator with multiplicity $m+1$
 \end{customthm}
 
 Contrast this theorem with the behavior of the ordinary polynomials
-that we're accustomed to.  Ordinary polynomials never behave in the
+that we're accustomed to.  Ordinary irreducible polynomials never divide their own derivatives in the
 manner described in (2); polynomials that do are called {\it special}.
 Instead, ordinary polynomials always behave in the way described in
 (3); such polynomials are called {\it normal}.
@@ -62,14 +62,15 @@ D(t^2+1) = 2t(t^2+1)
 
 \end{comment}
 
-Let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$,
+For example, let $p=\sum p_i \theta^i$ be a polynomial in $K[\theta]$,
+with $\theta = \exp k$,
 and take its derivation:
 
 $$p' = \sum_{i=0}^n (p_i' + i p_i k') \theta^i$$
 
 Notice that, unlike the logarithm or rational cases, there is no
-interdependence between the various elements of the sum; each term is
-completely independent.  Instead, each coefficient of $\theta^i$ has
+interdependence between the various terms of the sum; each term is
+completely independent of the others.  Instead, each coefficient of $\theta^i$ has
 the form $p_i' + A p_i$, and equating the $p'$ polynomial to the
 integrand's polynomial produces a differential equation of the form:
 
@@ -80,18 +81,29 @@ study.  Solving Risch equations in a differential extension is the
 principle problem that we need to solve in order to carry out our
 program of symbolic integration.
 
-Notice that special factors in the denominator behave in almost
-exactly the same way as polynomials.  Consider the derivative of
-$p=a \theta^{-i}$:
+Special factors in the denominator behave in almost exactly the same
+way as polynomials.  They both give rise to Risch equations that need
+to be solved in the underlying field.  On the other hand, partial
+fractions terms involving normal polynomials give rise to rational
+functions and logarithms in the result that can be solved using the
+extended Euclidean algorithm, again operating in the underlying field.
 
-$$p' = (a' - i a k') \theta^{-i}$$
+We've already studied, in Section \ref{sec:Polynomial Diophantine
+Equations}, how to use the extended Euclidean algorithm over an
+arbitrary field, so the primary additional tool we need to develop is
+the ability to solve Risch equations in arbitrary differential fields,
+or at least in the differential fields that arise in the course of our
+study.  Once we can do that, we can evaluate integrals in complicated
+extension fields by ``peeling away'' the extensions, and solving
+equations in successively simplier extensions until we've reached the
+rational function field ${\mathbb C}(x)$.
 
-Thus, polynomial terms and partial fractions terms involving special
-polynomials can both be treated in the same way.  They both give rise
-to Risch equations that need to be solved recursively in the underlying
-field.  On the other hand, partial fractions terms involving
-normal polynomials give rise to rational functions and logarithms
-in the result.
+I'll begin by presenting the basic structure theorem for exponential
+extensions, then we'll consider how to solve Risch equations
+in ${\mathbb C}(x)$, which is a simplified case
+that lets us solve integrals in
+{\it simple} exponential extensions.  Finally, we'll study
+solving the Risch equation more generally.
 
 \vfill\eject
 \section{The Exponential Structure Theorem}
@@ -121,6 +133,8 @@ $$A_i, B_j \in K \qquad C_{i,j}(\theta),n_i(\theta) \in K[\theta] \qquad D_i' = 
 
 and the following relationships hold:
 
+$$A_0' + \sum_{i=1}^\nu D_i k' \deg_\theta n_i(\theta) = a_0$$
+
 $$A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j$$
 
 $$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
@@ -128,7 +142,7 @@ $$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$
 \begin{align*}
 R_{i,m_i}(\theta) & = c_{i,m_i+1} \\
 C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) & = c_{i,j} \qquad {}_{1<j\le m_i}\\
-C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)' & = c_{i,1}
+C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i \left[ n_i(\theta)' - k' n_i(\theta) \deg_\theta n_i(\theta) \right] & = c_{i,1}
 \end{align*}
 
 $$-jC_{i,j}(\theta)n_i'(\theta) \equiv R_{i,j}(\theta) \mod n_i(\theta)$$
@@ -189,6 +203,7 @@ $$F' = \bar{A}_0 + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
 
 $F'$ has the form of a partial fractions decomposition, but it is not
 a partial fractions decomposition because the numerators in the $C$
+and $D$
 terms violate the partial fractions degree bounds.  To fix this, let's
 divide the $-jC_{i,j}(\theta)n_i'(\theta)$ terms by $n_i(\theta)$
 (think polynomial long division) and rewrite them as a quotient
@@ -213,12 +228,23 @@ F' = \sum_{i=-l}^n (A_i' + i A_i k' )\theta^i \\
 
 \end{comment}
 
+This fixes the $C$ terms, since $\deg Q_{i,j}(\theta) < \deg n_i(\theta)$
+and $\deg R_{i,j}(\theta) < \deg n_i(\theta)$.
+
+We can fix the $D$ terms by noting that since $n_i(\theta)$ is monic,
+we know that its leading term is $\theta^{\deg n_i(\theta)}$, so
+the leading term of its derivative is $k' [ \deg_\theta n_i(\theta) ] \theta^{\deg n_i(\theta)}$, and
+by subtracting an appropriate multiple of $n_i(\theta)$,
+we can ensure the cancellation of the leading terms,
+achieving our degree bounds.
+
 \begin{multline*}
-F' = \bar{A}_0 + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
+F' = \bar{A}_0 + \sum D_i k' \deg_\theta n_i(\theta) + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
   + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
-  + \sum_{i=1}^\nu \left[ \frac{R_{i,m_i}(\theta) }{n_i(\theta)^{m_i+1}}
-  + \sum_{j=2}^{m_i} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}}
-  + \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)'}{n_i(\theta)} \right]
+  + \sum_{i=1}^\nu \Bigg[ \frac{R_{i,m_i}(\theta) }{n_i(\theta)^{m_i+1}}
+  + \sum_{j=2}^{m_i} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}} \\
+  + \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta)
+  + D_i \left[ n_i(\theta)' - k' n_i(\theta) \deg_\theta n_i(\theta) \right]}{n_i(\theta)} \Bigg]
 \end{multline*}
 
 Now $F'$ is an actual partial fractions decomposition.  It not only has
@@ -232,6 +258,8 @@ $$f = \sum_{i=0}^n a_i \theta^i + \sum_{j=1}^{l} \frac{b_{j}}{\theta^j}
 
 Setting $F' = f$ and equating like terms, we see that the polynomial terms
 and special denominators give rise to Risch equations:
+
+$$A_0' + \sum D_i k' \deg_\theta n_i(\theta) = a_0$$
 
 $$A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j$$
 
@@ -293,16 +321,16 @@ $$F' = \sum_{i=-l}^n (c_i' + i c_i k' )\theta^i
 
 \example Compute $\int \sin x \, {\rm d}x$
 
-We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
+We'll operate in ${\mathbb C}(x, \theta = \exp \,ix)$ and evaluate
 
-$$\int \frac{\phi - \phi^{-1}}{2i} \,dx$$
+$$\int \frac{\theta - \theta^{-1}}{2i} \,dx$$
 
 The first step is write the integrand in partial fractions form:
 
-$$\int \left[ \frac{1}{2i} \phi - \frac{1}{2i} \frac{1}{\phi} \right] \,dx $$
+$$\int \left[ \frac{1}{2i} \theta - \frac{1}{2i} \frac{1}{\theta} \right] \,dx $$
 
 By Theorem \ref{exponential structure theorem}, the integral must have the
-form $a_1 \phi + a_{-1} \frac{1}{\phi}$ with $a_1, a_{-1} \in {\mathbb
+form $a_1 \theta + a_{-1} \frac{1}{\theta}$ with $a_1, a_{-1} \in {\mathbb
 C}(x)$ and must satisfy the equations:
 
 $$\frac{1}{2i} = a_1' + i a_1 \qquad - \frac{1}{2i} = a_{-1}' - i a_{-1}$$ 
@@ -310,7 +338,7 @@ $$\frac{1}{2i} = a_1' + i a_1 \qquad - \frac{1}{2i} = a_{-1}' - i a_{-1}$$
 These are very simple Risch equations that can be solved by inspection
 to obtain $a_1 = a_{-1} = -\frac{1}{2}$, so
 
-$$\int \frac{\phi - \phi^{-1}}{2i} \,dx = -\frac{1}{2}(\phi + \phi^{-1})
+$$\int \frac{\theta - \theta^{-1}}{2i} \,dx = -\frac{1}{2}(\theta + \theta^{-1})
  = -\frac{1}{2}(e^{ix} + e^{-ix}) = -\cos x$$
 
 \endexample
@@ -319,23 +347,46 @@ $$\int \frac{\phi - \phi^{-1}}{2i} \,dx = -\frac{1}{2}(\phi + \phi^{-1})
 
 \example Compute $\int \tan x \, {\rm d}x$
 
-We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
+We'll operate in ${\mathbb C}(x, \theta = \exp \,ix)$ and evaluate
 
-$$-i \int \frac{\phi - \phi^{-1}}{\phi + \phi^{-1}} \,dx$$
+$$-i \int \frac{\theta - \theta^{-1}}{\theta + \theta^{-1}} \,dx$$
 
 The first step is write the integrand in partial fractions form:
 
-$$\frac{\phi - \phi^{-1}}{\phi + \phi^{-1}} = \frac{\phi^2 - 1}{\phi^2 + 1}
-= 1 - \frac{2}{\phi^2 + 1}
-= 1 - \frac{2}{(\phi + i)(\phi - i)} $$
+$$\frac{\theta - \theta^{-1}}{\theta + \theta^{-1}} = \frac{\theta^2 - 1}{\theta^2 + 1}
+= 1 - \frac{2}{\theta^2 + 1}
+= 1 - \frac{2}{(\theta + i)(\theta - i)} $$
 
-$$ = 1 + \frac{i}{\phi - i} - \frac{i}{\phi + i} $$
+$$ = 1 + \frac{i}{\theta - i} - \frac{i}{\theta + i} $$
+
+$$-i\, \frac{\theta - \theta^{-1}}{\theta + \theta^{-1}} = -i + \frac{1}{\theta - i} - \frac{1}{\theta + i} $$
 
 We're now trying to solve these equations:
 
-$$ D_1 n_1(\theta)' = c_{1,1} \qquad D_2 n_2(\theta)' = c_{2,1}$$
+$$ D_1 \left[ n_1(\theta)' - j k' n_1(\theta) \right] = c_{1,1}
+\qquad D_2 \left[ n_2(\theta)' - j k' n_2(\theta) \right] = c_{2,1}$$
 
-$n_1(\theta) = \phi -i$, so $n_1'(\theta) = i \phi$
+$n_1(\theta) = \theta -i$ and $n_2(\theta) = \theta + i$, so $n_1'(\theta) = n_2'(\theta) = i \theta$
+and these equations become:
+
+$$ D_1 \left[ i \theta - i (\theta -i) \right] = 1
+\qquad D_2 \left[ i \theta - i (\theta +i) \right] = -1$$
+
+$$D_1 = D_2 = -i$$
+
+Pluging this into our $A_0$ equation, we obtain:
+
+$$A_0' + \sum_{i=1}^\nu D_i k' \deg_\theta n_i(\theta) = a_0$$
+$$A_0' + 2 i = 1$$
+$$A_0 = (1-2i)x$$
+
+so our integral is:
+
+$$-i \int \frac{\theta - \theta^{-1}}{\theta + \theta^{-1}} \,dx
+  = (1-2i)x + \ln (\theta+i) + \ln(\theta-i)$$
+$$  = (1-2i)x + \ln \left[ (\theta+i)(\theta-i) \right]$$
+$$  = (1-2i)x + \ln \left[ \theta^2 + 1 \right]$$
+
 
 \endexample
 
@@ -345,8 +396,9 @@ $n_1(\theta) = \phi -i$, so $n_1'(\theta) = i \phi$
 Risch equations in ${\mathbb C}(x)$ arise when our integrand exists in
 a {\it simple} exponential extension of ${\mathbb C}(x)$,
 i.e, an integrand formed as a rational function of $x$ and a
-single exponential of a rational function of $x$.  The integration step
-described above produces Risch equations in the underlying field;
+single exponential of a rational function of $x$.  Theorem
+\ref{exponential structure theorem}
+then produces Risch equations in the underlying field;
 in this case, ${\mathbb C}(x)$.
 
 Consider such a Risch equation:
