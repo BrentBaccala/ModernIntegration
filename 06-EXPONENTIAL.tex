@@ -93,24 +93,74 @@ field.  On the other hand, partial fractions terms involving
 normal polynomials give rise to rational functions and logarithms
 in the result.
 
-Let's see how to integrate a function $f$ in an exponential extension
-$K(\theta)$, $\theta = \exp(k)$.  By Theorem \ref{weak Liouville
-theorem}, a Liouvillian antiderivative of $f$ must have the form:
+\vfill\eject
+\section{The Exponential Structure Theorem}
+
+\theorem\label{exponential structure theorem}
+Let $K$ be a differential field, let $K(\theta = \exp k)$ be a simple
+exponential extension of $K$, let $n_i(\theta)$ be
+normal irreducible polynomials in $K[\theta]$,
+and let $f$ be an element of $K(\theta)$
+with partial fractions expansion:
+
+$$f = \sum_{i=0}^n a_i \theta^i + \sum_{j=1}^{l} \frac{b_{j}}{\theta^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{c_{i,j}(\theta)}{n_i(\theta)^j}$$
+
+$$a_i, b_j \in K \qquad c_{i,j}(\theta),n_i(\theta) \in K[\theta]$$
+
+If $f$ has
+a Liovillian anti-derivative $F$, then $F \in K(\theta, \Psi)$,
+where $K(\theta, \Psi)$ is a finite logarithm extension
+of $K(\theta)$, $F$ has a partial fractions expansion of the form:
+
+$$F = \sum_{i=0}^n A_i \theta^i + \sum_{j=1}^{l} \frac{B_{j}}{\theta^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i+1} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
++ \sum_{i=1}^\eta D_i \Psi_i$$
+
+$$A_i, B_j \in K \qquad C_{i,j}(\theta),n_i(\theta) \in K[\theta] \qquad D_i' = 0$$
+
+and the following relationships hold:
+
+$$A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j$$
+
+$$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
+
+\begin{align*}
+R_{i,m_i}(\theta) & = c_{i,m_i+1} \\
+C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) & = c_{i,j} \qquad {}_{1<j\le m_i}\\
+C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)' & = c_{i,1}
+\end{align*}
+
+$$-jC_{i,j}(\theta)n_i'(\theta) \equiv R_{i,j}(\theta) \mod n_i(\theta)$$
+
+
+\proof
+
+% Let's see how to integrate a function $f$ in an exponential extension
+% $K(\theta)$, $\theta = \exp(k)$.
+
+By Theorem \ref{weak Liouville theorem}, a Liouvillian antiderivative
+of $f$ can only exist in a finite logarithm extension $K(\theta, \Psi)$
+of $K(\theta)$ and therefore must have the form:
 
 $$F = R + \sum_{i=1}^n D_i \Psi_i$$
 
-where $R \in K(\theta)$, $K(\theta, \Psi_i)$ are simple logarithmic
-extensions of $K(\theta)$ and $D_i$ are constants.
+where $R \in K(\theta)$, and the $D_i$ are constants.
 
-Now let's construct a partial fractions expansion of $r$,
-separating the normal and special components of its denominator:
+Constructing a partial fractions expansion of $R$,
+separating the normal and special components of its denominator,
+and using the fact that $s_1 = \theta$ is the only
+special irreducible polynomial
+(Theorem \ref{basic exponential properties}):
 
+\begin{comment}
 $$F = \sum_{i=0}^n A_i \theta^i + \sum_{i=1}^\mu \sum_{j=1}^{l_i} \frac{B_{ij}(\theta)}{s_i(\theta)^j}
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
 + \sum_{i=1}^\eta D_i \Psi_i$$
 
 Let's use the fact that $s_1 = \theta$ is the only
 special irreducible polynomial:
+\end{comment}
 
 $$F = \sum_{i=0}^n A_i \theta^i + \sum_{j=1}^{l} \frac{B_{j}}{\theta^j}
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
@@ -221,6 +271,8 @@ $\deg_\theta C_{i,j}(\theta) < \deg_\theta n_i(\theta)$, we see
 that in fact we've completely determined $C_{i,j}(\theta)$ from
 $R_{i,j}(\theta)$.
 
+\endtheorem
+
 This analysis wouldn't be terribly useful if we lacked an algorithm to
 perform the calculation.  Then we'd have an existence proof without a
 constructive procedure, a unfortunate situation that does arise at
@@ -245,17 +297,11 @@ We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
 
 $$\int \frac{\phi - \phi^{-1}}{2i} \,dx$$
 
-The first step is to normalize the integrand, first by transforming it
-into a rational function:
-
-$$\int \frac{\phi^2 - 1}{2i \phi} \,dx $$
-
-and next by using polynomial division to split it into a polynomial
-and a proper fraction with a monic denominator:
+The first step is write the integrand in partial fractions form:
 
 $$\int \left[ \frac{1}{2i} \phi - \frac{1}{2i} \frac{1}{\phi} \right] \,dx $$
 
-By Theorem \ref{weak Liouville theorem}, the integral must have the
+By Theorem \ref{exponential structure theorem}, the integral must have the
 form $a_1 \phi + a_{-1} \frac{1}{\phi}$ with $a_1, a_{-1} \in {\mathbb
 C}(x)$ and must satisfy the equations:
 
@@ -269,12 +315,36 @@ $$\int \frac{\phi - \phi^{-1}}{2i} \,dx = -\frac{1}{2}(\phi + \phi^{-1})
 
 \endexample
 
+\vfil\eject
+
+\example Compute $\int \tan x \, {\rm d}x$
+
+We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
+
+$$-i \int \frac{\phi - \phi^{-1}}{\phi + \phi^{-1}} \,dx$$
+
+The first step is write the integrand in partial fractions form:
+
+$$\frac{\phi - \phi^{-1}}{\phi + \phi^{-1}} = \frac{\phi^2 - 1}{\phi^2 + 1}
+= 1 - \frac{2}{\phi^2 + 1}
+= 1 - \frac{2}{(\phi + i)(\phi - i)} $$
+
+$$ = 1 + \frac{i}{\phi - i} - \frac{i}{\phi + i} $$
+
+We're now trying to solve these equations:
+
+$$ D_1 n_1(\theta)' = c_{1,1} \qquad D_2 n_2(\theta)' = c_{2,1}$$
+
+$n_1(\theta) = \phi -i$, so $n_1'(\theta) = i \phi$
+
+\endexample
+
 \vfill\eject
 \section{Risch Equations in ${\mathbb C}(x)$}
 
 Risch equations in ${\mathbb C}(x)$ arise when our integrand exists in
-${\mathbb C}(x,\Phi)$, where $\Phi$ is exponential over ${\mathbb
-C}(x)$, i.e, an integrand formed as a rational function of $x$ and $\Phi$, a
+a {\it simple} exponential extension of ${\mathbb C}(x)$,
+i.e, an integrand formed as a rational function of $x$ and a
 single exponential of a rational function of $x$.  The integration step
 described above produces Risch equations in the underlying field;
 in this case, ${\mathbb C}(x)$.
