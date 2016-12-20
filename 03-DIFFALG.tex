@@ -211,7 +211,7 @@ exponential extensions.
 \definition
 
 A {\bf Liouvillian function} of a single variable $x$ over a specified
-field of constants $K$ is a Liovillian extension of the rational
+field of constants $K$ is a Liouvillian extension of the rational
 function field $K(x)$.
 
 \enddefinition
@@ -642,6 +642,19 @@ and $\psi' = 1/(x+\xi)$.
 
 \endexample
 
+Finally, we want to prove the full Liouville theorem, establishing
+that the only new extensions that can appear in an integral are
+logarithmic ones.  This is a major tool in our program of symbolic
+integration, since it severely limits the possible extensions that
+need to be searched for an integral.  Indeed, if we could not
+limit the appear of new extensions, it is unlikely that we
+could completely and systemically evaluate integrals.
+
+The structure theorems above already establish a simplified version of
+the Liouville theorem for single extensions.  We need a version of the
+Liouville theorem that holds over any number of extensions, so
+an induction step is required.
+
 \theorem\label{weak Liouville theorem} (Liouville)
 Let $L$ be a Liouvillian extension of a differential field $K$ with
 the same constant subfield as $K$.  Then $\forall l \in L$, $l' \in K$
@@ -653,6 +666,128 @@ where $k\in K$, $K(\theta_i)$ are simple logarithmic extensions of $K$ and $c_i$
 are constants.
 
 \proof
+
+By the definition of a Liouvillian extension, $L$ has the form $K(t_1,\ldots,t_n)$
+where each $t_i$ is a simple Liouvillian extension of $K(t_1,\ldots,t_{i-1})$.
+
+We'll proceed by induction on the number of extensions $n$.  Theorems \ref{basic logarithmic properties}(5),
+\ \ref{basic exponential properties}(4), and \ref{basic algebraic properties}(3)
+establish the theorem for $n=1$.  So assume that the theorem is true
+for all $i<n$.
+
+Let $M = K(t_1)$, so $L = M(t_2,\ldots,t_n)$,
+and the induction hypothesis implies that if $l' \in M$,
+then $l$ has the form:
+
+$$l = m_0 + \sum c_i \theta_i$$
+
+where $\theta_i \in M$, so
+
+$$l' = m_0' + \sum c_i \frac{m_i'}{m_i}$$
+
+$l' \in K$, and $m_0$ and the various $m_i$ are rational
+functions in $K(t_1)$.  We can use our basic logarithm identities:
+
+$$\frac{(ab)'}{ab} = \frac{a'}{a} + \frac{b'}{b} \qquad\qquad
+\frac{(\frac{1}{a})'}{\frac{1}{a}} = \frac{-\frac{a'}{a^2}}{\frac{1}{a}} = - \frac{a'}{a}$$
+
+to reduce to the case where the $m_i$ are all irreducible
+polynomials, so let's consider our three cases:
+
+\begin{enumerate}
+
+\item $K(t_1)$ is logarithmic over $K$.
+
+In this case, Theorem \ref{basic logarithmic properties}(4) states
+that if $m_0$ has a non-trivial denominator with an irreducible factor
+$p$, then $p$ appears in $m_0'$'s denominator with multiplicity at
+least two.  Since $l' \in K$, this implies that the sum must
+contribute a denominator with the same multiplicity in order to
+achieve cancellation, so $p$ must be one of the $m_i$'s.  However,
+since $p$ is irreducible, Theorem \ref{basic logarithmic
+properties}(3) implies that the multiplicity of $p$ in the sum's
+denominator can be no more than one, so $m_0$ must be a polynomial.
+
+Futuremore, there is no cancellation between a normal irreducible
+polynomial and its derivative, so none of the $m_i$'s can be
+polynomials in $K[t_1]$; they must exist in $K$, since otherwise
+$l'$ would have a non-trivial denominator in $K(t_1)$,
+and by hypothesis, $l' \in K$.
+
+Finally, Theorem \ref{basic logarithmic properties}(5) states
+that $m_0$ must have the form $k_0 + c_0 t_1$.  In other
+words, a simple logarithm extension can contribute a single
+term to the sum in the statement of the theorem.
+
+\item $K(t_1)$ is exponential over $K$.
+
+This case is similar to the logarithmic one, except that we must now
+consider the possibility of special polynomials in the $m_i$'s.
+Actually, there is only one special irreducible polynomial, $t_1$
+itself.  If one of the $m_i$'s was $t_1$, then it would cancel
+with its derivative as follows:
+
+$$\frac{t_1'}{t_1} = k'$$
+
+Since both $l'$ and $k'$ are in $K$, we can collect them together as follows:
+
+$$l' - c_1 k' = m_0' + \sum c_i \frac{m_i'}{m_i}$$
+
+and proceed with the proof as before.  This time, however,
+Theorem \ref{basic exponential properties}(4) tells us that
+$m_0$ can only have the form $k_0$, so exponential
+extensions contribute nothing to the sum in the statement
+of the theorem.
+
+\item $M = K(t_1)$ is algebraic over $K$
+
+Applying the trace map to our induction equation:
+
+$$Tr(l') = Tr(m_0') + \sum c_i Tr \left( \frac{m_i'}{m_i} \right)$$
+
+Since $l' \in K$, $Tr(l') = d l'$, where $d$ is the degree of the
+algebraic extension $K(t_1)$ over $K$, and:
+
+$$d l' = Tr(m_0)' + \sum c_i \frac{N(m_i)'}{N(m_i)}$$
+
+$$l' = \left[ \frac{Tr(m_0)}{d} \right]' + \sum \frac{c_i}{d} \frac{N(m_i)'}{N(m_i)}$$
+
+Setting $k_0 = \frac{Tr(m_0)}{d}$ and $k_i = N(m_i)$, we see that $l'$
+can be written:
+
+$$l' = k_0' + \sum \frac{c_i}{d} \frac{k_i'}{k_i}$$
+
+establishing that $l$ has the form required by the theorem.
+
+
+\end{enumerate}
+
+
+\begin{comment}
+
+Let $M = K(t_1,\ldots,t_{n-1})$,
+so $L = M(t_n)$ is a simple Liouvillian extension of $L$, and the
+theorem holds for $M$.
+
+If $L = M(t_n)$ is either an exponential or an algebraic extension
+of $M$, then Theorem \ref{basic exponential properties}(4) or
+Theorem \ref{basic algebraic properties}(3) establishes that
+for $l \in L$, if $l' \in M$ then $l \in M$.  Since $l' \in K$
+implies $l' \in M$, we conclude that $l \in M$ and the
+theorem holds by induction.
+
+The other case we must consider is when $L = M(t_n)$ is an
+logarithm extension of $M$.  In this case, we again know
+that $l' \in K$ implies that $l' \in M$, and Theorem
+\ref{basic logarithmic properties}(5) tells us that
+$l$ must have the form
+
+$$l = m + c t_n \qquad l' = m' + c \frac{m_1'}{m_1}$$
+
+\end{comment}
+
+
+\begin{comment}
 
 Since $L$ is formed from $K$ by a finite number of simple extensions,
 consider the last extension and call it $\theta$, i.e, $L=M(\theta)$
@@ -667,5 +802,7 @@ logarithmic, then by Theorem \ref{basic logarithmic properties} $l$
 must have the form $c\theta + m$, where $m\in M$.  Applying this
 argument inductively leads us to conclude that $l$ must have the
 form...  (FIX AND FINISH THIS PROOF)
+
+\end{comment}
 
 \endtheorem
