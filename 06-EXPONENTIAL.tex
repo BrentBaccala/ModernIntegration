@@ -98,7 +98,7 @@ extension fields by ``peeling away'' the extensions, and solving
 equations in successively simplier extensions until we've reached the
 rational function field ${\mathbb C}(x)$.
 
-I'll begin by presenting the basic structure theorem for exponential
+I'll begin by presenting the basic integration theorem for exponential
 extensions, then we'll consider how to solve Risch equations
 in ${\mathbb C}(x)$, which is a simplified case
 that lets us solve integrals in
@@ -106,9 +106,9 @@ that lets us solve integrals in
 solving the Risch equation more generally.
 
 \vfill\eject
-\section{The Exponential Structure Theorem}
+\section{The Exponential Integration Theorem}
 
-\theorem\label{exponential structure theorem}
+\theorem\label{exponential integration theorem}
 Let $K$ be a differential field, let $K(\theta = \exp k)$ be a simple
 exponential extension of $K$, let $n_i(\theta)$ be
 normal irreducible polynomials in $K[\theta]$,
@@ -145,9 +145,12 @@ C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) & = c_{i,j} \qquad {}_{1<
 C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i \left[ n_i(\theta)' - k' n_i(\theta) \deg_\theta n_i(\theta) \right] & = c_{i,1}
 \end{align*}
 
-$$-jC_{i,j}(\theta)n_i'(\theta) \equiv R_{i,j}(\theta) \mod n_i(\theta)$$
+%% $$-jC_{i,j}(\theta)n_i'(\theta) \equiv R_{i,j}(\theta) \mod n_i(\theta)$$
+
+$$C_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{jn_i'(\theta)} \mod n_i(\theta)$$
 
 
+\vfill\eject
 \proof
 
 % Let's see how to integrate a function $f$ in an exponential extension
@@ -187,19 +190,23 @@ $$F' = \sum_{i=0}^n (A_i' + i A_i k' )\theta^i
   + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}'(\theta) n_i(\theta) - j C_{i,j}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
   + \sum_{i=1}^\eta D_i \frac{E_i'(\theta)}{E_i(\theta)}$$
 
-Let's examine the logarithmic elements $e_i$.  If $e_i$ doesn't involve $\theta$, i.e, $e_i \in K$,
-then we can collapse $d_i \Psi_i$ into $\bar{c}_0$, with the understanding that when we recurse
-into $K$ to solve for $c_0$, additional logarithm terms are allowed.
+Let's examine the logarithmic elements $E_i(\theta)$.  If an $E_i(\theta)$ doesn't involve $\theta$, i.e, $E_i \in K$,
+then we can collapse $D_i \Psi_i$ into $A_0$, with the understanding that when we recurse
+into $K$ to solve for $A_0$, additional logarithm terms are allowed.
 
-Now let's consider what happens if $e_i$ is a polynomial in $K[\theta]$.  If it's reducible, then
+So now let's consider what happens if $E_i(\theta)$ is a polynomial in $K[\theta]$.  If it's reducible, then
 the basic properties of logarithms let us split it into multiple irreducible elements.
-Otherwise, it's irreducible and therefore either normal or special.  If it's special, then it would
-divide its derivative $e_i'$... So it must be normal, and therefore $F'$ must have the form:
+Otherwise, it's irreducible and therefore either normal or special.  If it's special, then it
+must be $\theta$ itself and $\ln \theta = \ln \exp k = k$, which contracts the
+transcendence of the logarithm extension $\Psi$.
+So all of the $E_i(\theta)$'s must be normal, and therefore $F'$ must have the form:
 
-$$F' = \bar{A}_0 + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
-  + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j}
+\begin{multline*}
+F' = A_0' + \sum D_k \frac{E_k'}{E_k} + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
+  + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
   + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}'(\theta) n_i(\theta) - j C_{i,j}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
-  + \sum_{i=1}^\eta D_i \frac{n_i(\theta)'}{n_i(\theta)}$$
+  + \sum_{i=1}^\eta D_i \frac{n_i(\theta)'}{n_i(\theta)}
+\end{multline*}
 
 $F'$ has the form of a partial fractions decomposition, but it is not
 a partial fractions decomposition because the numerators in the $C$
@@ -210,23 +217,6 @@ divide the $-jC_{i,j}(\theta)n_i'(\theta)$ terms by $n_i(\theta)$
 and a remainder:
 
 $$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
-
-\begin{comment}
-
-\begin{multline*}
-F' = \sum_{i=-l}^n (A_i' + i A_i k' )\theta^i \\
-  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j+1}'(\theta) + Q_{i,j+1}(\theta) + R_{i,j}(\theta) }{n_i(\theta)^{j+1}}
-  + \sum_{i=1}^\eta \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)'}{n_i(\theta)}
-\end{multline*}
-
-\begin{multline*}
-F' = \sum_{i=-l}^n (A_i' + i A_i k' )\theta^i \\
-  + \sum_{i=1}^\nu \frac{R_{i,m_i}(\theta) }{n_i(\theta)^{m_i}}
-  + \sum_{i=1}^\nu \sum_{j=2}^{m_i+1} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}}
-  + \sum_{i=1}^\eta \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)'}{n_i(\theta)}
-\end{multline*}
-
-\end{comment}
 
 This fixes the $C$ terms, since $\deg Q_{i,j}(\theta) < \deg n_i(\theta)$
 and $\deg R_{i,j}(\theta) < \deg n_i(\theta)$.
@@ -239,7 +229,7 @@ we can ensure the cancellation of the leading terms,
 achieving our degree bounds.
 
 \begin{multline*}
-F' = \bar{A}_0 + \sum D_i k' \deg_\theta n_i(\theta) + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
+F' = A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i k' \deg_\theta n_i(\theta) + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
   + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
   + \sum_{i=1}^\nu \Bigg[ \frac{R_{i,m_i}(\theta) }{n_i(\theta)^{m_i+1}}
   + \sum_{j=2}^{m_i} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}} \\
@@ -256,14 +246,17 @@ a partial fractions decomposition of $f$:
 $$f = \sum_{i=0}^n a_i \theta^i + \sum_{j=1}^{l} \frac{b_{j}}{\theta^j}
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{c_{ij}(\theta)}{n_i(\theta)^j}$$
 
-Setting $F' = f$ and equating like terms, we see that the polynomial terms
-and special denominators give rise to Risch equations:
+Setting $F' = f$ and equating like terms, we establish the
+relationships listed in the statement of the theorem.  The zero-order term:
 
-$$A_0' + \sum D_i k' \deg_\theta n_i(\theta) = a_0$$
+$$A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i k' \deg_\theta n_i(\theta) = a_0$$
+
+Polynomial terms
+and special denominators give rise to Risch equations:
 
 $$A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j$$
 
-Normal denominators give rise to terms:
+Normal denominators give rise to these terms:
 
 \begin{align*}
 R_{i,m_i}(\theta) & = c_{i,m_i+1} \\
@@ -271,14 +264,7 @@ C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) & = c_{i,j} \qquad {}_{1<
 C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i n_i(\theta)' & = c_{i,1}
 \end{align*}
 
-The highest order term gives us an $R_{i,j}$.  If we have a method of
-computing $C_{i,j}$ and $Q_{i,j}$ from $R_{i,j}$, then we can just
-move down the list, solving this system of equations from highest
-order terms to lowest.  Once we get to the end, we need to see if the
-bottom equation can be solved using a constant $D_i$.  If not,
-then the equation has no solution.
-
-So how can we calculate $C_{i,j}$?  Remember the definition of
+Remember the definition of
 $R_{i,j}$ and $Q_{i,j}$:
 
 $$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
@@ -301,14 +287,26 @@ $R_{i,j}(\theta)$.
 
 \endtheorem
 
-This analysis wouldn't be terribly useful if we lacked an algorithm to
-perform the calculation.  Then we'd have an existence proof without a
-constructive procedure, a unfortunate situation that does arise at
-times in mathematics.  In this case, fortunately, we do have an
-algorithm: the extended Euclidean algorithm from
-Section \ref{sec:Polynomial Diophantine Equations}, which is our major
-computational tool for calculating inverses in quotient rings.
+We'll begin discussing the Risch equation in the next section, which
+is how we obtain the $A_i$'s and $B_i$'s.
 
+How can we calculate the $C_{i,j}(\theta)$'s?
+
+The highest order term in the partial fractions expansion
+gives us an $R_{i,j}$ directly.  Then we use
+the extended Euclidean algorithm from
+Section \ref{sec:Polynomial Diophantine Equations}, which is our major
+computational tool for calculating inverses in quotient rings,
+to calculate $C_{i,j}(\theta)$.  A simple long division step
+then gives us the quotient $Q_{i,j}(\theta)$, and we just
+move down the list, solving this system of equations from highest
+order terms to lowest.  Once we get to the end, we need to see if the
+bottom equation can be solved using a constant $D_i$.  If not,
+then the equation has no solution.
+
+Once all of the $D_i$'s have been calculated, then we have all of the
+information needed to determine $A_0'$, and an integration step in the
+underlying field yields $A_0$ itself.
 
 
 \begin{comment}
@@ -329,7 +327,7 @@ The first step is write the integrand in partial fractions form:
 
 $$\int \left[ \frac{1}{2i} \theta - \frac{1}{2i} \frac{1}{\theta} \right] \,dx $$
 
-By Theorem \ref{exponential structure theorem}, the integral must have the
+By Theorem \ref{exponential integration theorem}, the integral must have the
 form $a_1 \theta + a_{-1} \frac{1}{\theta}$ with $a_1, a_{-1} \in {\mathbb
 C}(x)$ and must satisfy the equations:
 
@@ -363,8 +361,8 @@ $$-i\, \frac{\theta - \theta^{-1}}{\theta + \theta^{-1}} = -i + \frac{1}{\theta 
 
 We're now trying to solve these equations:
 
-$$ D_1 \left[ n_1(\theta)' - j k' n_1(\theta) \right] = c_{1,1}
-\qquad D_2 \left[ n_2(\theta)' - j k' n_2(\theta) \right] = c_{2,1}$$
+$$ D_1 \left[ n_1(\theta)' - k' n_1(\theta) \deg_\theta n_1(\theta) \right] = c_{1,1}
+\qquad D_2 \left[ n_2(\theta)' - k' n_2(\theta) \deg_\theta n_2(\theta) \right] = c_{2,1}$$
 
 $n_1(\theta) = \theta -i$ and $n_2(\theta) = \theta + i$, so $n_1'(\theta) = n_2'(\theta) = i \theta$
 and these equations become:
@@ -377,16 +375,20 @@ $$D_1 = D_2 = -i$$
 Pluging this into our $A_0$ equation, we obtain:
 
 $$A_0' + \sum_{i=1}^\nu D_i k' \deg_\theta n_i(\theta) = a_0$$
-$$A_0' + 2 i = 1$$
-$$A_0 = (1-2i)x$$
+$$A_0' + 2 = -i $$
+$$A_0 = -(i+2)x$$
 
 so our integral is:
 
 $$-i \int \frac{\theta - \theta^{-1}}{\theta + \theta^{-1}} \,dx
-  = (1-2i)x + \ln (\theta+i) + \ln(\theta-i)$$
-$$  = (1-2i)x + \ln \left[ (\theta+i)(\theta-i) \right]$$
-$$  = (1-2i)x + \ln \left[ \theta^2 + 1 \right]$$
+  = -(i+2)x - i \ln (\theta+i) - i \ln(\theta-i)$$
+$$  = -(i+2)x - i \ln \left[ (\theta+i)(\theta-i) \right]$$
+$$  = -(i+2)x - i \ln \left[ \theta^2 + 1 \right]$$
 
+$ix = \ln \exp ix$, so $x = -i \ln \exp ix$ and
+
+$$  = i \ln \theta - 2 \ln \theta - i \ln \left[ \theta^2 + 1 \right]$$
+$$  = i \ln \theta - 2 \ln \theta - i \ln \left[ \theta^2 + 1 \right]$$
 
 \endexample
 
@@ -397,7 +399,7 @@ Risch equations in ${\mathbb C}(x)$ arise when our integrand exists in
 a {\it simple} exponential extension of ${\mathbb C}(x)$,
 i.e, an integrand formed as a rational function of $x$ and a
 single exponential of a rational function of $x$.  Theorem
-\ref{exponential structure theorem}
+\ref{exponential integration theorem}
 then produces Risch equations in the underlying field;
 in this case, ${\mathbb C}(x)$.
 
