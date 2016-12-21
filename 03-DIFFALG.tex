@@ -546,7 +546,8 @@ $A/K$, and let $a$ be an element of $A$.
 
 \begin{enumerate}
 \item $D(\sigma x) = \sigma(D x)$,
-\item $D({\rm Tr\,} x) = {\rm Tr\,}(D x)$,
+\item $\Tr(D x) = D(\Tr x)$,
+\item $\Tr(\frac{D x}{x}) = \frac{\N(x)'}{\N(x)}$
 \item $a' \in K \leftrightarrow a \in K$.
 \end{enumerate}
 
@@ -583,20 +584,25 @@ $${\rm Tr\,} x = \sum_\sigma \sigma x$$
 We extend $A$, if necessary, into a Galois extension, and use
 the commutation relationship we just proved to establish:
 
-$$D({\rm Tr\,} x) = D\left(\sum_\sigma \sigma x\right) = \sum_\sigma D(\sigma x)
-= \sum_\sigma \sigma(D x) = {\rm Tr\,}(D x)$$
+$$D(\Tr x) = D\left(\sum_\sigma \sigma x\right) = \sum_\sigma D(\sigma x)
+= \sum_\sigma \sigma(D x) = \Tr(D x)$$
 
-3. The right-to-left implication is obvious (since differential fields
+3. Using the commutation relationship we just proved, along with the definitions of $\Tr$ and $\N$:
+
+$$\Tr(\frac{D x}{x}) = \sum_\sigma \sigma\left( \frac{D x}{x} \right) = \sum_\sigma \frac{\sigma D x}{\sigma x}
+= \sum_\sigma \frac{D \sigma x}{\sigma x} = \frac{D \prod_\sigma \sigma x}{\prod_\sigma \sigma x} = \frac{D(\N(x))}{\N(x)}$$
+
+4. The right-to-left implication is obvious (since differential fields
 are closed under derivation), so we need only to prove the
 left-to-right implication.
 
 Consider $a$, with $D a \in K$,
-so ${\rm Tr\,}(D a) = n D a$, where $n$ is the degree of the algebraic extension,
+so $\Tr(D a) = n D a$, where $n$ is the degree of the algebraic extension,
 by Theorem \ref{trace in underlying field}.
 It follows that
-$$D a = \frac{1}{n} {\rm Tr\,}(D a) = \frac{1}{n} D({\rm Tr\,} a)$$
+$$D a = \frac{1}{n} \Tr(D a) = \frac{1}{n} D(\Tr a)$$
 
-Since ${\rm Tr\,} a \in K$, we have identified an
+Since $\Tr a \in K$, we have identified an
 element in $K$ with the same derivation as $a$, which therefore can
 differ from $a$ solely by a constant.  Since $A$ and $K$ have the same
 constant subfield, all of our constants are in $K$, so $a$ is
@@ -671,7 +677,7 @@ By the definition of a Liouvillian extension, $L$ has the form $K(t_1,\ldots,t_n
 where each $t_i$ is a simple Liouvillian extension of $K(t_1,\ldots,t_{i-1})$.
 
 We'll proceed by induction on the number of extensions $n$.  Theorems \ref{basic logarithmic properties}(5),
-\ \ref{basic exponential properties}(4), and \ref{basic algebraic properties}(3)
+\ \ref{basic exponential properties}(4), and \ref{basic algebraic properties}(4)
 establish the theorem for $n=1$.  So assume that the theorem is true
 for all $i<n$.
 
@@ -705,7 +711,7 @@ least two.  Since $l' \in K$, this implies that the sum must
 contribute a denominator with the same multiplicity in order to
 achieve cancellation, so $p$ must be one of the $m_i$'s.  However,
 since $p$ is irreducible, Theorem \ref{basic logarithmic
-properties}(3) implies that the multiplicity of $p$ in the sum's
+properties}(4) implies that the multiplicity of $p$ in the sum's
 denominator can be no more than one, so $m_0$ must be a polynomial.
 
 Futuremore, there is no cancellation between a normal irreducible
@@ -743,16 +749,16 @@ of the theorem.
 
 Applying the trace map to our induction equation:
 
-$$Tr(l') = Tr(m_0') + \sum c_i Tr \left( \frac{m_i'}{m_i} \right)$$
+$$\Tr(l') = \Tr(m_0') + \sum c_i \Tr \left( \frac{m_i'}{m_i} \right)$$
 
-Since $l' \in K$, $Tr(l') = d l'$, where $d$ is the degree of the
+Since $l' \in K$, $\Tr(l') = d l'$, where $d$ is the degree of the
 algebraic extension $K(t_1)$ over $K$, and:
 
-$$d l' = Tr(m_0)' + \sum c_i \frac{N(m_i)'}{N(m_i)}$$
+$$d l' = \Tr(m_0)' + \sum c_i \frac{\N(m_i)'}{\N(m_i)}$$
 
-$$l' = \left[ \frac{Tr(m_0)}{d} \right]' + \sum \frac{c_i}{d} \frac{N(m_i)'}{N(m_i)}$$
+$$l' = \left[ \frac{\Tr(m_0)}{d} \right]' + \sum \frac{c_i}{d} \frac{\N(m_i)'}{\N(m_i)}$$
 
-Setting $k_0 = \frac{Tr(m_0)}{d}$ and $k_i = N(m_i)$, we see that $l'$
+Setting $k_0 = \frac{\Tr(m_0)}{d}$ and $k_i = \N(m_i)$, we see that $l'$
 can be written:
 
 $$l' = k_0' + \sum \frac{c_i}{d} \frac{k_i'}{k_i}$$
@@ -771,7 +777,7 @@ theorem holds for $M$.
 
 If $L = M(t_n)$ is either an exponential or an algebraic extension
 of $M$, then Theorem \ref{basic exponential properties}(4) or
-Theorem \ref{basic algebraic properties}(3) establishes that
+Theorem \ref{basic algebraic properties}(4) establishes that
 for $l \in L$, if $l' \in M$ then $l \in M$.  Since $l' \in K$
 implies $l' \in M$, we conclude that $l \in M$ and the
 theorem holds by induction.
