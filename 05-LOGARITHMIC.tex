@@ -1,6 +1,136 @@
 
 \mychapter{The Logarithmic Extension}
 
+Our basic strategy for integration is to always work in the top most
+field extension, reducing to some kind of problem that must be
+solved in the next lower extension.
+
+For logarithmic extensions, the problem is particularly easy,
+since integration leads only to futher integration steps
+in the base field.
+
+\vfill\eject
+\section{The Logarithmic Integration Theorem}
+
+\theorem\label{logarithmic integration theorem}
+Let $K$ be a differential field, let $K(\theta = \ln k)$ be a simple
+logarithmic extension of $K$, let $n_i(\theta)$ be
+irreducible polynomials in $K[\theta]$,
+and let $f$ be an element of $K(\theta)$
+with partial fractions expansion:
+
+$$f = \sum_{i=0}^n a_i \theta^i
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{i,j}(\theta)}{n_i(\theta)^j}$$
+
+$$a_i \in K \qquad b_{i,j}(\theta),n_i(\theta) \in K[\theta]$$
+
+If $f$ has
+a Liovillian anti-derivative $F$, then $F \in K(\theta, \Psi)$,
+where $K(\theta, \Psi)$ is a finite logarithmic extension
+of $K(\theta)$, $F$ has a partial fractions expansion of the form:
+
+$$F = \sum_{i=0}^{n+1} A_i \theta^i
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i-1} \frac{B_{i,j}(\theta)}{n_i(\theta)^j}
++ \sum_{i=1}^\nu C_i \Psi_i$$
+
+$$A_i \in K \qquad B_{i,j}(\theta),n_i(\theta) \in K[\theta] \qquad C_i' = 0$$
+
+and the following relationships hold:
+
+$$ A_{n+1}' = 0 \qquad A_i' + (i+1) \frac{k'}{k} A_{i+1} = a_i $$
+
+$$ R_{i,m_i-1}(\theta) = b_{i,m_i}(\theta) $$
+
+$$ B_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{j n_i'(\theta) } \mod n_i(\theta)$$
+
+$$ Q_{i,j}(\theta) = - \frac{R_{i,j}(\theta) + j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)}$$
+
+$$ R_{i,j}(\theta) = b_{i,j+1}(\theta) - B_{i,j+1}'(\theta) - Q_{i,j+1}(\theta) $$
+
+$$ \Psi_i = \ln n_i(\theta)$$
+
+$$ C_i = \frac{b_{i,1}(\theta) - B_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta)} $$
+
+%% $$ - j B_{i,j}(\theta) n_i'(\theta) = R_{i,j}(\theta) \mod n_i(\theta)$$
+
+\proof
+
+By Theorem \ref{weak Liouville theorem}, a Liouvillian antiderivative
+of $f$ can only exist in a finite logarithm extension $K(\theta, \Psi)$
+of $K(\theta)$ and therefore must have the form:
+
+$$F = R + \sum_{i=1}^\eta C_i \Psi_i$$
+
+where $R \in K(\theta)$, and the $C_i$ are constants.
+
+We can perform a partial fractions expansion on $R$:
+
+$$F = \sum_{i=0}^N A_i \theta^i
++ \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}(\theta)}{n_i(\theta)^j}
++ \sum_{i=1}^\eta C_i \Psi_i$$
+
+Now let's differentiate, remembering that $\theta' = \frac{k'}{k}$:
+
+$$F' = \sum_{i=0}^N ( A_i' \theta^i + i \frac{k'}{k} A_i \theta^{i-1} )
++ \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}'(\theta) n_i(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta C_i \frac{D_i'(\theta)}{D_i(\theta)}$$
+
+$$F' = A_0' + \sum_{i=1}^N ( A_i' \theta^i + i \frac{k'}{k} A_i \theta^{i-1} )
++ \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}'(\theta) n_i(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta C_i \frac{D_i'(\theta)}{D_i(\theta)}$$
+
+\begin{multline*}
+F' = \sum_{i=0}^{N-1} \left[ A_i' + (i+1) \frac{k'}{k} A_{i+1} \right] \theta^{i} + A_N' \theta^N \\
++ \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}'(\theta) n_i(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta C_i \frac{D_i'(\theta)}{D_i(\theta)}
+\end{multline*}
+
+\begin{multline*}
+F' = A_N' \theta^N + \sum_{i=0}^{N-1} \left[ A_i' + (i+1) \frac{k'}{k} A_{i+1} \right] \theta^{i} \\
++ \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j+1}'(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
+  + \sum_{i=1}^\eta C_i \frac{D_i'(\theta)}{D_i(\theta)}
+\end{multline*}
+
+$$ - j B_{i,j}(\theta) n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
+
+\begin{multline*}
+F' = A_N' \theta^N + \sum_{i=0}^{N-1} \left[ A_i' + (i+1) \frac{k'}{k} A_{i+1} \right] \theta^{i} \\
++ \sum_{i=1}^\nu \left[ \sum_{j=1}^{M_i} \frac{B_{i,j+1}'(\theta) + Q_{i,j+1}(\theta) + R_{i,j}(\theta)}{n_i(\theta)^{j+1}}
+  + \frac{B_{i,1}'(\theta) + Q_{i,1}(\theta) + C_i n_i'(\theta)}{n_i(\theta)} \right]
+\end{multline*}
+
+\begin{multline*}
+F' = A_N' \theta^N + \sum_{i=0}^{N-1} \left[ A_i' + (i+1) \frac{k'}{k} A_{i+1} \right] \theta^{i} \\
++ \sum_{i=1}^\nu \left[ \frac{R_{i,M_i}(\theta)}{n_i(\theta)^{M_i+1}}
++ \sum_{j=1}^{M_i} \frac{B_{i,j+1}'(\theta) + Q_{i,j+1}(\theta) + R_{i,j}(\theta)}{n_i(\theta)^{j+1}}
+  + \frac{B_{i,1}'(\theta) + Q_{i,1}(\theta) + C_i n_i'(\theta)}{n_i(\theta)} \right]
+\end{multline*}
+
+What is the degree of $F'$?  It's $N$, if $A_N$ is not constant.  If $A_N$ is constant and not zero, then
+the degree of $F'$ is $N-1$, since otherwise the $N-1$ coefficient would be zero:
+
+$$A_{N-1}' + N \frac{k'}{k} A_N = 0  \qquad\Longrightarrow\qquad A_{N-1}' = (- N A_N ) \frac{k'}{k}$$
+
+Since $A_N$ is constant, this could only be satisfied by $A_{N-1} = - N A_N \theta$,
+contradicting the transcendence of $\theta$ (MORE DETAIL).
+
+Performing a partial fractions decomposition of $f$:
+
+$$f = \sum_{i=0}^n a_i \theta^i
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{i,j}(\theta)}{n_i(\theta)^j}$$
+
+setting $F' = f$ and equating like terms, we establish the
+relationships listed in the statement of the theorem.
+
+For the degree of $F'$ to be $n$, either $\deg_\theta F = n+1$ and $A_{n+1}$ is
+constant, or $\deg_\theta F = n$.
+
+Since the highest order denominators in $F'$ have order $M_i + 1$, and
+they must match with $f$'s denominators of order $m_i$, we conclude
+that $M_i = m_i - 1$.
+
+\endtheorem
+
 \vfill\eject
 
 \example Compute $\int {1\over{x \ln x}} {\rm d}x$
@@ -136,32 +266,203 @@ $\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is not Liouvillian.
 
 \vfill\eject
 
-$$\int{{x(x+1)\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{((x+1)\ln^2(x+1) - (x^3+x^2)e^{2x^2})^2}} dx$$
+\example\label{hard log-exp integral}
+Compute
 
-$$\psi = \exp(x^2) \qquad \theta = \ln (x+1)$$
+%% $$\int{{x(x+1)\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{((x+1)\ln^2(x+1) - (x^3+x^2)e^{2x^2})^2}} dx$$
 
-$$\int{{x(x+1)\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{((x+1)\theta^2 - (x^3+x^2)\psi^2)^2}} dx$$
+$$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
+
+We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x^2)$ and $\theta = \ln (x+1)$ to obtain:
+
+%% $$\int{{x(x+1)\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{((x+1)\theta^2 - (x^3+x^2)\psi^2)^2}} dx$$
+
+%% Cancelling $x+1$ between the numerator and denominator:
 
 $$\int{{x\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
+
+Since $\psi$ and $\theta$ are both simple extensions of ${\mathbb C}(x)$, we can operate in either
+${\mathbb C}(x,\psi,\theta)$ or ${\mathbb C}(x,\theta,\psi)$.  Since ${\mathbb C}(x,\theta,\psi)$
+is an exponential extension of ${\mathbb C}(x,\theta)$, working in ${\mathbb C}(x,\theta,\psi)$
+would require evaluating an integral in an exponential extension, which we won't study until
+the next chapter.  Therefore, we'll work in ${\mathbb C}(x,\psi,\theta)$, a logarithmic
+extension of ${\mathbb C}(x,\psi)$, and hope that we won't have to do anything
+too complicated in ${\mathbb C}(x,\psi)$!
+
+We need to put our integrand into partial fractions form, so let's begin by
+using Maxima's {\tt divide} function, which performs polynomial long division
+with respect to a specific variable, and obtain:
 
 
 {\small\begin{verbatim}
 
-(%i235) divide(expand(x*((x^2*p^2-t^2)^2 + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t))),
+(%i1) divide(expand(x*((x^2*p^2-t^2)^2 + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t))),
                 expand((x+1)*(t^2-x^2*p^2)^2), t);
 
-                      x            3  5      3  4      3  3      3  2       3  3
-(%o235)            [-----, t (- 4 p  x  - 4 p  x  - 2 p  x  - 2 p  x ) + 2 p  x ]
-                    x + 1
+                    x            3  5      3  4      3  3      3  2       3  3
+(%o1)            [-----, t (- 4 p  x  - 4 p  x  - 2 p  x  - 2 p  x ) + 2 p  x ]
+                  x + 1
 
 \end{verbatim}}
 
-{\LARGE$$\int {x\over{x+1}} dx +  \int{{{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}\over{(\theta^2 - x^2\psi^2)^2}} dx$$}
+% {\LARGE$$\int {x\over{x+1}} dx +  \int{{{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}\over{(\theta^2 - x^2\psi^2)^2}} dx$$}
+
+% {\LARGE$$\int {x\over{x+1}} + {(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2} dx$$}
+$$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
+
+% {\LARGE$$\int {x\over{x+1}} dx +  \int{{{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}\over{(\theta^2 - x^2\psi^2)^2}} dx$$}
+
+The $\frac{x}{x+1}$ term is easy, so let's consider the fractional
+term.  Polynomial factorization can be difficult, but this denominator
+is easy -- it's just a difference of squares: $(\theta^2 - x^2\psi^2) = (\theta-x\psi)(\theta+x\psi)$.
+Maxima's {\tt partfrac} function performs partial fractions
+expansion with respect to a given variable, in this case $\theta$.
+
 
 \vfill\eject
-{\LARGE$$\int {x\over{x+1}} dx +  \int{{{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}\over{(\theta^2 - x^2\psi^2)^2}} dx$$}
+
+{\small\begin{verbatim}
+
+(%i4) partfrac(%o1[2]/((x+1)*(t^2-x^2*p^2)^2), t);
+               1                     1
+(%o4) ------------------- - -------------------
+      (2 x + 2) (p x + t)   (2 x + 2) (t - p x)
+     2           2  2      2  3      2  4
+   (p  + p) x + p  x  + 2 p  x  + 2 p  x
+ + --------------------------------------
+                               2
+            (2 x + 2) (t + p x)
+     2           2  2      2  3      2  4
+   (p  - p) x + p  x  + 2 p  x  + 2 p  x
+ - --------------------------------------
+                               2
+            (2 x + 2) (t - p x)
+\end{verbatim}}
+
+\begin{comment}
+\begin{multline*}
+\int {x\over{x+1}} + \frac{(2x^4+2x^3+x^2+x)\psi^2 + x \psi}{2(x+1)(\theta + x \psi)^2}
+       + \frac{1}{2(x+1)(\theta + x \psi)} \\
+       - \frac{(2x^4+2x^3+x^2+x)\psi^2 - x \psi}{2(x+1)(\theta - x \psi)^2}
+       - \frac{1}{2(x+1)(\theta - x \psi)} dx$$
+\end{multline*}
+\end{comment}
+
+\begin{multline*}
+\int {x\over{x+1}} + \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi}{(\theta + x \psi)^2}
+       + \frac{\frac{1}{2(x+1)}}{(\theta + x \psi)} \\
+       - \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 - \frac{x}{2(x+1)} \psi}{(\theta - x \psi)^2}
+       - \frac{\frac{1}{2(x+1)}}{(\theta - x \psi)} dx
+\end{multline*}
+
+
+We have two irreducible factors: $n_1(\theta) = \theta + x \psi$ and
+$n_2(\theta) = \theta - x \psi$.  Each has $\theta$-degree 1, so
+the numerators in our partial fractions expansions have
+$\theta$-degree 0, as expected.
+
+Now we're ready to apply
+Theorem \ref{logarithmic integration theorem}.  Let's start with
+$n_1(\theta)$.  $m_{1,1}=2$, so
+
+$$R_{1,1}(\theta) = b_{1,2}(\theta) = \frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi$$
+
+and we wish to compute
+
+$$ B_{1,1}(\theta) \equiv - \frac{R_{1,1}(\theta)}{n_1'(\theta) } \mod n_1(\theta)$$
+
+As modulo calculations go, this one is easy. $n_1'(\theta) = \frac{1}{x+1} + (1 + 2 x^2) \psi$
+
+$$ B_{1,1}(\theta) = - \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi}{\frac{1}{x+1} + (1 + 2 x^2) \psi}$$
+
+$$ = - \frac{\frac{2x^4+2x^3+x^2+x}{2}\psi^2 + \frac{x}{2} \psi}{1 + (x+1)(1 + 2 x^2) \psi}$$
+
+%% $$ = \frac{\frac{2x^4+2x^3+x^2+x}{2}\psi^2 + \frac{x}{2} \psi}{1 + (2 x^3 + 2 x^2 + x + 1) \psi}$$
+
+$$ = - \frac{\frac{x}{2}\psi ( (2x^3+2x^2+x+1)\psi + 1)}{1 + (2 x^3 + 2 x^2 + x + 1) \psi}$$
+
+$$ = - \frac{x}{2}\psi$$
+
+Now we wish to compute $Q_{1,1}(\theta)$:
+
+$$ Q_{1,1}(\theta) = - \frac{R_{1,1}(\theta) + B_{1,1}(\theta) n_1'(\theta)}{n_1(\theta)}$$
+
+$$ Q_{1,1}(\theta) = - \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi - \frac{x}{2}\psi \left[\frac{1}{x+1} + (1 + 2 x^2) \psi\right]}{\theta + x \psi} = 0$$
+
+This division to obtain $Q_{1,1}$ will always be exact.  What might not be exact is the following division
+to obtain $C_{1}$.  If the division isn't exact, or if $C_1$ isn't a constant, then the integral is non-Liouvillian.
+
+$$ C_1 = \frac{b_{1,1}(\theta) - B_{1,1}'(\theta) - Q_{1,1}(\theta)}{n_1'(\theta)} $$
+
+$$B_{1,1}(\theta) = -\frac{x}{2}\psi \qquad\Longrightarrow\qquad B_{1,1}' = -\frac{2x^2+1}{2}\psi$$
+
+$$ C_1 = \frac{\frac{1}{2(x+1)} + \frac{2x^2+1}{2}\psi}{\frac{1}{x+1} + (1 + 2 x^2) \psi} = \frac{1}{2}$$
+
+A similar calculation yields
+
+$$B_{2,1}(\theta) = -\frac{x}{2}\psi \qquad C_2 = -\frac{1}{2}$$
+
+Plugging everything together, we conclude that:
+
+\begin{multline*}
+\int{{x\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx \\
+= x - \theta -\frac{\frac{x}{2}\psi}{\theta + x \psi} - \frac{\frac{x}{2}\psi}{\theta - x \psi} + \frac{1}{2}\ln(\theta + x\psi)- \frac{1}{2}\ln(\theta - x \psi)
+\end{multline*}
+
+$$ = x - \theta -\frac{x \psi \theta}{\theta^2 - x^2 \psi^2} + \frac{1}{2}\ln\frac{\theta + x\psi}{\theta - x \psi}$$
+
+Converting back to our original form:
+
+$$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
+$$= x - \ln(x+1) - {x e^{x^2}\ln(x+1)\over{\ln^2(x+1)-x^2 e^{2x^2}}}
++ {1\over2}\ln\frac{\ln(x+1) + x e^{x^2}}{\ln(x+1) - x e^{x^2}}$$
+
+\endexample
+
+\vfill\eject
+
+\section{Hermite Reduction}
+
+Another, more efficient, approach to handling the polynomials in
+denominators is to reduce their order until our denominator has only
+factors of multiplicity one.  We're attempting to do this:
+
+$$\int {N\over{V^n}} = {A\over{V^{n-1}}} + \int {B\over{V^{n-1}}}$$
+
+Differentiating:
+
+$${N\over{V^n}} = {A'\over{V^{n-1}}} - (n-1){AV'\over{V^n}} + {B\over{V^{n-1}}}$$
+
+and multiplying through by $V^n$:
+
+$$N = VA' - (n-1)AV' + BV$$
+$$N = (A'+B)V - (n-1)AV'$$
+
+This equation has the form of a polynomial Diophantine equation, and
+since we know $N$, $V$ and $V'$, we can use the extended Euclidian
+algorithm to find $(n-1)A$ and $(A'+B)$, which easily gives us $A$ and
+$B$.  So long as $V$ is square-free, we know that $\gcd(V,V')=1$
+(EXPLAIN), so we're guaranteed a solution (STATE THEOREM).
+
+\example
+Redo Example \ref{hard log-exp integral} using Hermite reduction.
+
+$$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
+
+We proceed as before, putting the integral into Liouvillian form
+and dividing out $\frac{x}{x+1}$ to obtain a proper fraction:
+
+$$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
+
+Now we apply the Hermite reduction, using:
 
 $$V = \theta^2 - x^2\psi^2 \qquad V' = {2\over{x+1}}\theta - (2x+4x^3)\psi^2$$
+
+$$N = {{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3} $$
+
+\vfill\eject
+
+Our polynomial Diophantine equation is:
 
 $${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
   = sV + tV'$$
@@ -208,30 +509,27 @@ $${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
 
 \end{verbatim}}
 
+So, our solution is:
+
 $${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
   = {-2x\over{x+1}}\psi V + x\psi\theta V'$$
-
-
-
-$$\int {N\over{V^n}} = {A\over{V^{n-1}}} + \int {B\over{V^{n-1}}}$$
-
-$${N\over{V^n}} = {A'\over{V^{n-1}}} - (n-1){AV'\over{V^n}} + {B\over{V^{n-1}}}$$
-
-$$N = VA' - (n-1)AV' + BV$$
-$$N = (A'+B)V - (n-1)AV'$$
 
 $$A = -x\psi\theta$$
 $$A' = -\psi\theta - x(2x)\psi\theta - x\psi{1\over{x+1}}$$
 $$A' + B = {-2x\over{x+1}}\psi$$
 $$B = (2x^2+1)\psi\theta - {x\over{x+1}}\psi$$
 
-{\LARGE$$\int {x\over{x+1}} dx  - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}}$$}
+Which reduces our integral to:
+
+%% {\LARGE$$\int {x\over{x+1}} - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}} dx$$}
 
 {\LARGE$$x - \theta - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}}$$}
 
-\vfill\eject
+%% \vfill\eject
 
-{\LARGE$$x - \theta - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}}$$}
+%% {\LARGE$$x - \theta - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}}$$}
+
+Now we can compute a Rothstein-Trager resultant:
 
 {\small\begin{verbatim}
 
@@ -239,6 +537,14 @@ $$B = (2x^2+1)\psi\theta - {x\over{x+1}}\psi$$
 
          2  2     2  6      2  5      2  4      2  3      2  2      2      2          2
 (%o374) p  x  (4 p  x  + 8 p  x  + 8 p  x  + 8 p  x  + 5 p  x  + 2 p  x + p  - 1) (4 z  - 1)
+\end{verbatim}}
+
+This result is in ${\mathbb C}(x,\psi)[z]$, so the first two factors are just
+{\it content} (EXPLAIN THIS TERM).  The result is really just $4z^2-1$,
+which has two solutions: $\pm\frac{1}{2}$.  Substituting in these two
+values for $z$, we obtain the corresponding logarithms:
+
+{\small\begin{verbatim}
 (%i375) gcd((2*x^2+1)*p*t-(x/(x+1))*p-(1/2)*vtick,v);
 
                                               p x + t
@@ -261,3 +567,5 @@ $$\int{{x(x+1)\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))
 
 $$= x - \ln(x+1) - {x e^{x^2}\ln(x+1)\over{\ln^2(x+1)-x^2 e^{2x^2}}}$$
 $$+ {1\over2}\ln\left[\ln(x+1) + x e^{x^2}\right] - {1\over2}\ln\left[\ln(x+1) - x e^{x^2}\right]$$
+
+\endexample
