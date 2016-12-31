@@ -142,7 +142,7 @@ $$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$
 \begin{align*}
 R_{i,m_i}(\theta) & = c_{i,m_i+1} \\
 C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) & = c_{i,j} \qquad {}_{1<j\le m_i}\\
-C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i \left[ n_i(\theta)' - k' n_i(\theta) \deg_\theta n_i(\theta) \right] & = c_{i,1}
+C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i \left[ n_i'(\theta) - k' n_i(\theta) \deg_\theta n_i(\theta) \right] & = c_{i,1}
 \end{align*}
 
 %% $$-jC_{i,j}(\theta)n_i'(\theta) \equiv R_{i,j}(\theta) \mod n_i(\theta)$$
@@ -702,6 +702,127 @@ $$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\Psi + x  - \frac{2}{\ln 
 
 \endexample
 
+\vfill\eject
+
+\example
+Redo Example \ref{hard log-exp integral} using the exponential theory.
+
+$$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
+
+We proceed as before, putting the integral into Liouvillian form
+and dividing out $\frac{x}{x+1}$ to obtain a proper fraction:
+
+$$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
+
+This time, we'll operate in ${\mathbb C}(x,\theta = \ln (x+1),\psi = \exp x^2)$, treating
+this as an exponential extension of ${\mathbb C}(x,\theta)$.  We'll begin again by
+computing a partial fractions expansion, this time with respect to $\psi$:
+
+{\small\begin{verbatim}
+
+(%i1) divide(expand(x*((x^2*p^2-t^2)^2 + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t))),
+                expand((x+1)*(t^2-x^2*p^2)^2), t);
+
+          x             3  2       3  3      3  4      3  5       3  3
+(%o1)  [-----, t ((- 2 p  x ) - 2 p  x  - 4 p  x  - 4 p  x ) + 2 p  x ]
+        x + 1
+
+(%i2) partfrac(%o1[2]/((x+1)*(t^2-x^2*p^2)^2), p);
+
+       2     2             2  2      2  3    2     2             2  2      2  3
+      t  + (t  - t) x + 2 t  x  + 2 t  x    t  + (t  - t) x + 2 t  x  + 2 t  x
+(%o2) ----------------------------------- - -----------------------------------
+                     2     2                               2     2
+            (t + p x)  (2 x  + 2 x)               (p x - t)  (2 x  + 2 x)
+                                   2        3                        2        3
+              t + (t - 1) x + 2 t x  + 2 t x    t + (t - 1) x + 2 t x  + 2 t x
+            - ------------------------------- - -------------------------------
+                                2                                 2
+                    (p x + t) (x  + x)                (p x - t) (x  + x)
+
+\end{verbatim}}
+
+\begin{multline*}
+\int {x\over{x+1}} + \frac{\frac{2x^3 + 2x^2 + x +1}{2(x^2+x)}\theta^2 - \frac{x}{2(x^2+x)} \theta}{(\theta + x \psi)^2}
+       - \frac{\frac{2x^3+2x^2+x+1}{x^2+x}\theta - \frac{x}{x^2+x}}{(\theta + x \psi)} \\
+       - \frac{\frac{2x^3 + 2x^2 + x +1}{2(x^2+x)}\theta^2 - \frac{x}{2(x^2+x)} \theta}{(\theta - x \psi)^2}
+       + \frac{\frac{2x^3+2x^2+x+1}{x^2+x}\theta - \frac{x}{x^2+x}}{(\theta - x \psi)} dx
+\end{multline*}
+
+\begin{multline*}
+\int {x\over{x+1}} + \frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta}{(\theta + x \psi)^2}
+       - \frac{\frac{2x^2+1}{x}\theta - \frac{1}{x+1}}{(\theta + x \psi)} \\
+       - \frac{\frac{2x^2 +1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta}{(\theta - x \psi)^2}
+       + \frac{\frac{2x^2+1}{x}\theta - \frac{1}{x+1}}{(\theta - x \psi)} dx
+\end{multline*}
+
+$n_1(\psi) = \theta + x \psi$ and so
+
+$$c_{1,1}(\psi) = \frac{2x^2+1}{x}\theta - \frac{1}{x+1} \qquad
+c_{1,2}(\psi) = \frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta$$
+
+Now Theorem \ref{exponential integration theorem} tells us
+that
+
+$$R_{1,1}(\psi) = c_{1,2}(\psi) = \frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta$$
+
+$n_1'(\psi) = \frac{1}{x+1} + (1 + 2x^2)\psi$, so
+
+$$C_{1,1}(\psi) = - \frac{R_{1,1}(\psi)}{n_1'(\psi)} \mod n_1(\psi)$$
+$$ = - \frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta}{\frac{1}{x+1} + (1 + 2x^2)\psi} \mod \theta + x\psi$$
+
+This time, we do need to perform a modulo reduction, but as modulo reductions go, it's
+trivial.  Operating $\mod (\theta + x\psi)$ means that we're operating in a field
+where $\theta + x\psi = 0$, so $\psi = -\frac{\theta}{x}$.  (EXPLAIN WHY WE'RE
+REDUCING w.r.t $\psi$).  Making this substitution, we obtain:
+
+$$ C_{1,1}(\psi) = - \frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta}{\frac{1}{x+1} - \frac{1 + 2x^2}{x}\theta} $$
+$$ = - \frac{(2x^2 + 1)(x+1)\theta^2 - x \theta}{2x - 2(1 + 2x^2)(x+1)\theta} $$
+$$ = \frac{1}{2} \theta $$
+
+Now we wish to compute $Q_{1,1}(\psi)$.  There is no modulo reduction in
+this division, and it should always be exact.
+
+$$Q_{1,1}(\psi) = - \frac{R_{1,1}(\theta) + C_{1,1}(\theta) n_1'(\theta)}{n_1(\theta)}$$
+$$ = -\frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta + \frac{1}{2}\theta \left[\frac{1}{x+1} + (1 + 2x^2)\psi\right]}{\theta + x \psi}$$
+
+$$ = -\frac{\frac{2x^2 + 1}{2x}\theta^2 + \frac{1}{2}\theta \left[(1 + 2x^2)\psi\right]}{\theta + x \psi}
+= - \frac{2x^2 + 1}{2x} \theta$$
+
+%% Again substituting $\psi = -\frac{\theta}{x}$ (WHY?), we obtain:
+
+%% $$Q_{1,1}(\psi) = -\frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta + \frac{1}{2}\theta \left[\frac{1}{x+1} - (1 + 2x^2)]\frac{\theta}{x}\right]}{\theta + x \psi} = 0$$
+
+Having computed $C_{1,1}$ and $Q_{1,1}$, we are now able to compute $D_1$:
+
+$$ D_1 = \frac{c_{1,1} - C_{1,1}'(\psi) - Q_{1,1}(\psi)}{n_1'(\psi) - \frac{{\rm lm\,} n_1'(\psi)}{{\rm lm\,} n_1(\psi)} n_1(\psi)}$$
+
+$$ D_1 = \frac{- \frac{2x^2+1}{x}\theta + \frac{1}{x+1} - \frac{1}{2}\frac{1}{x+1} + \frac{2x^2 + 1}{2x} \theta}{\frac{1}{x+1} + (1 + 2x^2)\psi - \frac{1+2x^2}{x}(\theta + x \psi)}$$
+
+$$ D_1 = \frac{- \frac{1}{2}(2x^2+1)(x+1)\theta + \frac{1}{2} x}{x + x(x+1)(1 + 2x^2)\psi - (1+2x^2)(x+1)(\theta + x \psi)}$$
+
+$$ D_1 = \frac{- \frac{1}{2}(2x^2+1)(x+1)\theta + \frac{1}{2} x}{x - (1+2x^2)(x+1)\theta} = \frac{1}{2}$$
+
+A similar calculation for $n_2(\psi) = \theta - x \psi$ yields
+
+$$ C_{2,1} = - \frac{1}{2} \theta \qquad D_2 = - \frac{1}{2}$$
+
+In an exponential extension, our $D$ coefficients can affect our $A_0$ term...
+
+$$A_0' = a_0 - \sum_{i=1}^\nu D_i \,\frac{{\rm lm\,} n_1'(\psi)}{{\rm lm\,} n_1(\psi)} n_i(\theta)$$
+$$ = 0 - \frac{1}{2} \frac{(1+2x^2)\psi}{x\psi} + \frac{1}{2} \frac{-(1+2x^2)\psi}{- x\psi} = 0$$
+
+Integrating, we obtain $A_0 = C$, where $C$ is our constant of integration.  We end up with
+the same result that we obtained from the logarithmic theory:
+
+$$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
+$$= x - \theta + \frac{1}{2}\frac{\theta}{\theta + x \psi} - \frac{1}{2}\frac{\theta}{\theta - x \psi}
++ \frac{1}{2} \ln (\theta + x \psi) - \frac{1}{2} \ln (\theta - x \psi) $$
+$$= x - \theta - \frac{x \psi \theta}{\theta^2 - x^2 \psi^2}
++ \frac{1}{2} \ln \frac{\theta + x \psi}{\theta - x \psi}$$
+
+
+\endexample
 
 \begin{comment}
 \vfill\eject
