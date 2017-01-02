@@ -25,7 +25,7 @@ $$f = \sum_{i=0}^n a_i \theta^i
 $$a_i \in K \qquad b_{i,j}(\theta),n_i(\theta) \in K[\theta]$$
 
 If $f$ has
-a Liovillian anti-derivative $F$, then $F \in K(\theta, \Psi)$,
+an elementary anti-derivative $F$, then $F \in K(\theta, \Psi)$,
 where $K(\theta, \Psi)$ is a finite logarithmic extension
 of $K(\theta)$, $F$ has a partial fractions expansion of the form:
 
@@ -55,7 +55,7 @@ $$ C_i = \frac{b_{i,1}(\theta) - B_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta
 
 \proof
 
-By Theorem \ref{weak Liouville theorem}, a Liouvillian antiderivative
+By Theorem \ref{weak Liouville theorem}, an elementary antiderivative
 of $f$ can only exist in a finite logarithm extension $K(\theta, \Psi)$
 of $K(\theta)$ and therefore must have the form:
 
@@ -236,17 +236,17 @@ $${1\over2}\,i\,x \theta - \ln(x^2+1) = x\,\tan^{-1} x - \ln(x^2+1)$$
 
 \endexample
 
-\example Determine if $\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is Liouvillian.
+\example Determine if $\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is elementary.
 
 We can differentiate the series term wise, and if the resulting series
-can be identified with a Liouvillian function, then we need only to
-decide if that derivative can be integrated into a Liouvillian
+can be identified with an elementary function, then we need only to
+decide if that derivative can be integrated into an elementary
 function.  Using a standard identity for the Taylor series of $\ln
 (1-x)$, we determine that
 
 $$\frac{\ud}{\ud x} \left[ \sum_{n=0}^\infty \frac{1}{n^2} x^n \right] = \sum_{n=1}^\infty \frac{1}{n} x^{n-1} = \frac{1}{x}\ln (1-x)$$
 
-so we need to determine if $\int \frac{1}{x}\ln (1-x) \ud x$ is Liouvillian.  Working in the
+so we need to determine if $\int \frac{1}{x}\ln (1-x) \ud x$ is elementary.  Working in the
 differential field ${\mathbb C}(x,\theta = \ln (1-x))$, we're trying to integrate
 $\frac{1}{x}\theta \ud x$.  So, our integral must have the form
 
@@ -260,7 +260,7 @@ $$a_1' = \frac{1}{x} - c_2 \frac{1}{1-x}$$
 
 $\ln x$ is required to express $a_1$, but new logarithms are not
 allowed at this point in the algorithm.  Therefore,
-$\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is not Liouvillian.
+$\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is not elementary.
 
 \endexample
 
@@ -390,7 +390,7 @@ $$ Q_{1,1}(\theta) = - \frac{R_{1,1}(\theta) + B_{1,1}(\theta) n_1'(\theta)}{n_1
 $$ Q_{1,1}(\theta) = - \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi - \frac{x}{2}\psi \left[\frac{1}{x+1} + (1 + 2 x^2) \psi\right]}{\theta + x \psi} = 0$$
 
 This division to obtain $Q_{1,1}$ will always be exact.  What might not be exact is the following division
-to obtain $C_{1}$.  If the division isn't exact, or if $C_1$ isn't a constant, then the integral is non-Liouvillian.
+to obtain $C_{1}$.  If the division isn't exact, or if $C_1$ isn't a constant, then the integral is not elementary.
 
 $$ C_1 = \frac{b_{1,1}(\theta) - B_{1,1}'(\theta) - Q_{1,1}(\theta)}{n_1'(\theta)} $$
 
