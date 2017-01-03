@@ -37,7 +37,7 @@ $$A_i \in K \qquad B_{i,j}(\theta),n_i(\theta) \in K[\theta] \qquad C_i' = 0$$
 
 and the following relationships hold:
 
-$$ A_{n+1}' = 0 \qquad A_i' + (i+1) \frac{k'}{k} A_{i+1} = a_i $$
+$$ A_{n+1}' = 0 \qquad A_i' = a_i - (i+1) \frac{k'}{k} A_{i+1} $$
 
 $$ R_{i,m_i-1}(\theta) = b_{i,m_i}(\theta) $$
 
@@ -69,40 +69,66 @@ $$F = \sum_{i=0}^N A_i \theta^i
 + \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}(\theta)}{n_i(\theta)^j}
 + \sum_{i=1}^\eta C_i \Psi_i$$
 
-Now let's differentiate, remembering that $\theta' = \frac{k'}{k}$:
+Our basic
+logarithmic relationships:
+
+$$\ln ab = \ln a + \ln b \qquad\qquad \ln\frac{a}{b} = \ln a - \ln b$$
+
+allow us to assume, without loss of generality, that the $\Psi_i$'s
+are logarithms of irreducible polynomials, so
+let's differentiate, remembering that $\theta' = \frac{k'}{k}$:
 
 $$F' = \sum_{i=0}^N ( A_i' \theta^i + i \frac{k'}{k} A_i \theta^{i-1} )
 + \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}'(\theta) n_i(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
-  + \sum_{i=1}^\eta C_i \frac{D_i'(\theta)}{D_i(\theta)}$$
+  + \sum_{i=1}^\nu C_i \frac{n_i'(\theta)}{n_i(\theta)}$$
 
+\begin{comment}
 $$F' = A_0' + \sum_{i=1}^N ( A_i' \theta^i + i \frac{k'}{k} A_i \theta^{i-1} )
 + \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}'(\theta) n_i(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
-  + \sum_{i=1}^\eta C_i \frac{D_i'(\theta)}{D_i(\theta)}$$
+  + \sum_{i=1}^\nu C_i \frac{n_i'(\theta)}{n_i(\theta)}$$
+\end{comment}
 
+\begin{comment}
 \begin{multline*}
 F' = \sum_{i=0}^{N-1} \left[ A_i' + (i+1) \frac{k'}{k} A_{i+1} \right] \theta^{i} + A_N' \theta^N \\
 + \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}'(\theta) n_i(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
-  + \sum_{i=1}^\eta C_i \frac{D_i'(\theta)}{D_i(\theta)}
+  + \sum_{i=1}^\nu C_i \frac{n_i'(\theta)}{n_i(\theta)}
 \end{multline*}
+\end{comment}
 
 \begin{multline*}
 F' = A_N' \theta^N + \sum_{i=0}^{N-1} \left[ A_i' + (i+1) \frac{k'}{k} A_{i+1} \right] \theta^{i} \\
-+ \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j+1}'(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
-  + \sum_{i=1}^\eta C_i \frac{D_i'(\theta)}{D_i(\theta)}
++ \sum_{i=1}^\nu \left[ \frac{- M_i B_{i,M_i}(\theta) n_i'(\theta)}{n_i(\theta)^{M_i+1}} + \sum_{j=1}^{M_i-1} \frac{B_{i,j+1}'(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
+  + C_i \frac{n_i'(\theta)}{n_i(\theta)} \right]
 \end{multline*}
+
+$F'$ has the form of a partial fractions decomposition, but it is not
+a partial fractions decomposition because the numerators in the $B$
+terms violate the partial fractions degree bounds.  The problem
+is that the product $B_{i,j}(\theta) n_i'(\theta)$ might
+have degree greater than $\deg_\theta n_i(\theta)$.
+To fix this, let's
+divide the $-jB_{i,j}(\theta)n_i'(\theta)$ terms by $n_i(\theta)$
+(think polynomial long division) and rewrite them as a quotient
+and a remainder:
 
 $$ - j B_{i,j}(\theta) n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
 
+This fixes the $B$ terms, since $\deg Q_{i,j}(\theta) < \deg n_i(\theta)$
+and $\deg R_{i,j}(\theta) < \deg n_i(\theta)$.
+
+\begin{comment}
 \begin{multline*}
 F' = A_N' \theta^N + \sum_{i=0}^{N-1} \left[ A_i' + (i+1) \frac{k'}{k} A_{i+1} \right] \theta^{i} \\
 + \sum_{i=1}^\nu \left[ \sum_{j=1}^{M_i} \frac{B_{i,j+1}'(\theta) + Q_{i,j+1}(\theta) + R_{i,j}(\theta)}{n_i(\theta)^{j+1}}
   + \frac{B_{i,1}'(\theta) + Q_{i,1}(\theta) + C_i n_i'(\theta)}{n_i(\theta)} \right]
 \end{multline*}
+\end{comment}
 
 \begin{multline*}
 F' = A_N' \theta^N + \sum_{i=0}^{N-1} \left[ A_i' + (i+1) \frac{k'}{k} A_{i+1} \right] \theta^{i} \\
 + \sum_{i=1}^\nu \left[ \frac{R_{i,M_i}(\theta)}{n_i(\theta)^{M_i+1}}
-+ \sum_{j=1}^{M_i} \frac{B_{i,j+1}'(\theta) + Q_{i,j+1}(\theta) + R_{i,j}(\theta)}{n_i(\theta)^{j+1}}
++ \sum_{j=1}^{M_i-1} \frac{B_{i,j+1}'(\theta) + Q_{i,j+1}(\theta) + R_{i,j}(\theta)}{n_i(\theta)^{j+1}}
   + \frac{B_{i,1}'(\theta) + Q_{i,1}(\theta) + C_i n_i'(\theta)}{n_i(\theta)} \right]
 \end{multline*}
 
@@ -129,6 +155,27 @@ Since the highest order denominators in $F'$ have order $M_i + 1$, and
 they must match with $f$'s denominators of order $m_i$, we conclude
 that $M_i = m_i - 1$.
 
+To establish the remaining relationships, let's remember the definition of
+$R_{i,j}$ and $Q_{i,j}$:
+
+$$-j B_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
+
+Reducing this equation modulo $n_i(\theta)$, we obtain:
+
+$$-j B_{i,j}(\theta)n_i'(\theta) \equiv R_{i,j}(\theta) \mod n_i(\theta)$$
+
+Now we use the fact that $n_i(\theta)$ is {\it irreducible},
+and invoke Theorem ??, which states the quotient ring
+modulo a prime ideal is a field, so we can perform division:
+
+$$ B_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{jn_i'(\theta)} \mod n_i(\theta)$$
+
+This equation seems to identify $B_{i,j}(\theta)$ up to a multiple of $n_i(\theta)$,
+but if we remember our degree bound on partial fractions expansions,
+$\deg_\theta B_{i,j}(\theta) < \deg_\theta n_i(\theta)$, we see
+that in fact we've completely determined $B_{i,j}(\theta)$ from
+$R_{i,j}(\theta)$.
+
 \endtheorem
 
 \vfill\eject
@@ -137,8 +184,15 @@ that $M_i = m_i - 1$.
 
 Operating in ${\bf C}(x, \theta = \ln x)$, we evaluate:
 
-$$\int {1\over{\theta x}} = \int {{1\over x}\over{\theta}} = \int {{\theta '}\over{\theta}} = \ln \theta$$
-$$\int {1\over{x \ln x}} {\rm d}x = \ln \ln x$$
+$$\int {1\over{\theta x}} \ud x = \int {{1\over x}\over{\theta}} \ud x$$
+
+This has the form ?? with $n_1(\theta) = \theta$ with $b_{1,1}(\theta) = \frac{1}{x}$.
+
+$$C_1 = \frac{b_{1,1}(\theta)}{n_1'(\theta)} = \frac{\frac{1}{x}}{\frac{1}{x}} = 1$$
+
+so...
+
+$$\int {1\over{x \ln x}} {\rm d}x = \ln n_1(\theta) = \ln \ln x$$
 
 \endexample
 
@@ -146,20 +200,23 @@ $$\int {1\over{x \ln x}} {\rm d}x = \ln \ln x$$
 
 Again we'll use ${\bf C}(x, \theta = \ln x)$
 
-$$\int \theta = a\theta^2 + b\theta + \bar{c}$$
+$$\int \theta \ud x$$
 
-Differentiating both sides and collecting terms, we get:
+This has the form ?? with $n=1$ and $a_1 = 1$, so the integral can have degree two, and $A_2$ is a constant.
 
-$$\theta = a'\theta^2 + (2a\theta' + b')\theta + (b\theta' + \bar{c}')$$
+$$A_1' = a_1 - 2 A_2 \frac{k'}{k} = 1 - 2 A_2 \frac{1}{x}$$
 
-Equating like terms:
+$$A_1 = x - 2 A_2 \theta$$
 
-$$a' = 0$$
-$$2a\theta' + b' = 1 \qquad\Longrightarrow\qquad 2a\theta + b = \int 1 = x + d$$
-$$a = 0 \qquad b=x+d$$
-$$b\theta' + \bar{c}' = 0 \qquad\Longrightarrow\qquad 1 + {d\over x} + \bar{c}' = 0$$
-$$c = -x \qquad d = 0$$
-$$\int \theta = x\theta - x$$
+Since $A_1 \in {\bf C}(x)$, it can not involve $\theta$, so $A_2$ must be zero.  So $A_1$ is $x$ and
+
+$$A_0' = a_0 - A_1 \frac{k'}{k} = - x \frac{1}{x} = -1$$
+
+$$A_0 = -x$$
+
+We conclude that:
+
+$$\int \theta \ud x = x\theta - x$$
 $$\int \ln x \,{\rm d}x = x \ln x - x$$
 
 \endexample
@@ -168,37 +225,38 @@ $$\int \ln x \,{\rm d}x = x \ln x - x$$
 
 \example Compute $\int \tan^{-1} x\, {\rm d}x$
 
+\begin{comment}
+
 The ``standard'' approach to this integral would be to note that the
 derivative of $\tan^{-1} x$ is $1/(x^2+1)$ and use integration by parts:
 
 $$\int \tan^{-1} x\, {\rm d}x = x\, \tan^{-1}x - \int \frac{x\, {\rm d}x}{x^2+1}
 = x\, \tan^{-1}x - \ln(x^2+1) + C$$
 
+\end{comment}
+
 Using the differential algebra identity $\tan^{-1} x =
-{1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$, we use the differential field
-${\mathbb C}(x,\theta)$; $\theta = \ln {{ix-1}\over{ix+1}}$;
-$\theta' = - \frac{2i}{x^2+1}$ and compute
+{1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$ from
+Section \ref{sec:Liouvillian Forms}, we use the differential field
+${\mathbb C}(x,\theta)$; $\theta = \ln {{ix-1}\over{ix+1}}$; $\theta'
+= - \frac{2i}{x^2+1}$ and compute
 
 % {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}
 
 $$\int {1\over2}\,i\,\theta\, {\rm d}x$$
 
-Because our integrand has no denominator in $\theta$, Theorem
-\ref{basic logarithmic properties} tells us both that our
-integral can have no denominator in $\theta$ and that its
-$\theta$-degree can be at most two, so it must have the form
+This is in the form ?? with $n=1$ and $a_1=\frac{1}{2}i$, so
+Theorem \ref{logarithmic integration theorem} tells us that
+the $\theta$-degree of our integral is at most two, and
+$A_2$ is a constant.
 
-$$a_2\theta^2 + a_1\theta + a_0\qquad a_2,a_1 \in {\mathbb C}(x);\;
-a_0 \in {\mathbb C}(x,\ldots)$$
+$$A_1' = a_1 - 2 A_2 \frac{k'}{k} = {1\over2}\,i + 2 A_2 \frac{2i}{x^2+1}$$
 
-Now let's differentiate and equate like terms in $\theta$.  First,
+Since $A_1 \in {\mathbb C}(x)$, $A_2$ is zero and $A_1 = \frac{1}{2}ix + C$.
 
-$$a_2' = 0$$
+$$A_0' = a_0 - A_1 \frac{k'}{k} = (\frac{1}{2}ix + C_1) \frac{2i}{x^2+1}$$
 
-so $a_2$ must be a constant, say $c_2$.  Next,
-
-$$c_2\theta' + a_1' = {1\over2}\,i$$
-
+\begin{comment}
 Integrating both sides we obtain:
 
 $$c_2\theta + a_1 = {1\over2}\,i\,x + c_1$$
@@ -218,20 +276,23 @@ with the unknown $a_0$ and move all of our knowns to the right-hand
 side, taking advantage of our knowledge of $\theta'$:
 
 $$c_1\theta' + a_0' = {1\over2}\,i\,x \frac{2i}{x^2+1}$$
-$$c_1\theta' + a_0' = - \frac{x}{x^2+1}$$
+\end{comment}
+
+$$C_1\theta' + A_0' = - \frac{x}{x^2+1}$$
 
 Integrating both side we obtain:
 
-$$c_1\theta + a_0 = - \ln(x^2+1)$$
+$$C_1\theta + A_0 = - \ln(x^2+1)$$
 
-and remembering that $a_0$ can include new logarithmic extensions, we
+and remembering that $A_0$ can include new logarithmic extensions, we
 conclude that
 
-$$c_1 = 0 \qquad a_0 = - \ln(x^2+1)$$
+$$C_1 = 0 \qquad A_0 = - \ln(x^2+1)$$
 
-and therefore our integral is:
+and therefore our solution is:
 
-$${1\over2}\,i\,x \theta - \ln(x^2+1) = x\,\tan^{-1} x - \ln(x^2+1)$$
+$$\int {1\over2}\,i\,\theta\, {\rm d}x = {1\over2}\,i\,x \theta - \ln(x^2+1)$$
+$$\int \tan^{-1} x\, {\rm d}x = x\,\tan^{-1} x - \ln(x^2+1)$$
 
 
 \endexample
