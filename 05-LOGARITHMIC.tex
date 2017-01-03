@@ -19,8 +19,11 @@ irreducible polynomials in $K[\theta]$,
 and let $f$ be an element of $K(\theta)$
 with partial fractions expansion:
 
-$$f = \sum_{i=0}^n a_i \theta^i
-+ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{i,j}(\theta)}{n_i(\theta)^j}$$
+\begin{equation}
+\label{logarithmic integration theorem - integrand}
+f = \sum_{i=0}^n a_i \theta^i
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{b_{i,j}(\theta)}{n_i(\theta)^j}
+\end{equation}
 
 $$a_i \in K \qquad b_{i,j}(\theta),n_i(\theta) \in K[\theta]$$
 
@@ -29,9 +32,12 @@ an elementary anti-derivative $F$, then $F \in K(\theta, \Psi)$,
 where $K(\theta, \Psi)$ is a finite logarithmic extension
 of $K(\theta)$, $F$ has a partial fractions expansion of the form:
 
-$$F = \sum_{i=0}^{n+1} A_i \theta^i
+\begin{equation}
+\label{logarithmic integration theorem - integral}
+F = \sum_{i=0}^{n+1} A_i \theta^i
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i-1} \frac{B_{i,j}(\theta)}{n_i(\theta)^j}
-+ \sum_{i=1}^\nu C_i \Psi_i$$
++ \sum_{i=1}^\nu C_i \Psi_i
+\end{equation}
 
 $$A_i \in K \qquad B_{i,j}(\theta),n_i(\theta) \in K[\theta] \qquad C_i' = 0$$
 
@@ -186,7 +192,8 @@ Operating in ${\bf C}(x, \theta = \ln x)$, we evaluate:
 
 $$\int {1\over{\theta x}} \ud x = \int {{1\over x}\over{\theta}} \ud x$$
 
-This has the form ?? with $n_1(\theta) = \theta$ with $b_{1,1}(\theta) = \frac{1}{x}$.
+This has the form of equation \eqref{logarithmic integration theorem - integrand}
+with $n_1(\theta) = \theta$, $m_1 = 1$ and $b_{1,1}(\theta) = \frac{1}{x}$.
 
 $$C_1 = \frac{b_{1,1}(\theta)}{n_1'(\theta)} = \frac{\frac{1}{x}}{\frac{1}{x}} = 1$$
 
@@ -202,7 +209,8 @@ Again we'll use ${\bf C}(x, \theta = \ln x)$
 
 $$\int \theta \ud x$$
 
-This has the form ?? with $n=1$ and $a_1 = 1$, so the integral can have degree two, and $A_2$ is a constant.
+This has the form of equation \eqref{logarithmic integration theorem - integrand}
+with $n=1$ and $a_1 = 1$, so the integral can have degree two, and $A_2$ is a constant.
 
 $$A_1' = a_1 - 2 A_2 \frac{k'}{k} = 1 - 2 A_2 \frac{1}{x}$$
 
@@ -245,7 +253,8 @@ ${\mathbb C}(x,\theta)$; $\theta = \ln {{ix-1}\over{ix+1}}$; $\theta'
 
 $$\int {1\over2}\,i\,\theta\, {\rm d}x$$
 
-This is in the form ?? with $n=1$ and $a_1=\frac{1}{2}i$, so
+This is in the form of equation \eqref{logarithmic integration theorem - integrand}
+with $n=1$ and $a_1=\frac{1}{2}i$, so
 Theorem \ref{logarithmic integration theorem} tells us that
 the $\theta$-degree of our integral is at most two, and
 $A_2$ is a constant.
