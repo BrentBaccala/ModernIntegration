@@ -32,11 +32,9 @@ an elementary anti-derivative $F$, then $F \in K(\theta, \Psi)$,
 where $K(\theta, \Psi)$ is a finite logarithmic extension
 of $K(\theta)$, $F$ has a partial fractions expansion of the form:
 
-\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
-
 \begin{equation}
 \label{logarithmic integration theorem - integral}
-F = c_{n+1} \theta^{n+1} + \sum_{i=1}^{n} \left[ A_i + c_i \right] \theta^i + \overbar{A_0}
+F = c_{n+1} \theta^{n+1} + \sum_{i=1}^{n} \left[ A_i + c_i \right] \theta^i + A_0
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i-1} \frac{B_{i,j}(\theta)}{n_i(\theta)^j}
 + \sum_{i=1}^\nu C_i \Psi_i
 \end{equation}
@@ -45,7 +43,7 @@ F = c_{n+1} \theta^{n+1} + \sum_{i=1}^{n} \left[ A_i + c_i \right] \theta^i + \o
 \begin{equation*}
 \arraycolsep=10pt\def\arraystretch{0}
 \begin{array}{cccc}
-\overbar{A_0} \in K[\Psi] & A_i \in K & B_{i,j}(\theta),n_i(\theta) \in K[\theta] & c_i' = C_i' = 0 \\
+A_0 \in K[\Psi] & A_i \in K & B_{i,j}(\theta),n_i(\theta) \in K[\theta] & c_i' = C_i' = 0 \\
 & {}_{i \ne 0} & &
 \end{array}
 \end{equation*}
@@ -57,9 +55,7 @@ and the following relationships hold:
 
 $$ \left[ A_n + (n+1) c_{n+1} \theta \right]' = a_n $$
 
-$$ \left[ A_i + (i+1) c_{i+1} \theta \right]' = a_i - (i+1) \frac{k'}{k} A_{i+1} \qquad {}_{1\le i<n}$$
-
-$$ \left[ \overbar{A_0} + c_1 \theta \right]' = a_0 - \frac{k'}{k} A_{1} $$
+$$ \left[ A_i + (i+1) c_{i+1} \theta \right]' = a_i - (i+1) \frac{k'}{k} A_{i+1} \qquad {}_{0\le i<n}$$
 
 $$ R_{i,m_i-1}(\theta) = b_{i,m_i}(\theta) $$
 
@@ -241,13 +237,11 @@ $$A_1 + 2 c_2 \theta = x$$
 
 Since $A_1 \in {\bf C}(x)$, it can not involve $\theta$, so $A_1 = x$ and $c_2 = 0$.
 
-\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+$$\left[ A_0 + c_1 \theta \right]' = a_0 - \frac{k'}{k} A_1 = 0 - \frac{1}{x} x = -1$$
 
-$$\left[ \overbar{A_0} + c_1 \theta \right]' = a_0 - \frac{k'}{k} A_1 = 0 - \frac{1}{x} x = -1$$
+$$A_0 + c_1 \theta = -x$$
 
-$$\overbar{A_0} + c_1 \theta = -x$$
-
-So $\overbar{A_0} = -x$ and $c_1 = 0$.  Plugging $\overbar{A_0}$, $A_1$, $c_1$ and $c_2$ into
+So $A_0 = -x$ and $c_1 = 0$.  Plugging $A_0$, $A_1$, $c_1$ and $c_2$ into
 equation \eqref{logarithmic integration theorem - integral} we get:
 
 $$\int \theta \ud x = x\theta - x$$
