@@ -59,11 +59,13 @@ and the following relationships hold:
 \refstepcounter{equation}
 \begin{equation}
 \tag{\theequation a}
+\label{eq: logarithmic An}
 \left[ A_n + (n+1) c_{n+1} \theta \right]' = a_n
 \end{equation}
 
 \begin{equation}
 \tag{\theequation b}
+\label{eq: logarithmic Ai's}
 \left[ A_i + (i+1) c_{i+1} \theta \right]' = a_i - (i+1) \frac{k'}{k} A_{i+1} \qquad {}_{0\le i<n}
 \end{equation}
 
@@ -219,6 +221,46 @@ that in fact we've completely determined $B_{i,j}(\theta)$ from
 $R_{i,j}(\theta)$.
 
 \endtheorem
+
+A few comments are in order.  First, let's recall equations
+\eqref{eq: logarithmic An} and \eqref{eq: logarithmic Ai's}:
+
+\begin{equation}
+\left[ A_n + (n+1) c_{n+1} \theta \right]' = a_n
+\tag{\ref{eq: logarithmic An}}
+\end{equation}
+
+\begin{equation}
+\left[ A_i + (i+1) c_{i+1} \theta \right]' = a_i - (i+1) \frac{k'}{k} A_{i+1}
+\tag{\ref{eq: logarithmic Ai's}}
+\end{equation}
+
+These equations both require integration of the right hand side in the
+underlying field $K$.  The resulting integral must take the form of a
+element of $K$ (that's the $A_i$), plus possibly a constant times a
+single additional logarithm, $\theta$ itself.  Liouville's
+theorem \ref{weak Liouville theorem} tells us that integrals can
+generally include an arbitrary number of additional logarithms.  The
+integrations required by
+\eqref{eq: logarithmic An} and \eqref{eq: logarithmic Ai's}
+are more restrictive; the only additional logarithm they can include
+is $\theta$, which makes sense because $\theta$ is not part of the
+underlying field $K$, but could easily appear in the final result
+because it already appears in the original integrand.
+
+The exception is $A_0$, since it can include arbitrary additional
+logarithms, not just $\theta$.  It's version of equation
+\eqref{eq: logarithmic Ai's} reads:
+
+\begin{equation}
+\left[ A_0 + c_1 \theta \right]' = a_0 - \frac{k'}{k} A_1
+\end{equation}
+
+So, this integral can include a logarithm $\theta$, just like the
+others, as well as additional logarithms collapsed into the $A_0$
+term.  The $c_0$ term, by the way, does not appear in any of the
+theorem's equations, but a moment's thought shows that $c_0$ is
+merely the constant of integration.
 
 \vfill\eject
 
