@@ -33,7 +33,7 @@ where $K(\theta, \Psi)$ is a finite logarithmic extension
 of $K(\theta)$, $F$ has a partial fractions expansion of the form:
 
 % Needed to squeeze this theorem onto one page
-\vskip -10pt
+% \vskip -10pt
 
 \begin{equation}
 \label{logarithmic integration theorem - integral}
@@ -62,19 +62,52 @@ and the following relationships hold:
 \end{eqnarray}
 \end{subequations}
 
-$$ R_{i,m_i-1}(\theta) = b_{i,m_i}(\theta) $$
+\begin{comment}
+\begin{IEEEeqnarray*}{rClc}
+R_{i,m_i-1}(\theta) &=& b_{i,m_i}(\theta) & \IEEEyessubnumber \\*[10pt]
+R_{i,j}(\theta) &=& b_{i,j+1}(\theta) - B_{i,j+1}'(\theta) - Q_{i,j+1}(\theta) \qquad{}_{1\le j<m_i-1}&  \IEEEyessubnumber \\
+B_{i,j}(\theta) &\equiv& - \frac{R_{i,j}(\theta)}{j n_i'(\theta) } \mod n_i(\theta) &  \IEEEyesnumber \\*[10pt]
+Q_{i,j}(\theta) &=& - \frac{R_{i,j}(\theta) + j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)} &  \IEEEyesnumber
+\end{IEEEeqnarray*}
+\end{comment}
 
-$$ B_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{j n_i'(\theta) } \mod n_i(\theta)$$
+\begin{subequations}
+\begin{eqnarray}
+R_{i,m_i-1}(\theta) &=& b_{i,m_i}(\theta) \\
+R_{i,j}(\theta) &=& b_{i,j+1}(\theta) - B_{i,j+1}'(\theta) - Q_{i,j+1}(\theta) \qquad{}_{1\le j<m_i-1}
+\end{eqnarray}
+\end{subequations}
 
-$$ Q_{i,j}(\theta) = - \frac{R_{i,j}(\theta) + j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)}$$
+%\begin{IEEEeqnarray}{rCl}
+\begin{eqnarray}
+B_{i,j}(\theta) &\equiv& - \frac{R_{i,j}(\theta)}{j n_i'(\theta) } \mod n_i(\theta)  \\*[5pt]
+Q_{i,j}(\theta) &=& - \frac{R_{i,j}(\theta) + j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)}
+\end{eqnarray}
+%\end{IEEEeqnarray}
 
-$$ R_{i,j}(\theta) = b_{i,j+1}(\theta) - B_{i,j+1}'(\theta) - Q_{i,j+1}(\theta) $$
+\begin{comment}
+\begin{IEEEeqnarray*}{rCl?c}
+\IEEEeqnarraymulticol{3}{c}{m_i > 1} & m_i = 1 \\*[10pt]
+C_i &=& \frac{b_{i,1}(\theta) - B_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta)} & C_i = \frac{b_{i,1}(\theta)}{n_i'(\theta)} \IEEEyesnumber
+\end{IEEEeqnarray*}
+\end{comment}
 
-%% $$ \Psi_i = \ln n_i(\theta)$$
+% IEEEeqnarray respects the settings of the environment, and we're
+% in a theorem environment with italic text.  Change this behavior
+% back to the default as described here:
+%
+%    http://moser-isi.ethz.ch/docs/typeset_equations.pdf (page 11)
 
-$$ C_i = \frac{b_{i,1}(\theta) - B_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta)} $$
+\renewcommand{\theequationdis}{{\normalfont (\theequation)}}
+\renewcommand{\theIEEEsubequationdis}{{\normalfont (\theIEEEsubequation)}}
 
-%% $$ - j B_{i,j}(\theta) n_i'(\theta) = R_{i,j}(\theta) \mod n_i(\theta)$$
+\begin{subequations}
+\begin{IEEEeqnarray}{rCl?r}
+C_i &=& \frac{b_{i,1}(\theta) - B_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta)} & {}_{m_i > 1} \\
+C_i &=& \frac{b_{i,1}(\theta)}{n_i'(\theta)} & {}_{m_i = 1}
+\end{IEEEeqnarray}
+\end{subequations}
+
 
 \proof
 
