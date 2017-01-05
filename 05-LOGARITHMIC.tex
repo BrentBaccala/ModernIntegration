@@ -82,7 +82,7 @@ of $K(\theta)$ and therefore must have the form:
 
 $$F = R + \sum_{i=1}^\eta C_i \Psi_i$$
 
-where $R \in K(\theta)$, and the $C_i$ are constants.
+where $R \in K(\theta)$, the $C_i$ are constants, and the $\Psi_i$ are logarithms.
 
 We can perform a partial fractions expansion on $R$:
 
@@ -103,8 +103,15 @@ logarithmic relationships:
 $$\ln ab = \ln a + \ln b \qquad\qquad \ln\frac{a}{b} = \ln a - \ln b$$
 
 allow us to assume, without loss of generality, that the $\Psi_i$'s
-are logarithms of irreducible polynomials, so
-let's differentiate, remembering that $\theta' = \frac{k'}{k}$:
+are logarithms of irreducible polynomials.  Some of those irreducible
+polynomials will exist solely in our underlying field $K$, and those
+we collapse into $A_0$, noting that this makes $A_0$ unique among the
+$A_i$'s because it can include additional logarithms.  The remaining
+irreducible polynomials (those involving $\theta$) can be identified
+as $n_i(\theta)$'s, simply by increasing $i$ and adding new
+$n_i(\theta)$'s if needed.
+
+Now let's differentiate, remembering that $\theta' = \frac{k'}{k}$:
 
 $$F' = \sum_{i=0}^N \left[ A_i' \theta^i + i \frac{k'}{k} (A_i + c_i) \theta^{i-1} \right]
 + \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}'(\theta) n_i(\theta) - j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)^{j+1}}
