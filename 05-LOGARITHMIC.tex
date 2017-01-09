@@ -208,7 +208,7 @@ the degree of $F'$ is $N-1$, since otherwise the $N-1$ coefficient would be zero
 $$A_{N-1}' + N \frac{k'}{k} A_N = 0  \qquad\Longrightarrow\qquad A_{N-1}' = (- N A_N ) \frac{k'}{k}$$
 
 Since $A_N$ is constant, this could only be satisfied by $A_{N-1} = - N A_N \theta$,
-contradicting the transcendence of $\theta$ (MORE DETAIL).
+contradicting the assumption that $A_{N-1} \in K$.
 
 Performing a partial fractions decomposition of $f$:
 
@@ -361,14 +361,15 @@ $$\int {1\over2}\,i\,\theta\, {\rm d}x$$
 This is in the form of equation \eqref{logarithmic integration theorem - integrand}
 with $n=1$ and $a_1=\frac{1}{2}i$, so
 Theorem \ref{logarithmic integration theorem} tells us that
-the $\theta$-degree of our integral is at most two, and
-$A_2$ is a constant.
+the $\theta$-degree of our integral is at most two.
 
-$$A_1' = a_1 - 2 A_2 \frac{k'}{k} = {1\over2}\,i + 2 A_2 \frac{2i}{x^2+1}$$
+$$\left[ A_1 + 2 c_2 \theta \right]' = a_1 = {1\over2}\,i$$
 
-Since $A_1 \in {\mathbb C}(x)$, $A_2$ is zero and $A_1 = \frac{1}{2}ix + C$.
+$$A_1 + 2 c_2 \theta = {1\over2}\,i x$$
 
-$$A_0' = a_0 - A_1 \frac{k'}{k} = (\frac{1}{2}ix + C_1) \frac{2i}{x^2+1}$$
+Since $A_1 \in {\mathbb C}(x)$, $c_2$ is zero and $A_1 = \frac{1}{2}ix$.
+
+$$\left[ A_0 + c_1 \theta \right]' = a_0 - A_1 \frac{k'}{k} = - \frac{1}{2}ix \frac{-2i}{x^2+1}$$
 
 \begin{comment}
 Integrating both sides we obtain:
@@ -392,26 +393,28 @@ side, taking advantage of our knowledge of $\theta'$:
 $$c_1\theta' + a_0' = {1\over2}\,i\,x \frac{2i}{x^2+1}$$
 \end{comment}
 
-$$C_1\theta' + A_0' = - \frac{x}{x^2+1}$$
+$$\left[ A_0 + c_1\theta \right]' = - \frac{x}{x^2+1}$$
 
-Integrating both side we obtain:
+%% Integrating both side we obtain:
 
-$$C_1\theta + A_0 = - \ln(x^2+1)$$
+$$A_0 + c_1\theta = - \frac{1}{2}\ln(x^2+1)$$
 
-and remembering that $A_0$ can include new logarithmic extensions, we
+Remembering that $A_0$ can include new logarithmic extensions, we
 conclude that
 
-$$C_1 = 0 \qquad A_0 = - \ln(x^2+1)$$
+$$c_1 = 0 \qquad A_0 = - \frac{1}{2}\ln(x^2+1)$$
 
 and therefore our solution is:
 
-$$\int {1\over2}\,i\,\theta\, {\rm d}x = {1\over2}\,i\,x \theta - \ln(x^2+1)$$
-$$\int \tan^{-1} x\, {\rm d}x = x\,\tan^{-1} x - \ln(x^2+1)$$
+$$\int {1\over2}\,i\,\theta\, {\rm d}x = {1\over2}\,i\,x \theta - \frac{1}{2}\ln(x^2+1)$$
+$$\int \tan^{-1} x\, {\rm d}x = x\,\tan^{-1} x - \frac{1}{2}\ln(x^2+1)$$
 
 
 \endexample
 
-\example Determine if $\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is elementary.
+\vfill\eject
+
+\example Determine if $\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is an elementary function.
 
 We can differentiate the series term wise, and if the resulting series
 can be identified with an elementary function, then we need only to
@@ -423,17 +426,13 @@ $$\frac{\ud}{\ud x} \left[ \sum_{n=0}^\infty \frac{1}{n^2} x^n \right] = \sum_{n
 
 so we need to determine if $\int \frac{1}{x}\ln (1-x) \ud x$ is elementary.  Working in the
 differential field ${\mathbb C}(x,\theta = \ln (1-x))$, we're trying to integrate
-$\frac{1}{x}\theta \ud x$.  So, our integral must have the form
+$\frac{1}{x}\theta \ud x$.  Equation \eqref{eq: logarithmic An} reads:
 
-$$I = c_2 \theta^2 + a_1 \theta + \bar{a_0}$$
+$$\left[ A_1 + 2 c_2 \theta \right]' = \frac{1}{x}$$
 
-$$I' = \left[ c_2 \frac{1}{1-x} + a_1' \right] \theta + \left[ a_1 \frac{1}{1-x} + \bar{a_0}' \right] = \frac{1}{x}\theta$$
+$$A_1 + 2 c_2 \theta = \ln x$$
 
-$$c_2 \frac{1}{1-x} + a_1' = \frac{1}{x}$$
-
-$$a_1' = \frac{1}{x} - c_2 \frac{1}{1-x}$$
-
-$\ln x$ is required to express $a_1$, but new logarithms are not
+$\ln x$ is required to express $A_1$, but new logarithms are not
 allowed at this point in the algorithm.  Therefore,
 $\sum_{n=0}^\infty \frac{1}{n^2} x^n$ is not elementary.
 
