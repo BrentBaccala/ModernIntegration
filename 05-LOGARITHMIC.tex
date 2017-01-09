@@ -307,7 +307,9 @@ $$\int {1\over{x \ln x}} {\rm d}x = \ln n_1(\theta) = \ln \ln x$$
 
 \endexample
 
-\example Compute $\int \ln x \,{\rm d}x$
+\example
+\label{ex: integrate ln x}
+Compute $\int \ln x \,{\rm d}x$
 
 Again we'll use ${\bf C}(x, \theta = \ln x)$
 
@@ -590,6 +592,68 @@ Converting back to our original form:
 $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
 $$= x - \ln(x+1) - {x e^{x^2}\ln(x+1)\over{\ln^2(x+1)-x^2 e^{2x^2}}}
 + {1\over2}\ln\frac{\ln(x+1) + x e^{x^2}}{\ln(x+1) - x e^{x^2}}$$
+
+\endexample
+
+\vfill\eject
+
+\example
+Compute
+$$\int \left[ (\ln(\ln x))^2 \ln x - \frac{2}{\ln x}(\ln(\ln x) +1) \right] dx$$
+
+We'll use the extension ${\bf C}(x,\theta,\psi)$
+where $\theta = \ln x$ and $\psi = \ln \theta = \ln \ln x$.
+Converting to Liouvillian form, our integral becomes
+
+$$\int \left[ \psi^2 \theta - \frac{2}{\theta}(\psi+1) \right] dx
+= \int \left[ \theta \psi^2 - \frac{2}{\theta}\psi - \frac{2}{\theta} \right] dx$$
+
+Since we need $\theta$ to construct $\psi$, our extensions nest
+in only a single way:
+
+% Define block style
+\tikzstyle{extension} = [draw, fill=blue!20, text width=8em, text centered,
+  minimum width=10em, minimum height=3em, rounded corners]
+
+% Bizarre \,{=}\, syntax is to get spacing right around equal signs
+\begin{center}
+\begin{tikzpicture}
+\node (p1) [extension] {${\bf C}(x,\theta,\psi)$ \\ $\psi \,{=}\, \ln \theta$};
+\node (p2) [extension, below=0.2cm of p1] {${\bf C}(x,\theta)$ \\ $\theta \,{=}\, \ln x$};
+\node (p3) [extension, below=0.2cm of p2] {${\bf C}(x)$};
+\end{tikzpicture}
+\end{center}
+
+So, we'll work in ${\bf C}(x,\theta,\psi)$, recursing into
+${\bf C}(x,\theta)$ and ${\bf C}(x)$.  In ${\bf C}(x,\theta,\psi)$,
+$n=2$, and we identify the coefficients of our integrand:
+
+$$a_2 = \theta \qquad a_1 = - \frac{2}{\theta} \qquad a_0 = - \frac{2}{\theta}$$
+
+So equation \eqref{eq: logarithmic An} reads:
+
+$$\left[ A_2 + 3 c_3 \psi \right]' = a_2 = \theta$$
+
+We already performed this integration in example \ref{ex: integrate ln x}
+with the result:
+
+$$A_2 + 3 c_3 \psi = x\theta - x$$
+
+In this example, $A_2 \in {\mathbb C}(x,\theta)$, so $A_2 = x\theta -x$, $c_3=0$.
+
+$$\left[ A_1 + 2 c_2 \psi \right]' = a_1 - 2 \frac{\frac{1}{x}}{\theta}[x\theta - x]$$
+$$= -\frac{2}{\theta} - \frac{2}{x \theta}[x\theta - x] = -2$$
+
+$$A_1 + 2 c_2 \psi = -2x$$
+
+So $A_1 = -2x$ and $c_2 = 0$.  Finally,
+
+$$A_0' = a_0 - \frac{1}{x \theta}(-2x) = -\frac{2}{\theta} + \frac{2}{\theta} = 0$$
+
+So $A_0 = C$ and our result becomes:
+
+$$\int \left[ \theta \psi^2 - \frac{2}{\theta}(\psi+1) \right] dx = (x\theta -x)\psi^2 - 2x \psi$$
+
 
 \endexample
 
