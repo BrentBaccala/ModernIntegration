@@ -615,12 +615,13 @@ in only a single way:
 \tikzstyle{extension} = [draw, fill=blue!20, text width=8em, text centered,
   minimum width=10em, minimum height=3em, rounded corners]
 
-% Bizarre \,{=}\, syntax is to get spacing right around equal signs
 \begin{center}
 \begin{tikzpicture}
-\node (p1) [extension] {${\bf C}(x,\theta,\psi)$ \\ $\psi \,{=}\, \ln \theta$};
-\node (p2) [extension, below=0.2cm of p1] {${\bf C}(x,\theta)$ \\ $\theta \,{=}\, \ln x$};
-\node (p3) [extension, below=0.2cm of p2] {${\bf C}(x)$};
+
+\node (p3) [extension, label={[name=p2] ${\bf C}(x,\theta) \qquad \theta = \ln x$}] {${\bf C}(x)$};
+\node [fit=(p3)(p2), draw, rounded corners, label={[name=p1] ${\bf C}(x,\theta,\psi) \qquad \psi = \ln \theta$}] {};
+\node [fit=(p3)(p2)(p1), draw, rounded corners, inner sep=8pt] {};
+
 \end{tikzpicture}
 \end{center}
 
