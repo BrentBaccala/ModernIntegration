@@ -823,6 +823,106 @@ $$= x - \theta - \frac{x \psi \theta}{\theta^2 - x^2 \psi^2}
 
 \endexample
 
+\vfill\eject
+\section{Risch Equations over Normal Polynomials}
+
+Now let's expand our study to include Risch equations in more
+complicated differential fields, starting with normal polynomials,
+which will allow us to handle logarithmic extensions.
+
+Consider again such a Risch equation:
+
+$$r' + S r = T \qquad S,T,r \in K$$
+
+Once again, we can perform a partial fractions expansion on $S$, $T$,
+and $r$, except that this time our irreducible polynomials are more
+complicated that $(x-\gamma)$.  Consider one such normal irreducible
+polynomial $n(\theta)$:
+
+$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{-ja(\theta)n'(\theta)}{n(\theta)^{j+1}} + \cdots$$
+
+$$S = \frac{b(\theta)}{n(\theta)^k} + \cdots$$
+
+$$T = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
+
+Dividing the numerator of $r'$ by $n(\theta)$, we obtain:
+
+$$-ja(\theta)n'(\theta) = Q(\theta) n(\theta) + R(\theta)$$
+$$R_1(\theta) = -ja(\theta)n'(\theta) \mod n(\theta)$$
+
+$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{R(\theta)}{n(\theta)^{j+1}} + \cdots$$
+
+Plugging this all into the Risch equation, we obtain:
+
+$$\frac{R_1(\theta)}{n(\theta)^{j+1}} + \frac{R_2(\theta)}{n(\theta)^{j+k}} = \frac{c(\theta)}{n(\theta)^l}$$
+
+$$R_2(\theta) = a(\theta)b(\theta) \mod n(\theta)$$
+
+Since $n(\theta)$ is irreducible, $K/(n_i)$ is a field, so it has no zero divisors, and
+neither $R_1(\theta)$ and $R_2(\theta)$ are zero.
+
+Our three cases are as before, except that when $k=1$, our condition becomes:
+
+$$R_1(\theta) = -R_2(\theta) \mod n(\theta)$$
+
+$$ja(\theta)n'(\theta) = a(\theta)b(\theta) \mod n(\theta)$$
+
+Again, division is possible in a field, so
+
+$$j = \frac{b(\theta)}{n'(\theta)} \mod n(\theta)$$
+
+Our three cases become:
+
+\begin{enumerate}
+
+\item $k=0$ and $j = l-1$.
+
+\item $k=1$ and either $j=l-1$ or $j = \frac{b(\theta)}{n'(\theta)} \mod n(\theta)$.
+
+\item $k>1$ and $j=l-k$.
+
+\end{enumerate}
+
+Once we have determined the factors and multiplicities in the denominator,
+then we can proceed as before, clearing out the denominator and obtaining
+a polynomial equation.
+
+\vfill\eject
+
+\example Determine if $\int x^x dx$ has an elementary form.
+
+To handle this integral, we'll rewrite it as $\int e^{x \ln x} dx$
+and operate in the field ${\mathbb C}(\theta, \psi)$, where
+$\theta = \ln x$ and $\psi = \exp x\theta$.  So, we're
+trying to compute
+
+$$\int \psi\, dx$$
+
+Applying theorem \ref{exponential integration theorem}, we
+obtain the following Risch equation in
+${\mathbb C}(\theta)$:
+
+$$A_1' + k' A_1 = 1$$
+
+$$A_1' + (\theta + 1) A_1 = 1$$
+
+$$A=1 \qquad B=\theta +1 \qquad C=1$$
+
+Since $\deg A = 0$ and $\deg B=1$, $\deg A \ne \deg B + 1$,
+so we can't have cancellation on the left hand side.
+This means that
+
+$$\deg A_1 = \deg C - \max(\deg A - 1, \deg B) = 0 - \max(-1, 1) = -1$$
+
+which is impossible.  The only remaining case to consider
+is if $A_1$ is constant, which is also impossible.
+
+We conclude that this Risch equation has no solution
+in ${\mathbb C}(\theta)$, and that the original integral
+is not elementary.
+
+\endexample
+
 \begin{comment}
 \vfill\eject
 
