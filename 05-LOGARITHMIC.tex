@@ -1,9 +1,44 @@
 
 \mychapter{The Logarithmic Extension}
 
+When we express a function in Liouvillian form, we construct
+a tower of nested fields, starting with ${\mathbb C}(x)$
+at the bottom, and building up to the extension required
+to express our integral.
+
+For example, consider example \ref{double-log integral}:
+
+$$\int \left[ (\ln(\ln x))^2 \ln x - \frac{2}{\ln x}(\ln(\ln x) +1) \right] dx$$
+
+To express this integral, we need to construct $\ln (\ln x)$, which
+requires $\ln x$ to be constructed first.  Thus, we obtain nested
+fields according to the following structure:
+
+% Define block style
+\tikzstyle{extension} = [draw, fill=blue!20, text width=8em, text centered,
+  minimum width=10em, minimum height=3em, rounded corners]
+
+\begin{center}
+\begin{tikzpicture}
+
+\node (p3) [extension, label={[name=p2] ${\bf C}(x,\theta) \qquad \theta = \ln x$}] {${\bf C}(x)$};
+\node [fit=(p3)(p2), draw, rounded corners, label={[name=p1] ${\bf C}(x,\theta,\psi) \qquad \psi = \ln \theta$}] {};
+\node [fit=(p3)(p2)(p1), draw, rounded corners, inner sep=8pt] {};
+
+\end{tikzpicture}
+\end{center}
+
+Our integrand can now be expressed as a rational function in the
+top-most field:
+
+$$\int \left[ \theta \psi^2 - \frac{2}{\theta}\psi - \frac{2}{\theta} \right] dx$$
+
 Our basic strategy for integration is to always work in the top most
-field extension, reducing to some kind of problem that must be
-solved in the next lower extension.
+field extension, reducing to some kind of problem that must be solved
+in the next lower extension.  Since we only have three basic types of
+field extension, our aim is to develop a theory to handle each type.
+
+In this chapter, we'll analyze the logarithmic extension.
 
 For logarithmic extensions, the problem is particularly easy,
 since integration leads only to futher integration steps
@@ -598,6 +633,7 @@ $$= x - \ln(x+1) - {x e^{x^2}\ln(x+1)\over{\ln^2(x+1)-x^2 e^{2x^2}}}
 \vfill\eject
 
 \example
+\label{double-log integral}
 Compute
 $$\int \left[ (\ln(\ln x))^2 \ln x - \frac{2}{\ln x}(\ln(\ln x) +1) \right] dx$$
 
@@ -610,10 +646,6 @@ $$\int \left[ \psi^2 \theta - \frac{2}{\theta}(\psi+1) \right] dx
 
 Since we need $\theta$ to construct $\psi$, our extensions nest
 in only a single way:
-
-% Define block style
-\tikzstyle{extension} = [draw, fill=blue!20, text width=8em, text centered,
-  minimum width=10em, minimum height=3em, rounded corners]
 
 \begin{center}
 \begin{tikzpicture}
