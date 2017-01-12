@@ -923,6 +923,88 @@ is not elementary.
 
 \endexample
 
+\vfill\eject
+\section{Risch Equations over Special Polynomials}
+
+Finally, let's consider what happens when our partial
+fractions decomposition yields special polynomials
+in our denominator.
+
+$$r' + S r = T \qquad S,T,r \in K$$
+
+$$S = \frac{b(\theta)}{n(\theta)^k} + \cdots \qquad T = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
+
+$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{-ja(\theta)n'(\theta) + a'(\theta)n(\theta)}{n(\theta)^{j+1}} + \cdots$$
+
+$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{-ja(\theta)\frac{n'(\theta)}{n(\theta)} + a'(\theta)}{n(\theta)^{j}} + \cdots$$
+
+If the special polynomial is $\theta = \exp k$, then $\theta' = k' \theta$ and
+
+$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{-j k' a(\theta) + a'(\theta)}{n(\theta)^{j}} + \cdots$$
+
+Our Risch equation becomes:
+
+$$\frac{-j k' a(\theta) + a'(\theta)}{n(\theta)^{j}} + \cdots + \frac{a(\theta)b(\theta)}{n(\theta)^{k+j}} + \cdots
+= \frac{c(\theta)}{n(\theta)^l} + \cdots$$
+
+First, we need to consider if the leading term actually exists.  Could the numerator
+actually be zero?  If so, then $j k' A = A'$, but this could only happen if $A$
+were a constant multiple of $\theta^j$ (PROVE THIS), which contradicts the
+transcendance of $\theta$ over $K$.
+
+Our cases are:
+
+\begin{enumerate}
+\item $j+k = j$, so $k=0$ and either $j=l$ or $-j k' a + a' + b c = 0$,
+so $j = \frac{a' + b c}{k' a}$ (assuming that this fraction is an integer).
+\item $k>0$, so $j+k=l$, or $j=l-k$.
+\end{enumerate}
+
+There is additional issues that arises with special polynomials when
+solving a polynomial Risch equation:
+
+$$A r' + B r = C \qquad A,B,C \in K[\theta] \quad r \in K(\theta)$$
+
+If $K[\theta]$ has only normal polynomials, then this equation can be
+solved as described before, since $r$ must be a polynomial.
+In the special case, however, $p$ could have a special denominator.
+Expanding as before...
+
+$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{-j k' a(\theta) + a'(\theta)}{n(\theta)^{j}} + \cdots$$
+
+If $A$ and $B$ have equal degree, then their leading coefficients can cancel, and we obtain:
+
+$$\left[ -ja(\theta)k' + a'(\theta) \right] A(0) + a(\theta) B(0) = 0$$
+
+$$j = \frac{a(\theta) B(0) - a'(\theta) A(0)}{a(\theta)k'}$$
+
+$$\left[ jk' + \frac{a'(\theta)}{a(\theta) } \right] = \frac{B(0)}{A(0)}$$
+
+Integrating, we obtain:
+
+$$ jk + \ln a(\theta) = \int \frac{B(0)}{A(0)} dx$$
+
+We don't know $a(\theta)$, but $A$, $B$, and $k$ are all known, so solving
+this equation amounts to an integration step that must result in a
+constant multiple of $k$ plus a possible logarithm.
+
+This completes our determination of the denominator of $r$, and we
+are now reduced to a polynomial equation:
+
+$$A p' + B p = C \qquad A,B,C,p \in K[\theta]$$
+
+$$p = p_n \theta^n + \cdots \qquad p' = (p_n' + n p_n k') \theta^n + \cdots$$
+
+So the leading term on the left hand side is:
+
+$${\rm lc\,} A (p_n' + n p_n k') + {\rm lc\,} B p_n = 0$$
+
+$$n k' + \frac{p_n'}{p_n} = - \frac{{\rm lc}\, B}{{\rm lc}\, A}$$
+
+This equation has the same form as ?, so again, we integrate:
+
+$$n k + \ln p_n = - \int \frac{{\rm lc}\, B}{{\rm lc}\, A} dx$$
+
 \begin{comment}
 \vfill\eject
 
