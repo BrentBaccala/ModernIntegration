@@ -1,6 +1,7 @@
 
-\mychapter{Ring, Fields, and Polynomials}
+\mychapter{Commutative Algebra}
 
+\begin{comment}
 The author of a mathematics text, really any text in a technical
 subject, is faced with a difficult choice --- how much to leave out?
 How often to refer readers to references?  How much knowledge
@@ -15,6 +16,7 @@ control information flow.  These factor have influenced me to decide
 in favor of writing a larger and more comprehensive text, that aims to
 introduce abstract algebra as much it tries to teach integration
 theory.
+\end{comment}
 
 In this chapter I will outline the basic algebraic structures
 necessary to carry out the program sketched out in the previous
@@ -109,11 +111,11 @@ carry out division in a ring.  A field, on the other hand, is a
 mathematical system in which all four elementary operations ---
 addition, subtraction, multiplication, and division --- are defined.
 
-THEOREM (Zero Theorem)
+\theorem (The Zero Theorem)
 
 Given a ring ${\cal R}$, $\forall x\in{\cal R}, 0x=0$
 
-PROOF
+\proof
 
 From the equation $0x=0x+0x+(-0x)=(0+0)x+(-0x)=0x+(-0x)=0$.
 
@@ -140,7 +142,7 @@ conclude that $0x+(-0x)=0$.
 
 Thus, multiplication by zero is a property of all rings.
 
-END THEOREM
+\endtheorem
 
 The simplest example of a ring is the set of integers, which I shall
 denote as {\bf Z} (after the German word for number, {\it zahl}).  A pair
@@ -334,6 +336,61 @@ equivalence classes are the real numbers.  I could keep going.  These
 constructions are easy to form; their utility lies in our ability to
 relate them to real world problems.
 
+\mysection{Algebraic Extensions}
+\subsection*{\qquad The field ${\cal F}[x]$ mod $n(x)$}
+
+Both our quotient field and polynomial ring constructions are examples
+of {\it extensions}.  Simply put, when we use an algebraic system to
+construct a new algebraic system that includes the original system as
+a subset, then the new system is an {\it extension} of the
+original.\footnote{The key property is that the one system is a subset
+of the other, not the exact method of construction.}  So, ${\bf Z}[x]$
+is an extension of ${\bf Z}$ because we can identify ${\bf Z}$ as a
+subset of ${\bf Z}[x]$ and, in fact, even homomorphicly map ${\bf Z}$
+into ${\bf Z}[x]$.  Such an {\it inclusion homomorphism} should not be
+confused with an evaluation homomorphism, which would map the other
+way (from ${\bf Z}[x]$ into ${\bf Z}$).
+
+The only remaining type of extension that will be important to us is
+the {\it algebraic extension}.  It is another equivalence class
+construction that we build starting with a polynomial ring over a
+field, say ${\cal F}[x]$.  Our equivalence classes are all elements in
+${\cal F}[x]$ whose differences are multiples of some distinguished
+irreducible polynomial in ${\cal F}[x]$, called the {\it minimum
+polynomial} of the field.  And I do say {\it field}, because we don't
+need to use the quotient field construction with an algebraic
+extension; the ring (as we will see) is already a field.
+
+MORE HERE
+
+Polynomial long division (section \ref{sec:Long Division})
+can be used to reduce modulo polynomials, which allows
+us to perform addition, subtraction, and multiplication
+in an modulo field, but how do we perform division?
+The polynomial Diophantine equation algorithm
+described in section \ref{sec:Polynomial Diophantine Equations}
+can be used to solve the following equation:
+
+$$sx + tn = \gcd(x,n)$$
+
+Now, if $n$ is irreducible, its GCD with any polynomial
+of lower degree will be 1, so our equation becomes:
+
+$$sx + tn = 1$$
+
+Reducing mod $n$, we obtain
+
+$$sx \equiv 1 \mod n$$
+
+So $s$, when multiplied by $x$, yields 1, which is basically
+the definition of division.
+
+Again, like with the quotient field, I tend to be a bit loose with the
+notation.  Something like the Gaussian integers, which I wrote as
+${\bf Z}[i]; i^2=-1$, really should be expressed as equivalence
+classes modulo the polynomial $i^2+1$, i.e.  ${\bf Z}[i]/(i^2+1)$.
+
+
 \mysection{Long Division}
 \qquad [van der Waerden], \S3.4
 
@@ -513,7 +570,7 @@ details.
 
 \vfill\eject
 
-EXAMPLE
+\example
 
 Compute a GCD of $4x^4+13x^3+15x^2+7x+1$ and $2x^3+x^2-4x-3$ in ${\bf Q}[x]$.
 
@@ -530,9 +587,11 @@ by is $2\over35$, which both clears the denominators and divides out
 the common factor in the numerators to produce $x^2+2x+1$.  Both
 answers are acceptable.
 
+\endexample
+
 \vfill\eject
 
-EXAMPLE
+\example
 
 Compute the GCD of $5xy-5y^2-7x+7y$ and $2x^2-yx-y^2$ in ${\bf Q}[x,y]$.
 
@@ -579,6 +638,8 @@ and compute:
 Thus, $x-y$ is the GCD of the primitive polynomials, and it has unit
 content $\gcd_y(1,-y)$.  The GCD of the original contents
 ($1$ and $5y-7$) is 1, so the final result is again $x-y$.
+
+\endexample
 
 \vfill\eject
 
@@ -645,7 +706,7 @@ throughout the book.
 
 \vfill\eject
 
-%EXAMPLE
+\example
 
 Solve:
 
@@ -861,6 +922,7 @@ o57 : R
 
 \end{verbatim}}
 
+\endexample
 
 \vfill\eject
 
@@ -971,7 +1033,7 @@ We recurse on the first term until we have completed the desired construction.
 
 \vfill\eject
 
-EXAMPLE
+\example
 
 Use a square-free factorization of the denominator to compute the partial fractions expansion of $${x^2 + 3x + 2}\over{x^3-3x^2+4}$$
 
@@ -1037,6 +1099,8 @@ so,
 $${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {4\over{(x-2)^2}} + {1\over{(x-2)}}$$
 
 Again, verify this result using a computer algebra system.
+
+\endexample
 
 \vfill\eject
 
@@ -1180,37 +1244,6 @@ $$ = -(x+1)^3 + (x+1)^2 - \Big[-(x+1)^2\Big] + \Big[-(x+1) + y^2 \Big]
 
 
 \vfill\eject
-
-\mysection{Algebraic Extensions}
-
-Both our quotient field and polynomial ring constructions are examples
-of {\it extensions}.  Simply put, when we use an algebraic system to
-construct a new algebraic system that includes the original system as
-a subset, then the new system is an {\it extension} of the
-original.\footnote{The key property is that the one system is a subset
-of the other, not the exact method of construction.}  So, ${\bf Z}[x]$
-is an extension of ${\bf Z}$ because we can identify ${\bf Z}$ as a
-subset of ${\bf Z}[x]$ and, in fact, even homomorphicly map ${\bf Z}$
-into ${\bf Z}[x]$.  Such an {\it inclusion homomorphism} should not be
-confused with an evaluation homomorphism, which would map the other
-way (from ${\bf Z}[x]$ into ${\bf Z}$).
-
-The only remaining type of extension that will be important to us is
-the {\it algebraic extension}.  It is another equivalence class
-construction that we build starting with a polynomial ring over a
-field, say ${\cal F}[x]$.  Our equivalence classes are all elements in
-${\cal F}[x]$ whose differences are multiples of some distinguished
-irreducible polynomial in ${\cal F}[x]$, called the {\it minimum
-polynomial} of the field.  And I do say {\it field}, because we don't
-need to use the quotient field construction with an algebraic
-extension; the ring (as we will see) is already a field.
-
-MORE HERE
-
-Again, like with the quotient field, I tend to be a bit loose with the
-notation.  Something like the Gaussian integers, which I wrote as
-${\bf Z}[i]; i^2=-1$, really should be expressed as equivalence
-classes modulo the polynomial $i^2+1$, i.e.  ${\bf Z}[i]/(i^2+1)$.
 
 \mysection{Simple Field Extensions}
 
