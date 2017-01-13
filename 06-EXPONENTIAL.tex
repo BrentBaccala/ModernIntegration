@@ -448,10 +448,11 @@ order to match the right hand side.
 
 By checking all of $S$'s and $T$'s poles using this technique, we can
 identify all the poles in $r$'s denominator and determine the
-multiplicity with which they appear.
+multiplicity with which they appear.  This determines $r$'s
+denominator $d$ completely.
 
-Having done so, we can multiply through by this common denominator,
-clear the denominators, and produce a polynomial Risch equation:
+Having done so, we can replace $r$ with $p/d$, which clears the
+denominators and produces a polynomial Risch equation:
 
 $$A p' + B p = C \qquad A,B,C,p \in {\mathbb C}[x]$$
 
@@ -486,6 +487,12 @@ coefficients.
 The final case we need to consider is when $p$ is a constant, which
 would solve the Risch equation if and only if $C$ was a constant
 multiple of $B$, irregardless of $A$.
+
+\begin{enumerate}
+\item $\deg A = \deg B + 1$ and $\deg p =-\frac{{\rm lc}\,B}{{\rm lc}\,A} $
+\item $\deg p = \deg C - \max(\deg A - 1, \deg B)$
+\item $p$ is a constant and $pB = C$
+\end{enumerate}
 
 \vfill\eject
 
@@ -830,9 +837,11 @@ Now let's expand our study to include Risch equations in more
 complicated differential fields, starting with normal polynomials,
 which will allow us to handle logarithmic extensions.
 
-Consider again such a Risch equation:
+Consider again such a Risch equation, this time in a simple
+transcendental extension $K(\theta)$ of an arbitrary differential
+field $K$:
 
-$$r' + S r = T \qquad S,T,r \in K$$
+$$r' + S r = T \qquad S,T,r \in K(\theta)$$
 
 Once again, we can perform a partial fractions expansion on $S$, $T$,
 and $r$, except that this time our irreducible polynomials are more
@@ -842,25 +851,35 @@ polynomial $n(\theta)$:
 $$S = \frac{b(\theta)}{n(\theta)^k} + \cdots
 \qquad T = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
 
-$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{a'(\theta)n(\theta)-ja(\theta)n'(\theta)}{n(\theta)^{j+1}} + \cdots$$
-
-Dividing the numerator of $r'$ by $n(\theta)$, we obtain:
-
-$$-ja(\theta)n'(\theta) = Q(\theta) n(\theta) + R_1(\theta)$$
-$$R_1(\theta) = -ja(\theta)n'(\theta) \mod n(\theta)$$
-
-$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{R_1(\theta)}{n(\theta)^{j+1}} + \cdots$$
+$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad
+r' = \frac{a'(\theta)n(\theta)-ja(\theta)n'(\theta)}{n(\theta)^{j+1}} + \cdots = \frac{-ja(\theta)n'(\theta)}{n(\theta)^{j+1}} + \cdots$$
 
 Plugging this all into the Risch equation, we obtain:
 
+$$\frac{-ja(\theta)n'(\theta)}{n(\theta)^{j+1}} + \cdots + \frac{a(\theta) b(\theta)}{n(\theta)^{j+k}} + \cdots = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
+
+Both of the numerators on the left hand side could have $\theta$-degree greater than $\deg_\theta n(\theta)$,
+so we divide them by $n(\theta)$:
+
+% Dividing the numerator of $r'$ by $n(\theta)$, we obtain:
+
+% $$-ja(\theta)n'(\theta) = Q(\theta) n(\theta) + R_1(\theta)$$
+
+$$R_1(\theta) = -ja(\theta)n'(\theta) \mod n(\theta)$$
+$$R_2(\theta) = a(\theta)b(\theta) \mod n(\theta)$$
+
+% $$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad  r' = \frac{R_1(\theta)}{n(\theta)^{j+1}} + \cdots$$
+
+% Plugging this all into the Risch equation, we obtain:
+
 $$\frac{R_1(\theta)}{n(\theta)^{j+1}} + \frac{R_2(\theta)}{n(\theta)^{j+k}} = \frac{c(\theta)}{n(\theta)^l}$$
 
-$$R_2(\theta) = a(\theta)b(\theta) \mod n(\theta)$$
+% $$R_2(\theta) = a(\theta)b(\theta) \mod n(\theta)$$
 
 Since $n(\theta)$ is irreducible, $K/(n_i)$ is a field, so it has no zero divisors, and
 neither $R_1(\theta)$ and $R_2(\theta)$ are zero.
 
-Our three cases are as before, except that when $k=1$, our condition becomes:
+Our three cases are as before, except that when $k=1$, our cancellation condition becomes:
 
 $$R_1(\theta) = -R_2(\theta) \mod n(\theta)$$
 
