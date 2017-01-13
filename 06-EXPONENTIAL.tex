@@ -115,8 +115,10 @@ normal irreducible polynomials in $K[\theta]$,
 and let $f$ be an element of $K(\theta)$
 with partial fractions expansion:
 
-$$f = \sum_{i=0}^n a_i \theta^i + \sum_{j=1}^{l} \frac{b_{j}}{\theta^j}
-+ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{c_{i,j}(\theta)}{n_i(\theta)^j}$$
+\begin{equation}
+f = \sum_{i=0}^n a_i \theta^i + \sum_{j=1}^{l} \frac{b_{j}}{\theta^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{c_{i,j}(\theta)}{n_i(\theta)^j}
+\end{equation}
 
 $$a_i, b_j \in K \qquad c_{i,j}(\theta),n_i(\theta) \in K[\theta]$$
 
@@ -125,30 +127,45 @@ an elementary anti-derivative $F$, then $F \in K(\theta, \Psi)$,
 where $K(\theta, \Psi)$ is a finite logarithm extension
 of $K(\theta)$, $F$ has a partial fractions expansion of the form:
 
-$$F = \sum_{i=0}^n A_i \theta^i + \sum_{j=1}^{l} \frac{B_{j}}{\theta^j}
+\begin{equation}
+\label{exponential integration theorem - integral}
+F = \sum_{i=0}^n A_i \theta^i + \sum_{j=1}^{l} \frac{B_{j}}{\theta^j}
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i+1} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
-+ \sum_{i=1}^\eta D_i \Psi_i$$
++ \sum_{i=1}^\nu D_i \ln n_i(\theta)
+\end{equation}
 
 $$A_i, B_j \in K \qquad C_{i,j}(\theta),n_i(\theta) \in K[\theta] \qquad D_i' = 0$$
 
 and the following relationships hold:
 
-$$A_0' + \sum_{i=1}^\nu D_i k' \deg_\theta n_i(\theta) = a_0$$
+\begin{equation}
+A_0' = a_0 - \sum_{i=1}^\nu D_i k' \deg_\theta n_i(\theta)
+\end{equation}
 
-$$A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j$$
+\begin{equation}
+A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j
+\end{equation}
 
-$$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$$
+%% \begin{equation}
+%% -jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)
+%% \end{equation}
 
-\begin{align*}
-R_{i,m_i}(\theta) & = c_{i,m_i+1} \\
-C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) & = c_{i,j} \qquad {}_{1<j\le m_i}\\
-C_{i,1}'(\theta) + Q_{i,1}(\theta) + D_i \left[ n_i'(\theta) - k' n_i(\theta) \deg_\theta n_i(\theta) \right] & = c_{i,1}
-\end{align*}
+\begin{subequations}
+\begin{eqnarray}
+R_{i,m_i}(\theta) & = & c_{i,m_i+1} \\
+R_{i,j-1}(\theta) & = & c_{i,j} - C_{i,j}'(\theta) - Q_{i,j}(\theta) \qquad {}_{1<j\le m_i}
+\end{eqnarray}
+\end{subequations}
 
 %% $$-jC_{i,j}(\theta)n_i'(\theta) \equiv R_{i,j}(\theta) \mod n_i(\theta)$$
 
-$$C_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{jn_i'(\theta)} \mod n_i(\theta)$$
+\begin{equation}
+C_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{jn_i'(\theta)} \mod n_i(\theta)
+\end{equation}
 
+\begin{equation}
+D_i = \frac{c_{i,1} - C_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta) - k' n_i(\theta) \deg_\theta n_i(\theta)}
+\end{equation}
 
 \vfill\eject
 \proof
