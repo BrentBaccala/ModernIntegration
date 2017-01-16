@@ -116,6 +116,7 @@ and let $f$ be an element of $K(\theta)$
 with partial fractions expansion:
 
 \begin{equation}
+\label{exponential integration theorem - integrand}
 f = \sum_{i=0}^n a_i \theta^i + \sum_{j=1}^{l} \frac{b_{j}}{\theta^j}
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{c_{i,j}(\theta)}{n_i(\theta)^j}
 \end{equation}
@@ -130,7 +131,7 @@ of $K(\theta)$, $F$ has a partial fractions expansion of the form:
 \begin{equation}
 \label{exponential integration theorem - integral}
 F = \sum_{i=0}^n A_i \theta^i + \sum_{j=1}^{l} \frac{B_{j}}{\theta^j}
-+ \sum_{i=1}^\nu \sum_{j=1}^{m_i+1} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{m_i-1} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
 + \sum_{i=1}^\nu D_i \ln n_i(\theta)
 \end{equation}
 
@@ -152,7 +153,7 @@ A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j
 
 \begin{subequations}
 \begin{eqnarray}
-R_{i,m_i}(\theta) & = & c_{i,m_i+1} \\
+R_{i,m_i-1}(\theta) & = & c_{i,m_i} \\
 R_{i,j-1}(\theta) & = & c_{i,j} - C_{i,j}'(\theta) - Q_{i,j}(\theta) \qquad {}_{1<j\le m_i}
 \end{eqnarray}
 \end{subequations}
@@ -177,7 +178,7 @@ By Theorem \ref{weak Liouville theorem}, an elementary antiderivative
 of $f$ can only exist in a finite logarithm extension $K(\theta, \Psi)$
 of $K(\theta)$ and therefore must have the form:
 
-$$F = R + \sum_{i=1}^n D_i \Psi_i$$
+$$F = R + \sum_{i=1}^\eta D_i \Psi_i$$
 
 where $R \in K(\theta)$, and the $D_i$ are constants.
 
@@ -188,7 +189,7 @@ special irreducible polynomial
 (Theorem \ref{basic exponential properties}):
 
 \begin{comment}
-$$F = \sum_{i=0}^n A_i \theta^i + \sum_{i=1}^\mu \sum_{j=1}^{l_i} \frac{B_{ij}(\theta)}{s_i(\theta)^j}
+$$F = \sum_{i=0}^N A_i \theta^i + \sum_{i=1}^\mu \sum_{j=1}^{l_i} \frac{B_{ij}(\theta)}{s_i(\theta)^j}
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
 + \sum_{i=1}^\eta D_i \Psi_i$$
 
@@ -196,15 +197,15 @@ Let's use the fact that $s_1 = \theta$ is the only
 special irreducible polynomial:
 \end{comment}
 
-$$F = \sum_{i=0}^n A_i \theta^i + \sum_{j=1}^{l} \frac{B_{j}}{\theta^j}
-+ \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
+$$F = \sum_{i=0}^N A_i \theta^i + \sum_{j=1}^{L} \frac{B_{j}}{\theta^j}
++ \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{C_{i,j}(\theta)}{n_i(\theta)^j}
 + \sum_{i=1}^\eta D_i \Psi_i$$
 
 Now let's differentiate, remembering that $\theta' = k'\theta$:
 
-$$F' = \sum_{i=0}^n (A_i' + i A_i k' )\theta^i
-  + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j}
-  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}'(\theta) n_i(\theta) - j C_{i,j}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
+$$F' = \sum_{i=0}^N (A_i' + i A_i k' )\theta^i
+  + \sum_{j=1}^{L} \frac{B_{j}' - j k' B_{j}}{\theta^j}
+  + \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{C_{i,j}'(\theta) n_i(\theta) - j C_{i,j}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
   + \sum_{i=1}^\eta D_i \frac{E_i'(\theta)}{E_i(\theta)}$$
 
 Let's examine the logarithmic elements $E_i(\theta)$.  If an $E_i(\theta)$ doesn't involve $\theta$, i.e, $E_i \in K$,
@@ -219,9 +220,9 @@ transcendence of the logarithm extension $\Psi$.
 So all of the $E_i(\theta)$'s must be normal, and therefore $F'$ must have the form:
 
 \begin{multline*}
-F' = A_0' + \sum D_k \frac{E_k'}{E_k} + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
-  + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
-  + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{C_{i,j}'(\theta) n_i(\theta) - j C_{i,j}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
+F' = A_0' + \sum D_k \frac{E_k'}{E_k} + \sum_{i=1}^N (A_i' + i A_i k' )\theta^i
+  + \sum_{j=1}^{L} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
+  + \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{C_{i,j}'(\theta) n_i(\theta) - j C_{i,j}(\theta) n_i'(\theta) }{n_i(\theta)^{j+1}}
   + \sum_{i=1}^\eta D_i \frac{n_i(\theta)'}{n_i(\theta)}
 \end{multline*}
 
@@ -246,10 +247,10 @@ we can ensure the cancellation of the leading terms,
 achieving our degree bounds.
 
 \begin{multline*}
-F' = A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i k' \deg_\theta n_i(\theta) + \sum_{i=1}^n (A_i' + i A_i k' )\theta^i
-  + \sum_{j=1}^{l} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
-  + \sum_{i=1}^\nu \Bigg[ \frac{R_{i,m_i}(\theta) }{n_i(\theta)^{m_i+1}}
-  + \sum_{j=2}^{m_i} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}} \\
+F' = A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i k' \deg_\theta n_i(\theta) + \sum_{i=1}^N (A_i' + i A_i k' )\theta^i
+  + \sum_{j=1}^{L} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
+  + \sum_{i=1}^\nu \Bigg[ \frac{R_{i,M_i}(\theta) }{n_i(\theta)^{M_i+1}}
+  + \sum_{j=2}^{M_i} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}} \\
   + \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta)
   + D_i \left[ n_i(\theta)' - k' n_i(\theta) \deg_\theta n_i(\theta) \right]}{n_i(\theta)} \Bigg]
 \end{multline*}
@@ -263,7 +264,8 @@ a partial fractions decomposition of $f$:
 $$f = \sum_{i=0}^n a_i \theta^i + \sum_{j=1}^{l} \frac{b_{j}}{\theta^j}
 + \sum_{i=1}^\nu \sum_{j=1}^{m_i} \frac{c_{ij}(\theta)}{n_i(\theta)^j}$$
 
-Setting $F' = f$ and equating like terms, we establish the
+Setting $F' = f$ and equating like terms, we establish that
+$n=N$, $l=L$, $M_i+1 = m_i$, and the
 relationships listed in the statement of the theorem.  The zero-order term:
 
 $$A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i k' \deg_\theta n_i(\theta) = a_0$$
@@ -631,19 +633,23 @@ $${{c_1}(\phi+1)} + {{c_2}(\phi-1)} = \phi \qquad c_1 = c_2 = {1\over2} $$
 
 giving us
 
-$$\int i \big[ {{1}\over{\phi-1}} + {{1}\over{\phi+1}} \big] dx$$
+$$\int \left[ {{i}\over{\phi-1}} + {{i}\over{\phi+1}} \right] dx$$
 
-Now, we have irreducible, square-free, non-monomial denominators, so
-the answer (if it exists) must be expressed in terms of their
-logarithms (Theorem \ref{basic exponential properties}):
+Now we have an integral in the form of equation
+\eqref{exponential integration theorem - integrand}
+with $\nu=2$, $n_1(\phi) = \phi -1$,
+$n_2(\phi) = \phi + 1$,
+$m_1=m_2=1$ and $c_{1,1} = c_{2,1} = i$.
 
-$$ d \ln(\phi+1) = {{d(\phi+1)}\over{\phi+1}} = {{i\phi\,dx}\over{\phi+1}} = [1 - {{1}\over{\phi+1}}]i\,dx$$
+$$D_{1} = \frac{c_{1,1}}{n_1'(\theta) - k' n_1(\theta) \deg_\phi n_1(\theta)} = \frac{i}{i \phi - i (\phi-1)} = 1$$
+$$D_{2} = \frac{c_{2,1}}{n_2'(\theta) - k' n_2(\theta) \deg_\phi n_2(\theta)} = \frac{i}{i \phi - i (\phi+1)} = -1$$
 
-$$ d \ln(\phi-1) = {{d(\phi-1)}\over{\phi-1}} = {{i\phi\,dx}\over{\phi-1}} = [1 + {{1}\over{\phi-1}}]i\,dx$$
+so by Theorem \ref{exponential integration theorem}
+the integral can be written:
 
-so the integral can be written:
+$$\int \left[ {{i}\over{\phi-1}} + {{i}\over{\phi+1}} \right] dx
+= \ln (\phi-1) - \ln(\phi+1) = \ln({{\phi-1}\over{\phi+1}})$$
 
-$$\int {{d(\phi-1)}\over{\phi-1}} - {{d(\phi+1)}\over{\phi+1}} = \ln (\phi-1) - \ln(\phi+1) = \ln({{\phi-1}\over{\phi+1}})$$
 $$ = \ln ({{e^{ix}-1}\over{e^{ix}+1}}) = \ln ({{e^{ix/2}-e^{-ix/2}}\over{e^{ix/2}+e^{-ix/2}}}) = \ln i {{\sin {x\over2}}\over{\cos {x\over2}}} = \ln \tan {x\over2} $$
 
 where I dropped the $i$ at the end because, as a constant multiple
