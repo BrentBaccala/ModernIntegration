@@ -360,6 +360,51 @@ $$\int \frac{\theta - \theta^{-1}}{2i} \,dx = -\frac{1}{2}(\theta + \theta^{-1})
 
 \endexample
 
+\vfill\eject
+
+\example Compute $\int \csc x \, {\rm d}x$
+
+We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
+
+$$\int {{2i}\over{\phi - \phi^{-1}}} \,dx = \int 2i {{\phi}\over{\phi^2 - 1}} \,dx$$
+
+Now we want a partial fractions expansion.  We could use a resultant,
+or the Euclidean G.C.D. algorithm, but it's simpler to just note that
+the denominator's a difference of squares and compute:
+
+$${{c_1}\over{\phi-1}} + {{c_2}\over{\phi+1}} = {{\phi}\over{\phi^2-1}} $$
+
+$${{c_1}(\phi+1)} + {{c_2}(\phi-1)} = \phi \qquad c_1 = c_2 = {1\over2} $$
+
+giving us
+
+$$\int \left[ {{i}\over{\phi-1}} + {{i}\over{\phi+1}} \right] dx$$
+
+Now we have an integral in the form of equation
+\eqref{exponential integration theorem - integrand}
+with $\nu=2$, $n_1(\phi) = \phi -1$,
+$n_2(\phi) = \phi + 1$,
+$m_1=m_2=1$ and $c_{1,1} = c_{2,1} = i$.
+
+$$D_{1} = \frac{c_{1,1}}{n_1'(\theta) - k' n_1(\theta) \deg_\phi n_1(\theta)} = \frac{i}{i \phi - i (\phi-1)} = 1$$
+$$D_{2} = \frac{c_{2,1}}{n_2'(\theta) - k' n_2(\theta) \deg_\phi n_2(\theta)} = \frac{i}{i \phi - i (\phi+1)} = -1$$
+
+so by Theorem \ref{exponential integration theorem}
+the integral can be written:
+
+$$\int \left[ {{i}\over{\phi-1}} + {{i}\over{\phi+1}} \right] dx
+= \ln (\phi-1) - \ln(\phi+1) = \ln({{\phi-1}\over{\phi+1}})$$
+
+$$ = \ln ({{e^{ix}-1}\over{e^{ix}+1}}) = \ln ({{e^{ix/2}-e^{-ix/2}}\over{e^{ix/2}+e^{-ix/2}}}) = \ln i {{\sin {x\over2}}\over{\cos {x\over2}}} = \ln \tan {x\over2} $$
+
+where I dropped the $i$ at the end because, as a constant multiple
+inside a logarithm, it disappears into the constant of integration,
+and we conclude that
+
+$$\int \csc x \,{\rm d}x = \ln \tan {x\over2} $$
+
+\endexample
+
 \vfil\eject
 
 \example Compute $\int \tan x \, {\rm d}x$
@@ -617,48 +662,6 @@ produce a constant that will modify the integrand.  For this reason,
 it's best to handle the denominator's normal factors first,
 
 
-\example Compute $\int \csc x \, {\rm d}x$
-
-We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
-
-$$\int {{2i}\over{\phi - \phi^{-1}}} \,dx = \int 2i {{\phi}\over{\phi^2 - 1}} \,dx$$
-
-Now we want a partial fractions expansion.  We could use a resultant,
-or the Euclidean G.C.D. algorithm, but it's simpler to just note that
-the denominator's a difference of squares and compute:
-
-$${{c_1}\over{\phi-1}} + {{c_2}\over{\phi+1}} = {{\phi}\over{\phi^2-1}} $$
-
-$${{c_1}(\phi+1)} + {{c_2}(\phi-1)} = \phi \qquad c_1 = c_2 = {1\over2} $$
-
-giving us
-
-$$\int \left[ {{i}\over{\phi-1}} + {{i}\over{\phi+1}} \right] dx$$
-
-Now we have an integral in the form of equation
-\eqref{exponential integration theorem - integrand}
-with $\nu=2$, $n_1(\phi) = \phi -1$,
-$n_2(\phi) = \phi + 1$,
-$m_1=m_2=1$ and $c_{1,1} = c_{2,1} = i$.
-
-$$D_{1} = \frac{c_{1,1}}{n_1'(\theta) - k' n_1(\theta) \deg_\phi n_1(\theta)} = \frac{i}{i \phi - i (\phi-1)} = 1$$
-$$D_{2} = \frac{c_{2,1}}{n_2'(\theta) - k' n_2(\theta) \deg_\phi n_2(\theta)} = \frac{i}{i \phi - i (\phi+1)} = -1$$
-
-so by Theorem \ref{exponential integration theorem}
-the integral can be written:
-
-$$\int \left[ {{i}\over{\phi-1}} + {{i}\over{\phi+1}} \right] dx
-= \ln (\phi-1) - \ln(\phi+1) = \ln({{\phi-1}\over{\phi+1}})$$
-
-$$ = \ln ({{e^{ix}-1}\over{e^{ix}+1}}) = \ln ({{e^{ix/2}-e^{-ix/2}}\over{e^{ix/2}+e^{-ix/2}}}) = \ln i {{\sin {x\over2}}\over{\cos {x\over2}}} = \ln \tan {x\over2} $$
-
-where I dropped the $i$ at the end because, as a constant multiple
-inside a logarithm, it disappears into the constant of integration,
-and we conclude that
-
-$$\int \csc x \,{\rm d}x = \ln \tan {x\over2} $$
-
-\endexample
 
 \vfil\eject
 
