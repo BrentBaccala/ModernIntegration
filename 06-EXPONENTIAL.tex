@@ -145,6 +145,7 @@ A_0' = a_0 - \sum_{i=1}^\nu D_i k' \deg_\theta n_i(\theta)
 \end{equation}
 
 \begin{equation}
+\label{eq: exponential An}
 A_i' + i A_i k' = a_i  \qquad  B_{j}' - j k' B_{j} = b_j
 \end{equation}
 
@@ -707,28 +708,19 @@ We'll use the field ${\mathbb C}(x,\Psi = \exp(x \ln 2))$; $\Psi' =
 
 $$ \frac{\Psi^2+1}{\Psi+1} = \Psi-1+\frac{2}{\Psi+1}$$
 
-Let's do the fractional part first since it will modify the polynomial
-part.
+We'll start, as before, with equation
+\eqref{eq: exponential Ds}:
 
-$$\left[\ln(\Psi+1)\right]' = \frac{(\Psi + 1)'}{\Psi+1} = \frac{(\ln
-2)\Psi}{\Psi + 1} = \ln 2 - \frac{\ln 2}{\Psi+1}$$
+$$ D_1 = \frac{c_{1,1}}{n_1(\theta)' - k' n_1(\theta) \deg_\theta n_1(\theta)} = \frac{2}{(\ln 2) \Psi - \ln 2 (\Psi +1 )} = -\frac{2}{\ln 2}$$
 
-$$-\frac{2}{\ln 2}\left[\ln(\Psi+1)\right]' = \frac{2}{\Psi+1} - 2$$
+Now, equation \eqref{eq: exponential An} yields:
 
-We can rewrite our integrand as:
+$$A_1' + (\ln 2) A_1 = 1 \qquad\Longrightarrow\qquad A_1 = \frac{1}{\ln 2}$$
 
-$$ \Psi + 1 - \frac{2}{\ln 2}\left[\ln(\Psi+1)\right]'$$
+and equation \eqref{eq: exponential A0} yields:
 
-So we need to find a solution of the form $a\Psi + \bar{b}$ ($\bar{b}$
-can include additional logarithmic elements) that satisfy the Risch
-equations:
-
-$$a'\Psi + a\Psi' = a'\Psi + a(\ln 2)\Psi = \Psi \qquad a' + a(\ln 2) = 1$$
-$$\bar{b}' = 1$$
-
-Both equations have fairly obvious solutions:
-
-$$a = \frac{1}{\ln 2} \qquad \bar{b}=x$$
+$$A_0' = a_0 - D_1 k' \deg_\Psi n_1(\Psi) = -1 + \frac{2}{\ln 2} \ln 2 = 1$$
+$$A_0 = x$$
 
 So our solution is
 
