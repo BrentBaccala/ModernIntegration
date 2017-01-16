@@ -141,7 +141,7 @@ and the following relationships hold:
 
 \begin{equation}
 \label{eq: exponential A0}
-A_0' = a_0 - \sum_{i=1}^\nu D_i k' \deg_\theta n_i(\theta)
+A_0' = a_0 - \sum_{i=1}^\nu D_i \frac{\lc n_i'(\theta)}{\lc n_i(\theta)}
 \end{equation}
 
 \begin{equation}
@@ -168,7 +168,7 @@ C_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{jn_i'(\theta)} \mod n_i(\theta)
 
 \begin{equation}
 \label{eq: exponential Ds}
-D_i = \frac{c_{i,1} - C_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta) - k' n_i(\theta) \deg_\theta n_i(\theta)}
+D_i = \frac{c_{i,1} - C_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta) - \frac{\lc n_i'(\theta)}{\lc n_i(\theta)} n_i(\theta)}
 \end{equation}
 
 \vfill\eject
@@ -242,20 +242,18 @@ $$-jC_{i,j}(\theta)n_i'(\theta) = Q_{i,j}(\theta) n_i(\theta) + R_{i,j}(\theta)$
 This fixes the $C$ terms, since $\deg Q_{i,j}(\theta) < \deg n_i(\theta)$
 and $\deg R_{i,j}(\theta) < \deg n_i(\theta)$.
 
-We can fix the $D$ terms by noting that since $n_i(\theta)$ is monic,
-we know that its leading term is $\theta^{\deg n_i(\theta)}$, so
-the leading term of its derivative is $k' [ \deg_\theta n_i(\theta) ] \theta^{\deg n_i(\theta)}$, and
-by subtracting an appropriate multiple of $n_i(\theta)$,
+We can fix the $D$ terms by noting that $\deg n_i'(\theta) = \deg n_i(\theta)$,
+so by subtracting an appropriate multiple of $n_i(\theta)$
 we can ensure the cancellation of the leading terms,
 achieving our degree bounds.
 
 \begin{multline*}
-F' = A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i k' \deg_\theta n_i(\theta) + \sum_{i=1}^N (A_i' + i A_i k' )\theta^i
+F' = A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i \frac{\lc n_i'(\theta)}{\lc n_i(\theta)} + \sum_{i=1}^N (A_i' + i A_i k' )\theta^i
   + \sum_{j=1}^{L} \frac{B_{j}' - j k' B_{j}}{\theta^j} \\
   + \sum_{i=1}^\nu \Bigg[ \frac{R_{i,M_i}(\theta) }{n_i(\theta)^{M_i+1}}
   + \sum_{j=2}^{M_i} \frac{C_{i,j}'(\theta) + Q_{i,j}(\theta) + R_{i,j-1}(\theta) }{n_i(\theta)^{j}} \\
   + \frac{C_{i,1}'(\theta) + Q_{i,1}(\theta)
-  + D_i \left[ n_i(\theta)' - k' n_i(\theta) \deg_\theta n_i(\theta) \right]}{n_i(\theta)} \Bigg]
+  + D_i \left[ n_i(\theta)' - \frac{\lc n_i'(\theta)}{\lc n_i(\theta)} n_i(\theta) \right]}{n_i(\theta)} \Bigg]
 \end{multline*}
 
 Now $F'$ is an actual partial fractions decomposition.  It not only has
@@ -271,7 +269,7 @@ Setting $F' = f$ and equating like terms, we establish that
 $n=N$, $l=L$, $M_i+1 = m_i$, and the
 relationships listed in the statement of the theorem.  The zero-order term:
 
-$$A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i k' \deg_\theta n_i(\theta) = a_0$$
+$$A_0' + \sum D_k \frac{E_k'}{E_k} + \sum D_i \frac{\lc n_i'(\theta)}{\lc n_i(\theta)} = a_0$$
 
 Polynomial terms
 and special denominators give rise to Risch equations:
@@ -389,8 +387,8 @@ with $\nu=2$, $n_1(\phi) = \phi -1$,
 $n_2(\phi) = \phi + 1$,
 $m_1=m_2=1$ and $c_{1,1} = c_{2,1} = i$.
 
-$$D_{1} = \frac{c_{1,1}}{n_1'(\theta) - k' n_1(\theta) \deg_\phi n_1(\theta)} = \frac{i}{i \phi - i (\phi-1)} = 1$$
-$$D_{2} = \frac{c_{2,1}}{n_2'(\theta) - k' n_2(\theta) \deg_\phi n_2(\theta)} = \frac{i}{i \phi - i (\phi+1)} = -1$$
+$$D_{1} = \frac{c_{1,1}}{n_1'(\theta) - \frac{\lc n_1'(\theta)}{\lc n_1(\theta)} n_1(\theta)} = \frac{i}{i \phi - i (\phi-1)} = 1$$
+$$D_{2} = \frac{c_{2,1}}{n_2'(\theta) - \frac{\lc n_2'(\theta)}{\lc n_2(\theta)} n_2(\theta)} = \frac{i}{i \phi - i (\phi+1)} = -1$$
 
 so by Theorem \ref{exponential integration theorem}
 the integral can be written:
@@ -433,12 +431,12 @@ $c_{2,1}=-1$, $a_0 = 1$ and $k=ix$, so plugging these values
 into equation \eqref{eq: exponential Ds}, we obtain:
 
 
-$$ D_1 = \frac{c_{1,1}}{n_1(\theta)' - k' n_1(\theta) \deg_\theta n_1(\theta)} = \frac{1}{i \theta - i (\theta -i )} = -1$$
-$$ D_2 = \frac{c_{2,1}}{n_2(\theta)' - k' n_2(\theta) \deg_\theta n_2(\theta)} = \frac{-1}{i \theta - i (\theta +i )} = -1$$
+$$ D_1 = \frac{c_{1,1}}{n_1(\theta)' - \frac{\lc n_1'(\theta)}{\lc n_1(\theta)} n_1(\theta)} = \frac{1}{i \theta - i (\theta -i )} = -1$$
+$$ D_2 = \frac{c_{2,1}}{n_2(\theta)' - \frac{\lc n_2'(\theta)}{\lc n_2(\theta)} n_2(\theta)} = \frac{-1}{i \theta - i (\theta +i )} = -1$$
 
 Pluging this into equation \eqref{eq: exponential A0}, we obtain:
 
-$$A_0' = a_0 - \sum_{i=1}^\nu D_i k' \deg_\theta n_i(\theta)$$
+$$A_0' = a_0 - \sum_{i=1}^\nu D_i \frac{\lc n_i'(\theta)}{\lc n_i(\theta)}$$
 $$A_0' = -i + 2i = i$$
 $$A_0 = ix$$
 
@@ -714,7 +712,7 @@ $$ \frac{\Psi^2+1}{\Psi+1} = \Psi-1+\frac{2}{\Psi+1}$$
 We'll start, as before, with equation
 \eqref{eq: exponential Ds}:
 
-$$ D_1 = \frac{c_{1,1}}{n_1(\theta)' - k' n_1(\theta) \deg_\theta n_1(\theta)} = \frac{2}{(\ln 2) \Psi - \ln 2 (\Psi +1 )} = -\frac{2}{\ln 2}$$
+$$ D_1 = \frac{c_{1,1}}{n_1(\theta)' - \frac{\lc n_1'(\theta)}{\lc n_1(\theta)} n_1(\theta)} = \frac{2}{(\ln 2) \Psi - \ln 2 (\Psi +1 )} = -\frac{2}{\ln 2}$$
 
 Now, equation \eqref{eq: exponential An} yields:
 
@@ -722,7 +720,7 @@ $$A_1' + (\ln 2) A_1 = 1 \qquad\Longrightarrow\qquad A_1 = \frac{1}{\ln 2}$$
 
 and equation \eqref{eq: exponential A0} yields:
 
-$$A_0' = a_0 - D_1 k' \deg_\Psi n_1(\Psi) = -1 + \frac{2}{\ln 2} \ln 2 = 1$$
+$$A_0' = a_0 - D_1 \frac{\lc n_i'(\theta)}{\lc n_i(\theta)} = -1 + \frac{2}{\ln 2} \ln 2 = 1$$
 $$A_0 = x$$
 
 So our solution is
@@ -825,7 +823,7 @@ $$ = -\frac{\frac{2x^2 + 1}{2x}\theta^2 + \frac{1}{2}\theta \left[(1 + 2x^2)\psi
 
 Having computed $C_{1,1}$ and $Q_{1,1}$, we are now able to compute $D_1$:
 
-$$ D_1 = \frac{c_{1,1} - C_{1,1}'(\psi) - Q_{1,1}(\psi)}{n_1'(\psi) - \frac{{\rm lm\,} n_1'(\psi)}{{\rm lm\,} n_1(\psi)} n_1(\psi)}$$
+$$ D_1 = \frac{c_{1,1} - C_{1,1}'(\psi) - Q_{1,1}(\psi)}{n_1'(\psi) - \frac{\lc n_1'(\psi)}{\lc n_1(\psi)} n_1(\psi)}$$
 
 $$ D_1 = \frac{- \frac{2x^2+1}{x}\theta + \frac{1}{x+1} - \frac{1}{2}\frac{1}{x+1} + \frac{2x^2 + 1}{2x} \theta}{\frac{1}{x+1} + (1 + 2x^2)\psi - \frac{1+2x^2}{x}(\theta + x \psi)}$$
 
@@ -839,8 +837,8 @@ $$ C_{2,1} = - \frac{1}{2} \theta \qquad D_2 = - \frac{1}{2}$$
 
 In an exponential extension, our $D$ coefficients can affect our $A_0$ term...
 
-$$A_0' = a_0 - \sum_{i=1}^\nu D_i \,\frac{{\rm lm\,} n_1'(\psi)}{{\rm lm\,} n_1(\psi)} n_i(\theta)$$
-$$ = 0 - \frac{1}{2} \frac{(1+2x^2)\psi}{x\psi} + \frac{1}{2} \frac{-(1+2x^2)\psi}{- x\psi} = 0$$
+$$A_0' = a_0 - \sum_{i=1}^\nu D_i \,\frac{\lc n_1'(\psi)}{\lc n_1(\psi)} $$
+$$ = 0 - \frac{1}{2} \frac{(1+2x^2)}{x} + \frac{1}{2} \frac{-(1+2x^2)}{- x} = 0$$
 
 Integrating, we obtain $A_0 = C$, where $C$ is our constant of integration.  We end up with
 the same result that we obtained from the logarithmic theory:
