@@ -23,7 +23,7 @@ delta = 0.01
 # integral_f(x) takes one variable, the upper limit.  0 is the lower limit.
 # calculate the integral of function f(t) from 0 to x
 
-integral_f(x) = (x>0)?int1a(x,x/ceil(x/delta)):-int1b(x,-x/ceil(-x/delta))
+integral_f(x) = (x>0)?int1a(x,(1.0*x)/ceil(x/delta)):-int1b(x,-(1.0*x)/ceil(-x/delta))
 int1a(x,d) = (x<=d*.1) ? 0 : sum [i=1:int(x/d)] ((f(i*d-d)+4*f(i*d-d*.5)+f(i*d))*d/6.)
 int1b(x,d) = (x>=-d*.1) ? 0 : sum [i=1:int(-x/d)] ((f(i*d+d)+4*f(i*d+d*.5)+f(i*d))*d/6.)
 
