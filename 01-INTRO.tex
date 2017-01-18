@@ -33,8 +33,7 @@ The answer to this ``\$50,000'' question\footnote{The author does not actually p
 a \$50,000 prize fund.} is, somewhat surprisingly,
 (B).  Simplifying (A) as $\int \sin \ud x = -\cos x + C$ is an easy exercise from
 a first year calculus course.  (C) and (D), while appearing
-more formidable, are actually solvable using the
-techniques of this book.
+more formidable, are solvable using the techniques of this book.
 
 (C) is example
 \ref{hard log-exp integral}, and can be written as:
@@ -69,11 +68,11 @@ chapter harder than the last.
 
 This book aims to present our most sophisticated integration theory
 that provides definitive answers to these questions, but the existance
-of integrals like $\int e^{-x^2} \ud x$ shows that any such theory has
+of integrals like $\int e^{-x^2} \ud x$ without any elementary form shows that any such theory has
 severe limitations.  Futhermore, the development of the electronic
 computer, coupled with sophisticated numerical integration techniques,
 has provided us with powerful approximation methods that significantly
-reduce the importance of simplifying integrals.  Nevertheless, more
+reduce the importance of solving integrals.  Nevertheless, more
 difficult differential equations continue to elude easy analysis, so
 perhaps the greatest benefit of studying integration is the insight it
 provides to solving differential equations in general.
@@ -140,12 +139,12 @@ that it {\it might} be...
 \begin{center}
 \includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH3.pdf}
 \end{center}
-\caption{$\int_0^x e^{-t^2} dt$ (with tangent lines)}
+\caption{$\int_0^x e^{-t^2} dt$ (with tangent lines at $x_0=-1.5$ and $x_0=1$)}
 \end{figure}
 
 The tangent lines in the graph were plotted using this formula:
 
-$$ y = E(x_0) + e^{-x_0^2}(x-x_0)$$
+$$ y(x) = E(x_0) + e^{-x_0^2}(x-x_0)$$
 
 i.e, the point-slope equation of a straight line, with point $(x_0, E(x_0))$ and slope $e^{-x_0^2}$.
 
@@ -240,13 +239,13 @@ $${\rm Si}(x) = \int_0^x \frac{\sin(t)}{t} dt$$
 
 ...and we can check some of its tangent lines, using the formula:
 
-$$ y = {\rm Si}(x_0) + \frac{\sin x}{x}(x-x_0)$$
+$$ y(x) = {\rm Si}(x_0) + \frac{\sin x_0}{x_0}(x-x_0)$$
 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH6.pdf}
 \end{center}
-\caption{$\int_0^x \frac{\sin t}{t} dt$ (with tangent lines)}
+\caption{$\int_0^x \frac{\sin t}{t} dt$ (with tangent lines at $x_0=-9$ and $x_0=5$)}
 \end{figure}
 
 Again, it's {\it trivial} that ${\rm Si}(x)$:
