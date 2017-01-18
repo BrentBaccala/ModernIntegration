@@ -29,6 +29,58 @@
 
 \vfill\eject
 
+The answer to this ``\$50,000'' question\footnote{The author does not actually possess
+a \$50,000 prize fund.} is, somewhat surprisingly,
+(B).  Simplifying (A) as $\int \sin \ud x = -\cos x + C$ is an easy exercise from
+a first year calculus course.  (C) and (D), while appearing
+more formidable, are actually solvable using the
+techniques of this book.
+
+(C) is example
+\ref{hard log-exp integral}, and can be written as:
+
+$$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
+$$= x - \ln(x+1) - {x e^{x^2}\ln(x+1)\over{\ln^2(x+1)-x^2 e^{2x^2}}}
++ {1\over2}\ln\frac{\ln(x+1) + x e^{x^2}}{\ln(x+1) - x e^{x^2}}$$
+
+(D) is example \ref{Chebyshev's Integral}:
+
+$$A(x) = 1023x^8+4104x^7+5048x^6+2182x^5+805x^4+624x^3+10x^2+28x$$
+$$B(x) = 1025x^{10} + 6138x^9 + 12307x^8 + 10188x^7 + 4503x^6 + 3134x^5 + 1598x^4 + 140x^3 + 176x^2 +2$$
+$$C(x) = 32x^{10}-80x^8+80x^6-40x^4+10x^2-1$$
+
+$$\int {{(2x^6+4x^5+7x^4-3x^3-x^2-8x-8)y}\over{(2x^2-1)^2(x^4+4 x^3+2 x^2+1)}} \,{\rm d}x
+= {{(x+{1\over2})y}\over{2x^2-1}} + {1\over2}\ln{{A(x)y - B(x)}\over{C(x)}}
+$$
+
+Integral (B), on the other hand, can not be ``solved'' in
+this manner, and example \ref{exp e^{-x^2}} proves this
+claim of impossibility.
+
+What does it mean to ``solve'' an integral?
+
+Is there a formal procedure, an algorithm, that lets us solve
+any integral, or prove that such a solution is impossible?
+
+These questions have puzzled mathematicians for over 300 years, since
+the invention of calculus, so much so that an introductory calculus
+sequence can start to seem like a series of puzzle problems, each
+chapter harder than the last.
+
+This book aims to present our most sophisticated integration theory
+that provides definitive answers to these questions, but the existance
+of integrals like $\int e^{-x^2} \ud x$ shows that any such theory has
+severe limitations.  Futhermore, the development of the electronic
+computer, coupled with sophisticated numerical integration techniques,
+has provided us with powerful approximation methods that significantly
+reduce the importance of simplifying integrals.  Nevertheless, more
+difficult differential equations continue to elude easy analysis, so
+perhaps the greatest benefit of studying integration is the insight it
+provides to solving differential equations in general.
+
+\vfill\eject
+\section{Algebra}
+
 In high school, we study what the Arabs called ``al-jabr'', or what
 the Encyclopaedia Britanncia calls ``a generalization and extension of
 arithmetic''.  ``Elementary algebra," the encyclopedia goes on, ``is
