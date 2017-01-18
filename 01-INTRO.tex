@@ -79,6 +79,202 @@ perhaps the greatest benefit of studying integration is the insight it
 provides to solving differential equations in general.
 
 \vfill\eject
+\section{Calculus}
+Let's consider again the integral $\int e^{-x^2} dx$.  We can {\it trivially} construct
+an anti-derivative as follows:
+
+$$E(x) = \int_0^x e^{-t^2} dt$$
+
+I claim that $E(x)$ is an anti-derivative of $e^{-x^2}$.  Let's see...
+
+First, is $E(x)$ well defined?  Let's recall some material from a standard
+introductory calculus textbook, say, Briggs and Cochran:
+
+\begin{framed}
+Definition - Definite Integral (p. 324)
+
+A function $f$ defined on $[a,b]$ is {\bf integrable} on $[a,b]$ if $\lim_{\Delta\to0}\sum_{k=1}^{n}f(\bar{x}_k)\Delta x_k$
+exists and is unique over all partitions of $[a,b]$ and all choices of $\bar{x}_k$ on a partition.
+This limit is the {\bf definite integral of f from a to b}, which we write
+
+$$\int_a^b f(x) dx = \lim_{\Delta\to0}\sum_{k=1}^{n}f(\bar{x}_k)\Delta x_k $$.
+\end{framed}
+
+\begin{framed}
+Theorem 5.2 - Integrable Functions (p. 325)
+
+If $f$ is continuous on $[a,b]$ or bounded on $[a,b]$ with a finite number of discontinuities,
+then $f$ is integrable on $[a,b]$.
+\end{framed}
+
+So, $E(x) = \int_0^x e^{-t^2} dt$ is {\it integrable} on $[0,x]$ if $e^{-t^2}$ is continuous on $[0,x]$,
+and $e^{-t^2}$ is continuous everywhere on the real line.  We can easily plot $e^{-t^2}$:
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH1.pdf}
+\end{center}
+\caption{$e^{-t^2}$}
+\end{figure}
+
+It's obviously continuous, so Theorem 5.2 tells us that $E(x)$ is well
+defined for any real number $x$ -- the limit used to construct the
+Riemann sum exists and is unique.  We can also plot $E(x)$, using a
+numerical integration routine to approximate the integral at each
+point of the graph:
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH2.pdf}
+\end{center}
+\caption{$\int_0^x e^{-t^2} dt$}
+\end{figure}
+
+We're plotting the {\it integral} now... the height of each point on the graph
+was calculated by numerically approximating a Riemann sum.
+
+Is this an anti-derivative of $e^{-t^2}$?  Plotting various tangent lines suggests
+that it {\it might} be...
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH3.pdf}
+\end{center}
+\caption{$\int_0^x e^{-t^2} dt$ (with tangent lines)}
+\end{figure}
+
+The tangent lines in the graph were plotted using this formula:
+
+$$ y = E(x_0) + e^{-x_0^2}(x-x_0)$$
+
+i.e, the point-slope equation of a straight line, with point $(x_0, E(x_0))$ and slope $e^{-x_0^2}$.
+
+See, I used the $E(x) = \int_0^x e^{-t^2} dt$ formula for the $y$-coordinate of the point,
+and the $e^{-x^2}$ formula for the slope.
+If $E(x)$ is an anti-derivative of $e^{-x^2}$, then the derivative of $E(x)$ is $e^{-x^2}$, and
+the formula will produce tangent lines for any value of $x_0$.  If $E(x)$ were {\it not} an anti-derivative of $e^{-x^2}$,
+we'd get lines, but they wouldn't be tangent lines.
+
+Varying the value of $x_0$ produces different lines (the two lines in the graph were generated using $x_0 = -1.5$ and $x_0=1$),
+and they {\it appear} to be tangent
+lines, so perhaps $E(x)$ is an anti-derivative of $e^{-x^2}$.
+
+In fact, we can do far better than guess.  Remember the Fundamental Theorem of Calculus?
+
+
+\begin{framed}
+Theorem 5.3 (part 1) - Fundemental Theorem of Calculus (p. 338)
+
+If $f$ is continuous on $[a,b]$, then the area function
+
+$$A(x) = \int_a^x f(t)\, dt \qquad {\rm for\quad} a \le x \le b$$
+
+is continuous on $[a,b]$ and differentiable on $(a,b)$.  The area function satisfies $A'(x) = f(x)$; or, equivalently,
+
+$$A'(x) = \frac{d}{dx} \int_a^x f(t)\, dt = f(x),$$
+
+which means that the area function of $f$ is an antiderivative of $f$.
+\end{framed}
+
+Pay particular attention to that last formula -- it says that the derivative of an integral with respect
+to its upper bound of integration is just the integrand, with the name of the variable changed.
+
+So, $E(x)$, defined like this:
+
+$$E(x) = \int_0^x e^{-t^2} dt$$
+
+is {\it trivially} an anti-derivative of $e^{-x^2}$, because the Fundamental Theorem of Calculus tells us that:
+
+$$E'(x) = \frac{d}{dx} \int_0^x e^{-t^2} dt = e^{-x^2}$$
+
+Theorem 5.2 tells us that $E(x)$ {\it exists} (because $e^{-x^2}$ is continuous), and Theorem 5.3 tells
+us that $E(x)$ is an anti-derivative of $e^{-x^2}$.
+
+Of course, we had something else in mind when we asked for an anti-derivative of $e^{-x^2}$.  We wanted
+a simplified form, something like this:
+
+$$\int x^2\,dx = \frac{1}{3} x^3 + C$$
+
+not some mathematical smart aleck telling us that the answer is $\int x^2\,dx$!
+
+The problem is that $\int e^{-x^2} dx$ doesn't have a simplified form.  It has an anti-derivative
+(we plotted it, remember?), and it's completely well-defined as a mathematical function, but we
+can't simplify it in the way that we can simplify $\int x^2\,dx$.
+
+Another example is $\int \frac{\sin x}{x} dx$.  It's also continuous everywhere.  The only point
+where that's at all in question is $x=0$, but L'Hospital's Rule\footnote{Using L'Hospital's Rule here is actually
+a circular argument, because we had to evaluate this limit to prove that sine's derivative is cosine.} tells us that:
+
+$$\lim_{x\to 0} \frac{\sin x}{x} = \lim_{x\to 0} \frac{\cos x}{1} = \frac{\cos 0}{1} = 1$$
+
+which means that the division by zero in $\frac{\sin x}{x}$ is a {\it removable discontinuity}.
+We can patch up our function like this:
+
+\[ f(x) = \begin{cases} 
+      \frac{\sin x}{x} & x \ne 0 \\
+      1 & x = 0
+   \end{cases}
+\]
+
+It's usually called the {\it sinc} function, and it's easy to plot:
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH5.pdf}
+\end{center}
+\caption{$\frac{\sin t}{t}$}
+\end{figure}
+
+Since sinc is continuous everywhere, this integral is well defined everywhere:
+
+$${\rm Si}(x) = \int_0^x \frac{\sin(t)}{t} dt$$
+
+...and we can plot it...
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH5.pdf}
+\end{center}
+\caption{$\int_0^x \frac{\sin t}{t} dt$}
+\end{figure}
+
+...and we can check some of its tangent lines, using the formula:
+
+$$ y = {\rm Si}(x_0) + \frac{\sin x}{x}(x-x_0)$$
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH6.pdf}
+\end{center}
+\caption{$\int_0^x \frac{\sin t}{t} dt$ (with tangent lines)}
+\end{figure}
+
+Again, it's {\it trivial} that ${\rm Si}(x)$:
+
+\begin{enumerate}
+\item {\bf exists}, by Theorem 5.2 and the continuity of $\frac{\sin x}{x}$, and
+\item is an {\bf anti-derivative} of $\frac{\sin x}{x}$, by Theorem 5.3 and the definition of ${\rm Si}(x)$:
+$${\rm Si}(x) = \int_0^x \frac{\sin(t)}{t} dt \qquad\Longrightarrow\qquad {\rm Si}'(x) = \frac{d}{dx}\int_0^x \frac{\sin(t)}{t} dt = \frac{\sin(x)}{x}$$
+\end{enumerate}
+
+Yet, again, we have no simple closed form for ${\rm Si}(x)$.
+
+Let's see... how could we find simple expressions for $\int e^{-x^2} dx$ and $\int \frac{\sin x}{x} dx$?
+
+Could we try...
+
+\begin{enumerate}
+\item Integration by Parts
+\item Trigonometric Substitution
+\item Partial Fractions
+\item ...some clever change of variables...
+\item Google
+\end{enumerate}
+
+How about this instead -- let's prove that these two integrals have no simple forms.
+
+
+\vfill\eject
 \section{Algebra}
 
 In high school, we study what the Arabs called ``al-jabr'', or what
