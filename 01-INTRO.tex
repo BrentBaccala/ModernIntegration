@@ -87,10 +87,10 @@ $$E(x) = \int_0^x e^{-t^2} dt$$
 I claim that $E(x)$ is an anti-derivative of $e^{-x^2}$.  Let's see...
 
 First, is $E(x)$ well defined?  Let's recall some material from a standard
-introductory calculus textbook, say, Briggs and Cochran:
+introductory calculus textbook, say, \cite{briggs}:
 
 \begin{framed}
-Definition - Definite Integral (p. 324)
+\cite{briggs} Definition - Definite Integral (p. 324)
 
 A function $f$ defined on $[a,b]$ is {\bf integrable} on $[a,b]$ if $\lim_{\Delta\to0}\sum_{k=1}^{n}f(\bar{x}_k)\Delta x_k$
 exists and is unique over all partitions of $[a,b]$ and all choices of $\bar{x}_k$ on a partition.
@@ -100,7 +100,7 @@ $$\int_a^b f(x) dx = \lim_{\Delta\to0}\sum_{k=1}^{n}f(\bar{x}_k)\Delta x_k $$.
 \end{framed}
 
 \begin{framed}
-Theorem 5.2 - Integrable Functions (p. 325)
+\cite{briggs} Theorem 5.2 - Integrable Functions (p. 325)
 
 If $f$ is continuous on $[a,b]$ or bounded on $[a,b]$ with a finite number of discontinuities,
 then $f$ is integrable on $[a,b]$.
@@ -162,7 +162,7 @@ In fact, we can do far better than guess.  Remember the Fundamental Theorem of C
 
 
 \begin{framed}
-Theorem 5.3 (part 1) - Fundemental Theorem of Calculus (p. 338)
+\cite{briggs} Theorem 5.3 (part 1) - Fundemental Theorem of Calculus (p. 338)
 
 If $f$ is continuous on $[a,b]$, then the area function
 
@@ -186,7 +186,7 @@ is {\it trivially} an anti-derivative of $e^{-x^2}$, because the Fundamental The
 
 $$E'(x) = \frac{d}{dx} \int_0^x e^{-t^2} dt = e^{-x^2}$$
 
-Theorem 5.2 tells us that $E(x)$ {\it exists} (because $e^{-x^2}$ is continuous), and Theorem 5.3 tells
+\cite{briggs} Theorem 5.2 tells us that $E(x)$ {\it exists} (because $e^{-x^2}$ is continuous), and \cite{briggs} Theorem 5.3 tells
 us that $E(x)$ is an anti-derivative of $e^{-x^2}$.
 
 Of course, we had something else in mind when we asked for an anti-derivative of $e^{-x^2}$.  We wanted
@@ -251,8 +251,8 @@ $$ y(x) = {\rm Si}(x_0) + \frac{\sin x_0}{x_0}(x-x_0)$$
 Again, it's {\it trivial} that ${\rm Si}(x)$:
 
 \begin{enumerate}
-\item {\bf exists}, by Theorem 5.2 and the continuity of $\frac{\sin x}{x}$, and
-\item is an {\bf anti-derivative} of $\frac{\sin x}{x}$, by Theorem 5.3 and the definition of ${\rm Si}(x)$:
+\item {\bf exists}, by \cite{briggs} Theorem 5.2 and the continuity of $\frac{\sin x}{x}$, and
+\item is an {\bf anti-derivative} of $\frac{\sin x}{x}$, by \cite{briggs} Theorem 5.3 and the definition of ${\rm Si}(x)$:
 $${\rm Si}(x) = \int_0^x \frac{\sin(t)}{t} dt \qquad\Longrightarrow\qquad {\rm Si}'(x) = \frac{d}{dx}\int_0^x \frac{\sin(t)}{t} dt = \frac{\sin(x)}{x}$$
 \end{enumerate}
 

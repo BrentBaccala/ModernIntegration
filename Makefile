@@ -13,7 +13,7 @@ clean:
 
 .DELETE_ON_ERROR:
 
-ModernIntegration.pdf: [0-9]*.tex ModernIntegration.tex
+ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	pdflatex ModernIntegration
 
 out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
