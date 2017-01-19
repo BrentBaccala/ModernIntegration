@@ -11,6 +11,25 @@
 \usepackage[retainorgcmds]{IEEEtrantools}
 \usepackage{framed}
 \usepackage{float}
+\usepackage{color}
+
+% This package makes cut-and-paste of carets work right, so
+% we can cut-and-paste from the PDF document into Maxima.
+
+\usepackage[T1]{fontenc}
+
+\usepackage{listings}
+
+% Default listing style for Maxima input
+
+\lstset{basicstyle=\ttfamily\color{blue},
+breaklines=true,
+breakatwhitespace=true,
+boxpos=t,
+resetmargins=true}
+
+% Color used to label Maxima output
+\definecolor{darkred}{RGB}{200,0,0}
 
 \usepackage{tikz}
 \usetikzlibrary{positioning, fit}
