@@ -360,7 +360,7 @@ the {\it algebraic extension}.  It is another equivalence class
 construction that we build starting with a polynomial ring over a
 field, say ${\cal F}[x]$.  Our equivalence classes are all elements in
 ${\cal F}[x]$ whose differences are multiples of some distinguished
-irreducible polynomial in ${\cal F}[x]$, called the {\it minimum
+irreducible polynomial in ${\cal F}[x]$, called the {\it minimal
 polynomial} of the field.  And I do say {\it field}, because we don't
 need to use the quotient field construction with an algebraic
 extension; the ring is already a field.
@@ -397,6 +397,47 @@ ${\bf Z}[i]; i^2=-1$, really should be expressed as equivalence
 classes modulo the polynomial $i^2+1$, i.e.  ${\bf Z}[i]/(i^2+1)$.
 \end{comment}
 
+
+\mysection{Trace and Norm}
+\qquad [van der Waerden], \S5.7
+
+Given an algebraic extension $E$ of a field $F$, two of the
+coefficients in the minimal polynomial have a special significance
+that often makes them particularly useful.  Our only use of them will
+come in Chapter 3 in the proof of Liouville's theorem.
+
+First, let's note that while we used a minimal polynomial to
+construct the extension field,
+in fact, every element in the extension field
+has a minimal polynomial associated with it,
+which can be constructed by raising the element to successive
+powers until one of the powers is a linear combination
+of the lower powers.
+
+\definition
+The {\it trace} of an
+element $x$ in $E$, written ${\rm Tr}(x)$, is the coefficient
+of the second-highest power in its minimal polynomial.
+\enddefinition
+
+\definition
+The {\it norm} of an element, written ${\rm N}(x)$, is its zeroth-order coefficient.
+\enddefinition
+
+The special significance of these elements becomes more obvious if we
+consider a {\it splitting field}, which is a futher field extension
+(an extension of the extension) in which the minimal polynomial
+factors completely into linear factors.  The element $x$ is
+itself one of the roots in these factors; the remaining
+roots are called the {\it conjugates} of $x$.
+
+Write $x$'s minimal polynomial in the form:
+$$\prod_{i=1}^n \left( t - x_i \right) = \sum_{k=0}^n (-1)^{k} a_k t^{n-k}$$
+and note that ${\rm Tr}(x)$, the $n-1^{\rm th}$ coefficient in the polynomial,
+is the sum of all the conjugates, while ${\rm N}(x)$, the zeroth order
+coefficient in the polynomial, is the product of all the conjugates.
+
+\vfill\eject
 
 \mysection{Long Division}
 \qquad [van der Waerden], \S3.4
@@ -1311,28 +1352,6 @@ characteristic zero}).  WHAT ABOUT RINGS OF INFINITE CHARACTERISTIC?
 DEFINE ISOMORPHISM.
 
 \end{comment}
-
-\mysection{Symmetric Polynomials}
-\qquad [van der Waerden], \S5.7
-
-\definition
-Given an algebraic extension $E$ of a field $F$, the {\it trace} of an
-element $x$ in $E$ (written ${\rm Tr}(x)$) is the sum of the element
-and all of its conjugates.
-\enddefinition
-
-\theorem\label{trace in underlying field}
-
-${\rm Tr}(x) \in F$ {\rm [Wikipedia article ``Newton's identities'']}
-
-\proof
-
-Write $x$'s minimal polynomial in the form:
-$$\prod_{i=1}^n \left( t - x_i \right) = \sum_{k=0}^n (-1)^{k} a_k t^{n-k}$$
-and note that the $n-1^{\rm th}$ coefficient in the polynomial is
-${\rm Tr}(x)$, and that all of the coefficients are in $F$.
-
-\endtheorem
 
 \begin{comment}
 
