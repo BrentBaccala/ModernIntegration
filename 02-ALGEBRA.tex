@@ -111,6 +111,8 @@ carry out division in a ring.  A field, on the other hand, is a
 mathematical system in which all four elementary operations ---
 addition, subtraction, multiplication, and division --- are defined.
 
+\begin{comment}
+
 \theorem (The Zero Theorem)
 
 Given a ring ${\cal R}$, $\forall x\in{\cal R}, 0x=0$
@@ -144,6 +146,8 @@ Thus, multiplication by zero is a property of all rings.
 
 \endtheorem
 
+\end{comment}
+
 The simplest example of a ring is the set of integers, which I shall
 denote as {\bf Z} (after the German word for number, {\it zahl}).  A pair
 of integers can be added, subtracted or multiplied to form another
@@ -158,7 +162,8 @@ Thus {\bf Z} forms a ring but not a field.
 \subsection*{\qquad The field ${\bf Q}$}
 \qquad [van der Waerden], \S3.3
 
-We can remedy this by moving on the {\it rational numbers},
+We can remedy our inability to divide using only integers
+by moving on the {\it rational numbers},
 traditionally denoted {\bf Q} (probably for {\it quotient}).  This is the
 simplest example of a {\it quotient field}, in this case formed over
 the integers, {\bf Z}.  It is also our first example of a theme
@@ -219,7 +224,7 @@ $\{{1\over2},{2\over4},{3\over6},\ldots\}$ by
 $\{{2\over3},{4\over6},{6\over9},\ldots\}$ to obtain
 $\{{3\over4},{6\over8},{9\over12},\ldots\}$...''
 
-Which leads to the next point.  Having cleanly established equivalence
+Having cleanly established equivalence
 classes, we have to make sure that our operations actually work
 consistently on them, since they are defined in terms of fractions
 within the classes.  We need to verify that taking any fraction from
@@ -289,12 +294,11 @@ and denominator of which are polynomials in $x$.  So, for example,
 ${x}\over{x-1}$ is a element of ${\bf Q}(x)$.  Fractions of
 polynomials are called {\it rational functions}, so ${\bf Q}(x)$ is
 the {\it field of rational functions in $x$ over the rational numbers}.
-Got it?
 
 Now, you might ask, ``Can't $(x-1)$ be zero?  Say, if $x$ is 1?''.
 The answer is {\it no}.  $x$ is not 1 or any other number.  $x$ is
 $x$, and in ${\bf Q}[x]$, $(x-1)$ is as different from zero as $3
-\over 2$ is in {\bf Q}.  $(x-1)$, and things like it, are {\it
+\over 2$ is.  $(x-1)$, and things like it, are {\it
 completely distinct elements} in the algebraic systems in which they
 are defined.
 
@@ -359,9 +363,7 @@ ${\cal F}[x]$ whose differences are multiples of some distinguished
 irreducible polynomial in ${\cal F}[x]$, called the {\it minimum
 polynomial} of the field.  And I do say {\it field}, because we don't
 need to use the quotient field construction with an algebraic
-extension; the ring (as we will see) is already a field.
-
-MORE HERE
+extension; the ring is already a field.
 
 Polynomial long division (section \ref{sec:Long Division})
 can be used to reduce modulo polynomials, which allows
@@ -382,13 +384,18 @@ Reducing mod $n$, we obtain
 
 $$sx \equiv 1 \mod n$$
 
-So $s$, when multiplied by $x$, yields 1, which is basically
-the definition of division.
+So $s$, when multiplied by $x$, yields 1, which means
+that $s$ and $x$ are multipicative inverses.
+If $n$ was not irreducible, this construction would
+not work for all values of $x$, and we would have
+a ring but not a field.
 
+\begin{comment}
 Again, like with the quotient field, I tend to be a bit loose with the
 notation.  Something like the Gaussian integers, which I wrote as
 ${\bf Z}[i]; i^2=-1$, really should be expressed as equivalence
 classes modulo the polynomial $i^2+1$, i.e.  ${\bf Z}[i]/(i^2+1)$.
+\end{comment}
 
 
 \mysection{Long Division}
@@ -1035,9 +1042,15 @@ We recurse on the first term until we have completed the desired construction.
 
 \example
 
-Use a square-free factorization of the denominator to compute the partial fractions expansion of $${x^2 + 3x + 2}\over{x^3-3x^2+4}$$
+Compute the partial fractions expansion of $${x^2 + 3x + 2}\over{x^3-3x^2+4}$$
 
-We begin by ``differentiating'' the denominator to obtain $3x^2-6x$.
+We begin by factoring the denominator.  While factoring can be quite
+complicated in practice, in this case we need only try some small
+integers to discover that either 2 or -1 solve the denominator,
+leading directly to a factorization:
+
+\begin{comment}
+Differentiating to obtain $3x^2-6x$.
 Computing the GCD of $x^3-3x^2+4$ and $3x^2-6x$:
 
 \input{02-ALGEBRA-EXAMPLE4c.inc}
@@ -1052,6 +1065,7 @@ decide that $x-2$ is the second square-free factor.  Or, we could
 shortcut the entire process by noting that since $x-2$ is linear,
 it can only be the second square-free factor.  In any event, we conclude that:
 
+\end{comment}
 
 $${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {{x^2 + 3x + 2}\over{(x-2)^2(x+1)}}$$
 
@@ -1065,8 +1079,8 @@ Compute the GCD of $a=(x-2)^2=x^2-4x+4$ and $b=x+1$:
 
 Since the remainder, 9, is a unit, $a$ and $b$ have no common
 factors and their GCD is 1.  Of course, this result is hardly
-surprising since the square-free factorization was guaranteed
-to produce factors with no common factor between them.
+surprising since $(x-2)$ and $(x+1)$
+have no common factor between them.
 
 $$a=(x-5)b+9$$
 $$9=a-(x-5)b$$
@@ -1245,6 +1259,8 @@ $$ = -(x+1)^3 + (x+1)^2 - \Big[-(x+1)^2\Big] + \Big[-(x+1) + y^2 \Big]
 
 \vfill\eject
 
+\begin{comment}
+
 \mysection{Simple Field Extensions}
 
 A {\it simple} extension of a field ${\cal F}$ is formed by adjoining
@@ -1294,6 +1310,8 @@ characteristic zero}).  WHAT ABOUT RINGS OF INFINITE CHARACTERISTIC?
 
 DEFINE ISOMORPHISM.
 
+\end{comment}
+
 \mysection{Symmetric Polynomials}
 \qquad [van der Waerden], \S5.7
 
@@ -1316,23 +1334,42 @@ ${\rm Tr}(x)$, and that all of the coefficients are in $F$.
 
 \endtheorem
 
+\begin{comment}
+
 \mysection{Linear Algebra}
 \qquad [van der Waerden], Ch. 4, \S6.11 (trace of an field extension)
 
 Determinants; trace.
 
+\end{comment}
+
 \mysection{Algebraic Closure}
 \subsection*{\qquad The fields ${\bf R}$ and ${\bf C}$}
 \qquad [van der Waerden], \S11
 
+The most important way to characterize a field ${\cal F}$ is to extend
+it to a polynomial ring ${\cal F}[x]$ and then study how polynomials
+factor in ${\cal F}[x]$.
+
 There exist fields ${\cal F}$ where all polynomials in ${\cal F}[x]$
-can be completely factored into linear terms.  Such a field is said to
+can be completely factored into linear factors.  Such a field is said to
 be {\it algebraically closed}.  The {\bf Fundamental Theorem of
 Algebra} states that the complex field ${\bf C}$ is algebraically
 closed.  There are several proof routes for this theorem.  The most
 common involves complex analysis, and can be found in any standard
 complex analysis text, usually near Liouville's Theorem on the
-behavior of bounded entire functions.
+behavior of bounded entire functions.  I won't go into it here.
+
+I do want to note the difference between ${\bf C}$ and ${\bf C}(x)$.
+Both are fields.  ${\bf C}$ is algebraically closed because any
+polynomial in ${\bf C}[x]$ can be completely factored into linear
+factors, i.e, $x^3-3x^2+4=(x-2)^2(x+1)$.  ${\bf C}(x)$ is {\it not} algebraically closed.
+If it were, then all polynomials in ${\bf C}(x)[y]$ could
+be completely factored, but in fact, there exist polynomials
+such as $y^2-x$ that can not be factored, so ${\bf C}(x)$
+is not algebraically closed.
+
+\begin{comment}
 
 Here I will present another proof, Gauss's second method (cast into
 modern terms by van der Waerden).  Not only is it more algebraic
@@ -1502,6 +1539,8 @@ and use the prior result to demonstrate that square roots exist for
 all numbers in ${\bf C}$.  Then introduce the modulus of a complex
 number and establish that $|1+\gamma|\le 1+|\gamma|$.
 
+\end{comment}
+
 \mysection{Polynomial factorization (optional)}
 \qquad [van der Waerden], \S5.6
 \hbox{}\qquad [Geddes], Chs. 5, 6, 8
@@ -1510,9 +1549,9 @@ Let's conclude this chapter by taking a least a brief look at fully
 factoring a polynomial into its irreducible factors.  There are
 several reasons to do this.
 
-First of all, it's to declare that ``the Fundamental Theorem of
+First of all, it's easy to declare that ``the Fundamental Theorem of
 Algebra tells us that any polynomial in {\bf C}[x] can be factored
-into linear factors''.  That's a true statement, but when it comes
+into linear factors'', and maybe even prove it.  That's true, but when it comes
 time to actually do a computation, how do we proceed?  How do we
 actually factor a polynomial?  Call it the price of success.
 Differential algebra is solid enough to actually compute integrals, so
@@ -1579,6 +1618,8 @@ primes can be combined into factors.  The number $3$, for example, can
 be split into two integer factors in only one of four ways: $3\cdot1$,
 $1\cdot3$, $-3\cdot-1$, and $-1\cdot-3$.
 
+\begin{comment}
+
 \mysection{Axiom Soup}
 
 At this point, the reader might begin to suspect that we build up a
@@ -1594,3 +1635,5 @@ polynomial ring in a single {\it transcendental} variable over a field
 is also a unique factorization domain).
 
 Let me close this chapter by proving this in a series of theorems.
+
+\end{comment}
