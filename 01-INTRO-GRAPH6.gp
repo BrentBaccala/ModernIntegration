@@ -11,7 +11,7 @@ set terminal postscript color
 #
 # define f(x) to be any single variable function
 #
-# the integral is calculated using Simpson's rule as 
+# the integral is calculated using Simpson's rule as
 #          ( f(x-delta) + 4*f(x-delta/2) + f(x) )*delta/6
 # repeated x/delta times (from x down to 0)
 #
@@ -24,8 +24,8 @@ delta = 0.01
 # calculate the integral of function f(t) from 0 to x
 
 integral_f(x) = (x>0)?int1a(x,(1.0*x)/ceil(x/delta)):-int1b(x,-(1.0*x)/ceil(-x/delta))
-int1a(x,d) = (x<=d*.1) ? 0 : sum [i=1:int(x/d)] ((f(i*d-d)+4*f(i*d-d*.5)+f(i*d))*d/6.)
-int1b(x,d) = (x>=-d*.1) ? 0 : sum [i=1:int(-x/d)] ((f(i*d+d)+4*f(i*d+d*.5)+f(i*d))*d/6.)
+int1a(x,d) = sum [i=1:int(x/d+0.5)] ((f(i*d-d)+4*f(i*d-d*.5)+f(i*d))*d/6.)
+int1b(x,d) = sum [i=1:int(-x/d+0.5)] ((f(-i*d+d)+4*f(-i*d+d*.5)+f(-i*d))*d/6.)
 
 Si(x) = integral_f(x)
 
