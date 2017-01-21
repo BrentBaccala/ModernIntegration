@@ -13,6 +13,12 @@
 \usepackage{float}
 \usepackage{color}
 
+%% Suggested by http://tex.stackexchange.com/questions/349580
+\usepackage{array}
+
+%% Define a new column declaration
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
 % This package makes cut-and-paste of carets work right, so
 % we can cut-and-paste from the PDF document into Maxima.
 

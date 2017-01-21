@@ -507,11 +507,9 @@ with respect to a specific variable, and obtain:
 
 \bgroup
 \def\arraystretch{1.5}
-\begin{tabular}{ll}
+\begin{tabular}{l L{10cm}}
 \textcolor{red}{\ttfamily (\%i1)} &
-\begin{lstlisting}
-divide(x*((x^2*p^2-t^2)^2 + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t)), (x+1)*(t^2-x^2*p^2)^2, t);
-\end{lstlisting} \\
+\lstinline!divide(x*((x^2*p^2-t^2)^2 + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t)), (x+1)*(t^2-x^2*p^2)^2, t);! \\
 
 \begin{comment}
 \textcolor{darkred}{\ttfamily (\%o1)} &
