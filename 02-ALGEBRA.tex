@@ -1656,3 +1656,45 @@ is also a unique factorization domain).
 Let me close this chapter by proving this in a series of theorems.
 
 \end{comment}
+
+\vfill\eject
+\mysection{Exercises}
+
+Factor the following polynomials in ${\bf Z}[x]$, ${\bf Q}[x]$, ${\bf R}[x]$, and ${\bf C}[x]$:
+
+\begin{enumerate}
+\item $x^2-2$  (factors in ${\bf R}[x]$ and ${\bf C}[x]$, but not in ${\bf Z}[x]$ or ${\bf Q}[x]$)
+\item $x^2+1$  (factors in ${\bf C}[x]$, but not in any other ring)
+\end{enumerate}
+
+Write a computer program to factor the following polynomials:
+
+\begin{enumerate}[resume]
+\item $x^5+2\,x^4+2\,x^3-x-1$
+
+\lstinline!expand((x^2+x+1)*(x^3+x^2-1));!
+
+\item $34\,x^5+51\,x^4+60\,x^3+25\,x^2+8\,x-1$
+
+\lstinline!factor(34*x^5+51*x^4+60*x^3+25*x^2+8*x-1);!
+
+Ans: $\left(x^2+x+1\right)\,\left(34\,x^3+17\,x^2+9\,x-1\right)$
+
+
+\end{enumerate}
+
+Write a computer program to factor the following polynomials:\hfil\break
+\-\hspace{1cm} (Hint: You'll need a 2 dimensional grid)
+
+\begin{enumerate}[resume]
+\item $21\,y^2+3\,x^2\,y+14\,x\,y-16\,y+2\,x^3-7\,x^2+22\,x-77$
+
+\lstinline!expand((3*y+2*x-7)*(7*y+x^2+11))!
+
+Ans: $\left(3\,y+2\,x-7\right)\,\left(7\,y+x^2+11\right)$
+
+\item $y^4+x^2\,y^3+y^3+2\,x^2\,y-3\,y+2\,x^4-x^2-3$
+
+\lstinline!expand((y^3+2*x^2-3)*(y+x^2+1))!
+
+\end{enumerate}
