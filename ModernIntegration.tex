@@ -28,6 +28,14 @@
 
 \usepackage{listings}
 
+% embed Python code into LaTeX
+%
+% need TeX package pythontex (fetch from CTAN, put in a subdirectory, and symlink pythontex.sty)
+% need TeX package fvextra (fetch from CTAN, put in a subdirectory, and symlink fvextra.sty)
+% need python package pygments (apt-get install python-pygments)
+
+\usepackage{pythontex}
+
 % Default listing style for Maxima input
 
 \lstset{basicstyle=\ttfamily\color{blue},
