@@ -1,0 +1,3 @@
+[submodule "pythontex"]
+	path = pythontex
+	url = git@github.com:BrentBaccala/pythontex.git
