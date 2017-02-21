@@ -14,9 +14,9 @@ clean:
 .DELETE_ON_ERROR:
 
 ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
-	echo rm -f pythontex-files-ModernIntegration/*
+	rm -f pythontex-files-ModernIntegration/*
 	pdflatex ModernIntegration
-	./pythontex/pythontex/pythontex.py ModernIntegration.tex
+	./pythontex/pythontex/pythontex.py --verbose ModernIntegration.tex
 	pdflatex ModernIntegration
 
 out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
