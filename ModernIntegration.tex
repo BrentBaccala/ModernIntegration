@@ -10,6 +10,7 @@
 \usepackage{amssymb}
 \usepackage[retainorgcmds]{IEEEtrantools}
 \usepackage{framed}
+\usepackage{mdframed}
 \usepackage{float}
 \usepackage{color}
 
@@ -62,6 +63,11 @@ $ #2 $
 \end{tabular}
 \egroup\break
 }
+
+\newenvironment{maximacodeblock}
+{\begin{mdframed}[backgroundcolor=yellow!20]}
+{\end{mdframed}}
+
 
 \usepackage{tikz}
 \usetikzlibrary{positioning, fit}
