@@ -522,23 +522,9 @@ expansion with respect to a given variable, in this case $\theta$.
 
 \vfill\eject
 
-{\small\begin{verbatim}
-
-(%i4) partfrac(%o1[2]/((x+1)*(t^2-x^2*p^2)^2), t);
-               1                     1
-(%o4) ------------------- - -------------------
-      (2 x + 2) (p x + t)   (2 x + 2) (t - p x)
-     2           2  2      2  3      2  4
-   (p  + p) x + p  x  + 2 p  x  + 2 p  x
- + --------------------------------------
-                               2
-            (2 x + 2) (t + p x)
-     2           2  2      2  3      2  4
-   (p  - p) x + p  x  + 2 p  x  + 2 p  x
- - --------------------------------------
-                               2
-            (2 x + 2) (t - p x)
-\end{verbatim}}
+\begin{maximacode}
+partfrac(%[2]/((x+1)*(t^2-x^2*p^2)^2), t);
+\end{maximacode}
 
 \begin{comment}
 \begin{multline*}
