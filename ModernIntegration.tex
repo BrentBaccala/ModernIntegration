@@ -26,15 +26,18 @@
 
 \usepackage[T1]{fontenc}
 
-\usepackage{listings}
-
-% embed Python code into LaTeX
+% embed Python and Maxima code into LaTeX
 %
 % need TeX package pythontex (fetch from CTAN, put in a subdirectory, and symlink pythontex.sty)
 % need TeX package fvextra (fetch from CTAN, put in a subdirectory, and symlink fvextra.sty)
 % need python package pygments (apt-get install python-pygments)
 
 \usepackage[usefamily=maxima,keeptemps=all]{pythontex}
+
+% These packages are used when embedding Maxima code
+
+\usepackage{listings}
+\usepackage{fancyvrb}
 
 % Default listing style for Maxima input
 
@@ -46,6 +49,19 @@ resetmargins=true}
 
 % Color used to label Maxima output
 \definecolor{darkred}{RGB}{200,0,0}
+
+% Command called by python code that processes maximacode environment
+\newcommand{\maximaio}[2]{
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{l L{10cm}}
+\textcolor{red}{\ttfamily (\%i#1)} &
+\textcolor{blue}{\BUseVerbatim[baseline=t]{MaximaCode}} \\
+\textcolor{darkred}{\ttfamily (\%o#1)} &
+$ #2 $
+\end{tabular}
+\egroup\break
+}
 
 \usepackage{tikz}
 \usetikzlibrary{positioning, fit}

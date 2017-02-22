@@ -504,28 +504,11 @@ We need to put our integrand into partial fractions form, so let's begin by
 using Maxima's {\ttfamily divide} function, which performs polynomial long division
 with respect to a specific variable, and obtain:
 
-
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{l L{10cm}}
-\textcolor{red}{\ttfamily (\%i1)} &
-\lstinline!divide(x*((x^2*p^2-t^2)^2 + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t)), (x+1)*(t^2-x^2*p^2)^2, t);! \\
-
-\begin{comment}
-\textcolor{darkred}{\ttfamily (\%o1)} &
-\begin{lstlisting}[basicstyle=\ttfamily]
-   x            3  5      3  4      3  3      3  2       3  3
-[-----, t (- 4 p  x  - 4 p  x  - 2 p  x  - 2 p  x ) + 2 p  x ]
- x + 1
-\end{lstlisting} \\
-\end{comment}
-
-\textcolor{darkred}{\ttfamily (\%o1)} &
-$\left[ {{x}\over{x+1}} , t\,\left(-2\,p^3\,x^2-2\,p^3\,x^3-4\,p^3\,
- x^4-4\,p^3\,x^5\right)+2\,p^3\,x^3 \right] $
-
-\end{tabular}
-\egroup
+\begin{maximacode}
+divide(x*((x^2*p^2-t^2)^2
+          + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t)),
+       (x+1)*(t^2-x^2*p^2)^2, t);
+\end{maximacode}
 
 
 $$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
