@@ -1251,49 +1251,46 @@ resultant yields a condition on the remaining variables for the
 original system to be solvable.
 
 
+\vfill\eject
+
+Here's a Maxima function that constructs a Sylvester matrix:
+
+\begin{maximacode}
+syl_elem(a,b,t,i,j) :=
+   if (i > hipow(b,t))
+      then coeff(b,t,i-j)
+      else coeff(a,t,i-j+hipow(a,t))$
+sylvester(a,b,t) := block(
+   [size: hipow(a,t) + hipow(b,t)],
+   genmatrix(lambda([i,j], syl_elem(a,b,t,i,j)),
+             size, size)
+)$
+\end{maximacode}
+
 \example Compute the $t-$resultant of $t^2 - 1 -x$ and $t^3-t-y$.
 
-$${\rm res}_t(t^2 - 1 -x, t^3-t-y) =
-\det\left\vert \begin{matrix}
-1 & 0 & -1 & -y & 0 \cr
-0 & 1 & 0 & -1 & -y \cr
-1 & 0 & -x-1 & 0 & 0 \cr
-0 & 1 & 0 & -x-1 & 0 \cr
-0 & 0 &1 & 0 & -x-1\end{matrix} \right\vert $$
+\begin{maximacode}
 
-Expanding the first two columns with cofactors, we obtain:
+sylvester(t**2 - 1 - x, t**3 - t - y, t);
+ratsimp(determinant(%));
+\end{maximacode}
 
-$$= \det\left\vert \begin{matrix}
-1 & 0 & -1 & -y \cr
-0 & -x-1 & 0 & 0 \cr
-1 & 0 & -x-1 & 0 \cr
-0 &1 & 0 & -x-1 \end{matrix} \right\vert
-+ \det\left\vert \begin{matrix}
-0 & -1 & -y & 0 \cr
-1 & 0 & -1 & -y \cr
-1 & 0 & -x-1 & 0 \cr
-0 &1 & 0 & -x-1 \end{matrix} \right\vert $$
+More succinctly, we can use the Maxima function {\tt resultant}:
 
-$$= \det\left\vert \begin{matrix}
- -x-1 & 0 & 0 \cr
- 0 & -x-1 & 0 \cr
- 1 & 0 & -x-1 \end{matrix} \right\vert
-+ \det\left\vert \begin{matrix}
- 0 & -1 & -y \cr
- -x-1 & 0 & 0 \cr
- 1 & 0 & -x-1 \end{matrix} \right\vert $$
+\begin{maximacode}
+resultant(t**2 - 1 - x, t**3 - t - y, t);
+\end{maximacode}
 
-$$- \det\left\vert \begin{matrix}
- -1 & -y & 0 \cr
- 0 & -x-1 & 0 \cr
- 1 & 0 & -x-1 \end{matrix} \right\vert
-+ \det\left\vert \begin{matrix}
- -1 & -y & 0 \cr
- 0 & -1 & -y \cr
- 1 & 0 & -x-1 \end{matrix} \right\vert $$
+This result implies that the polynomials $t^2-1-x$ and $t^3-t-y$
+have a common factor when $y^2-x^3-x^2=0$.  For example,
+this condition is satisfied when $x=3$ and $y=6$, and
+the two polynomials become $t^2-4$ and $t^3-t-6$, which
+have the common factor $t-2$:
 
-$$ = -(x+1)^3 + (x+1)^2 - \Big[-(x+1)^2\Big] + \Big[-(x+1) + y^2 \Big]
- = y^2 - x^3 - x^2 $$
+\begin{maximacode}
+factor(t**2-4);
+factor(t**3-t-6);
+\end{maximacode}
 
 \endexample
 
