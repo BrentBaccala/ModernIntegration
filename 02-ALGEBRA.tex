@@ -886,7 +886,7 @@ through by the quotient:
 divide((x^3+5*x^2+7*x+3), %[3]);
 [s,t,_] : %th(2)*%[1];
 a*s + b*t;
-kill(all)$
+kill(a,b,c,s,t)$
 \end{maximacode}
 
 \endexample
@@ -1072,7 +1072,11 @@ so,
 
 $${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {4\over{(x-2)^2}} + {1\over{(x-2)}}$$
 
-Again, verify this result using a computer algebra system.
+Again, let's verify this result using Maxima:
+
+\begin{maximacode}
+partfrac((x^2 + 3*x + 2)/(x^3 - 3*x^2 + 4), x);
+\end{maximacode}
 
 \endexample
 
