@@ -1704,23 +1704,11 @@ def factorization_problem(p):
 \end{sympycode}
 
 \item \sympyc{factorization_problem((3*y+2*x-7)*(7*y+x**2+11))}
+\begin{maximacode}
+factor(2*x**3 + 3*x**2*y - 7*x**2 + 14*x*y
+       + 22*x + 21*y**2 - 16*y - 77);
+\end{maximacode}
 
 \item \sympyc{factorization_problem((y**3+2*x**2-3)*(y+x**2+1))}
-
-\begin{maximacode}
-x/(x+1);
-\end{maximacode}
-
-% \begin{comment}
-\begin{maximacode}
-y/(y+1);
-z/(z+1);
-(y**3+2*x**2-3)*(y+x**2+1);
-expand((y**3+2*x**2-3)*(y+x**2+1));
-(x*((x**2*exp(2*x**2)-log(x+1))**2
- +2*x*exp(3*x**2)(x-(2*x**3+2*x**2+x+1)*log(x+1))))
-/((x+1)(log(x+1) - x**2*exp(2*x**2))**2);
-\end{maximacode}
-% \end{comment}
 
 \end{enumerate}
