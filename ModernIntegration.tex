@@ -51,13 +51,28 @@ resetmargins=true}
 % Color used to label Maxima output
 \definecolor{darkred}{RGB}{200,0,0}
 
-% Command called by python code that processes maximacode environment
-\newcommand{\maximaio}[2]{
+% Command called by python code that processes maximacode input
+% Command number is in argument 1
+% Command text is saved in verbatim block MaximaCode
+
+\newcommand{\maximainput}[1]{
 \bgroup
 \def\arraystretch{1.5}
 \begin{tabular}{l L{10cm}}
 \textcolor{red}{\ttfamily (\%i#1)} &
-\textcolor{blue}{\BUseVerbatim[baseline=t]{MaximaCode}} \\
+\textcolor{blue}{\BUseVerbatim[baseline=t]{MaximaCode}}
+\end{tabular}
+\egroup\break
+}
+
+% Command called by python code that processes maximacode output
+% Command number is in argument 1
+% Output math mode TeX is in argument 2
+
+\newcommand{\maximaoutput}[2]{
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{l L{10cm}}
 \textcolor{darkred}{\ttfamily (\%o#1)} &
 $ #2 $
 \end{tabular}
