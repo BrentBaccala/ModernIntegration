@@ -635,6 +635,11 @@ by is $2\over35$, which both clears the denominators and divides out
 the common factor in the numerators to produce $x^2+2x+1$.  Both
 answers are acceptable.
 
+\begin{maximacode}
+gcd(4*x^4 + 13*x^3 + 15*x^2 + 7*x + 1,
+    2*x^3 + x^2 - 4*x - 3);
+\end{maximacode}
+
 \endexample
 
 \vfill\eject
@@ -686,6 +691,11 @@ and compute:
 Thus, $x-y$ is the GCD of the primitive polynomials, and it has unit
 content $\gcd_y(1,-y)$.  The GCD of the original contents
 ($1$ and $5y-7$) is 1, so the final result is again $x-y$.
+
+\begin{maximacode}
+gcd(5*x*y - 5*y^2 - 7*x + 7*y,
+    2*x^2 - y*x - y^2);
+\end{maximacode}
 
 \endexample
 
