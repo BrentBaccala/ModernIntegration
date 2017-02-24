@@ -576,18 +576,11 @@ helper functions:
 % from powers of factors:
 
 \begin{maximacode}
-partlist(expr) := block(
-   [partswitch: true, result:[]],
-   for i:1 step 1 unless part(pf,i) = end
-      do result:cons(part(pf,i), result),
-   result)$
 is_power(expr) := is(part(expr, 0) = "^")$
 base_factor(e) :=
    if is_power(e) then part(e,1) else e$
 power(e) :=
    if is_power(e) then part(e,2) else 1$
-which(n,u) :=
-   sublist_indices(n, lambda([x], x=u))[1]$
 \end{maximacode}
 
 Now we can extract the portions of the
@@ -619,10 +612,6 @@ map(lambda([u],
        b[which(n, base_factor(den(u))),
          power(den(u))]: u*den(u)),
     partlist(pf))$
-displayarray(b) :=
-   map(display,
-      map(lambda([u], arraymake(b,u)),
-          rest(arrayinfo(b),2)))$
 displayarray(b)$
 \end{maximacode}
 
@@ -645,13 +634,6 @@ R[1,1] : b[1,2];
 and we wish to compute
 
 $$ B_{1,1}(\theta) \equiv - \frac{R_{1,1}(\theta)}{n_1'(\theta) } \mod n_1(\theta)$$
-
-I use {\tt ratsimp} so much, let's define a shorthand notation for it:
-
-\begin{maximacode}
-infix(":::", 180, 20)$
-(x ::: y) := x :: ratsimp(y)$
-\end{maximacode}
 
 As modulo calculations go, this one is easy.
 
