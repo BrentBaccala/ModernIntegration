@@ -618,7 +618,12 @@ map(power, denoms);
 map(lambda([u],
        b[which(n, base_factor(den(u))),
          power(den(u))]: u*den(u)),
-    partlist(pf));
+    partlist(pf))$
+displayarray(b) :=
+   map(display,
+      map(lambda([u], arraymake(b,u)),
+          rest(arrayinfo(b),2)))$
+displayarray(b)$
 \end{maximacode}
 
 
@@ -626,10 +631,6 @@ We have two irreducible factors: $n_1(\theta) = \theta - x \psi$ and
 $n_2(\theta) = \theta + x \psi$.  Each has $\theta$-degree 1, so
 the numerators in our partial fractions expansions have
 $\theta$-degree 0, as expected.
-
-\begin{maximacode}
-n[1];
-\end{maximacode}
 
 Now we're ready to apply
 Theorem \ref{logarithmic integration theorem}.  Let's start with
