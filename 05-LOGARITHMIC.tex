@@ -529,7 +529,7 @@ divide(num(integrand),
 
 $$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
 
-The $\frac{x}{x+1}$ term is easy, so let's consider the fractional
+The $a_0 = \frac{x}{x+1}$ term is easy, so let's consider the fractional
 term.  Polynomial factorization can be difficult, but this denominator
 is easy -- it's just a difference of squares: $(\theta^2 - x^2\psi^2) = (\theta-x\psi)(\theta+x\psi)$.
 Maxima's {\tt partfrac} function performs partial fractions
@@ -537,6 +537,7 @@ expansion with respect to a given variable, in this case $\theta$.
 
 \begin{maximacode}
 pf: partfrac(%[2]/denom(integrand), t);
+A[0]: x - t;
 \end{maximacode}
 
 \begin{comment}
@@ -558,9 +559,10 @@ pf: partfrac(%[2]/denom(integrand), t);
 Next, we want to extract the irreducible factors from
 the denominators of our partial fractions expansion.
 To facilitate this, let's start by defining some
-helper functions to convert the partial fractions
-expansion to a list, and to extract base factors
-from powers of factors:
+helper functions:
+% to convert the partial fractions
+% expansion to a list, and to extract base factors
+% from powers of factors:
 
 \begin{maximacode}
 partlist(expr) := block(
@@ -573,40 +575,49 @@ base_factor(e) :=
    if is_power(e) then part(e,1) else e$
 power(e) :=
    if is_power(e) then part(e,2) else 1$
-\end{maximacode}
-
-Now we can extract the irreducible factors:
-
-\begin{maximacode}
-denoms: map(lambda([u], partition(denom(u),t)[2]),
-    partlist(pf));
-map(base_factor, denoms);
-n: unique(%);
 which(n,u) :=
    sublist_indices(n, lambda([x], x=u))[1]$
+\end{maximacode}
+
+Now we can extract the portions of the
+denominators that involve the variable $\theta$:
+
+\begin{maximacode}
+den(pl) := partition(denom(pl),t)[2]$
+denoms: map(lambda([u], den(u)),
+            partlist(pf));
+\end{maximacode}
+
+We extract the irreducible factors:
+
+\begin{maximacode}
+n: unique(map(base_factor, denoms));
+\end{maximacode}
+
+Now, for each fraction in the partial fractions
+expansion, we determine which irreducible
+factor is in its denominator, to what power
+it appears, and use this information to
+assign the rest of the fraction to the
+variable $b_{i,j}$:
+
+\begin{maximacode}
 map(lambda([u], which(n, base_factor(u))), denoms);
 map(power, denoms);
-
-map(lambda([u], b[which(n, base_factor(u)), power(u)]: u), denoms);
-
-den(pl) := partition(denom(pl),t)[2]$
-
-map(lambda([u], den(u)), partlist(pf));
-
-map(lambda([u], b[which(n, base_factor(den(u))), power(den(u))]: u*den(u)), partlist(pf));
-
-b[1,1];
-b[1,2];
+map(lambda([u],
+       b[which(n, base_factor(den(u))),
+         power(den(u))]: u*den(u)),
+    partlist(pf));
 \end{maximacode}
 
 
-We have two irreducible factors: $n_1(\theta) = \theta + x \psi$ and
-$n_2(\theta) = \theta - x \psi$.  Each has $\theta$-degree 1, so
+We have two irreducible factors: $n_1(\theta) = \theta - x \psi$ and
+$n_2(\theta) = \theta + x \psi$.  Each has $\theta$-degree 1, so
 the numerators in our partial fractions expansions have
 $\theta$-degree 0, as expected.
 
 \begin{maximacode}
-n[1] : 1/partition(part(pf,1),t)[2];
+n[1];
 \end{maximacode}
 
 Now we're ready to apply
@@ -616,29 +627,34 @@ $n_1(\theta)$.  $m_1=2$, so
 $$R_{1,1}(\theta) = b_{1,2}(\theta) = \frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi$$
 
 \begin{maximacode}
-b[1,1] : partition(part(pf,1),t)[1];
-R[1,1] : b[1,2] : partition(part(pf,3),t)[1];
+R[1,1] : b[1,2];
 \end{maximacode}
 
 and we wish to compute
 
 $$ B_{1,1}(\theta) \equiv - \frac{R_{1,1}(\theta)}{n_1'(\theta) } \mod n_1(\theta)$$
 
+I use {\tt ratsimp} so much, let's define a shorthand notation for it:
+
+\begin{maximacode}
+infix(":::", 180, 20)$
+(x ::: y) := x :: ratsimp(y)$
+\end{maximacode}
+
 As modulo calculations go, this one is easy.
 
 \begin{maximacode}
-B[1,1] : ratsimp(- R[1,1] / D(n[1]));
-divide(%, n[1], t);
+B[1,1] ::: - R[1,1] / D(n[1]);
 \end{maximacode}
+% divide(%, n[1], t);
 
 Now we wish to compute $Q_{1,1}(\theta)$:
 
 $$ Q_{1,1}(\theta) = - \frac{R_{1,1}(\theta) + B_{1,1}(\theta) n_1'(\theta)}{n_1(\theta)}$$
 
 \begin{maximacode}
-Q[1,1] :
-   ratsimp(- (R[1,1] + B[1,1] * D(n[1]))
-             / n[1]);
+Q[1,1] :::
+   - (R[1,1] + B[1,1] * D(n[1])) / n[1];
 \end{maximacode}
 
 This division to obtain $Q_{1,1}$ will always be exact.  What might not be exact is the following division
@@ -647,28 +663,53 @@ to obtain $C_{1}$.  If the division isn't exact, or if $C_1$ isn't a constant, t
 $$ C_1 = \frac{b_{1,1}(\theta) - B_{1,1}'(\theta) - Q_{1,1}(\theta)}{n_1'(\theta)} $$
 
 \begin{maximacode}
-C[1] :
-   ratsimp((b[1,1] - D(B[1,1]) - Q[1,1]) / D(n[1]));
+C[1] :::
+   (b[1,1] - D(B[1,1]) - Q[1,1]) / D(n[1]);
 \end{maximacode}
 
-$$B_{1,1}(\theta) = -\frac{x}{2}\psi \qquad\Longrightarrow\qquad B_{1,1}' = -\frac{2x^2+1}{2}\psi$$
+A similar calculation handles the other irreducible factor:
 
-$$ C_1 = \frac{\frac{1}{2(x+1)} + \frac{2x^2+1}{2}\psi}{\frac{1}{x+1} + (1 + 2 x^2) \psi} = \frac{1}{2}$$
+\begin{maximacode}
+R[2,1] : b[2,2];
+B[2,1] ::: - R[2,1] / D(n[2]);
+Q[2,1] :::
+   - (R[2,1] + B[2,1] * D(n[2])) / n[2];
+C[2] :::
+   (b[2,1] - D(B[2,1]) - Q[2,1]) / D(n[2]);
+\end{maximacode}
 
-A similar calculation yields
+Plugging everything together, we conclude that our solution is:
 
-$$B_{2,1}(\theta) = -\frac{x}{2}\psi \qquad C_2 = -\frac{1}{2}$$
+\begin{maximacode}
+A[0] + ratsimp(sum(B[i,1]/n[i],i,1,2))
+   + logcontract(2*sum(C[i] * log(n[i]),i,1,2))/2;
+\end{maximacode}
 
-Plugging everything together, we conclude that:
-
+\begin{comment}
 \begin{multline*}
 \int{{x\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx \\
 = x - \theta -\frac{\frac{x}{2}\psi}{\theta + x \psi} - \frac{\frac{x}{2}\psi}{\theta - x \psi} + \frac{1}{2}\ln(\theta + x\psi)- \frac{1}{2}\ln(\theta - x \psi)
 \end{multline*}
 
 $$ = x - \theta -\frac{x \psi \theta}{\theta^2 - x^2 \psi^2} + \frac{1}{2}\ln\frac{\theta + x\psi}{\theta - x \psi}$$
+\end{comment}
 
 Converting back to our original form:
+
+\begin{maximacode}
+subst([t=log(x+1), p=exp(x^2)], %);
+\end{maximacode}
+
+Finally, we verify that this is, in fact,
+an anti-derivative of the original integrand:
+
+\begin{maximacode}
+ratsimp(diff(%,x)
+   - subst([t=log(x+1), p=exp(x^2)],
+           integrand));
+/* 'integrate(subst([t=log(x+1), p=exp(x^2)], integrand),x) = %; */
+/* integrate(subst([t=log(x+1), p=exp(x^2)], integrand),x); */
+\end{maximacode}
 
 $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
 $$= x - \ln(x+1) - {x e^{x^2}\ln(x+1)\over{\ln^2(x+1)-x^2 e^{2x^2}}}
