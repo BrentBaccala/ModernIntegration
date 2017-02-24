@@ -591,8 +591,8 @@ Now we can extract the portions of the
 denominators that involve the variable $\theta$:
 
 \begin{maximacode}
-den(pl) := partition(denom(pl),t)[2]$
-denoms: map(lambda([u], den(u)),
+den(pl,v) := partition(denom(pl),v)[2]$
+denoms: map(lambda([u], den(u,t)),
             partlist(pf));
 \end{maximacode}
 
@@ -613,8 +613,8 @@ variable $b_{i,j}$:
 map(lambda([u], which(n, base(u))), denoms);
 map(power, denoms);
 map(lambda([u],
-       b[which(n, base(den(u))),
-         power(den(u))]: u*den(u)),
+       b[which(n, base(den(u,t))),
+         power(den(u,t))]: u*den(u,t)),
     partlist(pf))$
 displayarray(b)$
 \end{maximacode}

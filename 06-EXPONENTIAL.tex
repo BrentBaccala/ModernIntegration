@@ -742,115 +742,109 @@ $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\o
 We proceed as before, putting the integral into Liouvillian form
 and dividing out $\frac{x}{x+1}$ to obtain a proper fraction:
 
-$$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
+\begin{maximacode}
+divide(num(lintegrand), denom(lintegrand), p);
+\end{maximacode}
 
 This time, we'll operate in ${\mathbb C}(x,\theta = \ln (x+1),\psi = \exp x^2)$, treating
 this as an exponential extension of ${\mathbb C}(x,\theta)$.  We'll begin again by
 computing a partial fractions expansion, this time with respect to $\psi$:
 
-{\small\begin{verbatim}
+\begin{maximacode}
+pf: partfrac(N/denom(lintegrand), p);
+denoms: map(lambda([u], den(u,p)),
+            partlist(pf));
+n: unique(map(base, denoms));
+map(lambda([u],
+       c[which(n, base(den(u,p))),
+         power(den(u,t))]: u*den(u,p)),
+    partlist(pf))$
+displayarray(c)$
+\end{maximacode}
 
-(%i1) divide(expand(x*((x^2*p^2-t^2)^2 + 2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t))),
-                expand((x+1)*(t^2-x^2*p^2)^2), t);
+Now Theorem \ref{exponential integration theorem} tells us that
 
-          x             3  2       3  3      3  4      3  5       3  3
-(%o1)  [-----, t ((- 2 p  x ) - 2 p  x  - 4 p  x  - 4 p  x ) + 2 p  x ]
-        x + 1
-
-(%i2) partfrac(%o1[2]/((x+1)*(t^2-x^2*p^2)^2), p);
-
-       2     2             2  2      2  3    2     2             2  2      2  3
-      t  + (t  - t) x + 2 t  x  + 2 t  x    t  + (t  - t) x + 2 t  x  + 2 t  x
-(%o2) ----------------------------------- - -----------------------------------
-                     2     2                               2     2
-            (t + p x)  (2 x  + 2 x)               (p x - t)  (2 x  + 2 x)
-                                   2        3                        2        3
-              t + (t - 1) x + 2 t x  + 2 t x    t + (t - 1) x + 2 t x  + 2 t x
-            - ------------------------------- - -------------------------------
-                                2                                 2
-                    (p x + t) (x  + x)                (p x - t) (x  + x)
-
-\end{verbatim}}
-
-\begin{multline*}
-\int {x\over{x+1}} + \frac{\frac{2x^3 + 2x^2 + x +1}{2(x^2+x)}\theta^2 - \frac{x}{2(x^2+x)} \theta}{(\theta + x \psi)^2}
-       - \frac{\frac{2x^3+2x^2+x+1}{x^2+x}\theta - \frac{x}{x^2+x}}{(\theta + x \psi)} \\
-       - \frac{\frac{2x^3 + 2x^2 + x +1}{2(x^2+x)}\theta^2 - \frac{x}{2(x^2+x)} \theta}{(\theta - x \psi)^2}
-       + \frac{\frac{2x^3+2x^2+x+1}{x^2+x}\theta - \frac{x}{x^2+x}}{(\theta - x \psi)} dx
-\end{multline*}
-
-\begin{multline*}
-\int {x\over{x+1}} + \frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta}{(\theta + x \psi)^2}
-       - \frac{\frac{2x^2+1}{x}\theta - \frac{1}{x+1}}{(\theta + x \psi)} \\
-       - \frac{\frac{2x^2 +1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta}{(\theta - x \psi)^2}
-       + \frac{\frac{2x^2+1}{x}\theta - \frac{1}{x+1}}{(\theta - x \psi)} dx
-\end{multline*}
-
-$n_1(\psi) = \theta + x \psi$ and so
-
-$$c_{1,1}(\psi) = \frac{2x^2+1}{x}\theta - \frac{1}{x+1} \qquad
-c_{1,2}(\psi) = \frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta$$
-
-Now Theorem \ref{exponential integration theorem} tells us
-that
-
-$$R_{1,1}(\psi) = c_{1,2}(\psi) = \frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta$$
-
-$n_1'(\psi) = \frac{1}{x+1} + (1 + 2x^2)\psi$, so
+\begin{maximacode}
+R[1,1] : c[1,2];
+\end{maximacode}
 
 $$C_{1,1}(\psi) = - \frac{R_{1,1}(\psi)}{n_1'(\psi)} \mod n_1(\psi)$$
-$$ = - \frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta}{\frac{1}{x+1} + (1 + 2x^2)\psi} \mod \theta + x\psi$$
+
+\begin{maximacode}
+modulo(r,p,v) :=
+   divide(num(r),p,v)[2]
+     * gcdex(denom(r),p,v)[1]$
+kill(C)$
+C[1,1] ::: modulo( - R[1,1] / D(n[1]),
+                     n[1], p);
+\end{maximacode}
 
 This time, we do need to perform a modulo reduction, but as modulo reductions go, it's
-trivial.  Operating $\mod (\theta + x\psi)$ means that we're operating in a field
-where $\theta + x\psi = 0$, so $\psi = -\frac{\theta}{x}$.  (EXPLAIN WHY WE'RE
-REDUCING w.r.t $\psi$).  Making this substitution, we obtain:
-
-$$ C_{1,1}(\psi) = - \frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta}{\frac{1}{x+1} - \frac{1 + 2x^2}{x}\theta} $$
-$$ = - \frac{(2x^2 + 1)(x+1)\theta^2 - x \theta}{2x - 2(1 + 2x^2)(x+1)\theta} $$
-$$ = \frac{1}{2} \theta $$
+trivial.  Operating $\mod (\theta - x\psi)$ means that we're operating in a field
+where $\theta - x\psi = 0$, so $\psi = \frac{\theta}{x}$.  (EXPLAIN WHY WE'RE
+REDUCING w.r.t $\psi$).
 
 Now we wish to compute $Q_{1,1}(\psi)$.  There is no modulo reduction in
 this division, and it should always be exact.
 
 $$Q_{1,1}(\psi) = - \frac{R_{1,1}(\theta) + C_{1,1}(\theta) n_1'(\theta)}{n_1(\theta)}$$
-$$ = -\frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta + \frac{1}{2}\theta \left[\frac{1}{x+1} + (1 + 2x^2)\psi\right]}{\theta + x \psi}$$
 
-$$ = -\frac{\frac{2x^2 + 1}{2x}\theta^2 + \frac{1}{2}\theta \left[(1 + 2x^2)\psi\right]}{\theta + x \psi}
-= - \frac{2x^2 + 1}{2x} \theta$$
-
-%% Again substituting $\psi = -\frac{\theta}{x}$ (WHY?), we obtain:
-
-%% $$Q_{1,1}(\psi) = -\frac{\frac{2x^2 + 1}{2x}\theta^2 - \frac{1}{2(x+1)} \theta + \frac{1}{2}\theta \left[\frac{1}{x+1} - (1 + 2x^2)]\frac{\theta}{x}\right]}{\theta + x \psi} = 0$$
+\begin{maximacode}
+kill(Q)$
+Q[1,1] ::: - (R[1,1] + C[1,1] * D(n[1]))
+                     / n[1];
+\end{maximacode}
 
 Having computed $C_{1,1}$ and $Q_{1,1}$, we are now able to compute $D_1$:
 
 $$ D_1 = \frac{c_{1,1} - C_{1,1}'(\psi) - Q_{1,1}(\psi)}{n_1'(\psi) - \frac{\lc n_1'(\psi)}{\lc n_1(\psi)} n_1(\psi)}$$
 
-$$ D_1 = \frac{- \frac{2x^2+1}{x}\theta + \frac{1}{x+1} - \frac{1}{2}\frac{1}{x+1} + \frac{2x^2 + 1}{2x} \theta}{\frac{1}{x+1} + (1 + 2x^2)\psi - \frac{1+2x^2}{x}(\theta + x \psi)}$$
+\begin{maximacode}
+lc(a,v) := coeff(a, v, hipow(a,v))$
+D[1] ::: (c[1,1] - D(C[1,1]) - Q[1,1])
+/ (D(n[1])-lc(D(n[1]),p)/lc(n[1],p)*n[1]);
+\end{maximacode}
 
-$$ D_1 = \frac{- \frac{1}{2}(2x^2+1)(x+1)\theta + \frac{1}{2} x}{x + x(x+1)(1 + 2x^2)\psi - (1+2x^2)(x+1)(\theta + x \psi)}$$
+A similar calculation for $n_2(\psi) = \theta + x \psi$ yields
 
-$$ D_1 = \frac{- \frac{1}{2}(2x^2+1)(x+1)\theta + \frac{1}{2} x}{x - (1+2x^2)(x+1)\theta} = \frac{1}{2}$$
-
-A similar calculation for $n_2(\psi) = \theta - x \psi$ yields
-
-$$ C_{2,1} = - \frac{1}{2} \theta \qquad D_2 = - \frac{1}{2}$$
+\begin{maximacode}
+R[2,1] : c[2,2];
+C[2,1] ::: modulo( - R[2,1] / D(n[2]),
+                     n[2], p);
+Q[2,1] ::: - (R[2,1] + C[2,1] * D(n[2]))
+                     / n[2];
+D[2] ::: (c[2,1] - D(C[2,1]) - Q[2,1])
+/ (D(n[2])-lc(D(n[2]),p)/lc(n[2],p)*n[2]);
+\end{maximacode}
 
 In an exponential extension, our $D$ coefficients can affect our $A_0$ term...
 
 $$A_0' = a_0 - \sum_{i=1}^\nu D_i \,\frac{\lc n_1'(\psi)}{\lc n_1(\psi)} $$
-$$ = 0 - \frac{1}{2} \frac{(1+2x^2)}{x} + \frac{1}{2} \frac{-(1+2x^2)}{- x} = 0$$
+
+\begin{maximacode}
+a: a - sum(D[i]*lc(D(n[i]),p)/lc(n[i],p),i,1,2);
+A: integrate(a,x);
+\end{maximacode}
+
+% XXX this exposes a bug in displayarray
+\begin{comment}
+\begin{maximacode}
+rest(arrayinfo(D),2);
+map(lambda([u], arraymake(D,u)), %);
+map(display,%);
+/* displayarray(D); */
+\end{maximacode}
+\end{comment}
 
 Integrating, we obtain $A_0 = C$, where $C$ is our constant of integration.  We end up with
 the same result that we obtained from the logarithmic theory:
 
-$$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
-$$= x - \theta + \frac{1}{2}\frac{\theta}{\theta + x \psi} - \frac{1}{2}\frac{\theta}{\theta - x \psi}
-+ \frac{1}{2} \ln (\theta + x \psi) - \frac{1}{2} \ln (\theta - x \psi) $$
-$$= x - \theta - \frac{x \psi \theta}{\theta^2 - x^2 \psi^2}
-+ \frac{1}{2} \ln \frac{\theta + x \psi}{\theta - x \psi}$$
-
+\begin{maximacode}
+A + ratsimp(sum(C[i,1]/n[i],i,1,2))
+  + logcontract(2*sum(D[i]*log(n[i]),i,1,2))/2;
+subst([t=log(x+1), p=exp(x^2)], %);
+diff(%,x) === integrand;
+\end{maximacode}
 
 \endexample
 
