@@ -492,6 +492,13 @@ We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x
 
 $$\int{{x\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
 
+\begin{maximacode}
+integrand:
+   x*((x^2*p^2-t^2)^2
+      +2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t))
+   / ((x+1)*(t^2-x^2*p^2)^2);
+\end{maximacode}
+
 Since $\psi$ and $\theta$ are both simple extensions of ${\mathbb C}(x)$, we can operate in either
 ${\mathbb C}(x,\psi,\theta)$ or ${\mathbb C}(x,\theta,\psi)$.  Since ${\mathbb C}(x,\theta,\psi)$
 is an exponential extension of ${\mathbb C}(x,\theta)$, working in ${\mathbb C}(x,\theta,\psi)$
@@ -500,14 +507,23 @@ the next chapter.  Therefore, we'll work in ${\mathbb C}(x,\psi,\theta)$, a loga
 extension of ${\mathbb C}(x,\psi)$, and hope that we won't have to do anything
 too complicated in ${\mathbb C}(x,\psi)$!
 
+To use Maxima for this calculation, let's begin by defining
+a function that performs our differentiation.
+
+\begin{maximacode}
+depends([t,p], x)$
+D(f) := subst(['diff(p,x) = 2*x*p,
+               'diff(t,x) = 1/(x+1)],
+              diff(f,x))$
+\end{maximacode}
+
 We need to put our integrand into partial fractions form, so let's begin by
 using Maxima's {\ttfamily divide} function, which performs polynomial long division
 with respect to a specific variable, and obtain:
 
 \begin{maximacode}
-divide(x*((x^2*p^2-t^2)^2
-         +2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t)),
-       (x+1)*(t^2-x^2*p^2)^2, t);
+divide(num(integrand),
+       denom(integrand), t);
 \end{maximacode}
 
 
@@ -519,11 +535,8 @@ is easy -- it's just a difference of squares: $(\theta^2 - x^2\psi^2) = (\theta-
 Maxima's {\tt partfrac} function performs partial fractions
 expansion with respect to a given variable, in this case $\theta$.
 
-
-\vfill\eject
-
 \begin{maximacode}
-partfrac(%[2]/((x+1)*(t^2-x^2*p^2)^2), t);
+pf: partfrac(%[2]/denom(integrand), t);
 \end{maximacode}
 
 \begin{comment}
@@ -542,11 +555,59 @@ partfrac(%[2]/((x+1)*(t^2-x^2*p^2)^2), t);
        - \frac{\frac{1}{2(x+1)}}{(\theta - x \psi)} dx
 \end{multline*}
 
+Next, we want to extract the irreducible factors from
+the denominators of our partial fractions expansion.
+To facilitate this, let's start by defining some
+helper functions to convert the partial fractions
+expansion to a list, and to extract base factors
+from powers of factors:
+
+\begin{maximacode}
+partlist(expr) := block(
+   [partswitch: true, result:[]],
+   for i:1 step 1 unless part(pf,i) = end
+      do result:cons(part(pf,i), result),
+   result)$
+is_power(expr) := is(part(expr, 0) = "^")$
+base_factor(e) :=
+   if is_power(e) then part(e,1) else e$
+power(e) :=
+   if is_power(e) then part(e,2) else 1$
+\end{maximacode}
+
+Now we can extract the irreducible factors:
+
+\begin{maximacode}
+denoms: map(lambda([u], partition(denom(u),t)[2]),
+    partlist(pf));
+map(base_factor, denoms);
+n: unique(%);
+which(n,u) :=
+   sublist_indices(n, lambda([x], x=u))[1]$
+map(lambda([u], which(n, base_factor(u))), denoms);
+map(power, denoms);
+
+map(lambda([u], b[which(n, base_factor(u)), power(u)]: u), denoms);
+
+den(pl) := partition(denom(pl),t)[2]$
+
+map(lambda([u], den(u)), partlist(pf));
+
+map(lambda([u], b[which(n, base_factor(den(u))), power(den(u))]: u*den(u)), partlist(pf));
+
+b[1,1];
+b[1,2];
+\end{maximacode}
+
 
 We have two irreducible factors: $n_1(\theta) = \theta + x \psi$ and
 $n_2(\theta) = \theta - x \psi$.  Each has $\theta$-degree 1, so
 the numerators in our partial fractions expansions have
 $\theta$-degree 0, as expected.
+
+\begin{maximacode}
+n[1] : 1/partition(part(pf,1),t)[2];
+\end{maximacode}
 
 Now we're ready to apply
 Theorem \ref{logarithmic integration theorem}.  Let's start with
@@ -554,32 +615,41 @@ $n_1(\theta)$.  $m_1=2$, so
 
 $$R_{1,1}(\theta) = b_{1,2}(\theta) = \frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi$$
 
+\begin{maximacode}
+b[1,1] : partition(part(pf,1),t)[1];
+R[1,1] : b[1,2] : partition(part(pf,3),t)[1];
+\end{maximacode}
+
 and we wish to compute
 
 $$ B_{1,1}(\theta) \equiv - \frac{R_{1,1}(\theta)}{n_1'(\theta) } \mod n_1(\theta)$$
 
-As modulo calculations go, this one is easy. $n_1'(\theta) = \frac{1}{x+1} + (1 + 2 x^2) \psi$
+As modulo calculations go, this one is easy.
 
-$$ B_{1,1}(\theta) = - \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi}{\frac{1}{x+1} + (1 + 2 x^2) \psi}$$
-
-$$ = - \frac{\frac{2x^4+2x^3+x^2+x}{2}\psi^2 + \frac{x}{2} \psi}{1 + (x+1)(1 + 2 x^2) \psi}$$
-
-%% $$ = \frac{\frac{2x^4+2x^3+x^2+x}{2}\psi^2 + \frac{x}{2} \psi}{1 + (2 x^3 + 2 x^2 + x + 1) \psi}$$
-
-$$ = - \frac{\frac{x}{2}\psi ( (2x^3+2x^2+x+1)\psi + 1)}{1 + (2 x^3 + 2 x^2 + x + 1) \psi}$$
-
-$$ = - \frac{x}{2}\psi$$
+\begin{maximacode}
+B[1,1] : ratsimp(- R[1,1] / D(n[1]));
+divide(%, n[1], t);
+\end{maximacode}
 
 Now we wish to compute $Q_{1,1}(\theta)$:
 
 $$ Q_{1,1}(\theta) = - \frac{R_{1,1}(\theta) + B_{1,1}(\theta) n_1'(\theta)}{n_1(\theta)}$$
 
-$$ Q_{1,1}(\theta) = - \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi - \frac{x}{2}\psi \left[\frac{1}{x+1} + (1 + 2 x^2) \psi\right]}{\theta + x \psi} = 0$$
+\begin{maximacode}
+Q[1,1] :
+   ratsimp(- (R[1,1] + B[1,1] * D(n[1]))
+             / n[1]);
+\end{maximacode}
 
 This division to obtain $Q_{1,1}$ will always be exact.  What might not be exact is the following division
 to obtain $C_{1}$.  If the division isn't exact, or if $C_1$ isn't a constant, then the integral is not elementary.
 
 $$ C_1 = \frac{b_{1,1}(\theta) - B_{1,1}'(\theta) - Q_{1,1}(\theta)}{n_1'(\theta)} $$
+
+\begin{maximacode}
+C[1] :
+   ratsimp((b[1,1] - D(B[1,1]) - Q[1,1]) / D(n[1]));
+\end{maximacode}
 
 $$B_{1,1}(\theta) = -\frac{x}{2}\psi \qquad\Longrightarrow\qquad B_{1,1}' = -\frac{2x^2+1}{2}\psi$$
 
