@@ -484,6 +484,13 @@ Compute
 
 $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
 
+\begin{maximacode}
+integrand:
+   x*((x^2*exp(2*x^2)-log(x+1)^2)^2
+      +2*x*exp(3*x^2)*(x-(2*x^3+2*x^2+x+1)*log(x+1)))
+   / ((x+1)*(log(x+1)^2 - x^2*exp(2*x^2))^2);
+\end{maximacode}
+
 We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x^2)$ and $\theta = \ln (x+1)$ to obtain:
 
 %% $$\int{{x(x+1)\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{((x+1)\theta^2 - (x^3+x^2)\psi^2)^2}} dx$$
@@ -493,10 +500,12 @@ We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x
 $$\int{{x\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
 
 \begin{maximacode}
-integrand:
-   x*((x^2*p^2-t^2)^2
-      +2*x*p^3*(x-(2*x^3+2*x^2+x+1)*t))
-   / ((x+1)*(t^2-x^2*p^2)^2);
+lintegrand:
+   subst([log(x+1) = t,
+          exp(x^2) = p,
+          exp(2*x^2) = p^2,
+          exp(3*x^2) = p^3],
+      integrand);
 \end{maximacode}
 
 Since $\psi$ and $\theta$ are both simple extensions of ${\mathbb C}(x)$, we can operate in either
@@ -523,8 +532,8 @@ with respect to a specific variable, and obtain:
 
 \begin{maximacode}
 [a[0], N]:
-   divide(num(integrand),
-          denom(integrand), t);
+   divide(num(lintegrand),
+          denom(lintegrand), t);
 \end{maximacode}
 
 
@@ -537,8 +546,9 @@ Maxima's {\tt partfrac} function performs partial fractions
 expansion with respect to a given variable, in this case $\theta$.
 
 \begin{maximacode}
-pf: partfrac(N/denom(integrand), t);
-A[0]: x - t;
+pf: partfrac(N/denom(lintegrand), t);
+/* A[0]: x - t; */
+A[0] : integrate(a[0], x);
 \end{maximacode}
 
 \begin{comment}
@@ -705,11 +715,7 @@ Finally, we verify that this is, in fact,
 an anti-derivative of the original integrand:
 
 \begin{maximacode}
-ratsimp(diff(%,x)
-   - subst([t=log(x+1), p=exp(x^2)],
-           integrand));
-/* 'integrate(subst([t=log(x+1), p=exp(x^2)], integrand),x) = %; */
-/* integrate(subst([t=log(x+1), p=exp(x^2)], integrand),x); */
+ratsimp(diff(%,x) - integrand);
 \end{maximacode}
 
 $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
@@ -829,7 +835,7 @@ $${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
 \begin{maximacode}
 v: t^2-x^2*p^2;
 vtick: D(v);
-N/denom(integrand);
+N/denom(lintegrand);
 r: gcdex(v,vtick,t) * N/(x+1)$
 S: ratsimp(r[1] - divide(r[1],vtick,t)[1]*vtick);
 T: ratsimp(r[2] + divide(r[1],vtick,t)[1]*v);
