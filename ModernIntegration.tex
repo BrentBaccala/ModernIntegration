@@ -55,10 +55,10 @@ resetmargins=true}
 % Command number is in argument 1
 % Command text is saved in verbatim block MaximaCode
 
-\newcommand{\maximainput}[1]{
+\newcommand{\maximainputlabel}[1]{
 \bgroup
 \def\arraystretch{1.5}
-\begin{tabular}{l L{10cm}}
+\begin{tabular}{L{1.5cm} L{10cm}}
 \textcolor{red}{\ttfamily (\%i#1)} &
 \textcolor{blue}{\BUseVerbatim[baseline=t]{MaximaCode}}
 \end{tabular}
@@ -66,18 +66,26 @@ resetmargins=true}
 }
 
 % Command called by python code that processes maximacode output
-% Command number is in argument 1
-% Output math mode TeX is in argument 2
+% Command number and math mode TeX are passed in separate
+% commands to allow unlabled outputs (i.e, 'display' command)
 
-\newcommand{\maximaoutput}[2]{
+\newcommand{\maximaoutputlabel}[1]{
+\def\maximalabeltext{(\%o#1)}}
+
+\newcommand{\maximaoutput}[1]{
 \bgroup
 \def\arraystretch{1.5}
-\begin{tabular}{l L{10cm}}
-\textcolor{darkred}{\ttfamily (\%o#1)} &
-$$ #2 $$
+\begin{tabular}{L{1.5cm} L{10cm}}
+\textcolor{darkred}{\ttfamily\maximalabeltext} &
+$$ #1 $$
 \end{tabular}
 \egroup\break
+\def\maximalabeltext{}
 }
+
+% Python code wraps a maximacodeblock around a series
+% of calls to \maximainputlabel, \maximaoutputlabel,
+% and \maximaoutput
 
 \newenvironment{maximacodeblock}
 {\begin{mdframed}[backgroundcolor=yellow!20]}
