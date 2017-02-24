@@ -531,7 +531,7 @@ using Maxima's {\ttfamily divide} function, which performs polynomial long divis
 with respect to a specific variable, and obtain:
 
 \begin{maximacode}
-[a[0], N]:
+[a, N]:
    divide(num(lintegrand),
           denom(lintegrand), t);
 \end{maximacode}
@@ -539,7 +539,13 @@ with respect to a specific variable, and obtain:
 
 $$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
 
-The $a_0 = \frac{x}{x+1}$ term is easy, so let's consider the fractional
+The $a_0 = \frac{x}{x+1}$ term is easy.
+
+\begin{maximacode}
+A : integrate(a, x);
+\end{maximacode}
+
+Let's consider the fractional
 term.  Polynomial factorization can be difficult, but this denominator
 is easy -- it's just a difference of squares: $(\theta^2 - x^2\psi^2) = (\theta-x\psi)(\theta+x\psi)$.
 Maxima's {\tt partfrac} function performs partial fractions
@@ -547,8 +553,6 @@ expansion with respect to a given variable, in this case $\theta$.
 
 \begin{maximacode}
 pf: partfrac(N/denom(lintegrand), t);
-/* A[0]: x - t; */
-A[0] : integrate(a[0], x);
 \end{maximacode}
 
 \begin{comment}
@@ -577,7 +581,7 @@ helper functions:
 
 \begin{maximacode}
 is_power(expr) := is(part(expr, 0) = "^")$
-base_factor(e) :=
+base(e) :=
    if is_power(e) then part(e,1) else e$
 power(e) :=
    if is_power(e) then part(e,2) else 1$
@@ -595,7 +599,7 @@ denoms: map(lambda([u], den(u)),
 We extract the irreducible factors:
 
 \begin{maximacode}
-n: unique(map(base_factor, denoms));
+n: unique(map(base, denoms));
 \end{maximacode}
 
 Now, for each fraction in the partial fractions
@@ -606,10 +610,10 @@ assign the rest of the fraction to the
 variable $b_{i,j}$:
 
 \begin{maximacode}
-map(lambda([u], which(n, base_factor(u))), denoms);
+map(lambda([u], which(n, base(u))), denoms);
 map(power, denoms);
 map(lambda([u],
-       b[which(n, base_factor(den(u))),
+       b[which(n, base(den(u))),
          power(den(u))]: u*den(u)),
     partlist(pf))$
 displayarray(b)$
@@ -675,7 +679,7 @@ C[2] :::
 Plugging everything together, we conclude that our solution is:
 
 \begin{maximacode}
-A[0] + ratsimp(sum(B[i,1]/n[i],i,1,2))
+A + ratsimp(sum(B[i,1]/n[i],i,1,2))
    + logcontract(2*sum(C[i] * log(n[i]),i,1,2))/2;
 \end{maximacode}
 
