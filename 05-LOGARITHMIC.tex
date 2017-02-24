@@ -702,7 +702,7 @@ Finally, we verify that this is, in fact,
 an anti-derivative of the original integrand:
 
 \begin{maximacode}
-ratsimp(diff(%,x) - integrand);
+diff(%,x) === integrand;
 \end{maximacode}
 
 $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
