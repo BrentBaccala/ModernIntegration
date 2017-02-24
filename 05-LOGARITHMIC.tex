@@ -824,8 +824,8 @@ v: t^2-x^2*p^2;
 vtick: D(v);
 N/denom(lintegrand);
 r: gcdex(v,vtick,t) * N/(x+1)$
-S: ratsimp(r[1] - divide(r[1],vtick,t)[1]*vtick);
-T: ratsimp(r[2] + divide(r[1],vtick,t)[1]*v);
+S::: r[1] - divide(r[1],vtick,t)[1]*vtick;
+T::: r[2] + divide(r[1],vtick,t)[1]*v;
 \end{maximacode}
 
 So, our solution is:
