@@ -365,36 +365,36 @@ $$\int \frac{\theta - \theta^{-1}}{2i} \,dx = -\frac{1}{2}(\theta + \theta^{-1})
 
 \example Compute $\int \csc x \, {\rm d}x$
 
-We'll operate in ${\mathbb C}(x, \phi = \exp \,ix)$ and evaluate
+We'll operate in ${\mathbb C}(x, \psi = \exp \,ix)$ and evaluate
 
-$$\int {{2i}\over{\phi - \phi^{-1}}} \,dx = \int 2i {{\phi}\over{\phi^2 - 1}} \,dx$$
+$$\int {{2i}\over{\psi - \psi^{-1}}} \,dx = \int 2i {{\psi}\over{\psi^2 - 1}} \,dx$$
 
 Now we want a partial fractions expansion.  We could use a resultant,
 or the Euclidean G.C.D. algorithm, but it's simpler to just note that
 the denominator's a difference of squares and compute:
 
-$${{c_1}\over{\phi-1}} + {{c_2}\over{\phi+1}} = {{\phi}\over{\phi^2-1}} $$
+$${{c_1}\over{\psi-1}} + {{c_2}\over{\psi+1}} = {{\psi}\over{\psi^2-1}} $$
 
-$${{c_1}(\phi+1)} + {{c_2}(\phi-1)} = \phi \qquad c_1 = c_2 = {1\over2} $$
+$${{c_1}(\psi+1)} + {{c_2}(\psi-1)} = \psi \qquad c_1 = c_2 = {1\over2} $$
 
 giving us
 
-$$\int \left[ {{i}\over{\phi-1}} + {{i}\over{\phi+1}} \right] dx$$
+$$\int \left[ {{i}\over{\psi-1}} + {{i}\over{\psi+1}} \right] dx$$
 
 Now we have an integral in the form of equation
 \eqref{exponential integration theorem - integrand}
-with $\nu=2$, $n_1(\phi) = \phi -1$,
-$n_2(\phi) = \phi + 1$,
+with $\nu=2$, $n_1(\psi) = \psi -1$,
+$n_2(\psi) = \psi + 1$,
 $m_1=m_2=1$ and $c_{1,1} = c_{2,1} = i$.
 
-$$D_{1} = \frac{c_{1,1}}{n_1'(\theta) - \frac{\lc n_1'(\theta)}{\lc n_1(\theta)} n_1(\theta)} = \frac{i}{i \phi - i (\phi-1)} = 1$$
-$$D_{2} = \frac{c_{2,1}}{n_2'(\theta) - \frac{\lc n_2'(\theta)}{\lc n_2(\theta)} n_2(\theta)} = \frac{i}{i \phi - i (\phi+1)} = -1$$
+$$D_{1} = \frac{c_{1,1}}{n_1'(\theta) - \frac{\lc n_1'(\theta)}{\lc n_1(\theta)} n_1(\theta)} = \frac{i}{i \psi - i (\psi-1)} = 1$$
+$$D_{2} = \frac{c_{2,1}}{n_2'(\theta) - \frac{\lc n_2'(\theta)}{\lc n_2(\theta)} n_2(\theta)} = \frac{i}{i \psi - i (\psi+1)} = -1$$
 
 so by Theorem \ref{exponential integration theorem}
 the integral can be written:
 
-$$\int \left[ {{i}\over{\phi-1}} + {{i}\over{\phi+1}} \right] dx
-= \ln (\phi-1) - \ln(\phi+1) = \ln({{\phi-1}\over{\phi+1}})$$
+$$\int \left[ {{i}\over{\psi-1}} + {{i}\over{\psi+1}} \right] dx
+= \ln (\psi-1) - \ln(\psi+1) = \ln({{\psi-1}\over{\psi+1}})$$
 
 $$ = \ln ({{e^{ix}-1}\over{e^{ix}+1}}) = \ln ({{e^{ix/2}-e^{-ix/2}}\over{e^{ix/2}+e^{-ix/2}}}) = \ln i {{\sin {x\over2}}\over{\cos {x\over2}}} = \ln \tan {x\over2} $$
 
@@ -566,13 +566,13 @@ multiple of $B$, irregardless of $A$.
 \label{exp e^{-x^2}}
 Prove that $\int e^{-x^2}\, {\rm d}x$ has no elementary form
 
-We'll use ${\mathbb C}(x, \phi = \exp\, -x^2)$, so $\phi' = -2x$ and
+We'll use ${\mathbb C}(x, \psi = \exp\, -x^2)$, so $\psi' = -2x$ and
 study
 
-$$\int \phi \, {\rm d}x$$
+$$\int \psi \, {\rm d}x$$
 
 We know from Theorem \ref{basic exponential properties} that our
-solution, if it exists, must have the form $a\phi$, where $a \in
+solution, if it exists, must have the form $a\psi$, where $a \in
 {\mathbb C}(x)$, and $a$ must satisfy the Risch equation:
 
 $$a' - 2x a = 1$$
@@ -599,16 +599,16 @@ so the integral can not be expressed in elementary form.
 \example Prove that $\int \frac{\sin x}{x} \, {\rm d}x$ has no elementary form
 
 As we often do with trigonometric integrals, we'll operate in
-${\mathbb C}(x, \phi = \exp \,ix)$, use Euler's relationship
+${\mathbb C}(x, \psi = \exp \,ix)$, use Euler's relationship
 $e^{ix}=i\sin x + \cos x$, and evaluate
 
-$$\int \frac{\phi - \phi^{-1}}{2ix} \,dx$$
+$$\int \frac{\psi - \psi^{-1}}{2ix} \,dx$$
 
 Let's begin by writing the integrand in the form of a rational
-function in ${\mathbb C}(x)(\phi)$, i.e, a ratio
-of $\phi$-polynomials, with coefficients in ${\mathbb C}(x)$:
+function in ${\mathbb C}(x)(\psi)$, i.e, a ratio
+of $\psi$-polynomials, with coefficients in ${\mathbb C}(x)$:
 
-$$\frac{1}{2i} \int \left[ \frac{1}{x}\phi - \frac{1}{x}\frac{1}{\phi} \right]\,dx$$
+$$\frac{1}{2i} \int \left[ \frac{1}{x}\psi - \frac{1}{x}\frac{1}{\psi} \right]\,dx$$
 
 \begin{comment}
 % This text doesn't belong here
@@ -616,7 +616,7 @@ We want to split the denominator into its normal and special
 components, by factoring it into irreducible polynomials and
 classifying each one as normal or special.  In this case, the
 factoriziation is trivial, and we know from theorem \ref{basic
-exponential properties} that $\phi$ is special.
+exponential properties} that $\psi$ is special.
 
 Can we have any logarithms in our integral?  Let's see.
 Any logarithm of a rational function can be factored and
@@ -632,11 +632,11 @@ have no normal polynomials in denominator of our integral,
 \end{comment}
 
 
-The integral must have the form $a_1 \phi + a_{-1} \frac{1}{\phi}$
+The integral must have the form $a_1 \psi + a_{-1} \frac{1}{\psi}$
 with $a_1, a_{-1} \in {\mathbb C}(x)$ and must satisfy the equations:
 
-$$\left[ a_1 \phi + a_{-1}\frac{1}{\phi} \right]' = (a_1' + i a_1 ) \phi + (a_{-1}' - i a_{-1} ) \frac{1}{\phi}
-= \left[ \frac{1}{x}\phi - \frac{1}{x}\frac{1}{\phi} \right]$$
+$$\left[ a_1 \psi + a_{-1}\frac{1}{\psi} \right]' = (a_1' + i a_1 ) \psi + (a_{-1}' - i a_{-1} ) \frac{1}{\psi}
+= \left[ \frac{1}{x}\psi - \frac{1}{x}\frac{1}{\psi} \right]$$
 
 $$\frac{1}{x} = a_1' + i a_1 \qquad - \frac{1}{x} = a_{-1}' - i a_{-1}$$
 
@@ -743,7 +743,7 @@ We proceed as before, putting the integral into Liouvillian form
 and dividing out $\frac{x}{x+1}$ to obtain a proper fraction:
 
 \begin{maximacode}
-divide(num(lintegrand), denom(lintegrand), p);
+divide(num(lintegrand), denom(lintegrand), psi);
 \end{maximacode}
 
 This time, we'll operate in ${\mathbb C}(x,\theta = \ln (x+1),\psi = \exp x^2)$, treating
@@ -751,13 +751,13 @@ this as an exponential extension of ${\mathbb C}(x,\theta)$.  We'll begin again 
 computing a partial fractions expansion, this time with respect to $\psi$:
 
 \begin{maximacode}
-pf: partfrac(N/denom(lintegrand), p);
-denoms: map(lambda([u], den(u,p)),
+pf: partfrac(N/denom(lintegrand), psi);
+denoms: map(lambda([u], den(u,psi)),
             partlist(pf));
 n: unique(map(base, denoms));
 map(lambda([u],
-       c[which(n, base(den(u,p))),
-         power(den(u,t))]: u*den(u,p)),
+       c[which(n, base(den(u,psi))),
+         power(den(u,psi))]: u*den(u,psi)),
     partlist(pf))$
 displayarray(c)$
 \end{maximacode}
@@ -776,7 +776,7 @@ modulo(r,p,v) :=
      * gcdex(denom(r),p,v)[1]$
 kill(C)$
 C[1,1] ::: modulo( - R[1,1] / D(n[1]),
-                     n[1], p);
+                     n[1], psi);
 \end{maximacode}
 
 This time, we do need to perform a modulo reduction, but as modulo reductions go, it's
@@ -802,7 +802,7 @@ $$ D_1 = \frac{c_{1,1} - C_{1,1}'(\psi) - Q_{1,1}(\psi)}{n_1'(\psi) - \frac{\lc 
 \begin{maximacode}
 lc(a,v) := coeff(a, v, hipow(a,v))$
 D[1] ::: (c[1,1] - D(C[1,1]) - Q[1,1])
-/ (D(n[1])-lc(D(n[1]),p)/lc(n[1],p)*n[1]);
+/ (D(n[1])-lc(D(n[1]),psi)/lc(n[1],psi)*n[1]);
 \end{maximacode}
 
 A similar calculation for $n_2(\psi) = \theta + x \psi$ yields
@@ -810,11 +810,11 @@ A similar calculation for $n_2(\psi) = \theta + x \psi$ yields
 \begin{maximacode}
 R[2,1] : c[2,2];
 C[2,1] ::: modulo( - R[2,1] / D(n[2]),
-                     n[2], p);
+                     n[2], psi);
 Q[2,1] ::: - (R[2,1] + C[2,1] * D(n[2]))
                      / n[2];
 D[2] ::: (c[2,1] - D(C[2,1]) - Q[2,1])
-/ (D(n[2])-lc(D(n[2]),p)/lc(n[2],p)*n[2]);
+/ (D(n[2])-lc(D(n[2]),psi)/lc(n[2],psi)*n[2]);
 \end{maximacode}
 
 In an exponential extension, our $D$ coefficients can affect our $A_0$ term...
@@ -822,7 +822,7 @@ In an exponential extension, our $D$ coefficients can affect our $A_0$ term...
 $$A_0' = a_0 - \sum_{i=1}^\nu D_i \,\frac{\lc n_1'(\psi)}{\lc n_1(\psi)} $$
 
 \begin{maximacode}
-a: a - sum(D[i]*lc(D(n[i]),p)/lc(n[i],p),i,1,2);
+a: a - sum(D[i]*lc(D(n[i]),psi)/lc(n[i],psi),i,1,2);
 A: integrate(a,x);
 \end{maximacode}
 
@@ -842,7 +842,7 @@ the same result that we obtained from the logarithmic theory:
 \begin{maximacode}
 A + ratsimp(sum(C[i,1]/n[i],i,1,2))
   + logcontract(2*sum(D[i]*log(n[i]),i,1,2))/2;
-subst([t=log(x+1), p=exp(x^2)], %);
+subst([theta=log(x+1), psi=exp(x^2)], %);
 diff(%,x) === integrand;
 \end{maximacode}
 

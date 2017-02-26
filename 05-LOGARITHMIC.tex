@@ -501,10 +501,10 @@ $$\int{{x\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{(x
 
 \begin{maximacode}
 lintegrand:
-   subst([log(x+1) = t,
-          exp(x^2) = p,
-          exp(2*x^2) = p^2,
-          exp(3*x^2) = p^3],
+   subst([log(x+1) = theta,
+          exp(x^2) = psi,
+          exp(2*x^2) = psi^2,
+          exp(3*x^2) = psi^3],
       integrand);
 \end{maximacode}
 
@@ -520,9 +520,9 @@ To use Maxima for this calculation, let's begin by defining
 a function that performs our differentiation.
 
 \begin{maximacode}
-depends([t,p], x)$
-D(f) := subst(['diff(p,x) = 2*x*p,
-               'diff(t,x) = 1/(x+1)],
+depends([theta,psi], x)$
+D(f) := subst(['diff(psi,x) = 2*x*psi,
+               'diff(theta,x) = 1/(x+1)],
               diff(f,x))$
 \end{maximacode}
 
@@ -533,7 +533,7 @@ with respect to a specific variable, and obtain:
 \begin{maximacode}
 [a, N]:
    divide(num(lintegrand),
-          denom(lintegrand), t);
+          denom(lintegrand), theta);
 \end{maximacode}
 
 
@@ -552,7 +552,7 @@ Maxima's {\tt partfrac} function performs partial fractions
 expansion with respect to a given variable, in this case $\theta$.
 
 \begin{maximacode}
-pf: partfrac(N/denom(lintegrand), t);
+pf: partfrac(N/denom(lintegrand), theta);
 \end{maximacode}
 
 \begin{comment}
@@ -592,7 +592,7 @@ denominators that involve the variable $\theta$:
 
 \begin{maximacode}
 den(pl,v) := partition(denom(pl),v)[2]$
-denoms: map(lambda([u], den(u,t)),
+denoms: map(lambda([u], den(u,theta)),
             partlist(pf));
 \end{maximacode}
 
@@ -613,8 +613,8 @@ variable $b_{i,j}$:
 map(lambda([u], which(n, base(u))), denoms);
 map(power, denoms);
 map(lambda([u],
-       b[which(n, base(den(u,t))),
-         power(den(u,t))]: u*den(u,t)),
+       b[which(n, base(den(u,theta))),
+         power(den(u,theta))]: u*den(u,theta)),
     partlist(pf))$
 displayarray(b)$
 \end{maximacode}
@@ -695,7 +695,7 @@ $$ = x - \theta -\frac{x \psi \theta}{\theta^2 - x^2 \psi^2} + \frac{1}{2}\ln\fr
 Converting back to our original form:
 
 \begin{maximacode}
-subst([t=log(x+1), p=exp(x^2)], %);
+subst([theta=log(x+1), psi=exp(x^2)], %);
 \end{maximacode}
 
 Finally, we verify that this is, in fact,
@@ -820,12 +820,12 @@ $${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
   = sV + tV'$$
 
 \begin{maximacode}
-v: t^2-x^2*p^2;
+v: theta^2-x^2*psi^2;
 vtick: D(v);
 N/denom(lintegrand);
-r: gcdex(v,vtick,t) * N/(x+1)$
-S::: r[1] - divide(r[1],vtick,t)[1]*vtick;
-T::: r[2] + divide(r[1],vtick,t)[1]*v;
+r: gcdex(v,vtick,theta) * N/(x+1)$
+S::: r[1] - divide(r[1],vtick,theta)[1]*vtick;
+T::: r[2] + divide(r[1],vtick,theta)[1]*v;
 \end{maximacode}
 
 So, our solution is:
@@ -860,7 +860,7 @@ A[0] + A/v + 'integrate(B/v, x);
 Now we can compute a Rothstein-Trager resultant:
 
 \begin{maximacode}
-resultant(B - z * D(v), v, t);
+resultant(B - z * D(v), v, theta);
 \end{maximacode}
 
 This result is in ${\mathbb C}(x,\psi)[z]$, so the first two factors are just

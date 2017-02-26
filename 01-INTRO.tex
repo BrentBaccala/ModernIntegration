@@ -439,6 +439,16 @@ using the open source computer algebra system Maxima.
 In the section, I'll collect several useful functions
 that I'll use throughout the book.
 
+First, TeX has two different ways of displaying the Greek letter
+$\theta$, and Maxima lets us select which we will use.
+I prefer $\theta$.
+
+\begin{maximacode}
+theta;
+:lisp (defprop $theta "\\theta" texword)
+theta;
+\end{maximacode}
+
 \subsection{List Functions}
 
 Here's a function that finds the index of an
