@@ -449,6 +449,18 @@ theta;
 theta;
 \end{maximacode}
 
+I use lambda expressions with a single variable so much that I find it
+useful to create a version of {\tt map} that treats its first argument
+as a lambda expression in $u$.
+
+\begin{maximacode}
+mapu(func, expr) ::=
+   map(buildq([func], lambda([u], func)),
+       ev(expr))$
+mapu(u+4, [1,2,3]);
+mapu(denom(u), [x,1,1/x,1/x^2]);
+\end{maximacode}
+
 \subsection{List Functions}
 
 Here's a function that finds the index of an
