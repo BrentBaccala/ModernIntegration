@@ -69,6 +69,7 @@ resetmargins=true}
 % Command number and math mode TeX are passed in separate
 % commands to allow unlabled outputs (i.e, 'display' command)
 
+\def\maximalabeltext{}
 \newcommand{\maximaoutputlabel}[1]{
 \def\maximalabeltext{(\%o#1)}}
 
@@ -112,6 +113,9 @@ $$ #1 $$
 
 %\usepackage[pdftex]{graphicx}
 %\usepackage[dvips]{graphicx}
+
+% This includes a graphic only if the file exists
+\newcommand{\optionalgraphics}[2][]{\IfFileExists{#2}{\includegraphics[#1]{#2}}{}}
 
 % This lets me put a title banner right before the table of contents
 \usepackage{tocloft}

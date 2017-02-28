@@ -109,9 +109,16 @@ then $f$ is integrable on $[a,b]$.
 So, $E(x) = \int_0^x e^{-t^2} dt$ is {\it integrable} on $[0,x]$ if $e^{-t^2}$ is continuous on $[0,x]$,
 and $e^{-t^2}$ is continuous everywhere on the real line.  We can easily plot $e^{-t^2}$:
 
+\begin{maximacode}
+plot2d (exp(-x^2),
+        [x, -6, 6], [ylabel, false], [grid2d, true], [legend, false],
+        [color, red],
+        [pdf_file, "./01-INTRO-GRAPH1.pdf"])$
+\end{maximacode}
+
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH1.pdf}
+\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH1.pdf}
 \end{center}
 \caption{$e^{-t^2}$}
 \end{figure}
@@ -122,9 +129,19 @@ Riemann sum exists and is unique.  We can also plot $E(x)$, using a
 numerical integration routine to approximate the integral at each
 point of the graph:
 
+\begin{maximacode}
+assume(x > 0)$
+f(x) := exp(-x^2);
+F(x) := ''(integrate(f(x), x));
+plot2d (F(x),
+        [x, -6, 6], [ylabel, false], [grid2d, true], [legend, false],
+        [color, red],
+        [pdf_file, "./01-INTRO-GRAPH2.pdf"])$
+\end{maximacode}
+
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH2.pdf}
+\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH2.pdf}
 \end{center}
 \caption{$\int_0^x e^{-t^2} dt$}
 \end{figure}
@@ -135,9 +152,17 @@ was calculated by numerically approximating a Riemann sum.
 Is this an anti-derivative of $e^{-t^2}$?  Plotting various tangent lines suggests
 that it {\it might} be...
 
+\begin{maximacode}
+line(x,x0,l) := if abs(x-x0) < l then F(x0) + f(x0)*(x-x0) else %nan$
+plot2d ([F(x), 'line(x,-1.5,1), 'line(x,1,1)],
+        [x, -6, 6], [y, -1, 1], [ylabel, false], [grid2d, true], [legend, false],
+        [color, red, blue, blue], [xtics, 20], [ytics, 2],
+        [pdf_file, "./01-INTRO-GRAPH3.pdf"])$
+\end{maximacode}
+
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH3.pdf}
+\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH3.pdf}
 \end{center}
 \caption{$\int_0^x e^{-t^2} dt$ (with tangent lines at $x_0=-1.5$ and $x_0=1$)}
 \end{figure}
@@ -217,9 +242,16 @@ We can patch up our function like this:
 
 It's usually called the {\it sinc} function, and it's easy to plot:
 
+\begin{maximacode}
+plot2d (sin(x)/x,
+        [x, -20, 20], [ylabel, false], [grid2d, true], [legend, false],
+        [color, red],
+        [pdf_file, "./01-INTRO-GRAPH4.pdf"])$
+\end{maximacode}
+
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH4.pdf}
+\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH4.pdf}
 \end{center}
 \caption{${\rm sinc\,} t = \frac{\sin t}{t}$}
 \end{figure}
@@ -230,9 +262,18 @@ $${\rm Si}(x) = \int_0^x \frac{\sin(t)}{t} dt$$
 
 ...and we can plot it...
 
+\begin{maximacode}
+f(x) := sin(x)/x$
+F(x) := ''(quad_qag(f(t), t, 0, x, 1)[1])$
+plot2d (F(x),
+        [x, -20, 20], [ylabel, false], [grid2d, true], [legend, false],
+        [color, red],
+        [pdf_file, "./01-INTRO-GRAPH5.pdf"])$
+\end{maximacode}
+
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH5.pdf}
+\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH5.pdf}
 \end{center}
 \caption{$\int_0^x \frac{\sin t}{t} dt$}
 \end{figure}
@@ -241,9 +282,19 @@ $${\rm Si}(x) = \int_0^x \frac{\sin(t)}{t} dt$$
 
 $$ y(x) = {\rm Si}(x_0) + \frac{\sin x_0}{x_0}(x-x_0)$$
 
+\begin{maximacode}
+line(x,x0,l) := if abs(x-x0) < l then F(x0) + f(x0)*(x-x0) else %nan$
+line(-9,-9,3);
+line(-8,-9,3);
+plot2d ([F(x), 'line(x,-9,3), 'line(x,5,3)],
+        [x, -20, 20], [y, -2, 2], [ylabel, false], [grid2d, true], [legend, false],
+        [color, red, blue, blue], [xtics, 20], [ytics, 2],
+        [pdf_file, "./01-INTRO-GRAPH6.pdf"])$
+\end{maximacode}
+
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.7\textwidth]{01-INTRO-GRAPH6.pdf}
+\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH6.pdf}
 \end{center}
 \caption{$\int_0^x \frac{\sin t}{t} dt$ (with tangent lines at $x_0=-9$ and $x_0=5$)}
 \end{figure}
