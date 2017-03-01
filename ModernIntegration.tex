@@ -33,7 +33,7 @@
 % need TeX package fvextra (fetch from CTAN, put in a subdirectory, and symlink fvextra.sty)
 % need python package pygments (apt-get install python-pygments)
 
-\usepackage[usefamily=maxima,keeptemps=all,autoprint=false]{pythontex}
+\usepackage[usefamily=maxima,keeptemps=all]{pythontex}
 
 % These packages are used when embedding Maxima code
 
@@ -51,46 +51,11 @@ resetmargins=true}
 % Color used to label Maxima output
 \definecolor{darkred}{RGB}{200,0,0}
 
-% Command called by python code that processes maximacode input
-% Command number is in argument 1
-% Command text is saved in verbatim block MaximaCode
+% default maxima output handling
 
-\newcommand{\maximainputlabel}[1]{
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{L{1.5cm} L{10cm}}
-\textcolor{red}{\ttfamily (\%i#1)} &
-\textcolor{blue}{\BUseVerbatim[baseline=t]{MaximaCode}}
-\end{tabular}
-\egroup\break
-}
-
-% Command called by python code that processes maximacode output
-% Command number and math mode TeX are passed in separate
-% commands to allow unlabled outputs (i.e, 'display' command)
-
-\def\maximalabeltext{}
-\newcommand{\maximaoutputlabel}[1]{
-\def\maximalabeltext{(\%o#1)}}
-
-\newcommand{\maximaoutput}[1]{
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{L{1.5cm} L{10cm}}
-\textcolor{darkred}{\ttfamily\maximalabeltext} &
-$$ #1 $$
-\end{tabular}
-\egroup\break
-\def\maximalabeltext{}
-}
-
-% Python code wraps a maximacodeblock around a series
-% of calls to \maximainputlabel, \maximaoutputlabel,
-% and \maximaoutput
-
-\newenvironment{maximacodeblock}
-{\begin{mdframed}[backgroundcolor=yellow!20]}
-{\end{mdframed}}
+\newcommand{\maximainputlabel}[1]{}
+\newcommand{\maximaoutputlabel}[1]{}
+\newcommand{\maximaoutput}[1]{$$#1$$}
 
 
 \usepackage{tikz}
@@ -163,13 +128,49 @@ $$ #1 $$
 
 \begin{document}
 
-% I want my maxima code to be nicely typeset using the macros above,
-% so I redefine maximablock (the environment to both typeset and
-% execute) to call maximacode (the environment to only execute) and
-% then print the output using the above macros, instead of the
-% default behavior.
+% I want my maxima code to be nicely typeset, so I redefine
+% maximablock (the environment to both typeset and execute) to call
+% maximacode (the environment to only execute) and then print the
+% output using some new macros, instead of the default behavior.
 
-\renewenvironment{maximablock}{\maximacode}{\endmaximacode\printpythontex}
+\renewenvironment{maximablock}{\renewcommand{\maximaoutput}[1]{}\maximacode}{\endmaximacode
+% Command called by python code that processes maximacode input
+% Command number is in argument 1
+% Command text is saved in verbatim block MaximaCode
+
+\renewcommand{\maximainputlabel}[1]{
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{L{1.5cm} L{10cm}}
+\textcolor{red}{\ttfamily (\%i##1)} &
+\textcolor{blue}{\BUseVerbatim[baseline=t]{MaximaCode}}
+\end{tabular}
+\egroup\break
+}
+
+% Command called by python code that processes maximacode output
+% Command number and math mode TeX are passed in separate
+% commands to allow unlabled outputs (i.e, 'display' command)
+
+\def\maximalabeltext{}
+\renewcommand{\maximaoutputlabel}[1]{
+\def\maximalabeltext{(\%o##1)}}
+
+\renewcommand{\maximaoutput}[1]{
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{L{1.5cm} L{10cm}}
+\textcolor{darkred}{\ttfamily\maximalabeltext} &
+$$ ##1 $$
+\end{tabular}
+\egroup\break
+\def\maximalabeltext{}
+}
+% Wrap everything in a nice colored frame and print it
+\begin{mdframed}[backgroundcolor=yellow!20]
+\printpythontex
+\end{mdframed}
+}
 
 \parindent 0pt
 \parskip 12pt

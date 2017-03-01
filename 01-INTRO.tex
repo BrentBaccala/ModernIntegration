@@ -284,8 +284,6 @@ $$ y(x) = {\rm Si}(x_0) + \frac{\sin x_0}{x_0}(x-x_0)$$
 
 \begin{maximacode}
 line(x,x0,l) := if abs(x-x0) < l then F(x0) + f(x0)*(x-x0) else %nan$
-line(-9,-9,3);
-line(-8,-9,3);
 plot2d ([F(x), 'line(x,-9,3), 'line(x,5,3)],
         [x, -20, 20], [y, -2, 2], [ylabel, false], [grid2d, true], [legend, false],
         [color, red, blue, blue], [xtics, 20], [ytics, 2],
