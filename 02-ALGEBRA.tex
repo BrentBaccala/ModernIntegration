@@ -635,10 +635,10 @@ by is $2\over35$, which both clears the denominators and divides out
 the common factor in the numerators to produce $x^2+2x+1$.  Both
 answers are acceptable.
 
-\begin{maximacode}
+\begin{maximablock}
 gcd(4*x^4 + 13*x^3 + 15*x^2 + 7*x + 1,
     2*x^3 + x^2 - 4*x - 3);
-\end{maximacode}
+\end{maximablock}
 
 \endexample
 
@@ -692,10 +692,10 @@ Thus, $x-y$ is the GCD of the primitive polynomials, and it has unit
 content $\gcd_y(1,-y)$.  The GCD of the original contents
 ($1$ and $5y-7$) is 1, so the final result is again $x-y$.
 
-\begin{maximacode}
+\begin{maximablock}
 gcd(5*x*y - 5*y^2 - 7*x + 7*y,
     2*x^2 - y*x - y^2);
-\end{maximacode}
+\end{maximablock}
 
 \endexample
 
@@ -875,29 +875,29 @@ $$c = (x+3)(x^2+2x+1)
 
 \vfill\eject
 
-\begin{maximacode}
+\begin{maximablock}
 a: 4*x^4+13*x^3+15*x^2+7*x+1 $
 b: 2*x^3+x^2-4*x-3 $
 c: x^3+5*x^2+7*x+3 $
-\end{maximacode}
+\end{maximablock}
 
 Maxima's {\tt gcdex(a,b)} function returns a list {\tt [s,t,gcd]} satisfying
 
 $$as + bt = \gcd(a,b)$$
 
-\begin{maximacode}
+\begin{maximablock}
 gcdex(a,b);
-\end{maximacode}
+\end{maximablock}
 
 If the $c$ polynomial divides $\gcd(a,b)$, then we can just multiply
 through by the quotient:
 
-\begin{maximacode}
+\begin{maximablock}
 divide((x^3+5*x^2+7*x+3), %[3]);
 [s,t,_] : %th(2)*%[1];
 a*s + b*t;
 kill(a,b,c,s,t)$
-\end{maximacode}
+\end{maximablock}
 
 \endexample
 
@@ -1084,9 +1084,9 @@ $${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {4\over{(x-2)^2}} + {1\over{(x-2)}}$$
 
 Again, let's verify this result using Maxima:
 
-\begin{maximacode}
+\begin{maximablock}
 partfrac((x^2 + 3*x + 2)/(x^3 - 3*x^2 + 4), x);
-\end{maximacode}
+\end{maximablock}
 
 \endexample
 
@@ -1188,7 +1188,7 @@ original system to be solvable.
 
 Here's a Maxima function that constructs a Sylvester matrix:
 
-\begin{maximacode}
+\begin{maximablock}
 syl_elem(a,b,t,i,j) :=
    if (i > hipow(b,t))
       then coeff(b,t,i-j)
@@ -1198,21 +1198,21 @@ sylvester(a,b,t) := block(
    genmatrix(lambda([i,j], syl_elem(a,b,t,i,j)),
              size, size)
 )$
-\end{maximacode}
+\end{maximablock}
 
 \example Compute the $t-$resultant of $t^2 - 1 -x$ and $t^3-t-y$.
 
-\begin{maximacode}
+\begin{maximablock}
 
 sylvester(t**2 - 1 - x, t**3 - t - y, t);
 ratsimp(determinant(%));
-\end{maximacode}
+\end{maximablock}
 
 More succinctly, we can use the Maxima function {\tt resultant}:
 
-\begin{maximacode}
+\begin{maximablock}
 resultant(t**2 - 1 - x, t**3 - t - y, t);
-\end{maximacode}
+\end{maximablock}
 
 This result implies that the polynomials $t^2-1-x$ and $t^3-t-y$
 have a common factor when $y^2-x^3-x^2=0$.  For example,
@@ -1220,10 +1220,10 @@ this condition is satisfied when $x=3$ and $y=6$, and
 the two polynomials become $t^2-4$ and $t^3-t-6$, which
 have the common factor $t-2$:
 
-\begin{maximacode}
+\begin{maximablock}
 factor(t**2-4);
 factor(t**3-t-6);
-\end{maximacode}
+\end{maximablock}
 
 \endexample
 
@@ -1634,10 +1634,10 @@ def factorization_problem(p):
 \end{sympycode}
 
 \item \sympyc{factorization_problem((3*y+2*x-7)*(7*y+x**2+11))}
-\begin{maximacode}
+\begin{maximablock}
 factor(2*x**3 + 3*x**2*y - 7*x**2 + 14*x*y
        + 22*x + 21*y**2 - 16*y - 77);
-\end{maximacode}
+\end{maximablock}
 
 \item \sympyc{factorization_problem((y**3+2*x**2-3)*(y+x**2+1))}
 

@@ -33,7 +33,7 @@
 % need TeX package fvextra (fetch from CTAN, put in a subdirectory, and symlink fvextra.sty)
 % need python package pygments (apt-get install python-pygments)
 
-\usepackage[usefamily=maxima,keeptemps=all]{pythontex}
+\usepackage[usefamily=maxima,keeptemps=all,autoprint=false]{pythontex}
 
 % These packages are used when embedding Maxima code
 
@@ -162,6 +162,14 @@ $$ #1 $$
 %\def\thepage{}
 
 \begin{document}
+
+% I want my maxima code to be nicely typeset using the macros above,
+% so I redefine maximablock (the environment to both typeset and
+% execute) to call maximacode (the environment to only execute) and
+% then print the output using the above macros, instead of the
+% default behavior.
+
+\renewenvironment{maximablock}{\maximacode}{\endmaximacode\printpythontex}
 
 \parindent 0pt
 \parskip 12pt

@@ -494,59 +494,59 @@ First, TeX has two different ways of displaying the Greek letter
 $\theta$, and Maxima lets us select which we will use.
 I prefer $\theta$.
 
-\begin{maximacode}
+\begin{maximablock}
 theta;
 :lisp (defprop $theta "\\theta" texword)
 theta;
-\end{maximacode}
+\end{maximablock}
 
 I use lambda expressions with a single variable so much that I find it
 useful to create a version of {\tt map} that treats its first argument
 as a lambda expression in $u$.
 
-\begin{maximacode}
+\begin{maximablock}
 mapu(func, expr) ::=
    map(buildq([func], lambda([u], func)),
        ev(expr))$
 mapu(u+4, [1,2,3]);
 mapu(denom(u), [x,1,1/x,1/x^2]);
-\end{maximacode}
+\end{maximablock}
 
 \subsection{List Functions}
 
 Here's a function that finds the index of an
 element in a list:
 
-\begin{maximacode}
+\begin{maximablock}
 which(n,u) :=
    sublist_indices(n, lambda([x], x=u))[1]$
 
 which([a,b,c,d,e], b);
-\end{maximacode}
+\end{maximablock}
 
 This function converts the parts of a mathematical expression into a
 list:
 
-\begin{maximacode}
+\begin{maximablock}
 partlist(expr) := block(
    [partswitch: true, result:[]],
    for i:1 step 1 unless part(expr,i) = end
       do result:cons(part(expr,i), result),
    result)$
 partlist(a+b+c);
-\end{maximacode}
+\end{maximablock}
 
 
 \subsection{Array Functions}
 
 This next function is convenient for displaying Maxima arrays:
 
-\begin{maximacode}
+\begin{maximablock}
 displayarray(b) :=
    map(display,
       map(lambda([u], arraymake(b,u)),
           rest(arrayinfo(b),2)))$
-\end{maximacode}
+\end{maximablock}
 
 \subsection{Simplification}
 
@@ -554,14 +554,14 @@ The Maxima function {\tt ratsimp} simplifies a rational function to
 its simplest form, and I use it so much, let's define a shorthand
 notation to simplify an expression and assign it to a variable:
 
-\begin{maximacode}
+\begin{maximablock}
 infix(":::", 180, 20)$
 (x ::: y) := x :: ratsimp(y)$
 (x+1)/(x^2-1) - 1/(x-1);
 a ::: (x+1)/(x^2-1) - 1/(x-1);
-\end{maximacode}
+\end{maximablock}
 
-\begin{maximacode}
+\begin{maximablock}
 infix("===", 20, 20)$
 (x === y) := is(ratsimp(x - y) = 0)$
-\end{maximacode}
+\end{maximablock}

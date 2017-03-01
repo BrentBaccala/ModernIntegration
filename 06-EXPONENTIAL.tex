@@ -742,15 +742,15 @@ $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\o
 We proceed as before, putting the integral into Liouvillian form
 and dividing out $\frac{x}{x+1}$ to obtain a proper fraction:
 
-\begin{maximacode}
+\begin{maximablock}
 divide(num(lintegrand), denom(lintegrand), psi);
-\end{maximacode}
+\end{maximablock}
 
 This time, we'll operate in ${\mathbb C}(x,\theta = \ln (x+1),\psi = \exp x^2)$, treating
 this as an exponential extension of ${\mathbb C}(x,\theta)$.  We'll begin again by
 computing a partial fractions expansion, this time with respect to $\psi$:
 
-\begin{maximacode}
+\begin{maximablock}
 pf: partfrac(N/denom(lintegrand), psi);
 denoms: map(lambda([u], den(u,psi)),
             partlist(pf));
@@ -760,24 +760,24 @@ map(lambda([u],
          power(den(u,psi))]: u*den(u,psi)),
     partlist(pf))$
 displayarray(c)$
-\end{maximacode}
+\end{maximablock}
 
 Now Theorem \ref{exponential integration theorem} tells us that
 
-\begin{maximacode}
+\begin{maximablock}
 R[1,1] : c[1,2];
-\end{maximacode}
+\end{maximablock}
 
 $$C_{1,1}(\psi) = - \frac{R_{1,1}(\psi)}{n_1'(\psi)} \mod n_1(\psi)$$
 
-\begin{maximacode}
+\begin{maximablock}
 modulo(r,p,v) :=
    divide(num(r),p,v)[2]
      * gcdex(denom(r),p,v)[1]$
 kill(C)$
 C[1,1] ::: modulo( - R[1,1] / D(n[1]),
                      n[1], psi);
-\end{maximacode}
+\end{maximablock}
 
 This time, we do need to perform a modulo reduction, but as modulo reductions go, it's
 trivial.  Operating $\mod (\theta - x\psi)$ means that we're operating in a field
@@ -789,25 +789,25 @@ this division, and it should always be exact.
 
 $$Q_{1,1}(\psi) = - \frac{R_{1,1}(\theta) + C_{1,1}(\theta) n_1'(\theta)}{n_1(\theta)}$$
 
-\begin{maximacode}
+\begin{maximablock}
 kill(Q)$
 Q[1,1] ::: - (R[1,1] + C[1,1] * D(n[1]))
                      / n[1];
-\end{maximacode}
+\end{maximablock}
 
 Having computed $C_{1,1}$ and $Q_{1,1}$, we are now able to compute $D_1$:
 
 $$ D_1 = \frac{c_{1,1} - C_{1,1}'(\psi) - Q_{1,1}(\psi)}{n_1'(\psi) - \frac{\lc n_1'(\psi)}{\lc n_1(\psi)} n_1(\psi)}$$
 
-\begin{maximacode}
+\begin{maximablock}
 lc(a,v) := coeff(a, v, hipow(a,v))$
 D[1] ::: (c[1,1] - D(C[1,1]) - Q[1,1])
 / (D(n[1])-lc(D(n[1]),psi)/lc(n[1],psi)*n[1]);
-\end{maximacode}
+\end{maximablock}
 
 A similar calculation for $n_2(\psi) = \theta + x \psi$ yields
 
-\begin{maximacode}
+\begin{maximablock}
 R[2,1] : c[2,2];
 C[2,1] ::: modulo( - R[2,1] / D(n[2]),
                      n[2], psi);
@@ -815,36 +815,36 @@ Q[2,1] ::: - (R[2,1] + C[2,1] * D(n[2]))
                      / n[2];
 D[2] ::: (c[2,1] - D(C[2,1]) - Q[2,1])
 / (D(n[2])-lc(D(n[2]),psi)/lc(n[2],psi)*n[2]);
-\end{maximacode}
+\end{maximablock}
 
 In an exponential extension, our $D$ coefficients can affect our $A_0$ term...
 
 $$A_0' = a_0 - \sum_{i=1}^\nu D_i \,\frac{\lc n_1'(\psi)}{\lc n_1(\psi)} $$
 
-\begin{maximacode}
+\begin{maximablock}
 a: a - sum(D[i]*lc(D(n[i]),psi)/lc(n[i],psi),i,1,2);
 A: integrate(a,x);
-\end{maximacode}
+\end{maximablock}
 
 % XXX this exposes a bug in displayarray
 \begin{comment}
-\begin{maximacode}
+\begin{maximablock}
 rest(arrayinfo(D),2);
 map(lambda([u], arraymake(D,u)), %);
 map(display,%);
 /* displayarray(D); */
-\end{maximacode}
+\end{maximablock}
 \end{comment}
 
 We end up with
 the same result that we obtained from the logarithmic theory:
 
-\begin{maximacode}
+\begin{maximablock}
 A + ratsimp(sum(C[i,1]/n[i],i,1,2))
   + logcontract(2*sum(D[i]*log(n[i]),i,1,2))/2;
 subst([theta=log(x+1), psi=exp(x^2)], %);
 diff(%,x) === integrand;
-\end{maximacode}
+\end{maximablock}
 
 \endexample
 
