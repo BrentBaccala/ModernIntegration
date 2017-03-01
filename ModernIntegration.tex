@@ -37,6 +37,7 @@
 
 % These packages are used when embedding Maxima code
 
+\usepackage{breqn}      % auto-break long equations - has to come after pythontex
 \usepackage{listings}
 \usepackage{fancyvrb}
 
@@ -161,7 +162,9 @@ resetmargins=true}
 \def\arraystretch{1.5}
 \begin{tabular}{L{1.5cm} L{10cm}}
 \textcolor{darkred}{\ttfamily\maximalabeltext} &
-$$ ##1 $$
+\begin{dmath*}
+##1
+\end{dmath*}
 \end{tabular}
 \egroup\break
 \def\maximalabeltext{}
