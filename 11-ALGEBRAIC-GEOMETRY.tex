@@ -2,62 +2,17 @@
 \mychapter{Algebraic Geometry}
 
 \vfill\eject
-{\small\begin{verbatim}
 
-(%i3) diff(sqrt(x^4+1),x);
-                                        3
-                                     2 x
-(%o3)                            ------------
-                                       4
-                                 sqrt(x  + 1)
-(%i4) diff(%o3,x);
-                                 2             6
-                              6 x           4 x
-(%o4)                     ------------ - -----------
-                                4          4     3/2
-                          sqrt(x  + 1)   (x  + 1)
-(%i5) diff(%o4,x);
-                                         5             9
-                       12 x          36 x          24 x
-(%o5)              ------------ - ----------- + -----------
-                         4          4     3/2     4     5/2
-                   sqrt(x  + 1)   (x  + 1)      (x  + 1)
-(%i6) diff(%o5,x);
-                                  4             8             12
-                 12          204 x         432 x         240 x
-(%o6)       ------------ - ----------- + ----------- - -----------
-                  4          4     3/2     4     5/2     4     7/2
-            sqrt(x  + 1)   (x  + 1)      (x  + 1)      (x  + 1)
+\begin{maximablock}
+diff(sqrt(x^4+1),x);
+diff(%,x);
+diff(%,x);
+diff(%,x);
 
-
-
-
-
-
-
-
-
-(%i19) diff(sqrt(x^3+1),x);
-                                        2
-                                     3 x
-(%o19)                          --------------
-                                        3
-                                2 sqrt(x  + 1)
-(%i20) diff(%o19,x);
-                                               4
-                             3 x            9 x
-(%o20)                   ------------ - -------------
-                               3            3     3/2
-                         sqrt(x  + 1)   4 (x  + 1)
-(%i21) diff(%o20,x);
-                                        3               6
-                      3             27 x            81 x
-(%o21)           ------------ - ------------- + -------------
-                       3            3     3/2       3     5/2
-                 sqrt(x  + 1)   2 (x  + 1)      8 (x  + 1)
-
-
-\end{verbatim}}
+diff(sqrt(x^3+1),x);
+diff(%,x);
+diff(%,x);
+\end{maximablock}
 
 \vfill\eject
 
