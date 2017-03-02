@@ -1064,14 +1064,45 @@ $$n k + \ln p_n = - \int \frac{\lc B}{\lc A} dx$$
 \vfill\eject
 
 \example (Bronstein examples 6.2.1, 6.3.3, 6.4.2) Integrate
-$$\int \frac{e^x - x^2 + 2x}{(e^x + x)^2 x^2}e^{(x^2-1)/(x+1)/(e^x+x)} dx$$
-
-$$\int \frac{e^x - x^2 + 2x}{(e^x + x)^2 x^2}e^{(x-1)/(e^x+x)} dx$$
+$$\int \frac{e^x - x^2 + 2x}{(e^x + x)^2 x^2}e^{(x^2-1)/x+1/(e^x+x)} dx$$
 
 We'll use the differential field ${\mathbb C}(\theta, \psi)$ where
 $\theta = \exp x$ and $\psi = \exp \frac{x-1}{\theta+x}$.
 
 $$\int \frac{\theta - x^2 + 2x}{(\theta + x)^2 x^2} \psi dx$$
+
+\begin{maximablock}
+kill(values, arrays);
+
+integrand:
+   (exp(x) - x^2 + 2*x)/((exp(x) + x)^2 * x^2)
+   * exp((x^2-1)/x+1/(exp(x)+x));
+
+integrate(integrand,x);
+
+depends([theta,psi], x)$
+
+DD(f) := subst('diff(theta,x) = theta,
+              diff(f,x))$
+D(f) := subst(['diff(psi,x) = DD((x^2-1)/x+1/(theta+x))*psi,
+               'diff(theta,x) = theta],
+              diff(f,x))$
+
+lintegrand:
+   (theta - x^2 + 2*x)/((theta + x)^2 * x^2) * psi;
+
+
+AA + D(psi)/psi*A = lintegrand/psi;
+(theta+x)^2*%;
+ratexpand(%);
+/* AA + ratsimp(D(psi)/psi)*A = lintegrand/psi; */
+
+((1+1/x^2)*theta^2 + (2*x - 1 + 2/x)*theta + x^2)/(theta+x)^2;
+subst(theta=exp(x),%);
+integrate(%,x);
+
+expand(ratsimp(D((x^2-1)/x+1/(theta+x)) * (theta+x)^2));
+\end{maximablock}
 
 $k = \frac{x-1}{\theta+x}$ so
 $k' = \frac{(\theta+x) - (x-1)(\theta+1)}{(\theta+x)^2} = \frac{-x\theta + 2 \theta +1}{(\theta+x)^2}$.
