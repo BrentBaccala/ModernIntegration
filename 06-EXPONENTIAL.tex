@@ -1071,15 +1071,7 @@ $\theta = \exp x$ and $\psi = \exp\left( \frac{x^2-1}{x}+\frac{1}{\theta+x}\righ
 
 $$\int \frac{\theta - x^2 + 2x}{(\theta + x)^2 x^2} \psi dx$$
 
-\begin{maximablock}
-kill(values, arrays);
-
-integrand:
-   (exp(x) - x^2 + 2*x)/((exp(x) + x)^2 * x^2)
-   * exp((x^2-1)/x+1/(exp(x)+x));
-
-/* integrate(integrand,x); */
-
+\begin{comment}
 depends([theta,psi], x)$
 
 DD(f) := subst('diff(theta,x) = theta,
@@ -1087,6 +1079,17 @@ DD(f) := subst('diff(theta,x) = theta,
 D(f) := subst(['diff(psi,x) = DD((x^2-1)/x+1/(theta+x))*psi,
                'diff(theta,x) = theta],
               diff(f,x))$
+\end{comment}
+
+\begin{maximablock}
+kill(values, arrays);
+
+integrand:
+   (exp(x) - x^2 + 2*x)/((exp(x) + x)^2 * x^2)
+   * exp((x^2-1)/x+1/(exp(x)+x));
+
+gradef(theta, x, theta);
+gradef(psi, x, D((x^2-1)/x+1/(theta+x))*psi);
 
 lintegrand:
    (theta - x^2 + 2*x)/((theta + x)^2 * x^2) * psi;

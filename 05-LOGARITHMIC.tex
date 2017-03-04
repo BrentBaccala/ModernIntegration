@@ -484,6 +484,8 @@ Compute
 
 $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
 
+Due to the complexity of this integral, I'll use Maxima for the entire calculation.
+
 {\small
 \begin{maximablock}
 integrand:
@@ -493,13 +495,7 @@ integrand:
 \end{maximablock}
 }
 
-We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x^2)$ and $\theta = \ln (x+1)$ to obtain:
-
-%% $$\int{{x(x+1)\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{((x+1)\theta^2 - (x^3+x^2)\psi^2)^2}} dx$$
-
-%% Cancelling $x+1$ between the numerator and denominator:
-
-$$\int{{x\{(x^2 \psi^2-\theta^2)^2+2x \psi^3(x-(2x^3+2x^2+x+1)\theta)\}}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
+We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x^2)$ and $\theta = \ln (x+1)$.
 
 \begin{maximablock}
 lintegrand:
@@ -518,14 +514,11 @@ the next chapter.  Therefore, we'll work in ${\mathbb C}(x,\psi,\theta)$, a loga
 extension of ${\mathbb C}(x,\psi)$, and hope that we won't have to do anything
 too complicated in ${\mathbb C}(x,\psi)$!
 
-To use Maxima for this calculation, let's begin by defining
-a function that performs our differentiation.
+Now let's tell Maxima how our variables differentiate:
 
 \begin{maximablock}
-depends([theta,psi], x)$
-D(f) := subst(['diff(psi,x) = 2*x*psi,
-               'diff(theta,x) = 1/(x+1)],
-              diff(f,x))$
+gradef(theta, x, 1/(x+1))$
+gradef(psi, x, 2*x*psi)$
 \end{maximablock}
 
 We need to put our integrand into partial fractions form, so let's begin by
