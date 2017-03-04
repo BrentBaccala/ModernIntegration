@@ -1005,150 +1005,49 @@ $$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}}
 
 The polynomial under the square root is square-free:
 
-{\small\begin{verbatim}
-i8 : root = poly "x4+4x3+2x2+1"
-
-      4     3     2
-o8 = x  + 4x  + 2x  + 1
-
-o8 : Rx
-
-i9 : diff(x,root)
-
-       3      2
-o9 = 4x  + 12x  + 4x
-
-o9 : Rx
-
-i10 : gcd(o9, root)
-
-o10 = 1
-
-o10 : Rx
-\end{verbatim}}
+\begin{maximablock}
+num : 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8;
+den: 2*x^2-1;
+root : x^4+4*x^3+2*x^2+1;
+factor(root);
+\end{maximablock}
 
 \ldots so $y^2 = x^4+4 x^3+2 x^2+1$; $\{1, y\}$ is an integral basis;
 and our normal form for this integral is:
 
 $$\int {{(2x^6+4x^5+7x^4-3x^3-x^2-8x-8)y}\over{(2x^2-1)^2(x^4+4 x^3+2 x^2+1)}} \,{\rm d}x$$
 
-Applying now Bronstein's Hermite reduction:
+Applying now Bronstein's Hermite reduction from
+section 2.1 of his ``Symbolic Integration Tutorial'' with $v=2x^2-1$
+to eliminate this square in the denominator:
 
-{\small\begin{verbatim}
-i28 : ytic=diff(x,root)//2/root*y
+\begin{maximablock}
+gradef(y,x,ratsimp(D(root)/2*y/root));
+D(y);
+U: root;
+V: den;
+S2: ratsimp(U*V^2*D(y/V));
+\end{maximablock}
 
-          3     2
-        2x  + 6x  + 2x
-o28 = ------------------*y
-       4     3     2
-      x  + 4x  + 2x  + 1
+Now we want to solve $f_2 S_2 = A_2 y$ where $A_2 y$ is our numerator.
 
-o28 : Fxy
+\begin{maximablock}
+f[2] ::: num*y/S2;
+T[2] ::: num(f[2]);
+/* Q::: S2/y; */
+Q ::: denom(f[2]);
 
-i29 : U = root
+[A,R,g] : gcdex(V,Q,x);
+/* T2: num; */
+[Q2, B2]: divide(T[2]*R, V, x);
+h ::: A*num*y/(V*U) - (D(V)*Q2+D(B2))*y/V + Q2*D(y);
 
-       4     3     2
-o29 = x  + 4x  + 2x  + 1
+simp: false$
+'integrate(num*y/den,x) = ratsimp(B2*y/V) + 'integrate(h,x);
+simp: true$
+\end{maximablock}
 
-o29 : Rx
-
-i30 : V=poly "2x2-1"
-
-        2
-o30 = 2x  - 1
-
-o30 : Rx
-
-i32 : S2=U*(V*ytic - diff(x,V)*y)
-
-           4     3     2
-o32 = (- 4x  - 6x  - 6x  - 6x)y
-
-o32 : Fxy
-
-i2 : num=poly "2x6+4x5+7x4-3x3-x2-8x-8"
-
-       6     5     4     3    2
-o2 = 2x  + 4x  + 7x  - 3x  - x  - 8x - 8
-
-o2 : Rx
-
-i6 : T2=num
-
-       6     5     4     3    2
-o6 = 2x  + 4x  + 7x  - 3x  - x  - 8x - 8
-
-o6 : Rx
-
-i79 : factor(U)
-
-               3     2
-o79 = (x + 1)(x  + 3x  - x + 1)
-
-o79 : Expression of class Product
-
-i92 : Q=S2
-
-          4     3     2
-o92 = - 4x  - 6x  - 6x  - 6x
-
-o92 : Rx
-
-i93 : A=(gcdCoefficients (V,Q))#1
-
-        36  3   38  2   48
-o93 = - --*x  - --*x  - --*x - 1
-        49      49      49
-
-o93 : Rx
-
-i94 : R=(gcdCoefficients (V,Q))#2
-
-        18      8
-o94 = - --*x + --
-        49     49
-
-o94 : Rx
-
-i96 : Q2=(T2*R)//V
-
-        18  5   4  4   8  3   41  2   31     177
-o96 = - --*x  - -*x  - -*x  + --*x  - --*x + ---
-        49      7      7      49      49      98
-
-o96 : Rx
-
-i97 : B2=(T2*R)%V
-
-          1
-o97 = x + -
-          2
-
-o97 : Rx
-
-i98 : h = A*num/(V*U) - (diff(x,V)*Q2+diff(x,B2))/V + Q2*ytic
-
-               2
-             6x  + 5x + 7
-o98 = -------------------------
-        6     5     4     3
-      2x  + 8x  + 3x  - 4x  - 1
-
-o98 : frac(Rx)
-
-i100 : factor(denominator h)
-
-                 2       3     2
-o100 = (x + 1)(2x  - 1)(x  + 3x  - x + 1)
-
-o100 : Expression of class Product
-
-
-\end{verbatim}}
-
-$$\int {{(2x^6+4x^5+7x^4-3x^3-x^2-8x-8)y}\over{(2x^2-1)^2(x^4+4 x^3+2 x^2+1)}} \,{\rm d}x
-= {{(x+{1\over2})y}\over{2x^2-1}} + \int {{(6x^2+5x+7)y}\over{(2x^2-1)(x^4+4 x^3+2 x^2+1)}} \,{\rm d}x$$
-
+\vfill\eject
 \bigskip
 \begin{center}
 Non-zero residues
