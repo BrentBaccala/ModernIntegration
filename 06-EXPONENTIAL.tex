@@ -1069,34 +1069,31 @@ $$\int \frac{e^x - x^2 + 2x}{(e^x + x)^2 x^2}e^{(x^2-1)/x+1/(e^x+x)} dx$$
 We'll use the differential field ${\mathbb C}(x, \theta, \psi)$ where
 $\theta = \exp x$ and $\psi = \exp\left( \frac{x^2-1}{x}+\frac{1}{\theta+x}\right)$.
 
-$$\int \frac{\theta - x^2 + 2x}{(\theta + x)^2 x^2} \psi dx$$
-
-\begin{comment}
-depends([theta,psi], x)$
-
-DD(f) := subst('diff(theta,x) = theta,
-              diff(f,x))$
-D(f) := subst(['diff(psi,x) = DD((x^2-1)/x+1/(theta+x))*psi,
-               'diff(theta,x) = theta],
-              diff(f,x))$
-\end{comment}
+\begin{maximacode}
+/* kill(allbut(functions, macros, props))$ */
+kill(values, arrays)$
+/* have to redefine D because it was also a variable and got killed! */
+D(f) := diff(f,x)$
+\end{maximacode}
 
 \begin{maximablock}
-kill(values, arrays);
-
 integrand:
-   (exp(x) - x^2 + 2*x)/((exp(x) + x)^2 * x^2)
-   * exp((x^2-1)/x+1/(exp(x)+x));
-
-gradef(theta, x, theta);
-gradef(psi, x, D((x^2-1)/x+1/(theta+x))*psi);
-
+   (exp(x) - x^2 + 2*x)
+      / ((exp(x) + x)^2 * x^2)
+   * exp((x^2-1)/x + 1/(exp(x)+x));
+gradef(theta, x, theta)$
+gradef(psi, x,
+   D((x^2-1)/x + 1/(theta+x))*psi)$
 lintegrand:
-   (theta - x^2 + 2*x)/((theta + x)^2 * x^2) * psi;
+   subst([exp(x) = theta,
+          exp((x^2-1)/x + 1/(theta+x))
+             = psi],
+      integrand);
 \end{maximablock}
 
-The integrand has the form $a_1 \psi$, so we can
-apply Theorem \ref{exponential integration theorem}.
+The integrand has the form $a_1 \psi$, where
+$a_1 \in {\mathbb C}(x, \theta)$, so we're ready to apply
+Theorem \ref{exponential integration theorem}.
 Equation \eqref{eq: exponential An} gives:
 
 \begin{maximablock}
