@@ -1078,7 +1078,7 @@ integrand:
    (exp(x) - x^2 + 2*x)/((exp(x) + x)^2 * x^2)
    * exp((x^2-1)/x+1/(exp(x)+x));
 
-integrate(integrand,x);
+/* integrate(integrand,x); */
 
 depends([theta,psi], x)$
 
@@ -1090,45 +1090,102 @@ D(f) := subst(['diff(psi,x) = DD((x^2-1)/x+1/(theta+x))*psi,
 
 lintegrand:
    (theta - x^2 + 2*x)/((theta + x)^2 * x^2) * psi;
-
-
-AA + D(psi)/psi*A = lintegrand/psi;
-(theta+x)^2*%;
-ratexpand(%);
-/* AA + ratsimp(D(psi)/psi)*A = lintegrand/psi; */
-
-((1+1/x^2)*theta^2 + (2*x - 1 + 2/x)*theta + x^2)/(theta+x)^2;
-subst(theta=exp(x),%);
-integrate(%,x);
-
-expand(ratsimp(D((x^2-1)/x+1/(theta+x)) * (theta+x)^2));
 \end{maximablock}
 
-$k = \frac{x-1}{\theta+x}$ so
-$k' = \frac{(\theta+x) - (x-1)(\theta+1)}{(\theta+x)^2} = \frac{-x\theta + 2 \theta +1}{(\theta+x)^2}$.
-Equation ? gives:
+The integrand has the form $a_1 \psi$, so we can
+apply Theorem \ref{exponential integration theorem}.
+Equation \eqref{eq: exponential An} gives:
 
-$$A_1' + \frac{-x\theta + 2 \theta +1}{(\theta+x)^2} A_1 = \frac{\theta - x^2 + 2x}{(\theta + x)^2 x^2}$$
+\begin{maximablock}
+eq: rr + D(psi)/psi*r = lintegrand/psi;
+\end{maximablock}
 
-$(\theta+x)$ is a normal polynomial, so our normal theory tells us that
-since $k=2$ and $l=2$, then $j=l-k=0$, so $(\theta+x)$ does not appear
-in the denominator of $A_1$.  Likewise, $x$ is a normal polynomial
-for which $k=0$ and $l=2$, so $j=l-1 = 1$, and $x$ can appear in
-$A_1$'s denominator.  Writing:
+\begin{comment}
+(theta+x)^2*%;
+/* eq: ratexpand(%); */
+/* facsum(eq*x^2,rr); */
 
-$$A_1 = \frac{S_1}{x} \qquad A_1' = \frac{S_1' x - S_1}{x^2}$$
+deepmap(func, expr, level) :=
+   if is(level > 0) then map(lambda([u], deepmap(func, u, level-1)), expr)
+                else func(expr);
 
-and substituting:
+deepmap(factor, eq, 2);
+\end{comment}
 
-$$\frac{S_1' x - S_1}{x^2} + \frac{-x\theta + 2 \theta +1}{(\theta+x)^2} \frac{S_1}{x} = \frac{\theta - x^2 + 2x}{(\theta + x)^2 x^2}$$
+This is already in the form required by equation ?:
 
-$$(\theta+x)^2 (S_1' x - S_1) + x S_1(-x\theta + 2 \theta +1) = \theta - x^2 + 2x$$
+$$r' + S r = T \qquad S,T,r \in K(\theta)$$
 
-$$(\theta+x)^2 (S_1' x - S_1) + (-x^2\theta + 2 x \theta + x) S_1 = \theta - x^2 + 2x$$
+with $S$ and $T$ expanded in partial fractions.  None of the
+denominator factors are special (only factors of the form $\theta^n$
+are special), and both $(\theta+x)$ and $x$ are normal polynomials
+with $k=2$ (the multiplicity in $S$'s denominator) and $l=2$
+(the multiplicity in $T$'s denominator).  Case 3 in ? tells us
+that $j=l-k=0$, so neither of these factors can appear
+in the denominator of $r$.
 
-$$(\theta+x)^2 x S_1' + (-\theta^2 -x^2\theta - x^2 + x) S_1 = \theta - x^2 + 2x$$
+Next we can move on to equation ? and use Maxima's
+{\tt facsum} function to collect terms together:
 
-$$A = (\theta+x)^2 x \qquad B = (-\theta^2 -x^2\theta - x^2 + x) \qquad C = \theta - x^2 + 2x$$
+\begin{maximablock}
+load(facexp);
+eq*x^2*(theta+x)^2;
+facsum(%,rr,r);
+[A,B,C] : [part(%,1,1)/rr, part(%,1,2)/r, part(%,2)];
+\end{maximablock}
+
+Now we want to integrate $A(0)/B(0)$:
+
+\begin{maximablock}
+subst(theta=0,A/B);
+\end{maximablock}
+
+Since $k=x$, this solves equation ? with $j=1$ and $a$ constant,
+which tells us that $\theta$ can appear in $r$'s denominator
+with multiplicity one.
+
+What about the polynomial degree?
+
+\begin{maximablock}
+A;
+B;
+lc(expand(A),theta);
+lc(B,theta);
+integrate(lc(B,theta) / lc(expand(A),theta), x);
+\end{maximablock}
+
+This does not have the desired form (?), so we lack cancellation.
+This means that $r$'s degree is upper bounded by
+$C$'s $\theta$-degree is 1, which, combined with the denominator constant,
+gives us the following form for r:
+
+$$r_{-1} \theta^{-1} + r_0 + r_1 \theta$$
+
+\begin{maximablock}
+rrr: r[-1] * theta^-1 + r[0] + r[1] * theta;
+depends(r,x);
+D(rrr);
+declare(theta,mainvar);
+subst([r=rrr, rr=D(rrr)], eq*x^2*(theta+x)^2*theta);
+part(%,1) - part(%,2);
+/* facsum(%,r[-1],D(r[-1]),r[0],D(r[0]),r[1],D(r[1])); */
+facsum(%,theta);
+lc(expand(%), theta);
+
+subst([r=rrr, rr=D(rrr), r[1]=0], eq*x^2*(theta+x)^2*theta);
+part(%,1) - part(%,2);
+ratsimp(%);
+lc(expand(%), theta);
+
+subst([r=rrr, rr=D(rrr), r[1]=0, r[0]=0], eq*x^2*(theta+x)^2*theta);
+part(%,1) - part(%,2);
+ratsimp(%);
+lc(expand(%), theta);
+
+subst([rr=D(1/theta), r=1/theta], eq);
+ratsimp(%);
+\end{maximablock}
+
 
 Can we have cancelation?  To determine if so, we need to integrate:
 
