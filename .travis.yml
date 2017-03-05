@@ -6,6 +6,9 @@ addons:
     packages:
     - texlive-full texlive-latex-extra
 
+before_install:
+   - tlmgr install mdframed
+
 script:
    - ls -l /usr/share/texlive/texmf-dist/tex/latex/mdframed
    - make
