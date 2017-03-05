@@ -7,4 +7,5 @@ addons:
     - texlive-full texlive-latex-extra
 
 script:
+   - ls -l /usr/share/texlive/texmf-dist/tex/latex/mdframed
    - make
