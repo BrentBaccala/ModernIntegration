@@ -1,0 +1,10 @@
+
+language: C
+
+addons:
+  apt:
+    packages:
+    - texlive-full
+
+script:
+   - make
