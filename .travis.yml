@@ -4,7 +4,7 @@ language: C
 addons:
   apt:
     packages:
-    - texlive-full
+    - texlive-full texlive-latex-extra
 
 script:
    - make
