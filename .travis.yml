@@ -14,8 +14,7 @@ before_install:
    # - tlmgr option repository ftp://tug.org/historic/systems/texlive/2015/tlnet-final 
    # - tlmgr install fvextra
    - wget http://mirrors.ctan.org/macros/latex/contrib/fvextra.zip; unzip fvextra.zip
-   - cd fvextra; tex fvextra.ins
-   - cd; ln -s fvextra/fvextra.sty .
+   - cd fvextra; tex fvextra.ins; cd ..; ln -s fvextra/fvextra.sty .
 
 script:
    - make
