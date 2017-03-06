@@ -56,7 +56,9 @@ resetmargins=true}
 
 \newcommand{\maximainputlabel}[1]{}
 \newcommand{\maximaoutputlabel}[1]{}
-\newcommand{\maximaoutput}[1]{$$#1$$}
+\newcommand{\maximaoutputmath}[1]{$$#1$$}
+%\newcommand{\maximaoutputstring}[1]{$$#1$$}
+\newcommand{\maximaoutputstring}[1]{\maximaoutputmath{#1}}
 
 
 \usepackage{tikz}
@@ -134,7 +136,7 @@ resetmargins=true}
 % maximacode (the environment to only execute) and then print the
 % output using some new macros, instead of the default behavior.
 
-\renewenvironment{maximablock}{\renewcommand{\maximaoutput}[1]{}\maximacode}{\endmaximacode
+\renewenvironment{maximablock}{\renewcommand{\maximaoutputmath}[1]{}\renewcommand{\maximaoutputstring}[1]{}\maximacode}{\endmaximacode
 % Command called by python code that processes maximacode input
 % Command number is in argument 1
 % Command text is saved in verbatim block MaximaCode
@@ -157,7 +159,7 @@ resetmargins=true}
 \renewcommand{\maximaoutputlabel}[1]{
 \def\maximalabeltext{(\%o##1)}}
 
-\renewcommand{\maximaoutput}[1]{
+\renewcommand{\maximaoutputmath}[1]{
 \bgroup
 \def\arraystretch{1.5}
 \begin{tabular}{L{1.5cm} L{10cm}}
