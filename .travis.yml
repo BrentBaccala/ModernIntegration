@@ -9,11 +9,11 @@ addons:
     - xzdec   # needed for tlmgr
 
 before_install:
-   - tlmgr init-usertree
+   # - tlmgr init-usertree
    # - tlmgr option repository ftp://tug.org/historic/systems/texlive/2015/tlnet-final 
    # - tlmgr install fvextra
-   - cd texmf; wget http://mirrors.ctan.org/macros/latex/contrib/fvextra.zip; unzip fvextra.zip
-   - cd texmf/fvextra; tex fvextra.ins
+   - wget http://mirrors.ctan.org/macros/latex/contrib/fvextra.zip; unzip fvextra.zip
+   - cd fvextra; tex fvextra.ins
    - ln -s texmf/fvextra/fvextra.sty .
 
 script:
