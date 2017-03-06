@@ -6,6 +6,7 @@ addons:
   apt:
     packages:
     - texlive-full texlive-latex-extra
+    - xzdec   # needed for tlmgr
 
 before_install:
    - tlmgr init-usertree
