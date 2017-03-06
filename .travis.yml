@@ -1,6 +1,7 @@
 
 language: C
 dist: trusty
+sudo: false
 
 addons:
   apt:
@@ -14,7 +15,7 @@ before_install:
    # - tlmgr install fvextra
    - wget http://mirrors.ctan.org/macros/latex/contrib/fvextra.zip; unzip fvextra.zip
    - cd fvextra; tex fvextra.ins
-   - ln -s texmf/fvextra/fvextra.sty .
+   - cd; ln -s fvextra/fvextra.sty .
 
 script:
    - make
