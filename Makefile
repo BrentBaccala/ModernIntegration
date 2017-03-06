@@ -24,6 +24,6 @@ out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
 
 
 dep depend .depend: [0-9]*.tex
-	grep -e \\\\input [0-9]*.tex | sed 's/^[^{]*{/ModernIntegration.pdf:/' | sed 's/}.*//' > .depend
+	grep -e \\\\includegraphics -e \\\\input [0-9]*.tex | sed 's/^[^{]*{/ModernIntegration.pdf:/' | sed 's/}.*//' > .depend
 
 include .depend
