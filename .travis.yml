@@ -8,6 +8,7 @@ addons:
     - texlive-full texlive-latex-extra
 
 before_install:
+   - tlmgr init-usertree
    - tlmgr install fvextra
 
 script:
