@@ -1013,7 +1013,10 @@ yield a polynomial Risch equation.
 There are additional issues that arises with special polynomials when
 solving a polynomial Risch equation:
 
-$$A r' + B r = C \qquad A,B,C \in K[\theta] \quad r \in K(\theta)$$
+\begin{equation}
+\label{eq: special polynomial Risch}
+A r' + B r = C \qquad A,B,C \in K[\theta] \quad r \in K(\theta)
+\end{equation}
 
 If $K[\theta]$ has only normal polynomials, then this equation can be
 solved as described before, since $r$ must be a polynomial.
@@ -1098,7 +1101,8 @@ Equation \eqref{eq: exponential An} gives:
 
 \begin{maximablock}
 depends(A,x)$
-eq: D(A[1]) + D(psi)/psi*A[1] = lintegrand/psi;
+a[1] : lintegrand/psi$
+eq: D(A[1]) + D(psi)/psi*A[1] - a[1];
 \end{maximablock}
 
 \begin{comment}
@@ -1125,17 +1129,26 @@ with $k=2$ (the multiplicity in $S$'s denominator) and $l=2$
 that $j=l-k=0$, so neither of these factors can appear
 in the denominator of $r$.
 
-Next we can move on to equation ? and use Maxima's
-{\tt facsum} function to collect terms together:
+Next we can move on to equation \ref{eq: special polynomial Risch}:
+
+\begin{equation*}
+A r' + B r = C \qquad A,B,C \in K[\theta] \quad r \in K(\theta)
+\end{equation*}
+
+I'll use Maxima's {\tt ratsimp} to collapse the entire equation into a
+single fraction, {\tt num} to discard the denominator, and {\tt
+expand} to expand the numerator out into a form that {\tt partition}
+can use to select the factors of $A_1$ and $A_1'$.
 
 \begin{maximablock}
-load(facexp)$
-eq*x^2*(theta+x)^2;
-facsum(%,A[1]);
-[AA,B,C] : [part(%,1,1)/D(A[1]), part(%,1,2)/A[1], part(%,2)];
+expand(num(ratsimp(eq)));
+[C, AB] : partition(%, A[1]);
+[B, AA] : ratsimp(partition(AB, D(A[1]))
+          / [A[1], D(A[1])]);
 \end{maximablock}
 
-Now we want to integrate $A(0)/B(0)$:
+Now we want to integrate $A(0)/B(0)$, to determine the highest power
+of $\theta$ that can appear in the denominator:
 
 \begin{maximablock}
 subst(theta=0,AA/B);
@@ -1167,51 +1180,42 @@ depends(AAA,x)$
 A[1]: AAA[1,-1] * theta^-1 + AAA[1,0] + AAA[1,1] * theta;
 declare(theta,mainvar);
 eq*x^2*(theta+x)^2*theta;
+num(ratsimp(eq));
 ev(%,diff);
-part(%,1) - part(%,2);
 facsum(%,theta);
 lc(expand(%), theta);
 
 AAA[1,1]: 0;
-eq*x^2*(theta+x)^2*theta;
+num(ratsimp(eq));
 ev(%,eval,diff);
-part(%,1) - part(%,2);
 facsum(%,theta);
 lc(expand(%), theta);
 
 AAA[1,0]: 0;
-eq*x^2*(theta+x)^2*theta;
+num(ratsimp(eq));
 ev(%,eval,diff);
-part(%,1) - part(%,2);
 ratsimp(%);
 lc(expand(%), theta);
 
 AAA[1,-1]: 1;
-eq*x^2*(theta+x)^2*theta;
+num(ratsimp(eq));
 ev(%,eval,diff);
 ratsimp(%);
 
 ev(A[1]);
 \end{maximablock}
 
+Since our integrand was of the form $a_1 \psi$, our integral is of the
+form $A_1 \psi$, so we've completed our calculation.  Is it correct?
 
-Can we have cancelation?  To determine if so, we need to integrate:
-
-$$\int \frac{B(0)}{A(0)} dx = \int \frac{-x^2+x}{x^3} dx = - \ln x - \frac{1}{x}$$
-
-This does not have the form $jk + \ln a(\theta)$, where $k=x$, so cancellation
-can not occur and we conclude that we have no special denominator.
-
-Now we're reduced to solving a purely polynomial Risch equation over ${\mathbb C}(\theta)$:
-
-$$(\theta+x)^2 x P_1' + (-\theta^2 -x^2\theta - x^2 + x) P_1 = \theta - x^2 + 2x$$
-
-$$A = (\theta+x)^2 x \qquad B = (-\theta^2 -x^2\theta - x^2 + x) \qquad C = \theta - x^2 + 2x$$
-
-Can cancellation occur now?  We integrate:
-
-$$- \int \frac{\lc B}{\lc A} dx = \int \frac{x^2+1}{x} dx = \frac{1}{2}x^2 + \ln x$$
-
+\begin{maximablock}
+ev(A[1] * psi);
+subst([psi = exp((x^2-1)/x + 1/(theta+x)),
+       theta = exp(x)],
+      %);
+ratsimp(%);
+diff(%,x) === integrand;
+\end{maximablock}
 
 
 \endexample
