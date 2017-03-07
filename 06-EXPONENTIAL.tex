@@ -1097,7 +1097,8 @@ Theorem \ref{exponential integration theorem}.
 Equation \eqref{eq: exponential An} gives:
 
 \begin{maximablock}
-eq: rr + D(psi)/psi*r = lintegrand/psi;
+depends(A,x)$
+eq: D(A[1]) + D(psi)/psi*A[1] = lintegrand/psi;
 \end{maximablock}
 
 \begin{comment}
@@ -1128,16 +1129,16 @@ Next we can move on to equation ? and use Maxima's
 {\tt facsum} function to collect terms together:
 
 \begin{maximablock}
-load(facexp);
+load(facexp)$
 eq*x^2*(theta+x)^2;
-facsum(%,rr,r);
-[A,B,C] : [part(%,1,1)/rr, part(%,1,2)/r, part(%,2)];
+facsum(%,A[1]);
+[AA,B,C] : [part(%,1,1)/D(A[1]), part(%,1,2)/A[1], part(%,2)];
 \end{maximablock}
 
 Now we want to integrate $A(0)/B(0)$:
 
 \begin{maximablock}
-subst(theta=0,A/B);
+subst(theta=0,AA/B);
 \end{maximablock}
 
 Since $k=x$, this solves equation ? with $j=1$ and $a$ constant,
@@ -1147,11 +1148,11 @@ with multiplicity one.
 What about the polynomial degree?
 
 \begin{maximablock}
-A;
+AA;
 B;
-lc(expand(A),theta);
+lc(expand(AA),theta);
 lc(B,theta);
-integrate(lc(B,theta) / lc(expand(A),theta), x);
+integrate(lc(B,theta) / lc(expand(AA),theta), x);
 \end{maximablock}
 
 This does not have the desired form (?), so we lack cancellation.
@@ -1162,27 +1163,30 @@ gives us the following form for r:
 $$r_{-1} \theta^{-1} + r_0 + r_1 \theta$$
 
 \begin{maximablock}
-rrr: r[-1] * theta^-1 + r[0] + r[1] * theta;
-depends(r,x);
+rrr: A[1,-1] * theta^-1 + A[1,0] + A[1,1] * theta;
 D(rrr);
 declare(theta,mainvar);
-subst([r=rrr, rr=D(rrr)], eq*x^2*(theta+x)^2*theta);
+subst(A[1]=rrr, eq*x^2*(theta+x)^2*theta);
+ev(%, diff);
 part(%,1) - part(%,2);
 /* facsum(%,r[-1],D(r[-1]),r[0],D(r[0]),r[1],D(r[1])); */
 facsum(%,theta);
 lc(expand(%), theta);
 
-subst([r=rrr, rr=D(rrr), r[1]=0], eq*x^2*(theta+x)^2*theta);
+subst([A[1]=rrr, A[1,1]=0], eq*x^2*(theta+x)^2*theta);
+ev(%, diff);
 part(%,1) - part(%,2);
 ratsimp(%);
 lc(expand(%), theta);
 
-subst([r=rrr, rr=D(rrr), r[1]=0, r[0]=0], eq*x^2*(theta+x)^2*theta);
+subst([A[1]=rrr, A[1,1]=0, A[1,0]=0], eq*x^2*(theta+x)^2*theta);
+ev(%, diff);
 part(%,1) - part(%,2);
 ratsimp(%);
 lc(expand(%), theta);
 
-subst([rr=D(1/theta), r=1/theta], eq);
+subst([A[1]=rrr, A[1,1]=0, A[1,0]=0, A[1,-1]=1], eq);
+ev(%, diff);
 ratsimp(%);
 \end{maximablock}
 
