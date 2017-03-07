@@ -6,8 +6,8 @@ sudo: false
 addons:
   apt:
     packages:
-    - texlive-full texlive-latex-extra
-    - xzdec   # needed for tlmgr
+    - texlive-full
+    - gnuplot
 
 before_install:
    # - tlmgr init-usertree
