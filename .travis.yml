@@ -9,6 +9,7 @@ addons:
     - texlive-full
     - gnuplot
     - python-pip
+    - maxima
 
 before_install:
    # - tlmgr init-usertree
