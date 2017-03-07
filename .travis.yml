@@ -8,6 +8,7 @@ addons:
     packages:
     - texlive-full
     - gnuplot
+    - python-pygments
 
 before_install:
    # - tlmgr init-usertree
