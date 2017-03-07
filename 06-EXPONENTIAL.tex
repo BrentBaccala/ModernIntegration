@@ -1100,9 +1100,9 @@ Theorem \ref{exponential integration theorem}.
 Equation \eqref{eq: exponential An} gives:
 
 \begin{maximablock}
-depends(A,x)$
-a[1] : lintegrand/psi$
-eq: D(A[1]) + D(psi)/psi*A[1] - a[1];
+depends(A1,x)$
+a1 : lintegrand/psi$
+eq: D(A1) + D(psi)/psi*A1 - a1;
 \end{maximablock}
 
 \begin{comment}
@@ -1142,16 +1142,16 @@ can use to select the factors of $A_1$ and $A_1'$.
 
 \begin{maximablock}
 expand(num(ratsimp(eq)));
-[C, AB] : partition(%, A[1]);
-[B, AA] : ratsimp(partition(AB, D(A[1]))
-          / [A[1], D(A[1])]);
+[C, AB] : partition(%, A1);
+[B, A] : ratsimp(partition(AB, D(A1))
+          / [A1, D(A1)]);
 \end{maximablock}
 
 Now we want to integrate $A(0)/B(0)$, to determine the highest power
 of $\theta$ that can appear in the denominator:
 
 \begin{maximablock}
-subst(theta=0,AA/B);
+subst(theta=0,A/B);
 \end{maximablock}
 
 Since $k=x$, this solves equation ? with $j=1$ and $a$ constant,
@@ -1161,11 +1161,12 @@ with multiplicity one.
 What about the polynomial degree?
 
 \begin{maximablock}
-AA;
+A;
 B;
-lc(expand(AA),theta);
+lc(expand(A),theta);
 lc(B,theta);
-integrate(lc(B,theta) / lc(expand(AA),theta), x);
+integrate(lc(B,theta) / lc(expand(A),theta), x);
+remvalue(A,B,C,AB);
 \end{maximablock}
 
 This does not have the desired form (?), so we lack cancellation.
@@ -1176,8 +1177,8 @@ gives us the following form for r:
 $$r_{-1} \theta^{-1} + r_0 + r_1 \theta$$
 
 \begin{maximablock}
-depends(AAA,x)$
-A[1]: AAA[1,-1] * theta^-1 + AAA[1,0] + AAA[1,1] * theta;
+depends(A,x)$
+A1: A[1,-1] * theta^-1 + A[1,0] + A[1,1] * theta;
 declare(theta,mainvar);
 eq*x^2*(theta+x)^2*theta;
 num(ratsimp(eq));
@@ -1185,31 +1186,31 @@ ev(%,diff);
 facsum(%,theta);
 lc(expand(%), theta);
 
-AAA[1,1]: 0;
+A[1,1]: 0;
 num(ratsimp(eq));
 ev(%,eval,diff);
 facsum(%,theta);
 lc(expand(%), theta);
 
-AAA[1,0]: 0;
+A[1,0]: 0;
 num(ratsimp(eq));
 ev(%,eval,diff);
 ratsimp(%);
 lc(expand(%), theta);
 
-AAA[1,-1]: 1;
+A[1,-1]: 1;
 num(ratsimp(eq));
 ev(%,eval,diff);
 ratsimp(%);
 
-ev(A[1]);
+ev(A1);
 \end{maximablock}
 
 Since our integrand was of the form $a_1 \psi$, our integral is of the
 form $A_1 \psi$, so we've completed our calculation.  Is it correct?
 
 \begin{maximablock}
-ev(A[1] * psi);
+ev(A1 * psi);
 subst([psi = exp((x^2-1)/x + 1/(theta+x)),
        theta = exp(x)],
       %);
