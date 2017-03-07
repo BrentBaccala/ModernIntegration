@@ -1163,31 +1163,35 @@ gives us the following form for r:
 $$r_{-1} \theta^{-1} + r_0 + r_1 \theta$$
 
 \begin{maximablock}
-rrr: A[1,-1] * theta^-1 + A[1,0] + A[1,1] * theta;
-D(rrr);
+depends(AAA,x)$
+A[1]: AAA[1,-1] * theta^-1 + AAA[1,0] + AAA[1,1] * theta;
 declare(theta,mainvar);
-subst(A[1]=rrr, eq*x^2*(theta+x)^2*theta);
-ev(%, diff);
+eq*x^2*(theta+x)^2*theta;
+ev(%,diff);
 part(%,1) - part(%,2);
-/* facsum(%,r[-1],D(r[-1]),r[0],D(r[0]),r[1],D(r[1])); */
 facsum(%,theta);
 lc(expand(%), theta);
 
-subst([A[1]=rrr, A[1,1]=0], eq*x^2*(theta+x)^2*theta);
-ev(%, diff);
+AAA[1,1]: 0;
+eq*x^2*(theta+x)^2*theta;
+ev(%,eval,diff);
+part(%,1) - part(%,2);
+facsum(%,theta);
+lc(expand(%), theta);
+
+AAA[1,0]: 0;
+eq*x^2*(theta+x)^2*theta;
+ev(%,eval,diff);
 part(%,1) - part(%,2);
 ratsimp(%);
 lc(expand(%), theta);
 
-subst([A[1]=rrr, A[1,1]=0, A[1,0]=0], eq*x^2*(theta+x)^2*theta);
-ev(%, diff);
-part(%,1) - part(%,2);
+AAA[1,-1]: 1;
+eq*x^2*(theta+x)^2*theta;
+ev(%,eval,diff);
 ratsimp(%);
-lc(expand(%), theta);
 
-subst([A[1]=rrr, A[1,1]=0, A[1,0]=0, A[1,-1]=1], eq);
-ev(%, diff);
-ratsimp(%);
+ev(A[1]);
 \end{maximablock}
 
 
