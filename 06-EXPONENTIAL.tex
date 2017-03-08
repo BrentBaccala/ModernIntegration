@@ -471,19 +471,25 @@ in this case, ${\mathbb C}(x)$.
 
 Consider such a Risch equation:
 
-$$r' + S r = T \qquad S,T,r \in {\mathbb C}(x)$$
+\begin{equation}
+\label{eq: C(x) Risch}
+r' + S r = T \qquad S,T,r \in {\mathbb C}(x)
+\end{equation}
 
-\begin{comment}
-Recall that in ${\mathbb C}(x)$, irreducible factors in the
-denominator always increase in degree on differentiation, so $A$'s
-factors are the only factors that can appears in $q$'s denominator,
-because they must cancel against $q'$.  Thus, we can easily identify
-which irreducible factors can appear in $q$'s denominator, and we next
+Recall that in ${\mathbb C}[x]$, all irreducible factors have
+the form $(x-\gamma)$, since ${\mathbb C}$ is algebraically
+closed.  Futhermore, all irreducible factors in $r$'s
+denominator increase in degree on differentiation,
+since all of ${\mathbb C}[x]$'s factors are normal.
+Therefore, the factors in $r$'s denominator must appear in
+either $S$ or $T$'s denominator, because otherwise $r'$
+would have a factor in its denominator that could not
+cancel anything else in the equation.
+Thus, we can easily identify
+which factors can appear in $r$'s denominator, and we next
 wish to calculate the multiplicities with which they appear.
-\end{comment}
 
-The only poles that can appear in $r$'s denominator must appear in
-either $S$ or $T$'s denominator, so let's consider a single pole at
+Let's consider a single pole at
 $\gamma$, expand $S$, $T$, and $r$ using partial fractions, and look
 at the highest powers of $(x-\gamma)$ in the denominator:
 
@@ -493,9 +499,13 @@ $$S = \frac{b}{(x-\gamma)^k} + \cdots$$
 
 $$T = \frac{c}{(x-\gamma)^l} + \cdots$$
 
-Combining everything into the Risch equation, we find:
+Combining everything into the Risch equation \eqref{eq: C(x) Risch}, we find:
 
 $$\frac{-ja}{(x-\gamma)^{j+1}} + \cdots + \frac{ba}{(x-\gamma)^{j+k}} + \cdots = \frac{c}{(x-\gamma)^l} + \cdots$$
+
+We know $k$ (the pole's multiplicity in $S$'s denominator) and $l$ (the pole's
+multiplicity in $T$'s denominator), and we wish to determine $j$, the
+pole's multiplicity in $r$'s denominator.
 
 We can classify the equation into three basic cases, based on the value of $k$:
 
@@ -517,8 +527,18 @@ identify all the poles in $r$'s denominator and determine the
 multiplicity with which they appear.  This determines $r$'s
 denominator $d$ completely.
 
-Having done so, we can replace $r$ with $p/d$, which clears the
-denominators and produces a polynomial Risch equation:
+Having done so, we can replace $r$ with $p/d$:
+
+$$A \frac{p'd-pd'}{d^2} + B \frac{p}{d} = C$$
+
+$$A (p'd-pd') + B pd = C d^2$$
+
+We still might have lingering denominators in $B$ and $C$,
+which can be cleared:
+
+$$A D (p'd-pd') + B D pd = C D d^2$$
+
+$$(A D d) p' + (B D d - A D d')p = C D d^2$$
 
 $$A p' + B p = C \qquad A,B,C,p \in {\mathbb C}[x]$$
 
@@ -537,7 +557,7 @@ $$A p' + B p = (k a_j p_k + b_{j-1} p_k) x^{j+k-1} \cdots$$
 In order for this coefficient to be zero, $k=-b_{j-1}/a_j$.
 So, if these conditions are met:
 
-$$\deg A = \deg B + 1 \qquad k=-\frac{b_{j-1}}{a_j} $$
+$$\deg A = \deg B + 1 \qquad k=-\frac{b_{j-1}}{a_j} = -\frac{\lc B}{\lc A}$$
 
 then $p$ may exist as a $k^{\rm th}$ degree polynomial.
 
@@ -571,24 +591,23 @@ study
 
 $$\int \psi \, {\rm d}x$$
 
-We know from Theorem \ref{basic exponential properties} that our
-solution, if it exists, must have the form $a\psi$, where $a \in
-{\mathbb C}(x)$, and $a$ must satisfy the Risch equation:
+We know from Theorem \ref{exponential integration theorem} that our
+solution, if it exists, must have the form $A_1\psi$, where $A_1 \in
+{\mathbb C}(x)$, and $A_1$ must satisfy equation \eqref{eq: exponential An}:
 
-$$a' - 2x a = 1$$
+$$A_1' - 2x A_1 = 1$$
 
-This is already a polynomial Risch equation, and $a'$ has only
-a constant coefficient, so $a$ can not have a non-trivial denominator.
-Futhermore, identifying $A$ as $1$, $B$ as $-2x$, and $C$ as $1$,
-we see that $\deg A = 0$ and $\deg B = 1$.  Since $\deg A \ne \deg B + 1$,
-the leading terms on the left hand side can not cancel,
-so they must match the leading term on the right.
-We compute:
+This is already a polynomial Risch equation, and $A_1'$ has only a
+constant coefficient, so $A_1$ can not have a non-trivial denominator.
+Futhermore, identifying $A$ as $1$, $B$ as $-2x$, and $C$ as $1$, we
+see that $\deg A = 0$ and $\deg B = 1$.  Since $\deg A \ne \deg B + 1$
+(case 1), the leading terms on the left hand side can not cancel, so
+they must match the leading term on the right.  We compute:
 
-$$\deg p = \deg C - \max(\deg A - 1, \deg B) = 0 - 1 = -1$$
+$$\deg C - \max(\deg A - 1, \deg B) = 0 - 1 = -1$$
 
-so that doesn't work.  Futhermore, $C$ is not a constant
-multiple of $B$, so a constant $p$ can't solve our equation.
+so that doesn't work (case 2).  Futhermore, $C$ is not a constant
+multiple of $B$, so a constant can't solve our equation (case 3).
 
 We conclude that no solution to this Risch equation exists in ${\mathbb C}(x)$,
 so the integral can not be expressed in elementary form.
@@ -632,17 +651,15 @@ have no normal polynomials in denominator of our integral,
 \end{comment}
 
 
-The integral must have the form $a_1 \psi + a_{-1} \frac{1}{\psi}$
-with $a_1, a_{-1} \in {\mathbb C}(x)$ and must satisfy the equations:
+Applying theorem \ref{exponential integration theorem}, we see that
+the integral must have the form $A_1 \psi + A_{-1} \frac{1}{\psi}$
+with $A_1, A_{-1} \in {\mathbb C}(x)$ and must satisfy
+equations \eqref{eq: exponential An}:
 
-$$\left[ a_1 \psi + a_{-1}\frac{1}{\psi} \right]' = (a_1' + i a_1 ) \psi + (a_{-1}' - i a_{-1} ) \frac{1}{\psi}
-= \left[ \frac{1}{x}\psi - \frac{1}{x}\frac{1}{\psi} \right]$$
+$$A_1' + i A_1 = \frac{1}{x} \qquad A_{-1}' - i A_{-1} = - \frac{1}{x}$$
 
-$$\frac{1}{x} = a_1' + i a_1 \qquad - \frac{1}{x} = a_{-1}' - i a_{-1}$$
-
-$$a_1' + a_1 = \frac{1}{x}$$
-
-We've got a single pole in the denominator of $T$, so $k=0$, $l=1$,
+In both cases, we've got an equation of the form \eqref{eq: C(x) Risch}
+with a single pole in the denominator of $T$, so $k=0$, $l=1$,
 and $j=l-1=0$, so there are no poles in the denominator of our solution.
 However, there is then no way to produce the denominator on the
 right, so the Risch equation has no solution in ${\mathbb C}(x)$.
@@ -705,16 +722,21 @@ $$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\Psi - x =
 \example Compute $\int {{4^x+1}\over{2^x+1}} {\rm d}x$
 \label{integrate 4^x+1/2^x+1}
 
-We'll use the field ${\mathbb C}(x,\Psi = \exp(x \ln 2))$; $\Psi' =
-(\ln 2)\Psi$ and the representation (see Example
+We'll use the field ${\mathbb C}(x,\theta = \exp(x \ln 2))$; $\theta' =
+(\ln 2)\theta$ and the representation (see Example
 \ref{represent 4^x+1/2^x+1}):
 
-$$ \frac{\Psi^2+1}{\Psi+1} = \Psi-1+\frac{2}{\Psi+1}$$
+$$ \frac{\theta^2+1}{\theta+1} = \theta-1+\frac{2}{\theta+1}$$
 
-We'll start, as before, with equation
+This integrand has the form of equation
+\eqref{exponential integration theorem - integrand}
+with $a_1=1$, $a_0=-1$, $n_1(\theta)=\theta+1$,
+$n_1'(\theta) = (\ln 2)\theta$ and $c_{1,1}=2$.
+
+We'll start with equation
 \eqref{eq: exponential Ds}:
 
-$$ D_1 = \frac{c_{1,1}}{n_1(\theta)' - \frac{\lc n_1'(\theta)}{\lc n_1(\theta)} n_1(\theta)} = \frac{2}{(\ln 2) \Psi - \ln 2 (\Psi +1 )} = -\frac{2}{\ln 2}$$
+$$ D_1 = \frac{c_{1,1}}{n_1(\theta)' - \frac{\lc n_1'(\theta)}{\lc n_1(\theta)} n_1(\theta)} = \frac{2}{(\ln 2) \theta - \frac{\ln 2}{1} (\theta +1 )} = -\frac{2}{\ln 2}$$
 
 Now, equation \eqref{eq: exponential An} yields:
 
@@ -723,11 +745,14 @@ $$A_1' + (\ln 2) A_1 = 1 \qquad\Longrightarrow\qquad A_1 = \frac{1}{\ln 2}$$
 and equation \eqref{eq: exponential A0} yields:
 
 $$A_0' = a_0 - D_1 \frac{\lc n_i'(\theta)}{\lc n_i(\theta)} = -1 + \frac{2}{\ln 2} \ln 2 = 1$$
+
 $$A_0 = x$$
 
-So our solution is
+Plugging everything into equation \eqref{exponential integration theorem - integral},
+then substituting $2^x$ for $\theta$,
+we obtain our solution:
 
-$$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\Psi + x  - \frac{2}{\ln 2}\left[\ln(\Psi+1)\right] =
+$$\int {{4^x+1}\over{2^x+1}} {\rm d}x = \frac{1}{\ln 2}\theta + x  - \frac{2}{\ln 2}\left[\ln(\theta+1)\right] =
 \frac{2^x}{\ln 2} + x - \frac{2}{\ln 2}\ln(2^x+1) $$
 
 \endexample
