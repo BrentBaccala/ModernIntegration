@@ -1053,46 +1053,57 @@ normal_risch_denominator(S, T, var) := block(
          normal_risch_factors(S, T, var)))
 )$
 
-normal_risch_degree(S, T, var, D1) := block(
-   [D2, A, B, C, j, k],
-   S : ratsimp(S*D1),
-   T : ratsimp(T*D1),
-   D2 : denom(S)*denom(T),
-   S : S*D2,
-   T : T*D2,
+/* Given a normal Risch equation r' + Sr = T * and the denominator of r,
+ * return the polynomial * equation satisfied by the numerator of r:
+ *    A n' + B n = C
+ * in the form [A,B,C]
+ */
+
+normal_risch_polynomial(S, T, var, D1) := block(
+   [D2, A, B, C],
+   D2 : denom(S*D1)*denom(T*D1),
    A : D1*D2,
-   B : S - D1*D2,
-   C : T*D1,
-   k : hipow(C, var) - max(hipow(A, var) - 1, hipow(B,var)),
-
-   /* Can we have a constant solution?  Should just return it. */
-/*
-   if integerp(C/B) then k : max(k,0),
-
-   if hipow(A, var) = hipow(B, var) + 1
-   then block([p],
-      p : - lc(B, var) / lc(A, var),
-      if integerp(p) then max(k, p) else k)
-   else k
-*/
+   B : S*D1*D2 - D(D1)*D2,
+   C : T*D1^2*D2,
    [A, B, C]
 )$
 
+/* Given a normal polynomial Risch equation A n' + B n = C,
+ * return the maximum degree of n, or -1 (no solution).
+ */
+
+normal_risch_degree(A, B, C, var) := block(
+   [k, p],
+
+   k : hipow(C, var) - max(hipow(A, var) - 1, hipow(B,var)),
+
+   /* Can we have a constant solution?  Should just return it. */
+
+   if constantp(C/B) then k : max(k,0),
+
+   if hipow(A, var) = hipow(B, var) + 1
+   then
+      p : - lc(B, var) / lc(A, var),
+      if integerp(p) then k : max(k, p),
+
+   k
+)$
+
 normal_risch_equation(S, T, var) := block(
-   [D],
+   [D, A, B, C],
    D : normal_risch_denominator(S, T, var),
-   [D, normal_risch_degree(S, T, var, D)]
+   [A, B, C] : normal_risch_polynomial(S, T, var, D),
+
+   if constantp(C/B) then C/B/D
+   elseif normal_risch_degree(A,B,C,var) = -1 then false
+   else product(c[i] * var^i, i, 0, normal_risch_degree(A,B,C,var))/D
 )$
 
 normal_risch_equation(%i, 1/(2*%i), x);
 
 normal_risch_equation(-2*x, 1, x);
 
-normal_risch_denominator(-2*x, 1, x);
-
 normal_risch_equation(%i, 1/x, x);
-
-normal_risch_denominator(%i, 1/x, x);
 
 normal_risch_equation(log(2), 1, x);
 
