@@ -575,7 +575,8 @@ helper functions:
 % from powers of factors:
 
 \begin{maximablock}
-is_power(expr) := is(part(expr, 0) = "^")$
+is_power(expr) :=
+   not atom(expr) and part(expr, 0) = "^"$
 base(e) :=
    if is_power(e) then part(e,1) else e$
 power(e) :=
