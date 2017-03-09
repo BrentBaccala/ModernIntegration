@@ -985,6 +985,16 @@ is not elementary.
 \endexample
 
 \vfill\eject
+\section{Normal Risch Equations in Maxima}
+
+To facilitate use of Maxima, I've written a Risch equation
+solver in Maxima.
+
+First, we want a partial fractions expansion that's a little bit
+different from the standard function {\tt partfrac}.  If {\it expr}
+isn't a fraction, or if its denominator doesn't involve the variable
+{\it var}, we want an empty list returned, otherwise return a list of
+the fractions in the expansion.
 
 \begin{maximablock}
 factors(u,v) := block(
@@ -996,13 +1006,6 @@ factors(u,v) := block(
    else [f]
 )$
 
-/* Partial fractions expansion
- *
- * If expr isn't a fraction, return an empty list
- * otherwise, return a list of the fractions
- * in a partial fractions expansion.
- */
-
 partlist1(L) :=
    if atom(L) then [L]
    elseif op(L) = "+" then partlist(L)
@@ -1013,28 +1016,52 @@ partfrac1(expr,v) := block(
    [expr1],
    expr1 : ratsimp(expr),
    if atom(expr1) then []
-   elseif op(expr1) = "/" then partlist1(partfrac(expr1,v))
+   elseif op(expr1) = "/" then
+      partlist1(partfrac(expr1,v))
    else []
 )$
+\end{maximablock}
 
-/* Return a list of lists, one for each factor in S or T's
- * denominator:
- *    [factor, [S-numerator, S-power], [T-numerator, T-power]]
- */
+Next, given a Risch equation in the form
 
+$$r' + S r = T$$
+
+{\tt normal_risch_factors} returns a list of sublists, with one
+sublist for each irreducible factor in $S$ or $T$'s denominator.  Each
+sublist contains the factor along with a pair of lists, one for $S$
+and one for $T$, containing the highest power in that
+variable's partial fractions expansion, along with the corresponding
+numerator, in the following format:
+
+\begin{center}
+\begin{verbatim}
+[factor, [S-numerator, S-power], [T-numerator, T-power]]
+\end{verbatim}
+\end{center}
+
+\begin{maximablock}
 normal_risch_factors(S, T, var) := block(
    [n, sf, tf],
    n: map(base,
-          factors(denom(ratsimp(S)) * denom(ratsimp(T)), var)),
-   sf: map(lambda([u], [base(denom(u)), [num(u), power(denom(u))]]),
+          factors(denom(ratsimp(S))
+                  * denom(ratsimp(T)), var)),
+   sf: map(lambda([u], [base(denom(u)),
+                        [num(u), power(denom(u))]]),
            partfrac1(S, var)),
-   tf: map(lambda([u], [base(denom(u)), [num(u), power(denom(u))]]),
+   tf: map(lambda([u], [base(denom(u)),
+                        [num(u), power(denom(u))]]),
            partfrac1(T, var)),
    sf: sort(sf, lambda([u,v], u[2][2] > v[2][2])),
    tf: sort(tf, lambda([u,v], u[2][2] > v[2][2])),
-   map(lambda([u], [u, assoc(u, sf, [0,0]), assoc(u, tf, [0,0])]), n)
+   map(lambda([u], [u, assoc(u, sf, [0,0]),
+                       assoc(u, tf, [0,0])]), n)
 )$
+\end{maximablock}
 
+{\tt normal_risch_denominator} uses {\tt normal_risch_factors}
+to compute the solutions's denominator.
+
+\begin{maximablock}
 normal_risch_denominator1(L) := block(
    [factor, Snum, k, Tnum, l],
    [factor, [Snum, k], [Tnum, l]] : L,
@@ -1042,7 +1069,8 @@ normal_risch_denominator1(L) := block(
    elseif k = 1 then factor^block(
       [j],
       j = modulo(Snum/D(factor), factor, var),
-      if integerp(j) then max(l-1, j, 0) else max(l-1, 0)
+      if integerp(j) then max(l-1, j, 0)
+                     else max(l-1, 0)
    )
    else factor^max(0,l-k)
 )$
@@ -1052,13 +1080,18 @@ normal_risch_denominator(S, T, var) := block(
       map(normal_risch_denominator1,
          normal_risch_factors(S, T, var)))
 )$
+\end{maximablock}
 
-/* Given a normal Risch equation r' + Sr = T * and the denominator of r,
- * return the polynomial * equation satisfied by the numerator of r:
- *    A n' + B n = C
- * in the form [A,B,C]
- */
+The next function, {\tt normal_risch_polynomial}, given $S$, $T$, and
+the denominator computed by {\tt normal_risch_denominator},
+returns the components of the polynomial equation
+satisfied by the solution's numerator:
 
+$$A n' + B n = C$$
+
+in the form {\tt [A, B, C]}.
+
+\begin{maximablock}
 normal_risch_polynomial(S, T, var, D1) := block(
    [D2, A, B, C],
    D2 : denom(S*D1)*denom(T*D1),
@@ -1067,17 +1100,18 @@ normal_risch_polynomial(S, T, var, D1) := block(
    C : T*D1^2*D2,
    [A, B, C]
 )$
+\end{maximablock}
 
-/* Given a normal polynomial Risch equation A n' + B n = C,
- * return the maximum degree of n, or -1 (no solution).
- */
+Next, given $A$, $B$, and $C$, we wish to compute the
+maximum degree of the numerator, or -1 if we can
+determine at this point that there is no solution.
 
+\begin{maximablock}
 normal_risch_degree(A, B, C, var) := block(
    [k, p],
 
-   k : hipow(C, var) - max(hipow(A, var) - 1, hipow(B,var)),
-
-   /* Can we have a constant solution?  Should just return it. */
+   k : hipow(C, var) - max(hipow(A, var) - 1,
+                           hipow(B,var)),
 
    if constantp(C/B) then k : max(k,0),
 
@@ -1088,25 +1122,35 @@ normal_risch_degree(A, B, C, var) := block(
 
    k
 )$
+\end{maximablock}
 
+Finally, we combine all these pieces together into a function that
+either returns a solution to a normal Risch equation, or {\bf false}
+if no such solution exists.
+
+\begin{maximablock}
 normal_risch_equation(S, T, var) := block(
    [D, A, B, C],
    D : normal_risch_denominator(S, T, var),
    [A, B, C] : normal_risch_polynomial(S, T, var, D),
 
    if constantp(C/B) then C/B/D
-   elseif normal_risch_degree(A,B,C,var) = -1 then false
-   else product(c[i] * var^i, i, 0, normal_risch_degree(A,B,C,var))/D
+   elseif normal_risch_degree(A,B,C,var) = -1
+      then false
+   else product(c[i] * var^i, i, 0,
+                normal_risch_degree(A,B,C,var))
+        / D
 )$
+\end{maximablock}
 
+Let's demonstrate the use of this code by using it to solve the Risch
+equations that we've already seen in this chapter's examples so far.
+
+\begin{maximablock}
 normal_risch_equation(%i, 1/(2*%i), x);
-
 normal_risch_equation(-2*x, 1, x);
-
 normal_risch_equation(%i, 1/x, x);
-
 normal_risch_equation(log(2), 1, x);
-
 normal_risch_equation(theta+1, 1, theta);
 \end{maximablock}
 
