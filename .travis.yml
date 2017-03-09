@@ -12,7 +12,6 @@ addons:
     - gnuplot
     - python-pip
     - python-sympy
-    - python-pygments
     - maxima
 
 before_install:
@@ -22,8 +21,7 @@ before_install:
    - wget http://mirrors.ctan.org/macros/latex/contrib/fvextra.zip; unzip fvextra.zip
    - cd fvextra; tex fvextra.ins; cd ..; ln -s fvextra/fvextra.sty .
    # - pip list
-   # - pip install --user Pygments
+   - pip install --user Pygments
 
 script:
-   - dpkg -L python-pygments
    - make
