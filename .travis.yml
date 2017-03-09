@@ -25,4 +25,5 @@ before_install:
    # - pip install --user Pygments
 
 script:
+   - dpkg -L python-pygments
    - make
