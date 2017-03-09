@@ -996,21 +996,6 @@ factors(u,v) := block(
    else [f]
 )$
 
-/* Return a list of lists, one for each factor in S or T's
- * denominator, [factor, S-power, T-power]
- */
-
-normal_risch_equation(S, T, var) := block(
-   [n, sf, tf],
-   n: map(base,
-          factors(denom(ratsimp(S)) * denom(ratsimp(T)), var)),
-   sf: map(lambda([u], [base(u), power(u)]),
-           factors(denom(ratsimp(S)), var)),
-   tf: map(lambda([u], [base(u), power(u)]),
-           factors(denom(ratsimp(T)), var)),
-   map(lambda([u], [u, assoc(u, sf, 0), assoc(u, tf, 0)]), n)
-)$
-
 /* Partial fractions expansion
  *
  * If expr isn't a fraction, return an empty list
@@ -1037,7 +1022,7 @@ partfrac1(expr,v) := block(
  *    [factor, [S-numerator, S-power], [T-numerator, T-power]]
  */
 
-normal_risch_equation(S, T, var) := block(
+normal_risch_factors(S, T, var) := block(
    [n, sf, tf],
    n: map(base,
           factors(denom(ratsimp(S)) * denom(ratsimp(T)), var)),
@@ -1065,7 +1050,38 @@ normal_risch_denominator1(L) := block(
 normal_risch_denominator(S, T, var) := block(
    apply("*",
       map(normal_risch_denominator1,
-         normal_risch_equation(S, T, var)))
+         normal_risch_factors(S, T, var)))
+)$
+
+normal_risch_degree(S, T, var, D1) := block(
+   [D2, A, B, C, j, k],
+   S : ratsimp(S*D1),
+   T : ratsimp(T*D1),
+   D2 : denom(S)*denom(T),
+   S : S*D2,
+   T : T*D2,
+   A : D1*D2,
+   B : S - D1*D2,
+   C : T*D1,
+   k : hipow(C, var) - max(hipow(A, var) - 1, hipow(B,var)),
+
+   /* Can we have a constant solution?  Should just return it. */
+/*
+   if integerp(C/B) then k : max(k,0),
+
+   if hipow(A, var) = hipow(B, var) + 1
+   then block([p],
+      p : - lc(B, var) / lc(A, var),
+      if integerp(p) then max(k, p) else k)
+   else k
+*/
+   [A, B, C]
+)$
+
+normal_risch_equation(S, T, var) := block(
+   [D],
+   D : normal_risch_denominator(S, T, var),
+   [D, normal_risch_degree(S, T, var, D)]
 )$
 
 normal_risch_equation(%i, 1/(2*%i), x);
