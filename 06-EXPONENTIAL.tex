@@ -1110,8 +1110,13 @@ determine at this point that there is no solution.
 normal_risch_degree(A, B, C, var) := block(
    [k, p],
 
-   k : hipow(C, var) - max(hipow(A, var) - 1,
-                           hipow(B,var)),
+   /* XXX What if B is zero? */
+
+   if C # 0 then
+      k : hipow(C, var) - max(hipow(A, var) - 1,
+                              hipow(B,var))
+   else
+      k : -1,
 
    if constantp(C/B) then k : max(k,0),
 
@@ -1152,6 +1157,16 @@ normal_risch_equation(-2*x, 1, x);
 normal_risch_equation(%i, 1/x, x);
 normal_risch_equation(log(2), 1, x);
 normal_risch_equation(theta+1, 1, theta);
+\end{maximablock}
+
+\begin{maximablock}
+normal_risch_solver(eq,var) := block(
+   [A, B, AB, C],
+   [C, AB] : partition(eq, var),
+   [B, A] : ratsimp(partition(AB, D(var))
+          / [var, D(var)]),
+   normal_risch_equation(B/A, - C/A, var)
+)$
 \end{maximablock}
 
 \vfill\eject
@@ -1365,39 +1380,58 @@ remvalue(A,B,C,AB);
 \end{maximablock}
 
 This does not have the desired form (?), so we lack cancellation.
-This means that $r$'s degree is upper bounded by
-$C$'s $\theta$-degree is 1, which, combined with the denominator constant,
-gives us the following form for r:
+This means that $A_1$'s degree is upper bounded by
+$C$'s $\theta$-degree (1), which, combined with the denominator constant,
+gives us the following form for $A_1$:
 
-$$r_{-1} \theta^{-1} + r_0 + r_1 \theta$$
+$$A_{1,-1} \theta^{-1} + A_{1,0} + A_{1,1} \theta$$
 
 \begin{maximablock}
 depends(A,x)$
 A1: A[1,-1] * theta^-1 + A[1,0] + A[1,1] * theta;
-declare(theta,mainvar);
-eq*x^2*(theta+x)^2*theta;
+\end{maximablock}
+
+Returning to equation \eqref{eq: exponential An}, I'll collect all the
+terms over a common denominator using {\tt ratsimp}, then pull out the
+numerator, which is the expression we're setting equal to zero.
+A call to Maxima {\tt ev} function subsitutes in the value for
+$A_1$ that I just set, and specifying the {\tt diff} flag causes
+the derivatives to be expanded.
+
+\begin{maximablock}
 num(ratsimp(eq));
 ev(%,diff);
-facsum(%,theta);
-lc(expand(%), theta);
+\end{maximablock}
 
-A[1,1]: 0;
+$A_{1,-1}$, $A_{1,0}$, and $A_{1,1}$ are all rational functions in
+${\mathbb C}(x)$.  In particular, they do not involve $\theta$, so we
+can extract the leading $\theta$ coefficient and set it equal to zero.
+
+\begin{maximablock}
+lc(expand(%), theta);
+\end{maximablock}
+
+This Risch equation has an obvious solution.  Substituting $0$
+for $A_{1,1}$ and again looking at the highest power
+of $\theta$, we obtain a Risch equation for $A_{1,0}$.
+
+\begin{maximablock}
+A[1,1]: normal_risch_solver(%, A[1,1]);
+
 num(ratsimp(eq));
 ev(%,eval,diff);
-facsum(%,theta);
 lc(expand(%), theta);
+A[1,0]: normal_risch_solver(%, A[1,0]);
 
-A[1,0]: 0;
 num(ratsimp(eq));
 ev(%,eval,diff);
-ratsimp(%);
 lc(expand(%), theta);
+A[1,-1]: normal_risch_solver(%, A[1,-1]);
+\end{maximablock}
 
-A[1,-1]: 1;
-num(ratsimp(eq));
-ev(%,eval,diff);
-ratsimp(%);
+We've now solved for all of the components of $A_1$:
 
+\begin{maximablock}
 ev(A1);
 \end{maximablock}
 
