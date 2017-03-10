@@ -527,22 +527,29 @@ identify all the poles in $r$'s denominator and determine the
 multiplicity with which they appear.  This determines $r$'s
 denominator $d$ completely.
 
-Having done so, we can replace $r$ with $p/d$:
+Having done so, we can replace $r$ with $p/d$, where $p,d \in {\mathbb C}[x]$:
 
-$$A \frac{p'd-pd'}{d^2} + B \frac{p}{d} = C$$
+$$\frac{p'd-pd'}{d^2} + S \frac{p}{d} = T$$
 
-$$A (p'd-pd') + B pd = C d^2$$
+$$(p'd-pd') + S pd = T d^2$$
 
-We still might have lingering denominators in $B$ and $C$,
-which can be cleared:
+We still might have lingering denominators, which can be cleared by
+multiplying through by $D$, the least common multiple of the
+denominators of $Spd$ and $Td^2$:
 
-$$A D (p'd-pd') + B D pd = C D d^2$$
+$$ D (p'd-pd') + S D pd = T D d^2$$
 
-$$(A D d) p' + (B D d - A D d')p = C D d^2$$
+$$(D d) p' + (S D d - D d')p = T D d^2$$
 
-$$A p' + B p = C \qquad A,B,C,p \in {\mathbb C}[x]$$
+Setting $A=Dd$, $B=D(Sd - d')$ and $C=TDd^2$, we now have a polynomial Risch equation
+that must be satisfied by the numerator $p$:
 
-There are three cases now.
+\begin{equation}
+\label{eq: C[x] Risch}
+A p' + B p = C \qquad A,B,C,p \in {\mathbb C}[x]
+\end{equation}
+
+Our next aim is to upper bound the degree of $p$, and there are again three cases.
 
 First, the highest terms on the left can have higher degree than any term on
 the right, and so must cancel against each other.  For this to occur,
@@ -567,18 +574,26 @@ occur if
 
 $$\deg p = \deg C - \max(\deg A - 1, \deg B)$$
 
-Having determined the degree of $p$, we can now determine its
-coefficients.
-
 The final case we need to consider is when $p$ is a constant, which
 would solve the Risch equation if and only if $C$ was a constant
 multiple of $B$, irregardless of $A$.
+
+Summarizing, equation \eqref{eq: C[x] Risch} can be solved only if one
+of these three conditions is met:
 
 \begin{enumerate}
 \item $\deg A = \deg B + 1$ and $\deg p =-\frac{\lc B}{\lc A} $
 \item $\deg p = \deg C - \max(\deg A - 1, \deg B)$
 \item $p$ is a constant and $pB = C$
 \end{enumerate}
+
+They are not mutually exclusive.  In particular, if both of the first
+two cases can be met, then the larger of the two values for $\deg p$
+should be used.
+
+Having determined the degree of $p$, we can now determine its
+coefficients by hypothesizing $p$ as a polynomial of the calculated
+degree and plugging it into equation \eqref{eq: C[x] Risch}.
 
 \vfill\eject
 
@@ -946,14 +961,31 @@ Our three cases become:
 
 Once we have determined the factors and multiplicities in the denominator,
 then we can proceed as before, clearing out the denominator and obtaining
-a polynomial equation.
+a polynomial equation of the form:
+
+\begin{equation}
+\label{eq: K[theta] normal Risch}
+A p' + B p = C \qquad A,B,C,p \in K[\theta]
+\end{equation}
+
+In addition to the three cases that we considered for ${\mathbb C}[x]$,
+there is a fourth case that must be considered.  $p$ can be
+zeroth order in $\theta$, yet not be a constant.  So our
+cases become:
+
+\begin{enumerate}
+\item $\deg_\theta A = \deg_\theta B + 1$ and $\deg_\theta p =-\frac{\lc B}{\lc A} $
+\item $\deg_\theta p = \deg_\theta C - \max(\deg_\theta A - 1, \deg_\theta B)$
+\item $\deg_\theta p = 0$
+\item $p$ is a constant and $pB = C$
+\end{enumerate}
 
 \vfill\eject
 
 \example Determine if $\int x^x dx$ has an elementary form.
 
 To handle this integral, we'll rewrite it as $\int e^{x \ln x} dx$
-and operate in the field ${\mathbb C}(\theta, \psi)$, where
+and operate in the field ${\mathbb C}(x, \theta, \psi)$, where
 $\theta = \ln x$ and $\psi = \exp x\theta$.  So, we're
 trying to compute
 
@@ -961,11 +993,14 @@ $$\int \psi\, dx$$
 
 Applying theorem \ref{exponential integration theorem}, we
 obtain the following Risch equation in
-${\mathbb C}(\theta)$:
+${\mathbb C}(x, \theta)$:
 
 $$A_1' + k' A_1 = 1$$
 
-$$A_1' + (\theta + 1) A_1 = 1$$
+\begin{equation}
+\label{x^x Risch equation}
+A_1' + (\theta + 1) A_1 = 1
+\end{equation}
 
 $$A=1 \qquad B=\theta +1 \qquad C=1$$
 
@@ -975,11 +1010,23 @@ This means that
 
 $$\deg A_1 = \deg C - \max(\deg A - 1, \deg B) = 0 - \max(-1, 1) = -1$$
 
-which is impossible.  The only remaining case to consider
-is if $A_1$ is constant, which is also impossible.
+which is impossible.
 
-We conclude that this Risch equation has no solution
-in ${\mathbb C}(\theta)$, and that the original integral
+If $\deg_\theta A_1$ is zero,
+then $A_1 \in {\mathbb C}(x)$ and equation
+\eqref{x^x Risch equation}
+splits into two Risch equations in ${\mathbb C}(x)$,
+one for first degree
+terms in $\theta$ and one for zeroth degree
+terms in $\theta$:
+
+$$A_1 = 0$$
+$$A_1' + A_1 = 1 \qquad\Longrightarrow\qquad A_1 = -1$$
+
+These equations have no simultaneous solution.
+
+We conclude that equation \eqref{x^x Risch equation} has no solution
+in ${\mathbb C}(x, \theta)$, and that the original integral
 is not elementary.
 
 \endexample
