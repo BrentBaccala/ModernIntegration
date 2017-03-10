@@ -11,7 +11,6 @@ addons:
     - texlive-full
     - gnuplot
     - python-pip
-    - python-sympy
     - maxima
 
 before_install:
@@ -22,6 +21,7 @@ before_install:
    - cd fvextra; tex fvextra.ins; cd ..; ln -s fvextra/fvextra.sty .
    # - pip list
    - pip install Pygments
+   - pip install sympy
 
 script:
    - make
