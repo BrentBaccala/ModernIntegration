@@ -21,11 +21,3 @@ before_install:
 
 script:
    - make
-
-deploy:
-  provider: releases
-  api_key:
-    secure: YNzq8L0e7aZsiYE5zHBk1sv6ddv5WAj/FGi8+W3nGww1rfnSlqzM2/xnjY03mIZtQwaWlBvPBB9zIsBWStCf8LDRbSO+bJLqmOWebU9qjYiI9khWqqOLr5jeMNpDiXgL4HtqKX5rK/oNb0EYL1Fa72yD7/Pk/gqGSS6XLy9/yie8IJoIOJAdh1blEYu7rzA6sg2HoeVI1HXngANTTiG+xmpv+aNakcznHH3XDP3h//D6wthR8pfYws0G6pWyUTyAPnrfGIZiyt1YwvZYyqRBlIMnaHdEKz2zu2cj6OnzR2Q4HYTpRgrdXCDPyEYCkuNClaWLPTJ55lPn/lMOXXeWIxz/pbVQLwd70lv+zwdRZzNj/NvL1nf39tF3nN+cLJi7R+4EAr7+HxQ80O7689J5kNKL3D/WIyyTJg6mYPC7xrHh83qMfNVXj4wqmBZAjjfq5HCoSafG8lYQ3+Ng2R5ZxYMgyhfbDdq6/K+sD1IpNbskc7NJhXHJ2LP61nIJMUXN1xopvfhp1z2MfWp3uDrsd+QAXA3Hrvp4NXFcqaeSRCyr24S13VZq73g/TTUJGX6m9HFooGWPhMertBf1BSmTPlhKh3K2UmcXf4gQGqj1WU/YJIoa9rMyOy6p+Ib0fPk4vWWerc0kUvvwUBGkHHQ5F7bcp94FJ14s88xpm1aqCcQ=
-  file: ModernIntegration.pdf
-  on:
-    repo: BrentBaccala/ModernIntegration
