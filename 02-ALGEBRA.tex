@@ -1610,6 +1610,44 @@ Write a computer program to factor the following polynomials:
 
 Ans: $\left(x^2+x+1\right)\,\left(34\,x^3+17\,x^2+9\,x-1\right)$
 
+\begin{maximacode}
+grind: true$
+\end{maximacode}
+
+\item $\maximac{expand((x^2+x+1)*(x^3+x^2-1));}$
+
+% labels[1] is the current input label
+% labels[2] is the previous output label
+% labels[3] is the previous input label
+
+% labels[3] is the previous input label (something like %i31).  We
+% convert it to a string (something like '%i31'), evaluate it to get
+% the previous input, and output it as a string.
+
+% The net result is to typeset the previous Maxima input command in a
+% verbatim block
+
+\textcolor{blue}{\maximac{string(eval_string(string(labels[3])));}}
+
+Ans: $\maximac{eval_string(\%);}$
+
+\item $\maximac{expand((x^2+x+1)*(x^3+x^2-1));}$
+
+% This prints the factored polynomial as TeX
+% $\maximac{factor(eval_string(string(labels[2])));}$
+
+% This typesets the previous OUTPUT as grind verbatim
+\maximac{string(eval_string(string(labels[2])));}
+
+\maximac{concat("factor(", eval_string(string(labels[2])), ");");}
+
+$\maximac{eval_string(eval_string(string(labels[2])));}$
+
+
+% why doesn't this print as a string?
+\maximac{string(labels[2]);}
+
+
 
 \end{enumerate}
 
