@@ -543,13 +543,27 @@ partlist(a+b+c);
 
 \subsection{Array Functions}
 
-This next function is convenient for displaying Maxima arrays:
+This next function is convenient for displaying Maxima arrays.
+Conceptionally, it's just
 
-\begin{maximablock}
+\begin{maximaverbatim}
 displayarray(b) :=
    map(display,
       map(lambda([u], arraymake(b,u)),
           rest(arrayinfo(b),2)))$
+\end{maximaverbatim}
+
+This doesn't work because {\tt arrayinfo} quotes its first argument
+and interprets it as the name of an array, so the block of code above
+would always return the array info for array {\tt b}.  Something a
+little more complicated is required: a macro that evaluates its
+argument and then calls {\tt arrayinfo}.
+
+\begin{maximablock}
+displayarray(b) ::=
+   map(display,
+      map(lambda([u], arraymake(''b,u)),
+          rest(apply(arrayinfo, ''[b]),2)))$
 \end{maximablock}
 
 \subsection{Simplification}

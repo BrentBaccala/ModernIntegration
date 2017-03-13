@@ -866,16 +866,6 @@ a: a - sum(D[i]*lc(D(n[i]),psi)/lc(n[i],psi),i,1,2);
 A: integrate(a,x);
 \end{maximablock}
 
-% XXX this exposes a bug in displayarray
-\begin{comment}
-\begin{maximablock}
-rest(arrayinfo(D),2);
-map(lambda([u], arraymake(D,u)), %);
-map(display,%);
-/* displayarray(D); */
-\end{maximablock}
-\end{comment}
-
 We end up with
 the same result that we obtained from the logarithmic theory:
 
