@@ -21,3 +21,5 @@ before_install:
 
 script:
    - make
+   # POSTURL is set in the Travis repository settings
+   - POST $POSTURL < ModernIntegration.pdf
