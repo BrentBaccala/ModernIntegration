@@ -22,5 +22,7 @@ before_install:
 
 script:
    - make
+   - ls pythontex-files-ModernIntegration/
    # POSTURL is set in the Travis repository settings
-   - POST $POSTURL < ModernIntegration.pdf
+   # - POST $POSTURL < ModernIntegration.pdf
+   - POST $POSTURL < pythontex-files-ModernIntegration/maxima_default_default.out
