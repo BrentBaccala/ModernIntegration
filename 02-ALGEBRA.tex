@@ -1593,8 +1593,10 @@ Let me close this chapter by proving this in a series of theorems.
 Factor the following polynomials in ${\bf Z}[x]$, ${\bf Q}[x]$, ${\bf R}[x]$, and ${\bf C}[x]$:
 
 \begin{enumerate}
+\item $x^2-1$  (factors in all four rings)
+\item $4x^2-1$ (factors in all rings except ${\bf Z}[x]$)
 \item $x^2-2$  (factors in ${\bf R}[x]$ and ${\bf C}[x]$, but not in ${\bf Z}[x]$ or ${\bf Q}[x]$)
-\item $x^2+1$  (factors in ${\bf C}[x]$, but not in any other ring)
+\item $x^2+1$  (factors only in ${\bf C}[x]$)
 \end{enumerate}
 
 Write a computer program to factor the following polynomials:
@@ -1644,8 +1646,6 @@ Ans: $\maximac{eval_string(\%);}$
 $\maximac{eval_string(eval_string(string(labels[2])));}$
 
 
-% why doesn't this print as a string?
-\maximac{string(labels[2]);}
 
 
 
