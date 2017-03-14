@@ -12,8 +12,8 @@ addons:
     - gnuplot
     - python-pip
     - maxima
+    - maxima-share
     - libwww-perl
-    - poppler-utils   # for pdftotext
 
 before_install:
    - wget http://mirrors.ctan.org/macros/latex/contrib/fvextra.zip; unzip fvextra.zip
@@ -25,5 +25,4 @@ script:
    - make
    - ls pythontex-files-ModernIntegration/
    # POSTURL is set in the Travis repository settings
-   # - POST $POSTURL < ModernIntegration.pdf
-   - POST $POSTURL < pythontex-files-ModernIntegration/maxima_default_default.out
+   - POST $POSTURL < ModernIntegration.pdf
