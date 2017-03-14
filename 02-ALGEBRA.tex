@@ -33,11 +33,9 @@ and an introductory undergraduate text of some kind.}
 \qquad [van der Waerden], \S3.1
 
 We begin with two key definitions that we will use throughout: the
-{\it ring} and the {\it field}.  As I explained in the previous
-chapter, both are associated primarily with sets of axioms.  Any
-algebraic system that obeys the ring axioms is called a ring; any
-algebraic system that obeys the field axioms is a field.
+{\it ring} and the {\it field}.
 
+\begin{comment}
 Both rings and fields are defined over sets with two binary operators,
 conventionally called addition and multiplication.  It will appease
 the nervous reader to know that for our purposes,
@@ -46,6 +44,21 @@ addition and multiplication we learned in grade school.  Of
 course, in the general case, any pair of operations that obey the
 axioms will suffice to form a ring or a field, but we won't need to
 concern ourselves with this.
+\end{comment}
+
+\begin{key point}
+A {\it ring} is a mathematical system where addition,
+subtraction, and multiplication are defined.
+\end{key point}
+
+\begin{key point}
+A {\it field} is a mathematical system where addition,
+subtraction, multiplication, and division are defined.
+\end{key point}
+
+Both concepts are associated with sets of axioms.  Any algebraic
+system that obeys the ring axioms is called a ring; any algebraic
+system that obeys the field axioms is called a field.
 
 I'm going to use basic set-theoretic notation to define the axioms.
 Read $\forall$ as ``for all'' and $\exists$ as ``there exists''.  Each
@@ -59,13 +72,14 @@ $a$ (possibly different for each $b$) so that\ldots''.  In the later
 case, $a$ can be a function of $b$, but not in the first case.
 Sometimes I'll add the set inclusion symbol $\in$, read ``in'', such
 as ``$\forall a,b,c \in {\cal R}$...'', reading ``for all a, b, and c
-that are members of ${\cal R}$...'', but I'll omit this from the next
-table for simplicity, since everything is a member of ${\cal R}$.
+that are members of ${\cal R}$...'', but I'll omit this from these
+tables for simplicity, since everything is a member of ${\cal R}$.
 
-A {\it commutative ring with unity} ${\cal R}$ obeys the following axioms:
-
+\begin{figure}
+\label{ring axioms}
+\begin{mdframed}[backgroundcolor=cyan!20]
 \begin{center}
-\begin{supertabular}{l l @{} l r}
+\begin{supertabular}{l l @{ } l r}
    associative law of addition	& $\forall a,b,c,$ & $(a+b)+c = a+(b+c)$ &(R1)\cr
    associative law of multiplication & $\forall a,b,c,$ & $(ab)c = a(bc)$ &(R2)\cr
    commutative law of addition	& $\forall a,b,$ & $a+b = b+a$ &(R3)\cr
@@ -77,13 +91,20 @@ A {\it commutative ring with unity} ${\cal R}$ obeys the following axioms:
    existence of a multiplicative identity (unity) & $\exists 1, \forall a,$ & $1a = a$ &(RwU1)\cr
 \end{supertabular}
 \end{center}
+\end{mdframed}
+%\caption{Commutative ring with unity axioms}
+\caption{Ring axioms}
+\end{figure}
+
+A {\it ring} ${\cal R}$ obeys the axioms
+in figure \ref{ring axioms}.
 
 You notice the commutative law of multiplication at the end as (CR1),
 along with the existance of a unity element 1, labeled (RwU1).  A
 substantial theory has been developed around {\it non-commutative}
 rings, probably because matrix multiplication (a critically important
 example) is non-commutative.  Most of our rings are commutative ring,
-or {\it abelian} (the terms are synonymous).  Also, I required the
+or {\it abelian} (the terms are synonymous).  Also, I require the
 existence of a multiplicative identity.  Much of ring theory can be
 developed without this axion, but some theorems require it, and I
 don't want to belabor the point, since all of our rings will have a
@@ -92,14 +113,24 @@ adopt the CR1 and RwU1 axioms along with ring axioms R1-R6 to obtain a
 {\it commutative ring with unity}, and call it informally a ``ring''
 for the rest of the book.
 
-A {\it field} ${\cal F}$ obeys all the ring axioms (thus all fields are also
-rings), as well as the following axiom:
-
+\begin{figure}
+\label{field axioms}
+\begin{mdframed}[backgroundcolor=cyan!20]
 \begin{center}
+All ring axioms, plus:
+
+\begin{justify}
 \begin{tabular}{l l r}
    invertibility of multiplication & $\forall a \ne 0, \exists b, ab = 1$ &(F1)\cr
 \end{tabular}
+\end{justify}
 \end{center}
+\end{mdframed}
+\caption{Field axioms}
+\end{figure}
+
+A {\it field} ${\cal F}$ obeys all the ring axioms (thus all fields are also
+rings), as well as one additional axiom (Figure \ref{field axioms}).
 
 In plain English, rings are mathematical systems in which addition and
 multiplication are cleanly defined.  Subtraction is also defined due
