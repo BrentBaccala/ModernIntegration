@@ -811,9 +811,6 @@ R[1,1] : c[1,2];
 $$C_{1,1}(\psi) = - \frac{R_{1,1}(\psi)}{n_1'(\psi)} \mod n_1(\psi)$$
 
 \begin{maximablock}
-modulo(r,p,v) :=
-   divide(num(r),p,v)[2]
-     * gcdex(denom(r),p,v)[1]$
 kill(C)$
 C[1,1] ::: modulo( - R[1,1] / D(n[1]),
                      n[1], psi);

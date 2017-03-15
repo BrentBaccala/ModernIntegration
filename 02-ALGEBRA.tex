@@ -1511,6 +1511,33 @@ If $n$ was not irreducible, this construction would
 not work for all values of $x$, and we would have
 a ring but not a field.
 
+When calculating in ${\cal F}[x]$ mod $n(x)$,
+I'll use the following Maxima function.
+
+{\tt modulo} takes a rational function, an irreducible polynomial $n$,
+and the variable $x$ used to construct the extension.  After splitting
+the rational function into its numerator and denominator, it uses {\tt
+gcdex} to invert the denominator modulo $n(x)$, then multiplies it by
+the numerator and uses {\tt divide} to perform modulo reduction.
+
+\begin{maximablock}
+modulo(r,n,x) := block(
+   [d_inverse : gcdex(denom(r),n,x)[1]],
+   divide(num(r) * d_inverse,n,x)[2]
+)$
+\end{maximablock}
+
+We need to specify the variable in order to distinguish between
+operations in ${\cal C}(x)[y]$ mod $n(y)$ and ${\cal C}(y)[x]$
+mod $n(x)$.  For example, reducing mod $(y-x)$ effectively sets
+$y$ equal to $x$, but it could also set $x$ equal to $y$:
+
+\begin{maximablock}
+modulo(x^3+y, y-x, y);
+modulo(x^3+y, y-x, x);
+\end{maximablock}
+
+
 \begin{comment}
 Again, like with the quotient field, I tend to be a bit loose with the
 notation.  Something like the Gaussian integers, which I wrote as
