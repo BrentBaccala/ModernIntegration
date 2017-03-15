@@ -284,14 +284,26 @@ multiplied to form zero, producing a zero denominator?  Nothing
 in the ring axioms prevents this from happening, so we add an
 additional axiom.
 
-An {\it integral domain} ${\cal I}$ obeys all the ring axioms,
-as well as:
+An {\it integral domain} ${\cal I}$ obeys all the ring axioms, plus
+one more (figure \ref{integral domain axiom}) that guarantees the
+non-existance of zero divisors.  All of the rings in this book
+are integral domains.
 
+\begin{figure}
+\label{integral domain axiom}
+\begin{mdframed}[backgroundcolor=cyan!20]
 \begin{center}
+All ring axioms, plus:
+
+\begin{justify}
 \begin{tabular}{l l l r}
    non-existence of zero divisors & $\forall a\ne 0,b\ne 0 \in {\cal I},$ & $ab\ne 0$ &(I1)\cr
 \end{tabular}
+\end{justify}
 \end{center}
+\end{mdframed}
+\caption{Integral domain axioms}
+\end{figure}
 
 The quotient field construction is only defined on integral domains,
 and I'll leave it as an exercise to show that ${\bf Z}$ is an integral
@@ -379,6 +391,29 @@ relate them to real world problems.
 
 \section{Factorization}
 
+Some integers, as we know, are {\it prime} numbers, meaning that they
+can not be factored into a product of smaller integers, and they play
+a central role in number theory.  In a more abstract setting, they
+generalize into the concept of {\it irreducible elements}.
+
+\begin{key point}
+A {\it unit} is an invertable element.
+\end{key point}
+
+Put another way, $u$ is a unit if there exists $u'$ such that $uu'=1$.
+
+Now, any divisor can be transformed into another divisor by
+multiplying it by a unit, since if $uu'=1$, then $ab=(ua)(u'b)$ for
+any $a$ and $b$ whatsoever.  Therefore, factors are only unique
+up to units (CLARIFY).
+
+
+In particular, a greatest common divisor can be transformed into
+another greatest common divisor by multiplying it by a unit.  I leave
+without proof the claims that in ${\cal F}[x]$, the units are all
+elements in ${\cal F}$, and that all GCDs differ from each other by a
+unit multiple.
+
 \subsection*{\qquad Unique Factorization}
 
 A {\it unique factorization domain} ${\cal U}$ obeys all the ring axioms,
@@ -391,12 +426,23 @@ as well as:
 \end{tabular}
 \end{center}
 
-U1 implies I1.  Take a unique factorization domain, and pick two
-elements $c$ and $d$ which are multiples of zero, $cd=0$.  Obviously,
-we can pick $a=0$ and $b=0$ and have $ab=0=cd$.  So, by U1, $x$ exists
-so that $0x=c$ or $0x=d$, which by the zero theorem implies that
-either $c=0$ or $d=0$.  This proves I1.  Thus, a unique factorization
-domain is also an integral domain.  Also, ${\cal F}[x]$ is a unique
+\theorem
+
+Any unique factorization domain is also an integral domain.
+
+\proof
+
+Assume the contrary, that we're working in a unique factorization
+domain that is not an integral domain.  Pick two elements $c$ and $d$
+which are divisors of zero, $cd=0$.  Obviously, we can pick $a=0$ and
+$b=0$ and have $ab=0=cd$.  So, by U1, $x$ exists so that $0x=c$ or
+$0x=d$, which by the zero theorem implies that either $c=0$ or $d=0$.
+This proves I1.  Thus, a unique factorization domain is also an
+integral domain.
+
+\endtheorem
+
+Also, ${\cal F}[x]$ is a unique
 factorization domain (proof omitted).
 
 Not all rings satisfy U1.  Consider, for example, ${\bf Z}[i];
