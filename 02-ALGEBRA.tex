@@ -1820,12 +1820,23 @@ def factorization_problem(p):
 
 \end{sympycode}
 
+\begin{maximacode}
+declare(x,mainvar)$
+factorization_problem(p) := block(
+   ?princ(concat("\\maximaoutputmath{$", tex1(expand(p)), "$}")),
+   ?princ("\\maximaoutputmath{\\newline}"),
+   ?princ(concat("\\maximaoutputmath{{\\tt ", string(expand(p)), "}}")),
+   ?princ("\\maximaoutputmath{\\newline}"),
+   ?princ(concat("\\maximaoutputmath{Ans: $", tex1(factor(p)), "$}"))
+)$
+\end{maximacode}
+
 \item \sympyc{factorization_problem((3*y+2*x-7)*(7*y+x**2+11))}
-\begin{maximablock}
-factor(2*x**3 + 3*x**2*y - 7*x**2 + 14*x*y
-       + 22*x + 21*y**2 - 16*y - 77);
-\end{maximablock}
+
+\item \maximac{factorization_problem((3*y+2*x-7)*(7*y+x**2+11))$}
 
 \item \sympyc{factorization_problem((y**3+2*x**2-3)*(y+x**2+1))}
+
+\item \maximac{factorization_problem((y**3+2*x**2-3)*(y+x**2+1))$}
 
 \end{enumerate}
