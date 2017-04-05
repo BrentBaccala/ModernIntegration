@@ -782,6 +782,14 @@ $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\o
 We proceed as before, putting the integral into Liouvillian form
 and dividing out $\frac{x}{x+1}$ to obtain a proper fraction:
 
+\begin{maximacode}
+/* This code makes \theta appear first in the output ordering for this example. */
+/* x was previously declared mainvar back in Chapter 2. */
+
+remove(x, mainvar)$
+declare(theta, mainvar)$
+\end{maximacode}
+
 \begin{maximablock}
 divide(num(lintegrand), denom(lintegrand), psi);
 \end{maximablock}
@@ -810,16 +818,16 @@ R[1,1] : c[1,2];
 
 $$C_{1,1}(\psi) = - \frac{R_{1,1}(\psi)}{n_1'(\psi)} \mod n_1(\psi)$$
 
+This time, we do need to perform a modulo reduction, but as modulo reductions go, it's
+trivial.  Operating $\mod (\maximac{n[1];})$ means that we're operating in a field
+where $\theta - x\psi = 0$, so $\psi = \frac{\theta}{x}$.  (EXPLAIN WHY WE'RE
+REDUCING w.r.t $\psi$).
+
 \begin{maximablock}
 kill(C)$
 C[1,1] ::: modulo( - R[1,1] / D(n[1]),
                      n[1], psi);
 \end{maximablock}
-
-This time, we do need to perform a modulo reduction, but as modulo reductions go, it's
-trivial.  Operating $\mod (\theta - x\psi)$ means that we're operating in a field
-where $\theta - x\psi = 0$, so $\psi = \frac{\theta}{x}$.  (EXPLAIN WHY WE'RE
-REDUCING w.r.t $\psi$).
 
 Now we wish to compute $Q_{1,1}(\psi)$.  There is no modulo reduction in
 this division, and it should always be exact.
@@ -842,7 +850,9 @@ D[1] ::: (c[1,1] - D(C[1,1]) - Q[1,1])
 / (D(n[1])-lc(D(n[1]),psi)/lc(n[1],psi)*n[1]);
 \end{maximablock}
 
-A similar calculation for $n_2(\psi) = \theta + x \psi$ yields
+% XXX I'd like to drop the semicolor in the \maximac element.
+
+A similar calculation for $n_2(\psi) = \maximac{n[2];}$ yields
 
 \begin{maximablock}
 R[2,1] : c[2,2];
