@@ -392,20 +392,65 @@ relate them to real world problems.
 \section{Factorization}
 
 Some integers, as we know, are {\it prime} numbers, meaning that they
-can not be factored into a product of smaller integers, and they play
-a central role in number theory.  In a more abstract setting, they
-generalize into the concept of {\it irreducible elements}.
+can not be factored into a product of smaller integers, and the primes
+play a central role in number theory.  In a more abstract setting,
+they generalize into the concepts of {\it irreducible elements} and
+{\it prime elements}, which are similar, but not identical.
+First, let me
+first introduce the simpler concept of a {\it unit}:
 
 \begin{key point}
 A {\it unit} is an invertable element.
 \end{key point}
 
-Put another way, $u$ is a unit if there exists $u'$ such that $uu'=1$.
+Put another way, $u$ is a unit if there exists $v$ such that $uv=1$.
+In a field, all elements except 0 are units, so units are only
+meaningful in the context of a ring.
 
-Now, any divisor can be transformed into another divisor by
-multiplying it by a unit, since if $uu'=1$, then $ab=(ua)(u'b)$ for
-any $a$ and $b$ whatsoever.  Therefore, factors are only unique
-up to units (CLARIFY).
+\begin{key point}
+An {\it irreducible element} is a non-zero, non-unit element
+that can not be written as the product of two non-units.
+\end{key point}
+
+Any divisor can be transformed into another divisor by multiplying it
+by a unit, since if $uv=1$, then $ab=(ua)(vb)$ for any $a$ and $b$
+whatsoever.  Therefore, factors are only unique up to units.  For
+example, $x$ can be ``factored'' as $1 \cdot x$ or $(-1)\cdot(-1)\cdot x$,
+but we don't regard these as factorizations for
+determining irreducibility, since $1$ and $-1$ are units.
+
+There exist rings in which indeterminates can be factored.
+
+\example
+In the ring ${\cal F}[x,y] \mod (y^2-x)$, the element $x$ is
+not irreducible.
+
+$x \equiv y^2 \mod (y^2-x)$, so $x$ can be factored as
+$y\cdot y$.
+
+Roughly speaking, $y$ is the square root of $x$.
+\endexample
+
+\begin{key point}
+A {\it prime element} $p$ is a non-zero, non-unit element with
+the property that when $p$ divides $ab$, $p$ divides either $a$ or $b$.
+$$\forall a,b \quad p|ab \Rightarrow p|a \cup p|b$$
+\end{key point}
+
+There exist rings in which these two concepts do not coincide.
+
+\example
+In the ring ${\cal F}[x,y,z] \mod (z^2-xy)$, the element $z$ is
+irreducible but not prime.  [Wikipedia]
+
+First, note that $z$ is irreducible in this ring.
+
+Then, consider the element $xy$.  $z$ divides $xy$ since
+$xy \equiv z^2 \mod (z^2-xy)$, so $\frac{xy}{z} \equiv z \mod (z^2-xy)$.
+However, $z$ divides neither $x$ nor $y$.
+Therefore, $z$ is not prime.
+\endexample
+
 
 
 In particular, a greatest common divisor can be transformed into
@@ -416,19 +461,19 @@ unit multiple.
 
 \subsection*{\qquad Unique Factorization}
 
-A {\it unique factorization domain} ${\cal U}$ obeys all the ring axioms,
-as well as:
+\begin{key point}
+A {\it unique factorization domain} ${\cal U}$
+is an integral domain in which every non-zero element can be written as a product of a unit and prime elements.
+[Wikipedia]
+\end{key point}
 
-\begin{center}
-\begin{tabular}{l l r}
-   unique factorization & $\forall a,b,c,d \in {\cal U},$ & \cr
-      & $ab=cd \implies \exists x\in {\cal U}, ax=c \cup ax=d \cup bx=c \cup bx=d$ &(U1)\cr
-\end{tabular}
-\end{center}
+
+The {\it Fundamental Theorem of Arithmetic} states that ${\mathbb Z}$
+is a unique factorization domain.
 
 \theorem
 
-Any unique factorization domain is also an integral domain.
+For any field $K$, the ring $K[x]$ is a unique factorization domain.
 
 \proof
 
