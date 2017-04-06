@@ -217,6 +217,9 @@ $a\over b$ and $c\over d$.  We group equivalent pairs together into
 {\it equivalence classes} and define our basic field operations as
 follows:
 
+\begin{figure}[h]
+\label{fraction field operations}
+\begin{mdframed}[backgroundcolor=cyan!20]
 \begin{center}
 \begin{eqnarray*}
 {a\over b} + {c\over d} &=& {{ad+bc}\over{bd}} \cr
@@ -225,6 +228,9 @@ follows:
 {\,{a\over b}\, \over {c \over d}} &=& {{ad}\over{bc}} \vbox to24pt{}\cr
 \end{eqnarray*}
 \end{center}
+\end{mdframed}
+\caption{Fraction field operations}
+\end{figure}
 
 The additive identity element is $0\over1$ and the multiplicative
 identity is $1\over1$, using the original identities 0 and 1 from the
@@ -787,12 +793,12 @@ appear as part of the underlying field.
 
 \mysection{Greatest Common Divisors}
 \qquad [van der Waerden], \S3.7, \S3.8, \S5.4 (multivariate rings)\hfil\break
-\hbox{}\qquad [Geddes], Ch. 7
+\hbox{}\qquad [Ge92], Ch. 7
 
 One of the most important uses of polynomial long division is to
 compute greatest common divisors (GCDs), at least in theory.  In
 practice, there are other, more efficient algorithms.\footnote{See
-[Geddes], for example} However, because long division is a simple and
+[Ge92], for example} However, because long division is a simple and
 straightforward way to compute GCDs, because it provides a theoretical
 underpinning for other methods, and because it leads us directly to
 solving polynomial diophantine equations, I'll present it here in this
@@ -1671,7 +1677,7 @@ problems once thought impossible.
 
 \subsection*{\qquad Square-free factorization}
 
-\hbox{}\qquad [Geddes], \S 8.2
+\hbox{}\qquad [Ge92], \S 8.2
 
 A {\it square-free polynomial} is one with no repeated factors.
 $x^2-1$ is square-free because it factors as $(x-1)(x+1)$.  $x^2+2x+1$
@@ -1721,7 +1727,7 @@ factors.
 
 
 \qquad [van der Waerden], \S5.6
-\hbox{}\qquad [Geddes], Chs. 5, 6, 8
+\hbox{}\qquad [Ge92], Chs. 5, 6, 8
 
 Let's start simple.  We want to factor a polynomial in ${\bf Z}[x]$,
 the ring of polynomials with integer coefficients.  If such a
