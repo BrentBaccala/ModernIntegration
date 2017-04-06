@@ -402,343 +402,6 @@ relate them to real world problems.
 
 \vfill\eject
 
-\section{Factorization}
-
-Some integers, as we know, are {\it prime} numbers, meaning that they
-can not be factored into a product of smaller integers, and the primes
-play a central role in number theory.  In a more abstract setting,
-they generalize into the concepts of {\it irreducible elements} and
-{\it prime elements}, which are similar, but not identical.
-First, let me
-first introduce the simpler concept of a {\it unit}:
-
-\begin{key point}
-A {\it unit} is an invertable element.
-\end{key point}
-
-Put another way, $u$ is a unit if there exists $v$ such that $uv=1$.
-In a field, all elements except 0 are units, so units are only
-meaningful in the context of a ring.
-
-\begin{key point}
-An {\it irreducible element} is a non-zero, non-unit element
-that can not be written as the product of two non-units.
-\end{key point}
-
-Any divisor can be transformed into another divisor by multiplying it
-by a unit, since if $uv=1$, then $ab=(ua)(vb)$ for any $a$ and $b$
-whatsoever.  Therefore, factors are only unique up to units.  For
-example, $x$ can be ``factored'' as $1 \cdot x$ or $(-1)\cdot(-1)\cdot x$,
-but we don't regard these as factorizations for
-determining irreducibility, since $1$ and $-1$ are units.
-
-There exist rings in which indeterminates can be factored.
-
-\example
-In the ring ${\cal F}[x,y] \mod (y^2-x)$, the element $x$ is
-not irreducible.
-
-$x \equiv y^2 \mod (y^2-x)$, so $x$ can be factored as
-$y\cdot y$.
-
-Roughly speaking, $y$ is the square root of $x$.
-\endexample
-
-\begin{key point}
-A {\it prime element} $p$ is a non-zero, non-unit element with
-the property that when $p$ divides $ab$, $p$ divides either $a$ or $b$.
-$$\forall a,b \quad p|ab \Rightarrow p|a \cup p|b$$
-\end{key point}
-
-There exist rings in which these two concepts do not coincide.
-
-\example
-In the ring ${\cal F}[x,y,z] \mod (z^2-xy)$, the element $z$ is
-irreducible but not prime.  [Wikipedia]
-
-First, note that $z$ is irreducible in this ring.
-
-Then, consider the element $xy$.  $z$ divides $xy$ since
-$xy \equiv z^2 \mod (z^2-xy)$, so $\frac{xy}{z} \equiv z \mod (z^2-xy)$.
-However, $z$ divides neither $x$ nor $y$.
-Therefore, $z$ is not prime.
-\endexample
-
-
-
-In particular, a greatest common divisor can be transformed into
-another greatest common divisor by multiplying it by a unit.  I leave
-without proof the claims that in ${\cal F}[x]$, the units are all
-elements in ${\cal F}$, and that all GCDs differ from each other by a
-unit multiple.
-
-\subsection*{\qquad Unique Factorization}
-
-\begin{key point}
-A {\it unique factorization domain} ${\cal U}$
-is an integral domain in which every non-zero element can be written as a product of a unit and prime elements.
-[Wikipedia]
-\end{key point}
-
-
-The {\it Fundamental Theorem of Arithmetic} states that ${\mathbb Z}$
-is a unique factorization domain.
-
-\theorem
-
-For any field $K$, the ring $K[x]$ is a unique factorization domain.
-
-\proof
-
-Assume the contrary, that we're working in a unique factorization
-domain that is not an integral domain.  Pick two elements $c$ and $d$
-which are divisors of zero, $cd=0$.  Obviously, we can pick $a=0$ and
-$b=0$ and have $ab=0=cd$.  So, by U1, $x$ exists so that $0x=c$ or
-$0x=d$, which by the zero theorem implies that either $c=0$ or $d=0$.
-This proves I1.  Thus, a unique factorization domain is also an
-integral domain.
-
-\endtheorem
-
-Also, ${\cal F}[x]$ is a unique
-factorization domain (proof omitted).
-
-Not all rings satisfy U1.  Consider, for example, ${\bf Z}[i];
-i^2=-1$, the Gaussian integers.  This ring differs from the polynomial
-ring ${\bf Z}[x]$ because polynomials of degree two and higher don't
-exist since the square of $i$ is -1; $i$ is thus {\it algebraic} (see
-below) and this makes all the difference.  The number 9 can be
-factored two different ways in this ring: $9=3\cdot3=(4-i)(4+i)$.
-It's not too hard to see that 3 can't be multiplied by any Gaussian
-integer to form either $(4-i)$ or $(4+i)$, so U1 is not satisfied.
-The Gaussian integers form an integral domain, but not a unique
-factorization domain.
-
-\subsection*{\qquad Algebraic Closure}
-\qquad [van der Waerden], \S11
-
-The most important way to characterize a field ${\cal F}$ is to extend
-it to a polynomial ring ${\cal F}[x]$ and then study how polynomials
-factor in ${\cal F}[x]$.
-
-\begin{key point}
-A field ${\cal F}$ is {\it algebraically closed} if all
-polynomials in ${\cal F}[x]$ can be completely factored
-into factors linear (i.e, first degree) in $x$.
-\end{key point}
-
-Put another way, a field ${\cal F}$ is algebraically closed if the
-only irreducible polynomials in ${\cal F}[x]$ are linear in $x$.
-These irreducible polynomials do not have to be linear in any other
-indeterminate that might exist in ${\cal F}$.
-
-A polynomial is {\it monic} if its leading coefficient is $1$.  If
-${\cal F}$ is algebrically closed, then the monic irreducible
-polynomials in ${\cal F}[x]$ are all of the form $(x-\lambda)$, where
-$\lambda$ is some element of ${\cal F}$.
-
-\begin{key point}
-The {\bf Fundamental Theorem of
-Algebra} states that the complex field ${\bf C}$ is algebraically
-closed.
-\end{key point}
-
-There are several proof routes for this theorem.  The most
-common involves complex analysis, and can be found in any standard
-complex analysis text, usually near Liouville's Theorem on the
-behavior of bounded entire functions.  I won't go into it here.
-
-I do want to note the difference between ${\bf C}$ and ${\bf C}(x)$.
-Both are fields.  ${\bf C}$ is algebraically closed because any
-polynomial in ${\bf C}[x]$ can be completely factored into linear
-factors, i.e, $x^3-3x^2+4=(x-2)^2(x+1)$.  ${\bf C}(x)$ is {\it not} algebraically closed.
-If it were, then all polynomials in ${\bf C}(x)[y]$ could
-be completely factored, but in fact, there exist polynomials
-such as $y^2-x$ that can not be factored, so ${\bf C}(x)$
-is not algebraically closed.
-
-In this book, the complex field ${\bf C}$ is the most common field
-that we'll use for our constants, precisely because it's algebraically
-closed and the irreducible polynomials of ${\bf C}[x]$ can be so
-easily characterized.  It's major disadvantage is that it isn't {\it
-computable}, meaning that an arbitrary complex number can't be
-expressed in a finite form.  This makes ${\bf C}$ fine for theoretical
-proofs and for specific examples, but unsuitable for algorithms
-designed to work with arbitrary inputs, for which smaller,
-more complicated fields are required.
-
-\begin{comment}
-
-Here I will present another proof, Gauss's second method (cast into
-modern terms by van der Waerden).  Not only is it more algebraic
-in its flavor, but it is in fact a slightly stronger result.
-
-Starting with unordered rings and fields, we introduce the concept of
-{\it ordered} rings and fields field, where every element can be
-compared to zero consistently with the axioms:
-
-\begin{center}
-\begin{supertabular}{l l l r}
-   total order	& $\forall a,$ & one of $a<0, a=0, a>0$ holds &(O1)\cr
-   consistency with negation & $\forall a,$ & one of $-a>0, a=0, a>0$ holds &(O1)\cr
-   consistency with addition & $\forall a,b$ & $a>0 \cap b>0 \implies a+b>0$ &(O2)\cr
-   consistency with multiplication & $\forall a,b$ & $a>0 \cap b>0 \implies ab>0$ &(O3)\cr
-\end{supertabular}
-\end{center}
-
-I've introduced new logic symbols $\cap$ for logical and $\implies$
-for logical implication.  $\cup$ is used for logical or.  Note
-particularly that O2 implies that $n \cdot 1$ is always positive, never
-zero, so our field characteristic is always zero.  No finite field can
-be ordered.  This implies that our prime subfield is always ${\bf Q}$.
-O3 implies that squares must be positive.
-
-We further classify an ordered field as {\it Archemedian} if it
-satisfies:
-
-\begin{center}
-\begin{supertabular}{l l @{} l r}
-   Archemedian property	& $\forall a,$ & $\exists b \in {\bf Q}, b>a$ &(A1)\cr
-\end{supertabular}
-\end{center}
-
-Non-Archemdian fields have ``infinitely large'' and ``infinitely
-small'' numbers, larger and smaller than any rational number, and
-${\bf Q}$ is confined to a narrow region of the field.  We will not
-comsider such fields.
-
-Now we define a {\it real field} as a field where -1 is not
-expressible as a sum of squares.  A {\it maximal real field} is real
-but has no proper algebraic extension that is real.  Any attempt to
-algebraically extend a maximum real field would result in a non-real
-field.  The prototypical example of a maximal real field is the
-intersection of the algebraic closure of ${\bf Q}$ with the real line;
-i.e, all purely real algebraic numbers.
-
-We establish some key properties of an {\it ordered maximal real
-field}, starting with the fact that all positive numbers are squares.
-% Intuitively, this is because all positive real numbers have real
-% roots, but we do not specialize to the real line, instead proofing the
-% result for real fields in general.
-
-Considering a positive element $p$ that is not a square, we construct
-an algebraic extension $x^2-p$ which must produce an extension field
-that where -1 can be expressed as a sum of squares, because the
-original field was maximal real.  Furthermore, each element in the
-extension field has the form $a + b \gamma$, where $\gamma$ solves
-$x^2-p$ and $a$ and $b$ are in the original field.  So, we can write:
-
-$$-1 = \sum_1^n (a_i + b_i \gamma)^2 = \sum_1^n (a_i^2 + 2 a_i b_i \gamma + b_i^2 p)$$
-
-The $\gamma$ term must vanish, since -1 is in the original field, so
-
-$$-1 = \sum_1^n a_i^2 + \sum_1^n b_i^2 p$$
-
-This immediately implies that $p$ can not be expressed as a sum of
-squares in the original field, because otherwise $-1$ could be.
-Solving for $p$ we find that
-
-$$p = \frac{-1 - \sum a_i^2}{\sum b_i^2}$$
-
-Since squares are always positive, the expression on the right is
-strictly negative, contradicting the assumption that $p$ is positive,
-and proving the claim.
-
-Every element is either a square, or the negative of a square, and
-these cases are exclusive.  Thus, a maximal real field can be ordered
-in only one way.  This also establishes that any sum of squares, being
-positive, is a square and that adjoining $i$ creates a field where
-square roots exist and thus every quadratic equation is solvable using
-the quadratic formula.
-
-Next, we want to establish that, in a maximal real field, all
-polynomials of odd degree have at least one root.  We can proceed by
-induction, as this is obviously true for linear polynomials, so
-assuming that the theorem is satisfied for all polynomials of lower
-degree, we can see that the polynomial must be irreducible, otherwise
-we could factor it and apply induction to the factor of odd degree.
-
-By adjoining a root $\alpha$ of the $n$ degree polynomial $f(x)$ we
-get a non-real field:
-
-$$-1 = \sum \phi_i(\alpha)^2 = \sum \phi_i(x)^2 + f(x) g(x)$$
-
-All of the polynomials $\phi_i(x)^2$ have even degree, and the highest
-degree terms can not cancel, since their coefficients are squares and
-thus positive.  Thus, the sum has even degree of at most $2(n-1)$ and
-$f(x)$ has odd degree $n$, so $g(x)$ must have odd degree of at most
-$n-2$.  Induction implies that $g(x)$ must have a root $\beta$, so
-
-$$\sum \phi_i(\beta)^2 = -1 - f(\beta) g(\beta) = -1$$
-
-Yet $\beta$, and thus $\sum \phi_i(\beta)^2$, lies in the original
-field, so this expression contradicts the claim that the original
-field was real.
-
-% $$(a_0 + a_1 \gamma + a_2 \gamma^2)^2 = a_0^2 + 2a_0 a_1 \gamma
-% + (a_1^2 + 2a_0 a_2) \gamma^2 + 2a_1a_2\gamma^3 + a_2^2\gamma^4 $$
-% $$= a_0^2 + 2a_0 a_1 \gamma
-% + (a_1^2 + 2a_0 a_2) \gamma^2
-% + 2a_1a_2(b_0 + b_1 \gamma + b_2\gamma^2)
-% + a_2^2[b_0b_2 + (b_0 + b_1 b_2)\gamma + (b_1 + b_2^2)\gamma^2]
-% $$
-% $$= (a_0^2 + 2a_1a_2b_0 + a_2^2b_0b_2)
-% + (2a_0 a_1 +2a_1a_2b_1 + a_2^2b_0 + a_2^2b_1b_2) \gamma
-% + (a_1^2 + 2a_0 a_2
-% + 2a_1a_2b_2
-% + a_2^2b_1 + a_2^2b_2^2)\gamma^2
-% $$
-
-\theorem
-Any field ${\cal F}$ where quadratic equations can always be solved
-and polynomials of odd degree have at least one root is algebraically
-closed.
-
-\proof
-Our main concern is polynomials of even degree.  Consider a splitting
-field where all of the polynomial's roots $\alpha_i$ exist, construct
-the $n(n-1)/2$ values $r_{ij} = \alpha_i + \alpha_j +
-c \alpha_i \alpha_j$, where $c$ has been selected to make all of these
-values distinct, and then form the polynomial $\Lambda(x) = \prod (x-r_{ij})$,
-which exists in ${\cal F}[x]$ since it's symmetric.  Note that this
-polynomial's degree, while larger, has one less power of two than the
-original.  We repeat this procedure until we get a polynomial of odd
-degree in ${\cal F}[x]$, which has at least one root in ${\cal F}$,
-say $r_{ij}$.  If neither $\alpha_i + \alpha_j$ nor
-$\alpha_i \alpha_j$ existed in the field, then by the Primitive
-Element Theorem we could extend by $r_{ij}$, so at least one of these
-two terms must exist in the field, and then the other can be
-constructed.  Finally, we use the quadratic equation to construct
-$\alpha_i$ and $\alpha_j$, and repeat this until we've got roots of
-the original polynomial.
-
-NEED SYMMETRIC POLYNOMIALS AND THEOREM OF PRIMITIVE ELEMENT
-
-\endtheorem
-
-There is only one way to extend an ordered integral domain into an
-ordered quotient field.
-
-Next, we introduce real numbers individually as Cauchy sequences and
-collectively as an extension field, ordered by showing that the
-trailing terms in such a sequence must either converge to zero or
-become uniformly positive or negative, establishing O1.  A little more
-work is then needed to show that O2 and O3 hold, and that the
-Archemedian property carries through.
-
-Next, we show that square roots always exist, as Cauchy sequences, for
-all positive numbers.  This requires constructing a sequence of larger
-and larger numbers, each of which we square, invert, multiply by 2,
-and use A1 to demand an even larger element of {\bf Q}.  Fill in the
-details.  Might need Archmedian property for this.
-
-Next, construct ${\bf C}$ by extending algebraically to adjoin $i$,
-and use the prior result to demonstrate that square roots exist for
-all numbers in ${\bf C}$.  Then introduce the modulus of a complex
-number and establish that $|1+\gamma|\le 1+|\gamma|$.
-
-\end{comment}
-
 \mysection{Long Division}
 \qquad [van der Waerden], \S3.4
 
@@ -1644,6 +1307,343 @@ is the sum of all the conjugates, while ${\rm N}(x)$, the zeroth order
 coefficient in the polynomial, is the product of all the conjugates.
 
 \vfill\eject
+
+\mysection{Factorization}
+
+Some integers, as we know, are {\it prime} numbers, meaning that they
+can not be factored into a product of smaller integers, and the primes
+play a central role in number theory.  In a more abstract setting,
+they generalize into the concepts of {\it irreducible elements} and
+{\it prime elements}, which are similar, but not identical.
+First, let me
+first introduce the simpler concept of a {\it unit}:
+
+\begin{key point}
+A {\it unit} is an invertable element.
+\end{key point}
+
+Put another way, $u$ is a unit if there exists $v$ such that $uv=1$.
+In a field, all elements except 0 are units, so units are only
+meaningful in the context of a ring.
+
+\begin{key point}
+An {\it irreducible element} is a non-zero, non-unit element
+that can not be written as the product of two non-units.
+\end{key point}
+
+Any divisor can be transformed into another divisor by multiplying it
+by a unit, since if $uv=1$, then $ab=(ua)(vb)$ for any $a$ and $b$
+whatsoever.  Therefore, factors are only unique up to units.  For
+example, $x$ can be ``factored'' as $1 \cdot x$ or $(-1)\cdot(-1)\cdot x$,
+but we don't regard these as factorizations for
+determining irreducibility, since $1$ and $-1$ are units.
+
+There exist rings in which indeterminates can be factored.
+
+\example
+In the ring ${\cal F}[x,y] \mod (y^2-x)$, the element $x$ is
+not irreducible.
+
+$x \equiv y^2 \mod (y^2-x)$, so $x$ can be factored as
+$y\cdot y$.
+
+Roughly speaking, $y$ is the square root of $x$.
+\endexample
+
+\begin{key point}
+A {\it prime element} $p$ is a non-zero, non-unit element with
+the property that when $p$ divides $ab$, $p$ divides either $a$ or $b$.
+$$\forall a,b \quad p|ab \Rightarrow p|a \cup p|b$$
+\end{key point}
+
+There exist rings in which these two concepts do not coincide.
+
+\example
+In the ring ${\cal F}[x,y,z] \mod (z^2-xy)$, the element $z$ is
+irreducible but not prime.  [Wikipedia]
+
+First, note that $z$ is irreducible in this ring.
+
+Then, consider the element $xy$.  $z$ divides $xy$ since
+$xy \equiv z^2 \mod (z^2-xy)$, so $\frac{xy}{z} \equiv z \mod (z^2-xy)$.
+However, $z$ divides neither $x$ nor $y$.
+Therefore, $z$ is not prime.
+\endexample
+
+
+
+In particular, a greatest common divisor can be transformed into
+another greatest common divisor by multiplying it by a unit.  I leave
+without proof the claims that in ${\cal F}[x]$, the units are all
+elements in ${\cal F}$, and that all GCDs differ from each other by a
+unit multiple.
+
+\subsection*{\qquad Unique Factorization}
+
+\begin{key point}
+A {\it unique factorization domain} ${\cal U}$
+is an integral domain in which every non-zero element can be written as a product of a unit and prime elements.
+[Wikipedia]
+\end{key point}
+
+
+The {\it Fundamental Theorem of Arithmetic} states that ${\mathbb Z}$
+is a unique factorization domain.
+
+\theorem
+
+For any field $K$, the ring $K[x]$ is a unique factorization domain.
+
+\proof
+
+Assume the contrary, that we're working in a unique factorization
+domain that is not an integral domain.  Pick two elements $c$ and $d$
+which are divisors of zero, $cd=0$.  Obviously, we can pick $a=0$ and
+$b=0$ and have $ab=0=cd$.  So, by U1, $x$ exists so that $0x=c$ or
+$0x=d$, which by the zero theorem implies that either $c=0$ or $d=0$.
+This proves I1.  Thus, a unique factorization domain is also an
+integral domain.
+
+\endtheorem
+
+Also, ${\cal F}[x]$ is a unique
+factorization domain (proof omitted).
+
+Not all rings satisfy U1.  Consider, for example, ${\bf Z}[i];
+i^2=-1$, the Gaussian integers.  This ring differs from the polynomial
+ring ${\bf Z}[x]$ because polynomials of degree two and higher don't
+exist since the square of $i$ is -1; $i$ is thus {\it algebraic} (see
+below) and this makes all the difference.  The number 9 can be
+factored two different ways in this ring: $9=3\cdot3=(4-i)(4+i)$.
+It's not too hard to see that 3 can't be multiplied by any Gaussian
+integer to form either $(4-i)$ or $(4+i)$, so U1 is not satisfied.
+The Gaussian integers form an integral domain, but not a unique
+factorization domain.
+
+\subsection*{\qquad Algebraic Closure}
+\qquad [van der Waerden], \S11
+
+The most important way to characterize a field ${\cal F}$ is to extend
+it to a polynomial ring ${\cal F}[x]$ and then study how polynomials
+factor in ${\cal F}[x]$.
+
+\begin{key point}
+A field ${\cal F}$ is {\it algebraically closed} if all
+polynomials in ${\cal F}[x]$ can be completely factored
+into factors linear (i.e, first degree) in $x$.
+\end{key point}
+
+Put another way, a field ${\cal F}$ is algebraically closed if the
+only irreducible polynomials in ${\cal F}[x]$ are linear in $x$.
+These irreducible polynomials do not have to be linear in any other
+indeterminate that might exist in ${\cal F}$.
+
+A polynomial is {\it monic} if its leading coefficient is $1$.  If
+${\cal F}$ is algebrically closed, then the monic irreducible
+polynomials in ${\cal F}[x]$ are all of the form $(x-\lambda)$, where
+$\lambda$ is some element of ${\cal F}$.
+
+\begin{key point}
+The {\bf Fundamental Theorem of
+Algebra} states that the complex field ${\bf C}$ is algebraically
+closed.
+\end{key point}
+
+There are several proof routes for this theorem.  The most
+common involves complex analysis, and can be found in any standard
+complex analysis text, usually near Liouville's Theorem on the
+behavior of bounded entire functions.  I won't go into it here.
+
+I do want to note the difference between ${\bf C}$ and ${\bf C}(x)$.
+Both are fields.  ${\bf C}$ is algebraically closed because any
+polynomial in ${\bf C}[x]$ can be completely factored into linear
+factors, i.e, $x^3-3x^2+4=(x-2)^2(x+1)$.  ${\bf C}(x)$ is {\it not} algebraically closed.
+If it were, then all polynomials in ${\bf C}(x)[y]$ could
+be completely factored, but in fact, there exist polynomials
+such as $y^2-x$ that can not be factored, so ${\bf C}(x)$
+is not algebraically closed.
+
+In this book, the complex field ${\bf C}$ is the most common field
+that we'll use for our constants, precisely because it's algebraically
+closed and the irreducible polynomials of ${\bf C}[x]$ can be so
+easily characterized.  It's major disadvantage is that it isn't {\it
+computable}, meaning that an arbitrary complex number can't be
+expressed in a finite form.  This makes ${\bf C}$ fine for theoretical
+proofs and for specific examples, but unsuitable for algorithms
+designed to work with arbitrary inputs, for which smaller,
+more complicated fields are required.
+
+\begin{comment}
+
+Here I will present another proof, Gauss's second method (cast into
+modern terms by van der Waerden).  Not only is it more algebraic
+in its flavor, but it is in fact a slightly stronger result.
+
+Starting with unordered rings and fields, we introduce the concept of
+{\it ordered} rings and fields field, where every element can be
+compared to zero consistently with the axioms:
+
+\begin{center}
+\begin{supertabular}{l l l r}
+   total order	& $\forall a,$ & one of $a<0, a=0, a>0$ holds &(O1)\cr
+   consistency with negation & $\forall a,$ & one of $-a>0, a=0, a>0$ holds &(O1)\cr
+   consistency with addition & $\forall a,b$ & $a>0 \cap b>0 \implies a+b>0$ &(O2)\cr
+   consistency with multiplication & $\forall a,b$ & $a>0 \cap b>0 \implies ab>0$ &(O3)\cr
+\end{supertabular}
+\end{center}
+
+I've introduced new logic symbols $\cap$ for logical and $\implies$
+for logical implication.  $\cup$ is used for logical or.  Note
+particularly that O2 implies that $n \cdot 1$ is always positive, never
+zero, so our field characteristic is always zero.  No finite field can
+be ordered.  This implies that our prime subfield is always ${\bf Q}$.
+O3 implies that squares must be positive.
+
+We further classify an ordered field as {\it Archemedian} if it
+satisfies:
+
+\begin{center}
+\begin{supertabular}{l l @{} l r}
+   Archemedian property	& $\forall a,$ & $\exists b \in {\bf Q}, b>a$ &(A1)\cr
+\end{supertabular}
+\end{center}
+
+Non-Archemdian fields have ``infinitely large'' and ``infinitely
+small'' numbers, larger and smaller than any rational number, and
+${\bf Q}$ is confined to a narrow region of the field.  We will not
+comsider such fields.
+
+Now we define a {\it real field} as a field where -1 is not
+expressible as a sum of squares.  A {\it maximal real field} is real
+but has no proper algebraic extension that is real.  Any attempt to
+algebraically extend a maximum real field would result in a non-real
+field.  The prototypical example of a maximal real field is the
+intersection of the algebraic closure of ${\bf Q}$ with the real line;
+i.e, all purely real algebraic numbers.
+
+We establish some key properties of an {\it ordered maximal real
+field}, starting with the fact that all positive numbers are squares.
+% Intuitively, this is because all positive real numbers have real
+% roots, but we do not specialize to the real line, instead proofing the
+% result for real fields in general.
+
+Considering a positive element $p$ that is not a square, we construct
+an algebraic extension $x^2-p$ which must produce an extension field
+that where -1 can be expressed as a sum of squares, because the
+original field was maximal real.  Furthermore, each element in the
+extension field has the form $a + b \gamma$, where $\gamma$ solves
+$x^2-p$ and $a$ and $b$ are in the original field.  So, we can write:
+
+$$-1 = \sum_1^n (a_i + b_i \gamma)^2 = \sum_1^n (a_i^2 + 2 a_i b_i \gamma + b_i^2 p)$$
+
+The $\gamma$ term must vanish, since -1 is in the original field, so
+
+$$-1 = \sum_1^n a_i^2 + \sum_1^n b_i^2 p$$
+
+This immediately implies that $p$ can not be expressed as a sum of
+squares in the original field, because otherwise $-1$ could be.
+Solving for $p$ we find that
+
+$$p = \frac{-1 - \sum a_i^2}{\sum b_i^2}$$
+
+Since squares are always positive, the expression on the right is
+strictly negative, contradicting the assumption that $p$ is positive,
+and proving the claim.
+
+Every element is either a square, or the negative of a square, and
+these cases are exclusive.  Thus, a maximal real field can be ordered
+in only one way.  This also establishes that any sum of squares, being
+positive, is a square and that adjoining $i$ creates a field where
+square roots exist and thus every quadratic equation is solvable using
+the quadratic formula.
+
+Next, we want to establish that, in a maximal real field, all
+polynomials of odd degree have at least one root.  We can proceed by
+induction, as this is obviously true for linear polynomials, so
+assuming that the theorem is satisfied for all polynomials of lower
+degree, we can see that the polynomial must be irreducible, otherwise
+we could factor it and apply induction to the factor of odd degree.
+
+By adjoining a root $\alpha$ of the $n$ degree polynomial $f(x)$ we
+get a non-real field:
+
+$$-1 = \sum \phi_i(\alpha)^2 = \sum \phi_i(x)^2 + f(x) g(x)$$
+
+All of the polynomials $\phi_i(x)^2$ have even degree, and the highest
+degree terms can not cancel, since their coefficients are squares and
+thus positive.  Thus, the sum has even degree of at most $2(n-1)$ and
+$f(x)$ has odd degree $n$, so $g(x)$ must have odd degree of at most
+$n-2$.  Induction implies that $g(x)$ must have a root $\beta$, so
+
+$$\sum \phi_i(\beta)^2 = -1 - f(\beta) g(\beta) = -1$$
+
+Yet $\beta$, and thus $\sum \phi_i(\beta)^2$, lies in the original
+field, so this expression contradicts the claim that the original
+field was real.
+
+% $$(a_0 + a_1 \gamma + a_2 \gamma^2)^2 = a_0^2 + 2a_0 a_1 \gamma
+% + (a_1^2 + 2a_0 a_2) \gamma^2 + 2a_1a_2\gamma^3 + a_2^2\gamma^4 $$
+% $$= a_0^2 + 2a_0 a_1 \gamma
+% + (a_1^2 + 2a_0 a_2) \gamma^2
+% + 2a_1a_2(b_0 + b_1 \gamma + b_2\gamma^2)
+% + a_2^2[b_0b_2 + (b_0 + b_1 b_2)\gamma + (b_1 + b_2^2)\gamma^2]
+% $$
+% $$= (a_0^2 + 2a_1a_2b_0 + a_2^2b_0b_2)
+% + (2a_0 a_1 +2a_1a_2b_1 + a_2^2b_0 + a_2^2b_1b_2) \gamma
+% + (a_1^2 + 2a_0 a_2
+% + 2a_1a_2b_2
+% + a_2^2b_1 + a_2^2b_2^2)\gamma^2
+% $$
+
+\theorem
+Any field ${\cal F}$ where quadratic equations can always be solved
+and polynomials of odd degree have at least one root is algebraically
+closed.
+
+\proof
+Our main concern is polynomials of even degree.  Consider a splitting
+field where all of the polynomial's roots $\alpha_i$ exist, construct
+the $n(n-1)/2$ values $r_{ij} = \alpha_i + \alpha_j +
+c \alpha_i \alpha_j$, where $c$ has been selected to make all of these
+values distinct, and then form the polynomial $\Lambda(x) = \prod (x-r_{ij})$,
+which exists in ${\cal F}[x]$ since it's symmetric.  Note that this
+polynomial's degree, while larger, has one less power of two than the
+original.  We repeat this procedure until we get a polynomial of odd
+degree in ${\cal F}[x]$, which has at least one root in ${\cal F}$,
+say $r_{ij}$.  If neither $\alpha_i + \alpha_j$ nor
+$\alpha_i \alpha_j$ existed in the field, then by the Primitive
+Element Theorem we could extend by $r_{ij}$, so at least one of these
+two terms must exist in the field, and then the other can be
+constructed.  Finally, we use the quadratic equation to construct
+$\alpha_i$ and $\alpha_j$, and repeat this until we've got roots of
+the original polynomial.
+
+NEED SYMMETRIC POLYNOMIALS AND THEOREM OF PRIMITIVE ELEMENT
+
+\endtheorem
+
+There is only one way to extend an ordered integral domain into an
+ordered quotient field.
+
+Next, we introduce real numbers individually as Cauchy sequences and
+collectively as an extension field, ordered by showing that the
+trailing terms in such a sequence must either converge to zero or
+become uniformly positive or negative, establishing O1.  A little more
+work is then needed to show that O2 and O3 hold, and that the
+Archemedian property carries through.
+
+Next, we show that square roots always exist, as Cauchy sequences, for
+all positive numbers.  This requires constructing a sequence of larger
+and larger numbers, each of which we square, invert, multiply by 2,
+and use A1 to demand an even larger element of {\bf Q}.  Fill in the
+details.  Might need Archmedian property for this.
+
+Next, construct ${\bf C}$ by extending algebraically to adjoin $i$,
+and use the prior result to demonstrate that square roots exist for
+all numbers in ${\bf C}$.  Then introduce the modulus of a complex
+number and establish that $|1+\gamma|\le 1+|\gamma|$.
+
+\end{comment}
 
 \mysection{Polynomial factorization (optional)}
 
