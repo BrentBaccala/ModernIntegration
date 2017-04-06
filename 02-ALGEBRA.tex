@@ -30,7 +30,10 @@ back to two or three texts; maybe Lang, van der Waerden,
 and an introductory undergraduate text of some kind.}
 
 \mysection{Rings and Fields}
+
 \qquad [van der Waerden], \S3.1
+\\
+\qquad [Go14], \S1.11
 
 We begin with two key definitions that we will use throughout: the
 {\it ring} and the {\it field}.
@@ -60,6 +63,7 @@ Both concepts are associated with sets of axioms.  Any algebraic
 system that obeys the ring axioms is called a ring; any algebraic
 system that obeys the field axioms is called a field.
 
+\begin{comment}
 I'm going to use basic set-theoretic notation to define the axioms.
 Read $\forall$ as ``for all'' and $\exists$ as ``there exists''.  Each
 symbol is immediately followed by the new variable or a list of new
@@ -74,6 +78,7 @@ Sometimes I'll add the set inclusion symbol $\in$, read ``in'', such
 as ``$\forall a,b,c \in {\cal R}$...'', reading ``for all a, b, and c
 that are members of ${\cal R}$...'', but I'll omit this from these
 tables for simplicity, since everything is a member of ${\cal R}$.
+\end{comment}
 
 \begin{figure}
 \label{ring axioms}
@@ -99,19 +104,19 @@ tables for simplicity, since everything is a member of ${\cal R}$.
 A {\it ring} ${\cal R}$ obeys the axioms
 in figure \ref{ring axioms}.
 
-You notice the commutative law of multiplication at the end as (CR1),
-along with the existance of a unity element 1, labeled (RwU1).  A
-substantial theory has been developed around {\it non-commutative}
-rings, probably because matrix multiplication (a critically important
-example) is non-commutative.  Most of our rings are commutative ring,
-or {\it abelian} (the terms are synonymous).  Also, I require the
-existence of a multiplicative identity.  Much of ring theory can be
-developed without this axion, but some theorems require it, and I
-don't want to belabor the point, since all of our rings will have a
-unity element.  Therefore, I will omit any additional terminology,
-adopt the CR1 and RwU1 axioms along with ring axioms R1-R6 to obtain a
-{\it commutative ring with unity}, and call it informally a ``ring''
-for the rest of the book.
+Notice the commutative law of multiplication (CR1), along with the
+existance of a multiplicative identity (RwU1).  A substantial theory
+has been developed around {\it non-commutative} rings, probably
+because matrix multiplication (a critically important example) is
+non-commutative.  Most of our rings are commutative ring, or {\it
+abelian} (the terms are synonymous).  Also, I require the existence of
+a multiplicative identity.  Much of ring theory can be developed
+without this axion, but some theorems require it, and I don't want to
+belabor the point, since all of our rings will have a unity element.
+Therefore, I will omit any additional terminology, adopt the (CR1) and
+(RwU1) axioms along with ring axioms (R1) through (R6) to obtain a
+{\it commutative ring with unity}, and call it a ring for the rest of
+the book.
 
 \begin{figure}
 \label{field axioms}
@@ -132,7 +137,7 @@ All ring axioms, plus:
 A {\it field} ${\cal F}$ obeys all the ring axioms (thus all fields are also
 rings), as well as one additional axiom (Figure \ref{field axioms}).
 
-In plain English, rings are mathematical systems in which addition and
+Informally, rings are mathematical systems in which addition and
 multiplication are cleanly defined.  Subtraction is also defined due
 to (R6), the invertibility of addition, which allows a subtraction
 problem to be turned into an addition problem.  Division, however, is
@@ -189,19 +194,21 @@ there is no integer that when multiplied by 2 forms 1.
 (F1) is not satisfied.
 Thus {\bf Z} forms a ring but not a field.
 
-\mysection{Quotient fields}
+\mysection{Fraction fields}
 \subsection*{\qquad The field ${\bf Q}$}
 \qquad [van der Waerden], \S3.3
+\\
+\qquad [Go14], \S6.4
 
 We can remedy our inability to divide using only integers
 by moving on the {\it rational numbers},
 traditionally denoted {\bf Q} (probably for {\it quotient}).  This is the
-simplest example of a {\it quotient field}, in this case formed over
+simplest example of a {\it fraction field}, in this case formed over
 the integers, {\bf Z}.  It is also our first example of a theme
 we'll use repeatedly in this book, that of using a simple
 algebraic system to construct a more complex one.
 
-To form a quotient field from a ring, we take pairs of elements from
+To form a fraction field from a ring, we take pairs of elements from
 the ring (conventionally arranged into fractions) and establish an
 {\it equivalence relationship} between them.  We also require that the
 second element in the pair (the denominator) can not be zero.  Two
@@ -277,7 +284,7 @@ zero theorem, no such element $b$ can exist in the base ring so that
 $1b=0$.  Excluding zero as a possible denominator ensures that our
 field axioms are satisfied.
 
-Yet in the quotient
+Yet in the fraction
 field operations, where we multiply two denominators together to get
 the result's denominator, what would happen if two non-zero elements can be
 multiplied to form zero, producing a zero denominator?  Nothing
@@ -305,12 +312,12 @@ All ring axioms, plus:
 \caption{Integral domain axioms}
 \end{figure}
 
-The quotient field construction is only defined on integral domains,
+The fraction field construction is only defined on integral domains,
 and I'll leave it as an exercise to show that ${\bf Z}$ is an integral
 domain.  The main point of this section is to recognize that the
-quotient field construction can be performed not only on the integers
+fraction field construction can be performed not only on the integers
 ${\bf Z}$ to obtain the rationals ${\bf Q}$, but on any integral
-domain to obtain its quotient field.
+domain to obtain its fraction field.
 
 
 \mysection{Polynomial rings and rational function fields}
@@ -330,7 +337,7 @@ the ring of polynomials in $x$ with coefficients from the field ${\cal
 F}$.
 
 ${\cal F}[x]$ is a ring but not a field.  It is, however, an
-integral domain (left as an exercise), so we can form a quotient field
+integral domain (left as an exercise), so we can form a fraction field
 from it, which we write using parenthesis instead of brackets: ${\cal
 F}(x)$.  Elements in ${\cal F}(x)$ are fractions, both the numerator
 and denominator of which are polynomials in $x$.  So, for example,
@@ -357,7 +364,7 @@ independent variable equal to some constant value.
 So, you ask, ``what about $1\over2$ and $2\over4$?  Are they distinct
 elements as well?''  {\it No}.  This time we are dealing with elements
 that are basically the same. This is where the technical details of
-the quotient field construction become significant.  Strictly
+the fraction field construction become significant.  Strictly
 speaking, we are not working with elements like $1\over2$ at all.  We
 are working with the {\it equivalence classes} defined above.
 $1\over2$ is a {\it representative} of an equivalance class that
@@ -851,10 +858,10 @@ domain that is not a field.  A factorization in ${\bf Q}(x)[y]$ or
 ${\bf Q}(y)[x]$ (both of the form ${\cal F}[x]$) is superficially so
 similar to a factorization in ${\bf Q}[x,y]$ ({\it not} of the form
 ${\cal F}[x]$), that the distinction should be noted.  In both of the
-first two cases, we form a quotient field with respect to one of the
+first two cases, we form a fraction field with respect to one of the
 two variables and thus obtain a polynomial ring (in the other
-variable) over the quotient field.  In the case of ${\bf Q}[x,y]$ we
-do not form a quotient field with respect to either variable; thus we
+variable) over the fraction field.  In the case of ${\bf Q}[x,y]$ we
+do not form a fraction field with respect to either variable; thus we
 have a polynomial ring over not a field, but over another polynomial ring.
 
 Now a polynomial ring over a unique factorization domain ${\cal U}[x]$
@@ -876,7 +883,7 @@ contents to obtain a GCD in ${\cal U}[x]$.  A LITTLE UNCLEAR.
 
 We will have little use for ${\cal U}[x]$ factorizations in this book,
 since invariably we will calculate GCDs with respect to one variable,
-and form quotient fields from any others, and thus always be working
+and form fraction fields from any others, and thus always be working
 in ${\cal F}[x]$ systems.  I mention this mainly to avoid confusion
 between factoring in ${\cal F}[x,y]$ and ${\cal F}(x)[y]$, and have
 thus omitted the proofs of Gauss' method; see the references for
@@ -1174,7 +1181,7 @@ kill(a,b,c,s,t)$
 
 As a first application of polynomial Diophantine equations, we use
 them to construct partial fractions expansions.  Consider an element
-$a$ from a polynomial quotient field ${\cal F}(x)$.  We can write
+$a$ from a polynomial fraction field ${\cal F}(x)$.  We can write
 $a={n\over d}$ where $n,d\in{\cal F}[x]$.  If we are now given a
 factorization of $d=d_1^{e_1} d_2^{e_2} \cdots d_k^{e_k}$, where
 $d_i\in {\cal F}[x]$ and $\gcd_{{\cal F}[x]}(d_i,d_j)=1$ if $i\ne j$,
@@ -1452,7 +1459,7 @@ A {\it simple} extension of a field ${\cal F}$ is formed by adjoining
 a single new element $\theta$ to the field, and then forming all
 possible sums, differences, multiples, and quotients to form a new
 field.  Any such simple extension will be isomorphic to either the
-quotient field ${\cal F}(\theta)$ (if $\theta$ is transcendental) or
+fraction field ${\cal F}(\theta)$ (if $\theta$ is transcendental) or
 an algebraic extension ${\cal F}[\theta]$ (if $\theta$ is algebraic).
 
 \mysection{Finite Fields}
@@ -1509,7 +1516,7 @@ Determinants; trace.
 \mysection{Algebraic Extensions}
 \subsection*{\qquad The field ${\cal F}[x]$ mod $n(x)$}
 
-Both our quotient field and polynomial ring constructions are examples
+Both our fraction field and polynomial ring constructions are examples
 of {\it extensions}.  Simply put, when we use an algebraic system to
 construct a new algebraic system that includes the original system as
 a subset, then the new system is an {\it extension} of the
@@ -1528,7 +1535,7 @@ field, say ${\cal F}[x]$.  Our equivalence classes are all elements in
 ${\cal F}[x]$ whose differences are multiples of some distinguished
 irreducible polynomial in ${\cal F}[x]$, called the {\it minimal
 polynomial} of the field.  And I do say {\it field}, because we don't
-need to use the quotient field construction with an algebraic
+need to use the fraction field construction with an algebraic
 extension; the ring is already a field.
 
 Polynomial long division (section \ref{sec:Long Division})
@@ -1584,7 +1591,7 @@ modulo(x^3+y, y-x, x);
 
 
 \begin{comment}
-Again, like with the quotient field, I tend to be a bit loose with the
+Again, like with the fraction field, I tend to be a bit loose with the
 notation.  Something like the Gaussian integers, which I wrote as
 ${\bf Z}[i]; i^2=-1$, really should be expressed as equivalence
 classes modulo the polynomial $i^2+1$, i.e.  ${\bf Z}[i]/(i^2+1)$.
