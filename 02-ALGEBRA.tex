@@ -21,13 +21,9 @@ theory.
 In this chapter I will outline the basic algebraic structures
 necessary to carry out the program sketched out in the previous
 chapter.  This material is included mainly to provide a starting point
-for the rest of the book. The pace of this chapter is
-deliberately quick; I omit a lot of the more basic proofs and doubt
-that this will substitute for a good introductory text on higher
-algebra.\footnote{Need a good reference to such a text here.
-I want to footnote all the missing proofs with references
-back to two or three texts; maybe Lang, van der Waerden,
-and an introductory undergraduate text of some kind.}
+for the rest of the book.  Where I have omitted proofs, I have tried
+to provide references to [Go14], which is a good introductory algebra
+textbook that is freely available on-line.
 
 \mysection{Rings and Fields}
 
@@ -373,8 +369,17 @@ that are basically the same. This is where the technical details of
 the fraction field construction become significant.  Strictly
 speaking, we are not working with elements like $1\over2$ at all.  We
 are working with the {\it equivalence classes} defined above.
-$1\over2$ is a {\it representative} of an equivalance class that
+$1\over2$ is a {\it representative} of an equivalence class that
 includes $2\over4$.
+
+It's convenient to select one unique representative of each
+equivalence class.  In the case of fraction fields, we'll use the
+fraction with no common factors between the numerator and the
+denominator, i.e, $\frac{1}{2}$ instead of $\frac{2}{4}$ and
+$\frac{1}{x}$ instead of $\frac{x}{x^2}$.  To reduce any given
+fraction to its canonical form, we need to compute the greatest common
+divisor of the numerator and denominator, and divide it out.
+The simplest way to do this involves long division.
 
 \begin{comment}
 
@@ -486,40 +491,61 @@ primes to emphasize that we are no longer dealing with the original
 dividend and divisor.  Since common divisors have been preserved
 throughout by $D'$ and $d'$, it follows that $d'$, the divisor of the
 last step, must be a common divisor.  It is, in fact, a greatest
-common divisor, if GCDs exist in this ring.  This has been known since
-the time of Euclid, at least in the case of integers.
+common divisor ([Go14] Theorem 1.8.16).  This has been known since the
+time of Euclid, at least in the case of integers.
 
-I did say ``if'' GCDs exist, because nothing in our ring axioms
-guarantee their existance.  The problem is that there might be a
-lattice of divisors for a given element, instead of a strict ordering
-of them.  However...
+Nothing in our ring axioms guarantees the existance of GCDs.  The
+problem is that there might be a lattice of divisors for a given
+element, instead of a strict ordering of them.  However, GCDs exist in
+any integral domain in which the procedure described in the last
+paragraph can be carried out ([Go14] Theorem 6.5.8 and Lemma 6.6.2).
 
-\theorem
+\begin{key point}
+A {\it GCD domain} is an integral domain in which
+any two elements have a greatest common divisor.
+\end{key point}
 
-GCDs exist in unique factorization domains.
+There is more than one GCD.  Any divisor can be transformed into
+another divisor by multiplying it by a unit, since if $uu'=1$, then
+$ab=(ua)(u'b)$ for any $a$ and $b$ whatsoever.  In particular, a
+greatest common divisor can be transformed into another greatest
+common divisor by multiplying it by a unit.
 
-\proof
+\begin{comment}
+I leave without proof the
+claims that in ${\cal F}[x]$, the units are all elements in ${\cal
+F}$, and that all GCDs differ from each other by a unit multiple.
+\end{comment}
 
-U1 also implies the existence of GCDs.  Consider an element $x$ with
-two different factors, say $a$ and $c$, so $x=ab$ and $x=cd$.  U1
-immediately implies that either $a$ is a factor of $c$, if $aa'=c$,
-or that $c$ is a factor of $a$, if $aa'=d$ and $x=caa'=ab$ and $ca'=b$.
-FIX THIS.
+\vfill\eject
 
-\endtheorem
+\example
 
-I did say a greatest common divisor, not the greatest common divisor,
-because there can be more than one.\footnote{Actually, I haven't even
-proved that GCDs exist at all, and in some algebraic systems, they
-don't!}  A {\it unit} is an invertable element.  Put another way, $u$
-is a unit if there exists $u'$ such that $uu'=1$.  Now, any divisor
-can be transformed into another divisor by multiplying it by a unit,
-since if $uu'=1$, then $ab=(ua)(u'b)$ for any $a$ and $b$ whatsoever.
-In particular, a greatest common divisor can be transformed into
-another greatest common divisor by multiplying it by a unit.  I leave
-without proof the claims that in ${\cal F}[x]$, the units are all
-elements in ${\cal F}$, and that all GCDs differ from each other by a
-unit multiple.
+Compute a GCD of $4x^4+13x^3+15x^2+7x+1$ and $2x^3+x^2-4x-3$ in ${\bf Q}[x]$.
+
+\bigskip
+\input{02-ALGEBRA-EXAMPLE1.inc}
+
+The divisor of the last step, in this case
+${35\over2}x^2+35x+{35\over2}$, is a GCD, and multiplying it by any unit
+will produce a different GCD.  In the case of a polynomial ring over a
+field, the units are the elements of the underlying field, so we can
+multiply by anything in {\bf Q} (i.e, any rational number) and get
+another GCD.  For this example, the obvious thing to multiply by is
+$2\over35$, which both clears the denominators and divides out the
+common factor in the numerators to produce $x^2+2x+1$.  Both answers
+are acceptable.
+
+The Maxima function {\tt gcd} compute GCDs.
+
+\begin{maximablock}
+gcd(4*x^4 + 13*x^3 + 15*x^2 + 7*x + 1,
+    2*x^3 + x^2 - 4*x - 3);
+\end{maximablock}
+
+\endexample
+
+\vfill\eject
 
 A few words are in order here about GCDs in systems of the form ${\cal
 U}[x]$, i.e, where the coefficients come from a unique factorization
@@ -557,32 +583,6 @@ in ${\cal F}[x]$ systems.  I mention this mainly to avoid confusion
 between factoring in ${\cal F}[x,y]$ and ${\cal F}(x)[y]$, and have
 thus omitted the proofs of Gauss' method; see the references for
 details.
-
-\vfill\eject
-
-\example
-
-Compute a GCD of $4x^4+13x^3+15x^2+7x+1$ and $2x^3+x^2-4x-3$ in ${\bf Q}[x]$.
-
-\bigskip
-\input{02-ALGEBRA-EXAMPLE1.inc}
-
-The divisor of the last step, in this case ${35\over2}x^2+35x+{35\over2}$,
-is the GCD, or I should say a GCD, since multiplying by any unit
-will produce a different GCD.  In the case of a polynomial ring over
-a field, the units are the elements of the underlying field,
-so we can multiply by anything in {\bf Q} (i.e, any rational number)
-and get another GCD.  For this example, the obvious thing to multiply
-by is $2\over35$, which both clears the denominators and divides out
-the common factor in the numerators to produce $x^2+2x+1$.  Both
-answers are acceptable.
-
-\begin{maximablock}
-gcd(4*x^4 + 13*x^3 + 15*x^2 + 7*x + 1,
-    2*x^3 + x^2 - 4*x - 3);
-\end{maximablock}
-
-\endexample
 
 \vfill\eject
 
@@ -986,19 +986,21 @@ partfrac((x^2 + 3*x + 2)/(x^3 - 3*x^2 + 4), x);
 \mysection{Resultants}
 \qquad [van der Waerden], \S5.8; [Lang], \S IV.8
 
-At times, we will want a simple way of testing two polynomials over a
-field to see if they have a GCD, without actually computing it.  This
+At times, we will want a simple way of testing two polynomials in ${\cal F}[x]$
+to see if they have a GCD, without actually computing it.  This
 is more than just a computational convenience.  The presence of the
 polynomial's variable in the GCD often encumbers us.  On the other
 hand, the {\it resultant} yields a simple element from the underlying
 field that is zero if the polynomials have a non-trivial GCD and
-non-zero otherwise.
+non-zero otherwise.  The GCD exists in ${\cal F}[x]$, while
+the resultant is in ${\cal F}$.
 
 For example, the polynomials $t x+x+t+1$ and $ty + y$ share $t+1$
 as a GCD, so their $t$-resultant is 0.  MORE HERE - why a t-resultant,
 not an x-resultant?
 
-The resultant is defined as the determinant of the Sylvester matrix
+The resultant is defined\footnote{There are other equivalent ways of
+defining the resultant.} as the determinant of the Sylvester matrix
 $S_x(P,Q)$, which is the $m+n \times m+n$ matrix constructed from two
 polynomials (in ${\cal F}[x]$) $P$ and $Q$ of degrees $m$ and $n$ (all
 the blanks are zeros):
@@ -1038,7 +1040,8 @@ $$ \begin{pmatrix}x^{n+m-1}\cr x^{n+m-2}\cr \vdots \cr x \cr 1\end{pmatrix}
 Since the matrix is formed exclusively from the polynomials'
 underlying field ${\cal F}$, its inverse must also be formed from
 ${\cal F}$.  Now consider the bottom element in the last equation.  It
-must have the following form:
+must have the following form (the $f_i$'s are the bottom row of
+$S_x(P,Q)^{-1}$):
 
 $$ 1 = f_0 P x^{m-1} + f_1 P x^{m-2} + \ldots + f_{n+m-1} Q x + f_{n+m} Q \qquad f_i \in {\cal F}$$
 $$ 1 = A P + B Q \qquad A,B \in {\cal F}[x] $$
@@ -1098,7 +1101,7 @@ sylvester(t**2 - 1 - x, t**3 - t - y, t);
 ratsimp(determinant(%));
 \end{maximablock}
 
-More succinctly, we can use the Maxima function {\tt resultant}:
+More succinctly, we can use the built-in Maxima function {\tt resultant}:
 
 \begin{maximablock}
 resultant(t**2 - 1 - x, t**3 - t - y, t);
@@ -1645,36 +1648,6 @@ number and establish that $|1+\gamma|\le 1+|\gamma|$.
 
 \end{comment}
 
-\mysection{Polynomial factorization (optional)}
-
-Let's conclude this chapter by taking a least a brief look at fully
-factoring a polynomial into its irreducible factors.  There are
-several reasons to do this.
-
-First of all, it's easy to declare that ``the Fundamental Theorem of
-Algebra tells us that any polynomial in {\bf C}[x] can be factored
-into linear factors'', and maybe even prove it.  That's true, but when it comes
-time to actually do a computation, how do we proceed?  How do we
-actually factor a polynomial?  Call it the price of success.
-Differential algebra is solid enough to actually compute integrals, so
-existance theorems don't cut it.  We need constructive algorithms.
-
-Second, it's a surprisingly difficult problem.  An appreciation of its
-difficulty now will motivate the discussion later when I show various
-techniques that have been developed to avoid full factorization
-whenever possible.  Yet the fact remains that it is at times
-unavoidable.
-
-Finally, both techniques that I will discuss here work according to a
-basic principle that we'll use again later in a more advanced context,
-so it makes sense to present it now in a simpler form.  Specifically,
-we'll solve a difficult problem in an algebraic system by using a
-homomorphism to map into a different algebraic system where we can
-solve the problem more easily, then find some way of ``lifting'' this
-answer back into the original system.  This is one of the most
-powerful solution methods in algebra, and has been used to solve
-problems once thought impossible.
-
 \subsection*{\qquad Square-free factorization}
 
 \hbox{}\qquad [Ge92], \S 8.2
@@ -1725,9 +1698,38 @@ repeating the process until we have obtained all the square-free
 factors.
 
 
+\subsection*{Full polynomial factorization (optional)}
 
 \qquad [van der Waerden], \S5.6
 \hbox{}\qquad [Ge92], Chs. 5, 6, 8
+
+Let's conclude this chapter by taking a least a brief look at fully
+factoring a polynomial into its irreducible factors.  There are
+several reasons to do this.
+
+First of all, it's easy to declare that ``the Fundamental Theorem of
+Algebra tells us that any polynomial in {\bf C}[x] can be factored
+into linear factors'', and maybe even prove it.  That's true, but when it comes
+time to actually do a computation, how do we proceed?  How do we
+actually factor a polynomial?  Call it the price of success.
+Differential algebra is solid enough to actually compute integrals, so
+existance theorems don't cut it.  We need constructive algorithms.
+
+Second, it's a surprisingly difficult problem.  An appreciation of its
+difficulty now will motivate the discussion later when I show various
+techniques that have been developed to avoid full factorization
+whenever possible.  Yet the fact remains that it is at times
+unavoidable.
+
+Finally, both techniques that I will discuss here work according to a
+basic principle that we'll use again later in a more advanced context,
+so it makes sense to present it now in a simpler form.  Specifically,
+we'll solve a difficult problem in an algebraic system by using a
+homomorphism to map into a different algebraic system where we can
+solve the problem more easily, then find some way of ``lifting'' this
+answer back into the original system.  This is one of the most
+powerful solution methods in algebra, and has been used to solve
+problems once thought impossible.
 
 Let's start simple.  We want to factor a polynomial in ${\bf Z}[x]$,
 the ring of polynomials with integer coefficients.  If such a
