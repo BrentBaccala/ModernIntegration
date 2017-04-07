@@ -411,12 +411,30 @@ relate them to real world problems.
 \qquad [van der Waerden], \S3.4
 
 \begin{sympycode}
-from sympy.abc import x
+'''
+Python code to format a polynomial long division problem in TeX
+
+Usage: long_division(dividend, divisor, var [, domain])
+
+'domain' is domain of coefficients and defaults to QQ
+
+For multivariate problems, you need domain to be something
+like QQ(x) or QQ(y)
+
+We use TeX's \halign, and use two columns for each term: one for the
+plus or minus sign and one for the coefficient and monomial.
+
+'''
+
+from sympy.abc import x,y
 
 from sympy import degree
 from sympy import quo, rem
 from sympy import Poly
 from sympy import LT, LC
+
+' This routine formats a single polynomial into a partial table row '
+' For an n-th degree polynomial, we use 2n+1 columns                '
 
 def format_poly_textableformat(poly):
    result = ""
@@ -430,12 +448,19 @@ def format_poly_textableformat(poly):
          result += "&&"
       else:
 
-         if (power > 0) and coeff == 1:
+         if (power > 0) and (coeff == 1 or coeff == -1):
             coeff_str = ''
+         elif coeff.could_extract_minus_sign():
+            coeff_str = latex(-coeff)
          else:
-            coeff_str = latex(abs(coeff))
+            coeff_str = latex(coeff)
 
-         if i[1] < 0:
+         ''' if the coefficient is complicated, put parens around it, unless it's a fraction '''
+
+         if coeff_str.find('+') != -1 and not coeff_str.startswith('\\frac'):
+            coeff_str = "(" + coeff_str + ")"
+
+         if coeff.could_extract_minus_sign():
             result += "-&" + coeff_str
          elif power == poly.degree():
             result += "&" + coeff_str
@@ -445,15 +470,15 @@ def format_poly_textableformat(poly):
          if power == 0:
             result += "&"
          elif power == 1:
-            result += "x&"
+            result += " " + str(poly.gen) + "&"
          else:
-            result += "x^{" + str(power) + "}&"
+            result += " " + str(poly.gen) + "^{" + str(power) + "}&"
    return result[0:len(result)-1]
 
-def long_division(dividend, divisor):
+def long_division(dividend, divisor, var, domain='QQ'):
    use_parens = True
-   dividend = Poly(dividend, x)
-   divisor = Poly(divisor, x)
+   dividend = Poly(dividend, var, domain=domain)
+   divisor = Poly(divisor, var, domain=domain)
    quotient = dividend.div(divisor)[0]
 
    numcols = 2*(dividend.degree() + 1 + divisor.degree() + 1)
@@ -490,8 +515,9 @@ def long_division(dividend, divisor):
 
       " subtraction term "
 
-      sterm = expand(quo(LT(remainder.as_expr()), LT(divisor.as_expr())) * divisor.as_expr())
-      sterm = Poly(sterm, divisor.gen)
+      sterm = remainder.LC()/divisor.LC() * (remainder.LM()/divisor.LM()).as_expr()
+      sterm = expand(sterm * divisor.as_expr())
+      sterm = Poly(sterm, divisor.gen, domain=domain)
 
       if use_parens:
 
@@ -519,7 +545,7 @@ def long_division(dividend, divisor):
       " which determines if we should extend the line left into the sign     "
       " field (if it's negative) or not (if it's positive)                   "
 
-      if sterm.LC() < 0:
+      if sterm.could_extract_minus_sign():
         extend = 1
       else:
         extend = 0
@@ -549,7 +575,7 @@ context, let's consider a very simple calculation of this type:
 
 \input{02-ALGEBRA-EXAMPLE2.inc}
 
-\sympyc{long_division(x**2+2*x+1, 2*x+1)}
+\sympyc{long_division(x**2+2*x+1, 2*x+1, x)}
 
 Each step starts by dividing the leading terms, i.e, $x^2$ is divided
 by $2x$ to form $x\over 2$.  Actually, we can be a bit more precise.
@@ -668,9 +694,9 @@ a = 4*x**4 + 13*x**3 + 15*x**2 + 7*x + 1
 b = 2*x**3 + x**2 - 4*x - 3
 
 print('\\bigskip')
-long_division(a,b)
+long_division(a,b,x)
 print('\\bigskip')
-long_division(b, rem(a,b))
+long_division(b, rem(a,b), x)
 \end{sympycode}
 
 \bigskip
@@ -756,6 +782,13 @@ in ${\bf Q}(x)[y]$:
 
 \input{02-ALGEBRA-EXAMPLE5a.inc}
 
+\begin{sympycode}
+long_division(-y**2-x*y+(2*x**2), -5*y**2+(5*x+7)*y-(7*x), y, domain='QQ[x]')
+print("\\bigskip")
+long_division(-5*y**2+(5*x+7)*y-(7*x), -(2*x+7/5)*y+(2*x**2+7/5*x), y, domain='QQ(x)')
+\end{sympycode}
+
+
 This leads us to conclude that the last divisor,
 $-(2x+{7\over5})y+(2x^2+{7\over5}x)$ is a GCD in ${\bf Q}(x)[y]$.  Now
 we need to remove its content, which is the GCD of $-(2x+{7\over5})$
@@ -778,6 +811,8 @@ $$x-y {\rm\qquad and\qquad} 2x^2-yx-y^2$$
 and compute:
 
 \input{02-ALGEBRA-EXAMPLE5.inc}
+
+\sympyc{long_division(2*x**2-y*x-y**2, x-y, x, 'QQ(y)')}
 
 Thus, $x-y$ is the GCD of the primitive polynomials, and it has unit
 content $\gcd_y(1,-y)$.  The GCD of the original contents
@@ -867,6 +902,13 @@ $$s(4x^4+13x^3+15x^2+7x+1) + t(2x^3+x^2-4x-3) = x^3 + 5x^2 + 7x +3$$
 \input{02-ALGEBRA-EXAMPLE1.inc}
 
 %These are the same polynomials used for the first GCD example.
+
+\begin{sympycode}
+long_division(a,b,x)
+print('\\bigskip')
+long_division(b, rem(a,b), x)
+\end{sympycode}
+
 %Using the notation
 
 %\begin{eqnarray*}
@@ -893,6 +935,9 @@ x^2+2x+1 &=& {2\over35}a - {1\over35}(4x+11)b \cr
 %$x^2+2x+1$ is a GCD of $a$ and $b$, we now divide it into $c$:
 
 \input{02-ALGEBRA-EXAMPLE3.inc}
+
+\sympyc{long_division(x**3+5*x**2+7*x+3, x**2+2*x+1, x)}
+
 
 %The remainder is zero, so the problem has a solution.
 %We substitute our expansion for $x^2+2x+1$ above into $c=(x+3)(x^2+2x+1)$
@@ -1064,6 +1109,11 @@ Computing the GCD of $x^3-3x^2+4$ and $3x^2-6x$:
 
 \input{02-ALGEBRA-EXAMPLE4c.inc}
 
+\sympyc{long_division(x**3-3*x**2+4, 3*x**2-6*x, x)}
+\bigskip
+\sympyc{long-division(3*x**2-6*x, -2*x+4)}
+
+
 Thus, $-2x+4$ is a GCD, which we normalize by dividing through by -2
 to obtain $x-2$.  We could now proceed by dividing $x^3-3x^2+4$ by
 $x-2$ to obtain $x^2-x-2$ (all factors at unit power), compute the GCD
@@ -1086,6 +1136,8 @@ Compute the GCD of $a=(x-2)^2=x^2-4x+4$ and $b=x+1$:
 
 \input{02-ALGEBRA-EXAMPLE4.inc}
 
+\sympyc{long_division(x**2-4*x+4, x+1, x)}
+
 Since the remainder, 9, is a unit, $a$ and $b$ have no common
 factors and their GCD is 1.  Of course, this result is hardly
 surprising since $(x-2)$ and $(x+1)$
@@ -1101,6 +1153,8 @@ Our degree bounds aren't met yet, so we divide $b=x+1$ into $x^2+3x+2$:
 
 \input{02-ALGEBRA-EXAMPLE4a.inc}
 
+\sympyc{long_division(x**2+3*x+2, x+1, x)}
+
 The zero remainder means that the $a$ term drops away completely,
 and after subtracting $(x+2)a=x^3-2x^2-4x+8$ from the $b$ coefficient,
 we conclude that:
@@ -1114,6 +1168,8 @@ $${{x^2 + 3x + 2}\over{(x-2)^2(x+1)}} = {{(x+2)(x+1)}\over{(x-2)^2(x+1)}} = {{(x
 We need only divide $(x+2)$ by $(x-2)$:
 
 \input{02-ALGEBRA-EXAMPLE4b.inc}
+
+\sympyc{long_division(x+2, x-2, x)}
 
 % $$(x+2)=(x-2)+4$$
 
