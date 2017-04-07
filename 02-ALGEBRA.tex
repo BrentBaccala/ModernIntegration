@@ -410,11 +410,143 @@ relate them to real world problems.
 \mysection{Long Division}
 \qquad [van der Waerden], \S3.4
 
+\begin{sympycode}
+from sympy.abc import x
+
+from sympy import degree
+from sympy import quo, rem
+from sympy import Poly
+from sympy import LT, LC
+
+def format_poly_textableformat(poly):
+   result = ""
+   poly = Poly(poly,x)
+   if poly == 0:
+      return "&0"
+   for i in poly.all_terms():
+      power = i[0][0]
+      coeff = i[1]
+
+      if coeff == 0:
+         result += "&&"
+      else:
+
+         if (power > 0) and coeff == 1:
+            coeff_str = ''
+         else:
+            coeff_str = latex(abs(coeff))
+
+         if i[1] < 0:
+            result += "-&" + coeff_str
+         elif power == poly.degree():
+            result += "&" + coeff_str
+         else:
+            result += "+&" + coeff_str
+
+         if power == 0:
+            result += "&"
+         elif power == 1:
+            result += "x&"
+         else:
+            result += "x^{" + str(power) + "}&"
+   return result[0:len(result)-1]
+
+def long_division(dividend, divisor):
+   use_parens = True
+   quotient = quo(dividend, divisor)
+   numcols = 2*(degree(dividend,gen=x) + 1 + degree(divisor,gen=x) + 1)
+   print("\\vbox{\\offinterlineskip")
+   print("\\tabskip=0pt plus1fil")
+   print("\\halign to\\hsize{\\tabskip=0pt",end='')
+   for i in range(0,numcols+1):
+      print("\\hfil $#$",end='')
+      if (i < numcols): print(" & ",end='')
+   print("\\tabskip=0pt plus1fil\\cr")
+
+   ' quotient, indented '
+   ' remember, (twice the degree) plus two columns '
+
+   print("\\multispan{", numcols - (2*degree(quotient,gen=x) + 2), "}&", end='')
+   print(format_poly_textableformat(quotient))
+   print("\\vbox to16pt{}\\cr")
+
+   ' line under quotient '
+
+   print("\\multispan{", numcols - (2*degree(dividend,gen=x)+2), "}&", end='')
+   print("\\multispan{", 2*degree(dividend,gen=x)+2, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr")
+
+   ' divisor, vertical bar, dividend '
+
+   print(format_poly_textableformat(divisor), end='')
+   print("&\\vrule\\," + format_poly_textableformat(dividend) + "\\vbox to16pt{}\\cr")
+
+   ' series of divisions '
+
+   remainder = dividend
+
+   while (remainder != 0) and degree(remainder, gen=x) >= degree(divisor, gen=x):
+
+      " subtraction term "
+
+      sterm = expand(quo(LT(remainder), LT(divisor)) * divisor)
+
+      if use_parens:
+
+	 ''' Insane code.  We want to span up to the first text of the     '''
+	 ''' polynomial to put a leading "-(" in.  Need to span an extra   '''
+	 ''' column if the first column of the poly isn't really occupied  '''
+	 ''' by anything.  Also have to explicitly enter (by printing)     '''
+	 ''' and leave (by modifying poly) math mode.                      '''
+
+         multispan_cols = numcols - (2*degree(sterm,gen=x) + 2) + 1
+         polystr = format_poly_textableformat(sterm)
+         if polystr.startswith('&'):
+            polystr = polystr[1:len(polystr)]
+            multispan_cols += 1
+         polystr = polystr.replace('&', '$&', 1)
+         print("\\multispan{", multispan_cols, "}", end='')
+         print("\\hfil $-(" + polystr + "\\vbox to16pt{}&)\\cr")
+      else:
+         print("\\multispan{", numcols - (2*degree(sterm,gen=x) + 2), "}&", end='')
+         print(format_poly_textableformat(sterm))
+         print("\\vbox to16pt{}\\cr", end='')
+
+      " the line - there are two cases here depending on whether the leading "
+      " term of the polynomial right above use is positive or negative,      "
+      " which determines if we should extend the line left into the sign     "
+      " field (if it's negative) or not (if it's positive)                   "
+
+      if LC(sterm) < 0:
+        extend = 1
+      else:
+        extend = 0
+
+      print("\\multispan{", numcols - (2*degree(sterm,gen=x)+2)+1-extend, "}&", end='');
+      print("\\multispan{", (2*degree(sterm,gen=x)+2)-1+extend, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr")
+
+      " compute and print the new remainder "
+
+      remainder = expand(remainder - sterm)
+
+      if remainder != 0:
+         print("\\multispan{", numcols - (2*degree(remainder,gen=x)+2), "}&", end='')
+         print(format_poly_textableformat(remainder))
+         print("&\\vbox to16pt{}\\cr")
+      else:
+         print("\\multispan{", numcols - 2, "}&", end='')
+         print(format_poly_textableformat(remainder))
+         print("&\\vbox to16pt{}\\cr")
+
+   print("}}")
+\end{sympycode}
+
 As we all learned in grade school, polynomials can be divided
 using long division.  To generalize this in our more abstract
 context, let's consider a very simple calculation of this type:
 
 \input{02-ALGEBRA-EXAMPLE2.inc}
+
+% \sympyc{long_division(x**2+2*x+1, 2*x+1)}
 
 Each step starts by dividing the leading terms, i.e, $x^2$ is divided
 by $2x$ to form $x\over 2$.  Actually, we can be a bit more precise.
@@ -525,6 +657,20 @@ Compute a GCD of $4x^4+13x^3+15x^2+7x+1$ and $2x^3+x^2-4x-3$ in ${\bf Q}[x]$.
 
 \bigskip
 \input{02-ALGEBRA-EXAMPLE1.inc}
+
+\bigskip
+
+\begin{sympycode}
+a = 4*x**4 + 13*x**3 + 15*x**2 + 7*x + 1
+b = 2*x**3 + x**2 - 4*x - 3
+
+print('\\bigskip')
+long_division(a,b)
+print('\\bigskip')
+long_division(b, rem(a,b))
+\end{sympycode}
+
+\bigskip
 
 The divisor of the last step, in this case
 ${35\over2}x^2+35x+{35\over2}$, is a GCD, and multiplying it by any unit
