@@ -573,8 +573,6 @@ As we all learned in grade school, polynomials can be divided
 using long division.  To generalize this in our more abstract
 context, let's consider a very simple calculation of this type:
 
-\input{02-ALGEBRA-EXAMPLE2.inc}
-
 \sympyc{long_division(x**2+2*x+1, 2*x+1, x)}
 
 Each step starts by dividing the leading terms, i.e, $x^2$ is divided
@@ -685,15 +683,11 @@ F}$, and that all GCDs differ from each other by a unit multiple.
 Compute a GCD of $4x^4+13x^3+15x^2+7x+1$ and $2x^3+x^2-4x-3$ in ${\bf Q}[x]$.
 
 \bigskip
-\input{02-ALGEBRA-EXAMPLE1.inc}
-
-\bigskip
 
 \begin{sympycode}
 a = 4*x**4 + 13*x**3 + 15*x**2 + 7*x + 1
 b = 2*x**3 + x**2 - 4*x - 3
 
-print('\\bigskip')
 long_division(a,b,x)
 print('\\bigskip')
 long_division(b, rem(a,b), x)
@@ -780,8 +774,6 @@ and the GCD of $-1$, $-x$, and $2x^2$ is also 1, so both polynomials
 are already primitive and we can just proceed with the GCD calculation
 in ${\bf Q}(x)[y]$:
 
-\input{02-ALGEBRA-EXAMPLE5a.inc}
-
 \begin{sympycode}
 long_division(-y**2-x*y+(2*x**2), -5*y**2+(5*x+7)*y-(7*x), y, domain='QQ[x]')
 print("\\bigskip")
@@ -809,8 +801,6 @@ Dividing this out, we obtain:
 $$x-y {\rm\qquad and\qquad} 2x^2-yx-y^2$$
 
 and compute:
-
-\input{02-ALGEBRA-EXAMPLE5.inc}
 
 \sympyc{long_division(2*x**2-y*x-y**2, x-y, x, 'QQ(y)')}
 
@@ -898,11 +888,9 @@ $$s(4x^4+13x^3+15x^2+7x+1) + t(2x^3+x^2-4x-3) = x^3 + 5x^2 + 7x +3$$
 
 \quad for $s,t \in {\bf Q}[x]$ satisfying minimal degree bounds.
 
-\bigskip
-\input{02-ALGEBRA-EXAMPLE1.inc}
-
 %These are the same polynomials used for the first GCD example.
 
+\bigskip
 \begin{sympycode}
 long_division(a,b,x)
 print('\\bigskip')
@@ -933,8 +921,6 @@ x^2+2x+1 &=& {2\over35}a - {1\over35}(4x+11)b \cr
 
 %Having concluded at the last step in the GCD calculation that
 %$x^2+2x+1$ is a GCD of $a$ and $b$, we now divide it into $c$:
-
-\input{02-ALGEBRA-EXAMPLE3.inc}
 
 \sympyc{long_division(x**3+5*x**2+7*x+3, x**2+2*x+1, x)}
 
@@ -1107,8 +1093,6 @@ leading directly to a factorization:
 Differentiating to obtain $3x^2-6x$.
 Computing the GCD of $x^3-3x^2+4$ and $3x^2-6x$:
 
-\input{02-ALGEBRA-EXAMPLE4c.inc}
-
 \sympyc{long_division(x**3-3*x**2+4, 3*x**2-6*x, x)}
 \bigskip
 \sympyc{long-division(3*x**2-6*x, -2*x+4)}
@@ -1134,8 +1118,6 @@ $$x^2 + 3x + 2 = s(x-2)^2 + t(x+1) = sa+tb$$
 
 Compute the GCD of $a=(x-2)^2=x^2-4x+4$ and $b=x+1$:
 
-\input{02-ALGEBRA-EXAMPLE4.inc}
-
 \sympyc{long_division(x**2-4*x+4, x+1, x)}
 
 Since the remainder, 9, is a unit, $a$ and $b$ have no common
@@ -1151,8 +1133,6 @@ $$x^2 + 3x + 2 = {1\over9}(x^2+3x+2)a-{1\over9}(x^3-2x^2-13x-10)b$$
 
 Our degree bounds aren't met yet, so we divide $b=x+1$ into $x^2+3x+2$:
 
-\input{02-ALGEBRA-EXAMPLE4a.inc}
-
 \sympyc{long_division(x**2+3*x+2, x+1, x)}
 
 The zero remainder means that the $a$ term drops away completely,
@@ -1166,8 +1146,6 @@ In other words (remember that $b=x+1$),
 $${{x^2 + 3x + 2}\over{(x-2)^2(x+1)}} = {{(x+2)(x+1)}\over{(x-2)^2(x+1)}} = {{(x+2)}\over{(x-2)^2}}$$
 
 We need only divide $(x+2)$ by $(x-2)$:
-
-\input{02-ALGEBRA-EXAMPLE4b.inc}
 
 \sympyc{long_division(x+2, x-2, x)}
 
