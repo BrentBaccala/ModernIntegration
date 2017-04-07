@@ -420,7 +420,6 @@ from sympy import LT, LC
 
 def format_poly_textableformat(poly):
    result = ""
-   poly = Poly(poly,x)
    if poly == 0:
       return "&0"
    for i in poly.all_terms():
@@ -453,8 +452,11 @@ def format_poly_textableformat(poly):
 
 def long_division(dividend, divisor):
    use_parens = True
-   quotient = quo(dividend, divisor)
-   numcols = 2*(degree(dividend,gen=x) + 1 + degree(divisor,gen=x) + 1)
+   dividend = Poly(dividend, x)
+   divisor = Poly(divisor, x)
+   quotient = dividend.div(divisor)[0]
+
+   numcols = 2*(dividend.degree() + 1 + divisor.degree() + 1)
    print("\\vbox{\\offinterlineskip")
    print("\\tabskip=0pt plus1fil")
    print("\\halign to\\hsize{\\tabskip=0pt",end='')
@@ -466,14 +468,14 @@ def long_division(dividend, divisor):
    ' quotient, indented '
    ' remember, (twice the degree) plus two columns '
 
-   print("\\multispan{", numcols - (2*degree(quotient,gen=x) + 2), "}&", end='')
+   print("\\multispan{", numcols - (2*quotient.degree() + 2), "}&", end='')
    print(format_poly_textableformat(quotient))
    print("\\vbox to16pt{}\\cr")
 
    ' line under quotient '
 
-   print("\\multispan{", numcols - (2*degree(dividend,gen=x)+2), "}&", end='')
-   print("\\multispan{", 2*degree(dividend,gen=x)+2, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr")
+   print("\\multispan{", numcols - (2*dividend.degree()+2), "}&", end='')
+   print("\\multispan{", 2*dividend.degree()+2, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr")
 
    ' divisor, vertical bar, dividend '
 
@@ -484,11 +486,12 @@ def long_division(dividend, divisor):
 
    remainder = dividend
 
-   while (remainder != 0) and degree(remainder, gen=x) >= degree(divisor, gen=x):
+   while (remainder != 0) and remainder.degree() >= divisor.degree():
 
       " subtraction term "
 
-      sterm = expand(quo(LT(remainder), LT(divisor)) * divisor)
+      sterm = expand(quo(LT(remainder.as_expr()), LT(divisor.as_expr())) * divisor.as_expr())
+      sterm = Poly(sterm, divisor.gen)
 
       if use_parens:
 
@@ -498,7 +501,7 @@ def long_division(dividend, divisor):
 	 ''' by anything.  Also have to explicitly enter (by printing)     '''
 	 ''' and leave (by modifying poly) math mode.                      '''
 
-         multispan_cols = numcols - (2*degree(sterm,gen=x) + 2) + 1
+         multispan_cols = numcols - (2*sterm.degree() + 2) + 1
          polystr = format_poly_textableformat(sterm)
          if polystr.startswith('&'):
             polystr = polystr[1:len(polystr)]
@@ -507,7 +510,7 @@ def long_division(dividend, divisor):
          print("\\multispan{", multispan_cols, "}", end='')
          print("\\hfil $-(" + polystr + "\\vbox to16pt{}&)\\cr")
       else:
-         print("\\multispan{", numcols - (2*degree(sterm,gen=x) + 2), "}&", end='')
+         print("\\multispan{", numcols - (2*sterm.degree() + 2), "}&", end='')
          print(format_poly_textableformat(sterm))
          print("\\vbox to16pt{}\\cr", end='')
 
@@ -516,20 +519,20 @@ def long_division(dividend, divisor):
       " which determines if we should extend the line left into the sign     "
       " field (if it's negative) or not (if it's positive)                   "
 
-      if LC(sterm) < 0:
+      if sterm.LC() < 0:
         extend = 1
       else:
         extend = 0
 
-      print("\\multispan{", numcols - (2*degree(sterm,gen=x)+2)+1-extend, "}&", end='');
-      print("\\multispan{", (2*degree(sterm,gen=x)+2)-1+extend, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr")
+      print("\\multispan{", numcols - (2*sterm.degree()+2)+1-extend, "}&", end='');
+      print("\\multispan{", (2*sterm.degree()+2)-1+extend, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr")
 
       " compute and print the new remainder "
 
-      remainder = expand(remainder - sterm)
+      remainder = remainder.sub(sterm)
 
       if remainder != 0:
-         print("\\multispan{", numcols - (2*degree(remainder,gen=x)+2), "}&", end='')
+         print("\\multispan{", numcols - (2*remainder.degree()+2), "}&", end='')
          print(format_poly_textableformat(remainder))
          print("&\\vbox to16pt{}\\cr")
       else:
@@ -546,7 +549,7 @@ context, let's consider a very simple calculation of this type:
 
 \input{02-ALGEBRA-EXAMPLE2.inc}
 
-% \sympyc{long_division(x**2+2*x+1, 2*x+1)}
+\sympyc{long_division(x**2+2*x+1, 2*x+1)}
 
 Each step starts by dividing the leading terms, i.e, $x^2$ is divided
 by $2x$ to form $x\over 2$.  Actually, we can be a bit more precise.
