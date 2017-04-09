@@ -841,8 +841,6 @@ sa+tb=c; \qquad a,b,c\in{\cal F}[x] {\rm\, given}; \qquad
 s,t\in{\cal F}[x] {\rm\, unknown}
 \end{displaymath}
 
-Thus, $xxx$ is an equation of this form.
-
 Let's begin by noting that any common divisor of $a$ and $b$, and in
 particular $\gcd(a,b)$, can be divided out from the left hand side of
 the equation, and thus must also divide the right hand side, so $c$
@@ -879,7 +877,7 @@ finding an $s$ of lower degree than $b$ implies a $t$ of lower degree
 than $a$.  To see this, simply note that if $\deg(s)<\deg(b)$, then
 $\deg(sa)=\deg(s)+\deg(a)<\deg(b)+\deg(a)$.  Since $tb=c-sa$, if
 $\deg(c)<\deg(a)+\deg(b)$ and $\deg(sa)<\deg(a)+\deg(b)$, then
-$\deg(tb)<\deg(a)+\deg(b)$, which implies $\deg(t)<\deg(a)$.
+$\deg(tb)<\deg(a)+\deg(b)$, which implies that $\deg(t)<\deg(a)$.
 
 We will make repeated use of this polynomial Diophantine equation
 throughout the book.
@@ -894,7 +892,15 @@ $$s(4x^4+13x^3+15x^2+7x+1) + t(2x^3+x^2-4x-3) = x^3 + 5x^2 + 7x +3$$
 
 \quad for $s,t \in {\bf Q}[x]$ satisfying minimal degree bounds.
 
-%These are the same polynomials used for the first GCD example.
+Using the notation:
+
+$$a = 4x^4+13x^3+15x^2+7x+1; \qquad
+b = 2x^3+x^2-4x-3; \qquad
+c = x^3 + 5x^2 + 7x +3$$
+
+we see that we are trying to solve $sa+tb=c$.
+$a$ and $b$ are the same polynomials used for the first GCD example.
+Recalling that GCD calculation:
 
 \bigskip
 \begin{sympycode}
@@ -903,37 +909,33 @@ print('\\bigskip')
 long_division(b, rem(a,b), x)
 \end{sympycode}
 
-%Using the notation
-
-%\begin{eqnarray*}
-%a &=& 4x^4+13x^3+15x^2+7x+1, \cr
-%b &=& 2x^3+x^2-4x-3, {\rm\,and} \cr
-%c &=& x^3 + 5x^2 + 7x +3 \cr
-%\end{eqnarray*}
-
-$$a = 4x^4+13x^3+15x^2+7x+1; \qquad
-b = 2x^3+x^2-4x-3; \qquad
-c = x^3 + 5x^2 + 7x +3$$
-
-%we are trying to solve $sa+tb=c$.  The first step in the GCD
-%calculation yielded:
+The first division states that:
 
 \begin{eqnarray*}
 a &=& (2x+{11\over2})b + ({35\over2}x^2+35x+{35\over2})
- %{\rm,\,or}
- \cr\cr
+\end{eqnarray*}
+
+Rearranging this equation:
+
+\begin{eqnarray*}
 x^2+2x+1 &=& {2\over35}a - {1\over35}(4x+11)b \cr
 \end{eqnarray*}
 
-%Having concluded at the last step in the GCD calculation that
-%$x^2+2x+1$ is a GCD of $a$ and $b$, we now divide it into $c$:
+The second division isn't used in solving the polynomial
+Diophantine equation; it simply states that
+${35\over2}x^2+35x+{35\over2}$ and $x^2+2x+1$ are GCDs.
+
+Having concluded that
+$x^2+2x+1$ is a GCD of $a$ and $b$, we divide it into $c$:
 
 \sympyc{long_division(x**3+5*x**2+7*x+3, x**2+2*x+1, x)}
 
 
-%The remainder is zero, so the problem has a solution.
-%We substitute our expansion for $x^2+2x+1$ above into $c=(x+3)(x^2+2x+1)$
-%and obtain:
+The remainder is zero, so the original problem has a solution
+(remember that $c$ had to be a multiple of $\gcd(a,b)$).
+
+We substitute our expansion for $x^2+2x+1$ above into $c=(x+3)(x^2+2x+1)$
+and obtain:
 
 %\begin{eqnarray*}
 %c &=& {2\over35}(x+3)a - {1\over35}(x+3)(4x+11)b \cr\cr
@@ -944,64 +946,17 @@ $$c = (x+3)(x^2+2x+1)
 %= {2\over35}(x+3)a - {1\over35}(x+3)(4x+11)b
  = {2\over35}(x+3)a - {1\over35}(4x^2+23x+33)b $$
 
-%$\deg({2\over35}(x+3)) = 1 < \deg(b) = 3$ and $\deg({1\over35}(4x^2+23x+33))
-%= 2 < \deg(a) = 4$, so the degree bounds are already met.
+$\deg({2\over35}(x+3)) = 1 < \deg(b) = 3$ and $\deg({1\over35}(4x^2+23x+33))
+= 2 < \deg(a) = 4$, so the degree bounds are met and we have our solution:
 
-%Now verify this solution using Maxima, a computer algebra system:
+\begin{eqnarray*}
+s &=& {2\over35}(x+3) \cr\cr
+t &=& - {1\over35}(4x^2+23x+33) \cr
+\end{eqnarray*}
 
-\begin{computer-maxima}
-(%i22) a: 4*x^4+13*x^3+15*x^2+7*x+1;
+Now let's verify this solution using Maxima:
 
-                           4       3       2
-(%o22)                  4 x  + 13 x  + 15 x  + 7 x + 1
-(%i23) b: 2*x^3+x^2-4*x-3;
-
-                                 3    2
-(%o23)                        2 x  + x  - 4 x - 3
-(%i24) divide(a,b);
-
-                                                  2
-                                   4 x + 11  35 x  + 70 x + 35
-(%o24)                            [--------, -----------------]
-                                      2              2
-(%i25) divide(b,divide(a,b)[2]);
-
-                                            4 x - 6
-(%o25)                                     [-------, 0]
-                                              35
-(%i26) gcdex(a,b);
-
-                                          2
-                            4 x + 11  35 x  + 70 x + 35
-(%o26)/R/             [1, - --------, -----------------]
-                               2              2
-(%i27) c: x^3+5*x^2+7*x+3;
-
-                               3      2
-(%o27)                        x  + 5 x  + 7 x + 3
-(%i28) d: c/gcdex(a,b)[3];
-
-                                    2 x + 6
-(%o28)/R/                           -------
-                                      35
-(%i29) gcdex(a,b)[1]*d;
-
-                                    2 x + 6
-(%o29)/R/                           -------
-                                      35
-(%i30) gcdex(a,b)[2]*d;
-
-                                   2
-                                4 x  + 23 x + 33
-(%o30)/R/                     - ----------------
-                                       35
-(%i31) gcdex(a,b)[1]*d*a + gcdex(a,b)[2]*d*b;
-
-                               3      2
-(%o31)/R/                     x  + 5 x  + 7 x + 3
-\end{computer-maxima}
-
-\vfill\eject
+% \vfill\eject
 
 \begin{maximablock}
 a: 4*x^4+13*x^3+15*x^2+7*x+1 $
@@ -1017,13 +972,17 @@ $$as + bt = \gcd(a,b)$$
 gcdex(a,b);
 \end{maximablock}
 
-If the $c$ polynomial divides $\gcd(a,b)$, then we can just multiply
+\vfill\eject
+
+If the $c$ polynomial divides the GCD we just computed, then we can just multiply
 through by the quotient:
 
 \begin{maximablock}
-divide((x^3+5*x^2+7*x+3), %[3]);
+divide(c, %[3]);
 [s,t,_] : %th(2)*%[1];
-a*s + b*t;
+s;
+t;
+a*s + b*t === c;
 kill(a,b,c,s,t)$
 \end{maximablock}
 
