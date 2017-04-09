@@ -712,9 +712,10 @@ gcd(4*x^4 + 13*x^3 + 15*x^2 + 7*x + 1,
 
 \vfill\eject
 
-A few words are in order here about GCDs in systems of the form ${\cal
-U}[x]$, i.e, where the coefficients come from a unique factorization
-domain that is not a field.  A factorization in ${\bf Q}(x)[y]$ or
+\subsection*{Multivariate GCDs}
+
+A few words are in order here about GCDs of multivariate polynomials.
+A factorization in ${\bf Q}(x)[y]$ or
 ${\bf Q}(y)[x]$ (both of the form ${\cal F}[x]$) is superficially so
 similar to a factorization in ${\bf Q}[x,y]$ ({\it not} of the form
 ${\cal F}[x]$), that the distinction should be noted.  In both of the
@@ -724,43 +725,52 @@ variable) over the fraction field.  In the case of ${\bf Q}[x,y]$ we
 do not form a fraction field with respect to either variable; thus we
 have a polynomial ring over not a field, but over another polynomial ring.
 
-Now a polynomial ring over a unique factorization domain ${\cal U}[x]$
-itself satisfies U1 (proof omitted), so by induction any finite series
-of such polynomial rings over a unique factorization domain (like
-${\bf Q}[x,y]$) is also a unique factorization domain.  This implies
-that GCDs exist in ${\cal U}[x]$-type systems.  The problem is finding
-them, since long division only works cleanly in an ${\cal F}[x]$-type
-system.
+% in systems of the form ${\cal
+% U}[x]$, i.e, where the coefficients come from a unique factorization
+% domain that is not a field.
 
-The solution, invented by Gauss\footnote{check this}, is to first
-factor out of each polynomial the GCD of the coefficients (calculated
-in ${\cal U}$) which we call the {\it content} of the polynomial,
-leaving a {\it primitive polynomial}.  It can be shown\footnote{van
-der Waerden} that if a primitive polynomial factors at all, then it
-factors into primitive polynomials.  We thus can compute a primitive
-GCD of the primitive parts and multiply this by the GCD of the
-contents to obtain a GCD in ${\cal U}[x]$.  A LITTLE UNCLEAR.
+Now a polynomial ring over a GCD domain is itself a GCD domain ([Go14]
+Lemma 6.6.2 and Theorem 6.6.7), so by induction any finite series of
+polynomial rings (like ${\bf Q}[x,y]$) is also a GCD domain.  This
+implies that GCDs exist in multivariate polynomial rings.  The problem
+is finding them, since the procedure described above requires long
+division, and this only works cleanly in an ${\cal F}[x]$-type system.
 
-We will have little use for ${\cal U}[x]$ factorizations in this book,
-since invariably we will calculate GCDs with respect to one variable,
-and form fraction fields from any others, and thus always be working
-in ${\cal F}[x]$ systems.  I mention this mainly to avoid confusion
-between factoring in ${\cal F}[x,y]$ and ${\cal F}(x)[y]$, and have
-thus omitted the proofs of Gauss' method; see the references for
-details.
+One solution is to pick one variable (say, $x$) to form coefficients
+(in the ring ${\bf Q}[x]$), then use the second variable (say, $y$) to
+form polynomials in ${\bf Q}[x][y]$.
 
-\vfill\eject
+Then we factor out of each ${\bf Q}[x][y]$ polynomial the GCD of the
+coefficients (calculated in ${\bf Q}[x]$), which we call the {\it
+content} of the polynomial, leaving a {\it primitive polynomial}.  It
+can be shown ([Go14] Lemma 6.6.9) that if a primitive polynomial
+factors at all, then it factors into primitive polynomials.  We thus
+can compute a GCD of the primitive parts and multiply this by the GCD
+of the contents to obtain a GCD in ${\bf Q}[x,y]$.
+
+We will have little use for multivariate polynomial factorizations in
+this book, since invariably we will calculate GCDs with respect to one
+variable, and form fraction fields from any others, and thus always be
+working in ${\cal F}[x]$ systems.
+
+% I mention this mainly to avoid
+% confusion between factoring in ${\cal F}[x,y]$ and ${\cal F}(x)[y]$,
+% and have thus omitted the proofs of Gauss' method; see the references
+% for details.
+
+% \vfill\eject
 
 \example
 
 Compute the GCD of $5xy-5y^2-7x+7y$ and $2x^2-yx-y^2$ in ${\bf Q}[x,y]$.
 
-This is a ${\cal U}[x]$-type system, so we'll need to work in a
-${\cal F}[x]$-type system to perform the computation.  Our choices
-are ${\bf Q}(x)[y]$ and ${\bf Q}(y)[x]$.
+${\bf Q}[x,y]$ is a multivariate polynomial ring, but we'll need to
+work in a ${\cal F}[x]$-type system to perform the computation.  Our
+choices are ${\bf Q}(x)[y]$ and ${\bf Q}(y)[x]$.
 
 Let's start with ${\bf Q}(x)[y]$, and rearrange the polynomials
-so that $y$ is the polynomial variable:
+so that $y$ is the polynomial variable and our coefficients
+are in ${\bf Q}[x]$:
 
 $$-5y^2+(5x+7)y-7x {\rm\qquad and\qquad} -y^2-xy+2x^2$$
 
@@ -791,17 +801,17 @@ Now let's do all that again in ${\bf Q}(y)[x]$.  Our polynomials become:
 $$(5y-7)x-(5y^2-7y) {\rm\qquad and\qquad} 2x^2-yx-y^2$$
 
 The second one has unit content (the GCD of $2$, $-y$, and $-y^2$),
-but the first one's content is $\gcd_y(5y-7,5y^2-7y)=5y-7$.
+but the first one's content is $\gcd(5y-7,5y^2-7y)=5y-7$.
 Dividing this out, we obtain:
 
 $$x-y {\rm\qquad and\qquad} 2x^2-yx-y^2$$
 
-and compute:
+and compute the GCD of these polynomials:
 
 \sympyc{long_division(2*x**2-y*x-y**2, x-y, x, 'QQ(y)')}
 
 Thus, $x-y$ is the GCD of the primitive polynomials, and it has unit
-content $\gcd_y(1,-y)$.  The GCD of the original contents
+content $\gcd(1,-y)$.  The GCD of the original contents
 ($1$ and $5y-7$) is 1, so the final result is again $x-y$.
 
 \begin{maximablock}
