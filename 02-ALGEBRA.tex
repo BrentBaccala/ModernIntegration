@@ -317,6 +317,7 @@ fraction field construction can be performed not only on the integers
 ${\bf Z}$ to obtain the rationals ${\bf Q}$, but on any integral
 domain to obtain its fraction field.
 
+\vfill\eject
 
 \mysection{Polynomial rings and rational function fields}
 \subsection*{\qquad The ring ${\cal F}[x]$ and the field ${\cal F}(x)$}
@@ -915,7 +916,7 @@ The first division states that:
 a &=& (2x+{11\over2})b + ({35\over2}x^2+35x+{35\over2})
 \end{eqnarray*}
 
-Rearranging this equation:
+Rearranging this equation we get:
 
 \begin{eqnarray*}
 x^2+2x+1 &=& {2\over35}a - {1\over35}(4x+11)b \cr
@@ -994,54 +995,72 @@ kill(a,b,c,s,t)$
 \qquad [van der Waerden], \S5.10
 
 As a first application of polynomial Diophantine equations, we use
-them to construct partial fractions expansions.  Consider an element
+them to construct partial fractions expansions, which will be
+a major technical tool in the first half of the book.
+
+Consider an element
 $a$ from a polynomial fraction field ${\cal F}(x)$.  We can write
 $a={n\over d}$ where $n,d\in{\cal F}[x]$.  If we are now given a
 factorization of $d=d_1^{e_1} d_2^{e_2} \cdots d_k^{e_k}$, where
 $d_i\in {\cal F}[x]$ and $\gcd_{{\cal F}[x]}(d_i,d_j)=1$ if $i\ne j$,
 and assuming that $a$ is a proper fraction
-($\deg_{{\cal F}[x]}n < \deg_{{\cal F}[x]}d$),
+($\deg_x n < \deg_x d$),
 then we can construct a {\it partial fractions expansion} of $a$:
 
-\begin{displaymath}
-a={n\over d}=\sum_{i=1}^{n}\sum_{j=1}^{e_i} {n_{ij}\over {d_i}^j}
-\qquad \deg_{{\cal F}[x]}(n_{ij}) < \deg_{{\cal F}[x]}(d_i)
-\end{displaymath}
+\begin{equation}
+\label{partial fractions expansion}
+a={n\over d}=\sum_{i=1}^{n}\sum_{j=1}^{e_i} {n_{i,j}\over {d_i}^j}
+\qquad \deg_x (n_{i,j}) < \deg_x (d_i)
+\end{equation}
 
 We begin by computing an expansion in the form:
 
-\begin{displaymath}
+\begin{equation}
+\label{partial fractions intermediate expansion}
 a={n\over d}=\sum_{i=1}^{n} {n_i\over {d_i}^{e_i}}
-\qquad \deg_{{\cal F}[x]}(n_i) < e_i\deg_{{\cal F}[x]}(d_i)
-\end{displaymath}
+\qquad \deg_x (n_i) < e_i\deg_x (d_i)
+\end{equation}
 
-$n_1$ is found by solving the following polynomial Diophantine
-equation for $n_1$ and $r_1$:
+i.e, each denominator factor is separated apart from the
+others, but there is only a single term for each
+denominator factor and the degree bounds are weaker.
 
-\begin{eqnarray*}
-n &=& n_1 \Big( \prod_{j\ne 1} {d_j}^{e_j} \Big) + r_1 (d_1^{\,e_1}) \cr
-\end{eqnarray*}
-
-Our degree bounds guarantee that
-$\deg(n_1) < e_1\deg(d_1)$, and dividing through by $d$ shows:
+$n_i$ is found by solving the following polynomial Diophantine
+equation for $n_i$ and $r_i$:
 
 \begin{eqnarray*}
-{n\over d} &=& {{n_1}\over{d_1^{\,e_1}}} + {r_1\over{\prod_{j\ne 1} {d_j}^{e_j}}} \cr
+n &=& n_i \Big( \prod_{j\ne i} {d_j}^{e_j} \Big) + r_i (d_i^{\,e_i}) \cr
 \end{eqnarray*}
 
-The second term on the right is a fraction in the original form,
+The degree bounds from the previous section guarantee that
+$\deg_x (n_i) < e_i \deg_x (d_i)$, and dividing through by $d$ shows:
+
+\begin{eqnarray*}
+{n\over d} &=& {{n_i}\over{d_i^{\,e_i}}} + {r_i\over{\prod_{j\ne i} {d_j}^{e_j}}} \cr
+\end{eqnarray*}
+
+We can now either ignore $r_i$ and use this procedure to compute
+all of the $n_i$'s, or we can note that
+the second term on the right is a fraction in the original form,
 but with one less factor in the denominator, so we can recurse
 and separate out all the ${d_i}^{e_i}$ into seperate fractions.
-Simple long division now suffices to seperate these fractions:
+
+Having computed an expansion of the form \eqref{partial fractions
+intermediate expansion}, a series of long divisions now suffices to
+seperate each of these fractions into a full partial fraction expansion in the
+form \eqref{partial fractions expansion}:
 
 \begin{eqnarray*}
-n_i &=& q_{ij} d_i + r_{ij} \cr\cr
-{{n_i}\over{d_i^j}} &=& {{q_{ij}}\over{d_i^{\,j-1}}} + {r_{ij}\over{d_i^{\,j}}} \cr
+n_i &=& q_{i,e_i} d_i + n_{i,e_i} \cr\cr
+q_{i,j} &=& q_{i,j-1} d_i + n_{i,j-1} \cr\cr
+% n_i &=& \sum_{j=0}^{e_i} n_{i,j}\, d_i^j \cr\cr
+n_i &=& \sum_{j=1}^{e_i} n_{i,j}\, d_i^{\,e_i-j} \cr\cr
+{{n_i}\over{d_i^{\,e_i}}} &=& \sum_{j=1}^{e_i} {n_{i,j}\over {d_i}^j}
 \end{eqnarray*}
 
-The $r_{ij}$ are our original $n_{ij}$, and the degree bounds on long
-division ensure that $\deg_{{\cal F}[x]}(n_{ij}) < \deg_{{\cal F}[x]}(d_i)$.
-We recurse on the first term until we have completed the desired construction.
+% The $r_{ij}$ are our original $n_{ij}$, and the degree bounds on long
+% division ensure that $\deg_x (n_{ij}) < \deg_x (d_i)$.
+% We recurse on the first term until we have completed the desired construction.
 
 \vfill\eject
 
