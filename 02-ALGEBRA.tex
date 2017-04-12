@@ -1051,11 +1051,11 @@ seperate each of these fractions into a full partial fraction expansion in the
 form \eqref{partial fractions expansion}:
 
 \begin{eqnarray*}
-n_i &=& q_{i,e_i} d_i + n_{i,e_i} \cr\cr
-q_{i,j} &=& q_{i,j-1} d_i + n_{i,j-1} \cr\cr
+n_i &=& q_{i,e_i} d_i + n_{i,e_i} \qquad  \deg_x q_{i,e_i} < (e_i -1) \deg_x d_i \cr\cr
+q_{i,j} &=& q_{i,j-1} d_i + n_{i,j-1} \qquad  \deg_x q_{i,j} < (j -1) \deg_x d_i \cr\cr
 % n_i &=& \sum_{j=0}^{e_i} n_{i,j}\, d_i^j \cr\cr
 n_i &=& \sum_{j=1}^{e_i} n_{i,j}\, d_i^{\,e_i-j} \cr\cr
-{{n_i}\over{d_i^{\,e_i}}} &=& \sum_{j=1}^{e_i} {n_{i,j}\over {d_i}^j}
+{{n_i}\over{d_i^{\,e_i}}} &=& \sum_{j=1}^{e_i} {n_{i,j}\over {d_i}^j} \qquad  \deg_x n_{i,j} < \deg_x d_i
 \end{eqnarray*}
 
 % The $r_{ij}$ are our original $n_{ij}$, and the degree bounds on long
