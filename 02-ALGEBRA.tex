@@ -1050,16 +1050,79 @@ intermediate expansion}, a series of long divisions now suffices to
 seperate each of these fractions into a full partial fraction expansion in the
 form \eqref{partial fractions expansion}:
 
-\begin{eqnarray*}
-n_i &=& q_{i,e_i} d_i + n_{i,e_i} \qquad  \deg_x q_{i,e_i} < (e_i -1) \deg_x d_i \cr\cr
-q_{i,j} &=& q_{i,j-1} d_i + n_{i,j-1} \qquad  \deg_x q_{i,j} < (j -1) \deg_x d_i \cr\cr
-% n_i &=& \sum_{j=0}^{e_i} n_{i,j}\, d_i^j \cr\cr
-n_i &=& \sum_{j=1}^{e_i} n_{i,j}\, d_i^{\,e_i-j} \cr\cr
-{{n_i}\over{d_i^{\,e_i}}} &=& \sum_{j=1}^{e_i} {n_{i,j}\over {d_i}^j} \qquad  \deg_x n_{i,j} < \deg_x d_i
-\end{eqnarray*}
+% \begin{eqnarray*}
+% q_{i,e_i} &=& n_i \cr
+% q_{i,j} &=& q_{i,j-1} d_i + n_{i,j} \cr
+% q_{i,1} &=& n_{i,1}
+% \end{eqnarray*}
 
-% The $r_{ij}$ are our original $n_{ij}$, and the degree bounds on long
-% division ensure that $\deg_x (n_{ij}) < \deg_x (d_i)$.
+\begin{equation*}
+q_{i,e_i} = n_i \qquad
+q_{i,j} = q_{i,j-1} d_i + n_{i,j} \qquad
+q_{i,1} = n_{i,1}
+\end{equation*}
+
+The degree bounds on long division ensure that
+
+\begin{equation*}
+\deg_x q_{i,j} < j \deg_x d_i  \qquad  {\rm and} \qquad \deg_x n_{i,j} < \deg_x d_i
+\end{equation*}
+
+Assembling the $n_{i,j}$'s together, we obtain the form
+required by equation \eqref{partial fractions expansion}:
+
+%\begin{eqnarray*}
+%n_i &=& \sum_{j=1}^{e_i} n_{i,j}\, d_i^{\,e_i-j} \cr\cr
+%{{n_i}\over{d_i^{\,e_i}}} &=& \sum_{j=1}^{e_i} {n_{i,j}\over {d_i}^j}
+%\end{eqnarray*}
+
+\begin{equation*}
+n_i = \sum_{j=1}^{e_i} n_{i,j}\, d_i^{\,e_i-j} \qquad
+{{n_i}\over{d_i^{\,e_i}}} = \sum_{j=1}^{e_i} {n_{i,j}\over {d_i}^j}
+\end{equation*}
+
+\theorem
+Partial fractions expansions that meet the minimal degree bounds are unique.
+
+\proof
+
+If two different partial fractions expansions can be constructed for
+the same proper fraction $a$, then subtracting them from each other
+would yield a non-trivial partial fractions expansion for $0$:
+
+\begin{equation}
+0=\sum_{i=1}^{n}\sum_{j=1}^{e_i} {n_{i,j}\over {d_i}^j}
+\qquad \deg_x (n_{i,j}) < \deg_x (d_i)
+\end{equation}
+
+We clear the denominators:
+
+\begin{equation}
+0 =\sum_{i=1}^{n}\sum_{j=1}^{e_i} n_{i,j} \left( d_i^{\,e_i-j} \prod_{k \ne i} d_k^{\,e_k} \right)
+\end{equation}
+
+Isolating the $n_{1,e_i}$ term we obtain:
+
+\begin{equation}
+-n_{1,e_1}\prod_{k = 2}^{n} d_{k}^{\,e_k}=\sum_{j=1}^{e_1-1} n_{1,j} \left( d_1^{\,e_1-j} \prod_{k =2}^n d_k^{\,e_k} \right)
++ \sum_{i=2}^{n}\sum_{j=1}^{e_i} n_{i,j} \left( d_i^{\,e_i-j} \prod_{k \ne i} d_k^{\,e_k} \right)
+\end{equation}
+
+% All of the terms except the $n_{1,e_i}$ term are multiplied by some power of $d_1$, which implies that
+% the $n_{1,e_i}$ term must also be a multiple of $d_1$.  Since all of the $d_i$'s are relatively
+% prime, this $d_1$ can only come from
+
+All of the terms on the right hand side include a $d_1$ factor, which implies that
+$d_1$ must also factor the left hand side.
+Since all of the $d_i$'s are relatively
+prime, this $d_1$ factor can only come from
+$n_{1,e_1}$ itself.  Yet
+$\deg_x (n_{1,e_1}) < \deg_x (d_1)$, so this is impossible,
+and no such expansion can exist.
+
+\endtheorem
+
+
 % We recurse on the first term until we have completed the desired construction.
 
 \vfill\eject
