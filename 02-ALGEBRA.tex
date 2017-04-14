@@ -1129,11 +1129,16 @@ and no such expansion can exist.
 
 \example
 
-Compute the partial fractions expansion of $${x^2 + 3x + 2}\over{x^3-3x^2+4}$$
+\begin{maximacode}
+pf: (3*x**2-4*x+2)/(x**3-3*x**2+4) $
+/* pf: (x**2+3*x+2)/(x**3-3*x**2+4) $ */
+\end{maximacode}
+
+Compute the partial fractions expansion of $$\maximac{pf;}$$
 
 We begin by factoring the denominator.  While factoring can be quite
 complicated in practice, in this case we need only try some small
-integers to discover that either 2 or -1 solve the denominator,
+integers to discover that either $2$ or $-1$ solve the denominator,
 leading directly to a factorization:
 
 \begin{comment}
@@ -1157,13 +1162,15 @@ it can only be the second square-free factor.  In any event, we conclude that:
 
 \end{comment}
 
-$${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {{x^2 + 3x + 2}\over{(x-2)^2(x+1)}}$$
+$$\maximac{pf;} = \maximac{factor(pf);}$$
 
 Next, we solve the polynomial Diophantine equation:
 
-$$x^2 + 3x + 2 = s(x-2)^2 + t(x+1) = sa+tb$$
+$$\maximac{num(pf);} = s(x-2)^2 + t(x+1) = sa+tb$$
 
-Compute the GCD of $a=(x-2)^2=x^2-4x+4$ and $b=x+1$:
+First, we compute the GCD of $a=(x-2)^2=x^2-4x+4$ and $b=x+1$.
+The actual result is obvious, but now we're interested
+in both the remainder and the quotient.
 
 \sympyc{long_division(x**2-4*x+4, x+1, x)}
 
@@ -1175,37 +1182,35 @@ have no common factor between them.
 $$a=(x-5)b+9$$
 $$9=a-(x-5)b$$
 $$1={1\over9}[a-(x-5)b]$$
-$$x^2 + 3x + 2 = {1\over9}(x^2+3x+2)a-{1\over9}(x^2+3x+2)(x-5)b$$
-$$x^2 + 3x + 2 = {1\over9}(x^2+3x+2)a-{1\over9}(x^3-2x^2-13x-10)b$$
+$$\maximac{num(pf);} = {1\over9}(\maximac{num(pf);})[a-(x-5)b]$$
+$$\maximac{num(pf);} = {1\over9}(\maximac{num(pf);})a-{1\over9}(\maximac{expand(num(pf)*(x-5));})b$$
 
-Our degree bounds aren't met yet, so we divide $b=x+1$ into $x^2+3x+2$:
+Our degree bounds aren't met yet, so we divide $b=x+1$ into $a$'s coefficient $\maximac{num(pf);}$:
 
-\sympyc{long_division(x**2+3*x+2, x+1, x)}
+\sympyc{long_division(3*x**2-4*x+2, x+1, x)}
 
-The zero remainder means that the $a$ term drops away completely,
-and after subtracting $(x+2)a=x^3-2x^2-4x+8$ from the $b$ coefficient,
+The remainder becomes our new $a$ coefficient,
+and after subtracting $(3x-7)a=\maximac{expand((3*x-7)*(x-2)**2);}$ from the $b$ coefficient,
 we conclude that:
 
-$$x^2 + 3x + 2 = -{1\over9}(-9x-18)b = (x+2)b$$
+$$x^2 + 3x + 2 = a - (\maximac{expand((num(pf)*(x-5) - (3*x-7)*(x-2)**2)/9);})b$$
 
-In other words (remember that $b=x+1$),
+In other words (remember that $a=(x-2)^2$ and $b=x+1$),
 
-$${{x^2 + 3x + 2}\over{(x-2)^2(x+1)}} = {{(x+2)(x+1)}\over{(x-2)^2(x+1)}} = {{(x+2)}\over{(x-2)^2}}$$
+$${{x^2 + 3x + 2}\over{(x-2)^2(x+1)}} = {{1}\over{x+1}} + {{2x-2}\over{(x-2)^2}}$$
 
-We need only divide $(x+2)$ by $(x-2)$:
+Now we need only divide $(2x-2)$ by $(x-2)$:
 
-\sympyc{long_division(x+2, x-2, x)}
-
-% $$(x+2)=(x-2)+4$$
+\sympyc{long_division(2*x-2, x-2, x)}
 
 so,
 
-$${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {4\over{(x-2)^2}} + {1\over{(x-2)}}$$
+$${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {{1}\over{x+1}} + {2\over{(x-2)^2}} + {2\over{(x-2)}}$$
 
 Again, let's verify this result using Maxima:
 
 \begin{maximablock}
-partfrac((x^2 + 3*x + 2)/(x^3 - 3*x^2 + 4), x);
+partfrac((3*x^2 - 4*x + 2)/(x^3 - 3*x^2 + 4), x);
 \end{maximablock}
 
 \endexample
