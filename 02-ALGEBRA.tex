@@ -1231,8 +1231,12 @@ non-zero otherwise.  The GCD exists in ${\cal F}[x]$, while
 the resultant is in ${\cal F}$.
 
 For example, the polynomials $t x+x+t+1$ and $ty + y$ share $t+1$
-as a GCD, so their $t$-resultant is 0.  MORE HERE - why a t-resultant,
-not an x-resultant?
+as a GCD, so their $t$-resultant is zero.  On the other hand,
+their $x$-resultant is not zero, because in the ring ${\bf C}(y,t)[x]$,
+$t+1$ is a unit, so the GCD is $1$.  The resultant is constructed in an
+${\cal F}[x]$-type system, so for multivariate polynomials,
+we always need to specify which variable is the ring variable;
+any remaining variables are implicitly field variables.
 
 The resultant is defined\footnote{There are other equivalent ways of
 defining the resultant.} as the determinant of the Sylvester matrix
