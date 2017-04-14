@@ -16,8 +16,8 @@ clean:
 ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	rm -f pythontex-files-ModernIntegration/*
 	pdflatex ModernIntegration
-	# ./pythontex/pythontex/pythontex.py --interpreter maxima:/home/baccala/src/maxima-code/maxima-local --verbose ModernIntegration.tex
-	./pythontex/pythontex/pythontex.py --verbose ModernIntegration.tex
+	./pythontex/pythontex/pythontex.py --interpreter maxima:/home/baccala/src/maxima-code/maxima-local --verbose ModernIntegration.tex
+	# ./pythontex/pythontex/pythontex.py --verbose ModernIntegration.tex
 	pdflatex ModernIntegration
 
 out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
