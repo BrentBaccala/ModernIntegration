@@ -24,7 +24,7 @@ out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
 	pdftk A=slides.pdf B=toc.pdf C=ModernIntegration.pdf cat A B1 C46-49 C59-64 output out.pdf
 
 
-scp: ModernIntegration.pdf
+publish: ModernIntegration.pdf
 	scp ModernIntegration.pdf www:/var/www/ModernIntegration
 
 dep depend .depend: [0-9]*.tex
