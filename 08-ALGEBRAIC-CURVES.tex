@@ -5,6 +5,30 @@ Having addressed logarithmic and exponential extensions, we now turn
 to the algebraic extension, which turns out to be completely different
 in character from the two transcendental cases.
 
+To justify that statement, let's begin by trying to attack algebraic
+extensions in the same manner as the two transcendental cases.
+
+$$(\sum_i a_i \theta^i)' = \sum_i ( a_i' \theta^i + a_i (\theta^{i})')$$
+
+Presumably, we know how to differentiate $\theta$, so let's write
+$(\theta^i)' = \sum_j \psi_{i,j} \theta^j$:
+
+$$(\sum_i a_i \theta^i)' = \sum_i ( a_i' \theta^i + a_i \sum_j \psi_{i,j} \theta^j)$$
+
+Writing the $a_i$'s as a column vector $A$, we'll end up with a matrix equation:
+
+$$I = A' + \Psi A$$
+
+This is superficially similar to a Risch equation; it's a matrix Risch
+equation.  To proceed in the same manner as before, we'd now have to
+construct partial fractions expansions of everything and begin looking
+at how cancellation might occur between our various components.  The
+variety of possible cancelations between our terms seems daunting.
+
+Instead, we'll use a different approach...
+
+\vfill\eject
+
 How might we handle a simple algebraic extension?  A crucial property
 of {\it algebraic functions}, as elements of an algebraic extension
 are called, is that they admit series expansions everywhere, including
