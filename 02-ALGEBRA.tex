@@ -1453,13 +1453,46 @@ polynomial} of the field.  And I do say {\it field}, because we don't
 need to use the fraction field construction with an algebraic
 extension; the ring is already a field.
 
-Polynomial long division (section \ref{sec:Long Division})
-can be used to reduce modulo polynomials, which allows
-us to perform addition, subtraction, and multiplication
-in a modulo field, but how do we perform division?
-The polynomial Diophantine equation algorithm
-described in section \ref{sec:Polynomial Diophantine Equations}
-can be used to solve the following equation:
+Algebraic extensions are used to model fields where some algebraic
+expression (the minimal polynomial) is zero.  Since adding any
+multiple of zero to an expression doesn't affect its value, all
+elements in an algebraic equivalence class are essentially the same
+value.
+
+This isn't exactly the same as the real number system.  Real numbers
+are typically constructed using Cauchy sequences of rational numbers.
+Thus, the square root of two is constructed as a real number using the
+Cauchy sequence
+$\{1, \frac{14}{10}, \frac{141}{100}, \frac{1414}{1000}, \frac{14142}{10000}, \cdots\}$,
+which obeys the algebraic relationship $\gamma^2-2=0$.  The
+distinction is that the negative square root of two obeys the same
+algebraic relationship, but is constructed from a different Cauchy
+sequence: $\{-1, -\frac{14}{10}, -\frac{141}{100}, -\frac{1414}{1000},
+-\frac{14142}{10000}, \cdots\}$.  Thus $\gamma$, as a solution of
+$\gamma-2=0$, could be either the positive or the negative square root
+of two; we can't distinguish them using only the four field operations
+(addition, subtraction, multiplication, and division).  To distinguish
+between $+\sqrt{2}$ and $-\sqrt{2}$, we'd have to introduce an
+additional relationship -- greater than or less than -- which would
+produce an {\it ordered field}, and that's not part of our vocabulary.
+An ordered field can be treated as an unordered field by ignoring its
+ordering, which is fortunate for us, because it allows our integration
+theory to be applied to standard real numbers.  For our purposes,
+$\gamma$, as a root of $\gamma^2-2=0$, is simply a field element that
+when squared equals two.  It could be either $+\sqrt{2}$ or
+$-\sqrt{2}$; we can't tell the difference, but it isn't important
+because our results will be the same in either case.
+
+Polynomial long division (section \ref{sec:Long Division}) can be used
+to divide any polynomial by the minimal polynomial, then we discard
+the quotient and use the remainder as the unique representative of our
+equivalence class.  Thus, we can easily perform addition, subtraction,
+and multiplication in an algebraic extension field, by simply
+performing ordinary polynomial operations and then modulo reducing to
+a remainder, but how do we perform division?  The polynomial
+Diophantine equation algorithm described in
+section \ref{sec:Polynomial Diophantine Equations} can be used to
+solve the following equation:
 
 $$sx + tn = \gcd(x,n)$$
 
@@ -1480,7 +1513,6 @@ a ring but not a field.
 
 When calculating in ${\cal F}[x]$ mod $n(x)$,
 I'll use the following Maxima function.
-
 {\tt modulo} takes a rational function, an irreducible polynomial $n$,
 and the variable $x$ used to construct the extension.  After splitting
 the rational function into its numerator and denominator, it uses {\tt
@@ -1512,7 +1544,7 @@ ${\bf Z}[i]; i^2=-1$, really should be expressed as equivalence
 classes modulo the polynomial $i^2+1$, i.e.  ${\bf Z}[i]/(i^2+1)$.
 \end{comment}
 
-
+\vfill\eject
 \mysection{Trace and Norm}
 \qquad [van der Waerden], \S5.7
 
@@ -1529,28 +1561,84 @@ which can be constructed by raising the element to successive
 powers until one of the powers is a linear combination
 of the lower powers.
 
-\definition
-The {\it trace} of an
-element $x$ in $E$, written ${\rm Tr}(x)$, is the coefficient
-of the second-highest power in its minimal polynomial.
-\enddefinition
-
-\definition
-The {\it norm} of an element, written ${\rm N}(x)$, is its zeroth-order coefficient.
-\enddefinition
+\begin{key point}
+\huge
+\begin{equation*}
+x^n + \underbrace{c_{n-1}}_{- \Tr(x)} x^{n-1} + \cdots + c_1 x + \underbrace{c_0}_{\mathclap{(-1)^n \N(x)}} = 0
+\end{equation*}
+\end{key point}
 
 The special significance of these elements becomes more obvious if we
-consider a {\it splitting field}, which is a futher field extension
+consider a {\it splitting field}, which is a further field extension
 (an extension of the extension) in which the minimal polynomial
 factors completely into linear factors.  The element $x$ is
 itself one of the roots in these factors; the remaining
 roots are called the {\it conjugates} of $x$.
 
-Write $x$'s minimal polynomial in the form:
-$$\prod_{i=1}^n \left( t - x_i \right) = \sum_{k=0}^n (-1)^{k} a_k t^{n-k}$$
-and note that ${\rm Tr}(x)$, the $n-1^{\rm th}$ coefficient in the polynomial,
-is the sum of all the conjugates, while ${\rm N}(x)$, the zeroth order
-coefficient in the polynomial, is the product of all the conjugates.
+Let's write $x$'s minimal polynomial in the form:
+
+% $$\prod_{i=1}^n \left( t - x_i \right) = \sum_{k=0}^n (-1)^{k} a_k t^{n-k}$$
+
+$$\prod_\sigma \left( t - \sigma x \right) = t^n - \sum_\sigma \sigma x t^{n-1} + \cdots + \prod_\sigma (-\sigma x) $$
+
+where the sums and products are over all automorphisms that fix the base field.
+
+Note that the $n-1^{\rm th}$ coefficient in the polynomial is the sum
+of all the negatives of the conjugates, while the zeroth-order
+coefficient coefficient in the polynomial, is the product of all the
+negatives of the conjugates.
+
+\definition
+The {\it trace} of an element $x$ in $E$, written ${\rm Tr}(x)$, is
+the sum of all the conjugates of $x$.
+\enddefinition
+
+\definition
+The {\it norm} of an element $x$, written ${\rm N}(x)$, is the product
+of all the conjugates of $x$.
+\enddefinition
+
+The significance of these two functions is first, that they map
+elements from the extension field to the base field, and second, that
+trace commutes with addition and norm commutes with multiplication.
+
+\example Compute the norm and trace of $x+1$ in ${\bf Q}[x] \mod x^2-2$.
+
+The field ${\bf Q}[x] \mod x^2-2$ consists of the rational numbers,
+adjoined with $x=\sqrt{2}$.  Actually, $x$ is any square root of $2$.
+
+$$(x+1)^2 = x^2+2x+1 \mod x^2-2 = 2x+3 = 2(x+1) + 1$$
+
+$$(x+1)^2 - 2(x+1) - 1 = 0$$
+
+$$\Tr (x+1) = 2 \qquad \N (x+1) = -1$$
+
+$$\Tr \left(x + (x+1)\right) = \Tr x + \Tr (x+1) = 0 + 2 = 2 = \Tr 1 = 2$$
+
+\endexample
+
+\example Prove that $(1+2i)$ is irreducible in ${\bf Q}[i] \mod i^2+1$.
+
+The field ${\bf Q}[i] \mod i^2+1$ consists of the rational numbers,
+adjoined with $i$, the square root of $-1$.  These form the {\it
+Gaussian integers}.
+
+Since norm commutes with multiplication, any factorization of $(1+2i)$
+must lead to a factorization of its norm, so let's compute the norm
+of $(1+2i)$:
+
+$$(1+2i)^2 = 1 +4i +4i^2 \mod i^2+1 = -3+4i = 2(1+2i) - 5$$
+
+$$(1+2i)^2 - 2(1+2i) +5 =0 \mod i^2+1$$
+
+So, $\N(1+2i) = 5$, which is prime.  Therefore, if $(1+2i)$ factors,
+at least one of its factors must have norm $1$ or $-1$.  There
+are no elements in this field with norm $-1$, and the only
+elements with norm $1$ are $1$, $-1$, $i$, and $-i$, all
+of which are units.
+
+\endexample
+
 
 \vfill\eject
 

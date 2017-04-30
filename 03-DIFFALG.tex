@@ -575,14 +575,15 @@ $$\sigma(D x) = \sigma\left(- {\sum_i a_i' x^i \over {\sum_i i a_i x^{i-1}}} \ri
 i.e, $D(\sigma x) = \sigma(D X)$; automorphisms that fix the base field
 of an algebraic extension commute with derivation.
 
-2. Now let's consider how $\sigma$ interacts with Tr.  Remember that
+2. Now let's consider how an automorphism $\sigma$ of $A/K$ interacts with Tr.  Remember that
 trace, in a Galois extension, can be written as a sum over all
 automorphisms that fix the base field:
 
 $${\rm Tr\,} x = \sum_\sigma \sigma x$$
 
 We extend $A$, if necessary, into a Galois extension, and use
-the commutation relationship we just proved to establish:
+the commutation relationship we just proved to establish
+that trace commutes with derivation:
 
 $$D(\Tr x) = D\left(\sum_\sigma \sigma x\right) = \sum_\sigma D(\sigma x)
 = \sum_\sigma \sigma(D x) = \Tr(D x)$$
@@ -604,7 +605,7 @@ $$D a = \frac{1}{n} \Tr(D a) = \frac{1}{n} D(\Tr a)$$
 
 Since $\Tr a \in K$, we have identified an
 element in $K$ with the same derivation as $a$, which therefore can
-differ from $a$ solely by a constant.  Since $A$ and $K$ have the same
+differ from $a$ solely by an additive constant.  Since $A$ and $K$ have the same
 constant subfield, all of our constants are in $K$, so $a$ is
 therefore also in $K$.
 
@@ -700,7 +701,7 @@ functions in $K(t_1)$.  We can use our basic logarithm identities:
 $$\frac{(ab)'}{ab} = \frac{a'}{a} + \frac{b'}{b} \qquad\qquad
 \frac{(\frac{1}{a})'}{\frac{1}{a}} = \frac{-\frac{a'}{a^2}}{\frac{1}{a}} = - \frac{a'}{a}$$
 
-to reduce to the case where the $m_i$ are all irreducible
+to reduce to the case where the $m_i$ (except $m_0$) are all irreducible
 polynomials, so let's consider our three cases:
 
 \begin{enumerate}
