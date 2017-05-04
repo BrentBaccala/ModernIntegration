@@ -59,3 +59,140 @@ with $w(a) = -\ln \phi(a)$:
    & $\forall a,b \in {\bf K},$ & $w(a+b) \ge \min(w(a), w(b))$ &(E4)\cr
 \end{supertabular}
 \end{center}
+
+\vfill\eject
+\mysection{Notes on [Fu08]}
+
+[Fu08] is a good, freely available introduction to algebraic geometry.
+
+\begin{verbatim}
+
+
+Riemann-Roch Theorem
+
+Let C be an algebraic curve, let X be its non-singular model, and let
+K be its function field.
+
+Proposition 8.4.  Let x \in K, x \notin k. Let (x)_0 be the divisor
+of zeros of x and let n=[K:k(x)].  Then
+
+  1) (x)_0 is an effective divisor of degree n,
+  2) There is a constant \tau such that l(r(x)_0) \ge rn-\tau \forall r.
+
+Proof
+
+Prop 6.9. K is an algebraic function field in one variable over k.  By
+definition, this means that exists some t such that K is algebraic
+over k(t).  So x \in K is algebraic over k(t), and \exists F \ in
+k[X,T] such that F[x,t] = 0.  x is not algebraic over k (1-48), so t
+must appear in F, so t is algebraic over k(x), and therefore k(x,t) is
+algebraic over k(x) (1-50), so K is algebraic over k(x) (1-46).
+
+
+
+Problem 1-54: If R is a domain with quotient field K, and L is a
+finite algebraic extension of K, then there exists a basis for L over
+K such that each basis element is integral over R.
+
+Proof 1-54: Let {w_1, ..., w_n} be any basis for L over K.  Since each
+basis element is algebraic over K, by clearing denominators we can
+write:
+
+a_{i0} w_i^{n_i} + a_{i1} w_{n_i-1} + \cdots = 0       a_{ij} \in R
+
+We can pull a_{i0} into w_i, and thus adjust the w_i's to be integral
+over R by multiplying each one by something in R.  Since anything
+in L can be written
+
+   l = \sum c_i w_i        c_i \in K
+
+it can also be written
+
+   l = \sum (c_i / r_i) w'_i
+
+where the r_i adjust the w_i to be integral and c_i/r_i is still in K.
+
+
+
+INTEGRAL ELEMENTS: w integral over k[x] means that w is finite
+everywhere x is, and has poles only where x does.  w integral over
+k[x^{-1}] means that w is finite everywhere x^{-1} is, and has poles
+only where x has zeros.
+
+So, k[x^{-1}] is a domain with quotient field k(x), and K is a finite
+algebraic extension of k(x), so there exists a basis for K over k(x)
+such that each basis element is integral over k[x^{-1}].
+
+Let {w_1, ..., w_n} be such a basis for K over k(x).  We will show
+that the poles of these functions must lie over the roots of x.
+
+w_i^{n_i} + a_{i1} w_{n_i-1} + \cdots = 0       a_{ij} \in k[x^{-1}]
+
+So, ord_P(a_ij) \ge 0 if P \ne S (zero set of x), since x^{-1} and
+thus anything in k[x^{-1}] is finite away from S.
+
+
+
+Problem 2-29: if for some i, ord(a_i) < ord(a_j) \forall j \ne i,
+then a_1 + \cdots + a_n \ne 0
+
+Proof of 2-29: Assume the contrary.  Then we can write a_i =
+\sum_{i\ne j} a_j.  Taking ord of both sides, and using ord(a+b) \ge
+min(ord(a), ord(b)), we see this is impossible.
+
+
+
+Therefore, ord_P(w_i) \ge 0 if P \ne S, since otherwise
+ord_P(w_i^{n_i}) < ord_P(a_ij w^{n_i-j}) \forall j.
+
+Therefore, the poles of w_i are isolated at the zeros of x, and since
+there are only a finite number of w_i and each has a finite number of
+poles, then for some t, div(w_i) + tZ > 0 \forall i.
+
+So w_i \in L(tZ), and if j \le r, then w_i x^{-j} \in L((r+t)Z)
+
+Now w_i are independent over k(x) and 1, x^{-1}, ..., x^{-r} are
+independent over k, so l((r+t)Z) \ge n(r+1).
+
+Now, l((r+t)Z) = l(rZ) + dim(L((r+t)Z) / L(rZ))
+
+dim(L((r+t)Z) / L(rZ)) \le tm (Prop 3-1), where m is the degree of Z.
+
+So, l(rZ) \ge n(r+1) - tm, so pick \tau = tm-n, and
+
+l(rZ) \ge nr - \tau, \forall r
+
+
+
+
+Riemman-Roch
+
+l(D) = deg(D) + 1 - g + l(W-D)
+
+deg(W) = 2g-2    l(W) = g
+
+l(0) = 1
+
+l(D) = 0 if deg(D) < 0
+
+If deg(D) > 2g-2, then l(D) = deg(D) + 1 - g
+
+If deg(D) = 2g-2, then deg(W-D) = 0, and l(W-D) = 1 iff D-W is principal, otherwise l(W-D) = 0
+
+Let D=W+X, where deg(X)=0, then l(D) = 2g-2 + 1 - g + (1/0) depending on whether X is principal
+   l(D) = g (X is principal) or l(D) = g - 1 (X is not principal)
+
+
+Goal: an g-dimensional algebraic variety that represents Pic0
+
+Consider (2g-2)-dimensional symmetric space.  Each point corresponds to an effective
+divisor of degree (2g-2).
+
+Fix a (g-2)-tuple.  We're left with g free points.
+
+
+Milne's construction
+
+Use r-dimensional symmetric space, with r > 2g-2.  Pick an (r-g) tuple.
+
+\end{verbatim}
