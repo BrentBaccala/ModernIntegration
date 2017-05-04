@@ -5,6 +5,8 @@ Having addressed logarithmic and exponential extensions, we now turn
 to the algebraic extension, which turns out to be completely different
 in character from the two transcendental cases.
 
+\begin{comment}
+
 To justify that statement, let's begin by trying to attack algebraic
 extensions in the same manner as the two transcendental cases.
 
@@ -25,9 +27,32 @@ construct partial fractions expansions of everything and begin looking
 at how cancellation might occur between our various components.  The
 variety of possible cancelations between our terms seems daunting.
 
+\vfill\eject
+
+$$\int y\,dx \qquad y^2 = 4-x^2$$
+
+Let's assume that our solution has the form $S = ay+b+\ln (cy+d)$, where $a$
+and $b$ are rational functions in $x$ and $c$ is a polynomial in $x$.
+
+$$S' = a' y + a y' + b' + \frac{c'y+cy'+d'}{cy+d}$$
+$$2 y y' = -2x \qquad y' = -\frac{x}{y} = - \frac{x}{4-x^2}y$$
+$$S' = y = (a' - a \frac{x}{4-x^2})y + b' + \frac{(c' - c \frac{x}{4-x^2})y+d}{cy+d}$$
+$$S' = y = (a' - a \frac{x}{4-x^2})y + b' + \frac{(c' - c \frac{x}{4-x^2})y+d}{cy+d}\frac{cy-d}{cy-d}$$
+$$S' = y = (a' - a \frac{x}{4-x^2})y + b' + \frac{(c' - c \frac{x}{4-x^2})cy^2+cdy -(c' - c \frac{x}{4-x^2})dy-d^2}{c^2y^2-d^2}$$
+$$S' = y = (a' - a \frac{x}{4-x^2})y + b' + \frac{(c' - c \frac{x}{4-x^2})c(4-x^2)+cdy -(c' - c \frac{x}{4-x^2})dy-d^2}{c^2(4-x^2)-d^2}$$
+$$S' = y = (a' - a \frac{x}{4-x^2})y + b' + \frac{(c'(4-x^2) - c x)c+cdy -(c' - c \frac{x}{4-x^2})dy-d^2}{c^2(4-x^2)-d^2}$$
+$$S' = y = (a' - a \frac{x}{4-x^2} + \frac{cd-(c' - c \frac{x}{4-x^2})d}{c^2(4-x^2)-d^2})y + b' + \frac{(c'(4-x^2) - c x)c -d^2}{c^2(4-x^2)-d^2}$$
+
+
+The correct answer is
+
+$$S = 2i\ln(ix-y)+\frac{x}{2}y$$
+
 Instead, we'll use a different approach...
 
 \vfill\eject
+
+\end{comment}
 
 How might we handle a simple algebraic extension?  A crucial property
 of {\it algebraic functions}, as elements of an algebraic extension
