@@ -1336,6 +1336,20 @@ sylvester(a,b,t) := block(
 )$
 \end{maximablock}
 
+\begin{comment}
+...alternate Maxima function to construct Sylvester matrix
+\begin{maximablock}
+syl1[a, x, rows, cols] :=
+   genmatrix(lambda([i,j], coeff(a,x,hipow(a,x)-j+i)),
+             rows, cols)$
+sylvester(a,b,x) :=
+   addrow(syl1[expand(a), x,
+               hipow(b,x),hipow(a,x)+hipow(b,x)],
+          syl1[expand(b), x,
+               hipow(a,x),hipow(a,x)+hipow(b,x)])$
+\end{maximablock}
+\end{comment}
+
 \example Compute the $t-$resultant of $t^2 - 1 -x$ and $t^3-t-y$.
 
 \begin{maximablock}
