@@ -458,17 +458,17 @@ to degree {\tt deg}.
 puiseux(f,pt,deg,init_a0):=
  block([n:deg,ratwtlvl:deg+1,ratweights:[],expansion,res,ans:[],eqns],
   ratweight(x,1),
-  expansion:sum((x-pt)^i*concat(a,i),i,0,n+1),
-  res:sublis([y=expansion],f),
+  expansion:sum((x-pt)^i*a[i],i,0,n+1),
+  res:subst([y=expansion],f),
   res:ratsimp(res),
   eqns:create_list(coeff(res,x,i),i,1,n+1),
-  ans:[a0=init_a0],
-  eqns:sublis(ans,eqns),
-  for i:1 thru n+1 do block([s:solve(eqns[i],concat(a,i-1))],
+  ans:[a[0]=init_a0],
+  eqns:subst(ans,eqns),
+  for i:1 thru n+1 do block([s:solve(eqns[i],a[i-1])],
     if length(s) >= 1 then ans:endcons(s[1],ans),
-    eqns: sublis(ans,eqns)),
+    eqns: subst(ans,eqns)),
   ratwtlvl:deg,
-  rat(sublis(ans,expansion)))$
+  rat(subst(ans,expansion)))$
 
 puiseux(y^2 - (x^2+%i)^2 - 1, 0, 5, 0);
 \end{maximablock}
