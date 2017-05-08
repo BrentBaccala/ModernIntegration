@@ -414,5 +414,75 @@ $$ = \mp \left[ i u^{-2} + \frac{1}{2} i + \cdots \right] \ud u$$
 
 \endexample
 
+\example Evaluate $\int \frac{x}{\sqrt{x^2+1}}\,dx$
+
+This is a simple integral that can be easily solved using first year
+calculus techniques, but let's see how to attack it using the more
+sophisticated techniques of this chapter.
+
+First, we normalize the integrand (CLARIFY) and convert it into
+a rational function on an algebraic curve:
+
+$$\int \frac{x}{x^2+1}y\,dx\qquad y^2=x^2+1$$
+
+Next, we identify the poles of the integrand.  They are located
+where $x^2+1=0$, over the points $x=\pm i$.  These are also
+ramification points of the algebraic curve.  Its Riemann surface
+looks something like this:
+
+\begin{maximacode}
+plot3d ([[sqrt((x**2-y**2+1)**2+(2*x*y)**2), [x, -2, 2], [y, -2, 2]],
+   -sqrt((x**2-y**2+1)**2+(2*x*y)**2)], [x, -2, 2], [y, -2, 2],
+   [legend, false], [xlabel, "Re"], [ylabel, "Im"], [zlabel, false],
+   [xtics, -1,1,1], [ytics, -1,1,1], [ztics, false],
+   [azimuth, 70], [elevation, 80], [grid, 100, 100], [mesh_lines_color, false],
+   [pdf_file, "./07-GRAPH1.pdf"])$
+\end{maximacode}
+
+\begin{figure}[H]
+\begin{center}
+\optionalgraphics[width=0.7\textwidth]{07-GRAPH1.pdf}
+\end{center}
+\end{figure}
+
+Let's compute a Puiseux series expansion of $\frac{x}{x^2+1}y\,dx$
+at $(x,y)=(i,0)$.  We'll use the uniforming variable $t$, with
+$x=t^2+i$.  $y^2 = x^2+1 = (t^2+i)^2+1 = t^4+2it^2$
+
+{\tt puiseux}, adopted from {\tt implicit_taylor} in the Maxima
+distribution, computes the Puiseux series of a function {\tt f} in
+variables $x$ and $y$, centered around place {\tt (pt,init_a0)},
+to degree {\tt deg}.
+
+\begin{maximablock}
+puiseux(f,pt,deg,init_a0):=
+ block([n:deg,ratwtlvl:deg+1,ratweights:[],expansion,res,ans:[],eqns],
+  ratweight(x,1),
+  expansion:sum((x-pt)^i*concat(a,i),i,0,n+1),
+  res:sublis([y=expansion],f),
+  res:ratsimp(res),
+  eqns:create_list(coeff(res,x,i),i,1,n+1),
+  ans:[a0=init_a0],
+  eqns:sublis(ans,eqns),
+  for i:1 thru n+1 do block([s:solve(eqns[i],concat(a,i-1))],
+    if length(s) >= 1 then ans:endcons(s[1],ans),
+    eqns: sublis(ans,eqns)),
+  ratwtlvl:deg,
+  rat(sublis(ans,expansion)))$
+
+puiseux(y^2 - (x^2+%i)^2 - 1, 0, 5, 0);
+\end{maximablock}
+
+\begin{comment}
+  for i:1 thru n do (ans:append(ans,solve(eqns[i],concat(a,i))),
+                   eqns: sublis(ans,eqns));
+  for i:1 thru n do (ans:append(ans,solve(eqns[i],a[i])),
+                   eqns: sublis(ans,eqns));
+  sublis(ans,expansion));
+\end{comment}
+
+
+\endexample
+
 % A {\it Riemann surface}, more precisely, is a two-dimensional manifold
 % with a {\it complex analytic structure}.
