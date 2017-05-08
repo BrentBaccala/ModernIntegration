@@ -455,22 +455,23 @@ variables $x$ and $y$, centered around place {\tt (pt,init_a0)},
 to degree {\tt deg}.
 
 \begin{maximablock}
-puiseux(f,pt,deg,init_a0):=
- block([n:deg,ratwtlvl:deg+1,ratweights:[],expansion,res,ans:[],eqns],
+puiseux(f,x,y,pt,init_a0,deg) ::=
+ block([n:ev(deg),ratwtlvl:ev(deg)+1,ratweights:[],expansion,res,ans:[],eqns],
   ratweight(x,1),
-  expansion:sum((x-pt)^i*a[i],i,0,n+1),
-  res:subst([y=expansion],f),
+  expansion:sum((x-ev(pt))^i*a[i],i,0,n+1),
+  res:subst([y=expansion],ev(f)),
   res:ratsimp(res),
   eqns:create_list(coeff(res,x,i),i,1,n+1),
-  ans:[a[0]=init_a0],
+  ans:[a[0]=ev(init_a0)],
   eqns:subst(ans,eqns),
   for i:1 thru n+1 do block([s:solve(eqns[i],a[i-1])],
     if length(s) >= 1 then ans:endcons(s[1],ans),
     eqns: subst(ans,eqns)),
-  ratwtlvl:deg,
+  ratwtlvl:n,
   rat(subst(ans,expansion)))$
 
-puiseux(y^2 - (x^2+%i)^2 - 1, 0, 5, 0);
+puiseux(y^2 - (t^2+%i)^2 - 1, t, y, 0, 0, 5);
+subst(t=sqrt(x+%i), %);
 \end{maximablock}
 
 \begin{comment}
