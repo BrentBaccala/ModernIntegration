@@ -200,6 +200,13 @@ partial derivatives of the curve's polynomial are zero at a singular
 point, while at least one is non-zero at ordinary points.  This
 analysis is facilitated by Newton polygons.
 
+\begin{maximablock}
+recenter_curve(f,x,y,x0,y0) ::= block([newf],
+   newf : expand(subst([y=y+ev(y0), x=x+ev(x0)], ev(f))),
+   subst([y=y-ev(y0), x=x-ev(x0)], newf)
+)$
+\end{maximablock}
+
 \example Find the singular points of $y^2 = x^2 - 1$
 
 We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
@@ -217,6 +224,74 @@ Thus, we conclude that the multiple points of $y^2 = x^2 - 1$ lie at
 the roots of the discriminant, which are $x = \pm 1$.  The partial
 derivative of the polynomial with respect to $x$ is $-2x$, which is
 non-zero, so neither of these multiple points are singular.
+
+\begin{maximablock}
+recenter_curve(y^2=x^2-1, x, y, 1, 0);
+\end{maximablock}
+
+\begin{comment}
+/* list is a list of pairs, like xy */
+newton_polygon(x, y, list) := block([result, first, slopes, lowest_slope],
+   /* step 1 - discard all points directly above other points */
+   /* step 2 - sort the list by increasing x values */
+   /* first: sort(list, lambda([u,v], u[1]<v[1] or u[2]<v[2]))[1], */
+   list: sort(list, lambda([u,v], u[1]<v[1])),
+   while length(list) > 0 do (
+      first: pop(list),
+      result: [first],
+      slopes: map(lamba([u], ((first - u)[2] / (first-u)[1])), list),
+      lowest_slope: sort(slopes)[1],
+      while (slopes[1] > lowest_slope) do (pop(slopes), pop(list)),
+      while (slopes[1] = lowest_slope) do (pop(slopes), result:endcons(pop(list), result))
+   ),
+   result
+)$
+
+\end{comment}
+
+\begin{maximablock}
+xy: [[1, 0], [2, 0], [0, 2]]$
+xy: [[1, 1], [2, 0], [0, 3]]$
+
+/* list is a list of pairs, like xy */
+newton_polygon(list) := block([result, nxt, slopes, lowest_slope],
+   /* step 1 - discard all points directly above other points */
+   /* step 2 - sort the list by increasing x values */
+   list: sort(list, lambda([u,v], u[1] < v[1])),
+   result: [pop(list)],
+   while length(list) > 0 do (
+      nxt: last(result),
+      slopes: map(lambda([u], ((nxt - u)[2] / (nxt - u)[1])), list),
+      lowest_slope: sort(slopes)[1],
+      if lowest_slope >= 0 then return(result),
+      while (length(slopes) > 0 and slopes[1] > lowest_slope) do (pop(slopes), pop(list)),
+      while (length(slopes) > 0 and slopes[1] = lowest_slope) do (pop(slopes), result:endcons(pop(list), result))
+   ),
+   result
+)$
+
+newton_polygon(xy);
+
+lower_convex_hull(list, x) := block(
+  while length(list) >= 2 and list[2][1] < x do pop(list),
+  if length(list) >= 2 then list[1][2] + (x - list[1][1]) * (list[2][2] - list[1][2])/(list[2][1] - list[1][1]) else %nan
+)$
+
+plot2d([[discrete, xy], 'lower_convex_hull(newton_polygon(xy), l)], [l,0,3], [y,0,3],
+       [style, points, lines], [color, red, blue],
+       [point_type, bullet],
+       [legend, false],
+       [xlabel, false],
+       [xtics, 1], [ytics, 1],
+       [ylabel, false],
+       [pdf_file, "./07-GRAPH2.pdf"])$
+\end{maximablock}
+
+\begin{figure}[H]
+\begin{center}
+\optionalgraphics[width=0.7\textwidth]{07-GRAPH2.pdf}
+\end{center}
+\end{figure}
 
 What about the points at infinity?  Introducing the subsitutions
 $u=x^{-1}$ and $v=y^{-1}$, our curve becomes $u^2 - v^2 + u^2 v^2 =
