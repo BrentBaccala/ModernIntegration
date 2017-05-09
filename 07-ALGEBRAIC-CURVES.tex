@@ -228,11 +228,11 @@ non-zero, so neither of these multiple points are singular.
 \begin{maximablock}
 recenter_curve(y^2=x^2-1, x, y, 1, 0);
 recenter_curve(y^2-(x^2-1), x, y, 1, 0);
+recenter_curve(y^2-(x^2-1), x, y, 0, %i);
 \end{maximablock}
 
 \begin{maximablock}
-monomial_powers(f,x,y,x0,y0) ::= block([result, newf, xpow, ypow],
-  f : ev(f), x0 : ev(x0), y0 : ev(y0), x : ev(x), y : ev(y),
+monomial_powers(f,x,y,x0,y0) := block([result, newf, xpow, ypow],
   result : [],
   newf : recenter_curve(f,x,y,x0,y0),
   for xpow: 0 thru hipow(newf, x-x0) do (
@@ -247,6 +247,7 @@ monomial_powers(f,x,y,x0,y0) ::= block([result, newf, xpow, ypow],
 
 \begin{maximablock}
 monomial_powers(y^2-(x^2-1), x, y, 1, 0);
+monomial_powers(y^2-(x^2-1), x, y, 0, %i);
 \end{maximablock}
 
 \begin{maximablock}
@@ -254,11 +255,14 @@ xy: [[1, 0], [2, 0], [0, 2]]$
 xy: [[1, 1], [2, 0], [0, 3]]$
 
 /* list is a list of pairs, like xy */
-newton_polygon(list) := block([result, nxt, slopes, lowest_slope],
-   /* step 1 - discard all points directly above other points */
-   /* step 2 - sort the list by increasing x values */
-   list: sort(list, lambda([u,v], u[1] < v[1])),
+lower_convex_points(list) := block([result, nxt, slopes, lowest_slope],
+   /* step 1 - sort the list first by increasing x values, then by increasing y values */
+   list: sort(list, lambda([u,v], u[1] < v[1] or u[2] < v[2])),
+   /* step 2 - discard all points directly above other points */
+   list: lreduce(lambda([U,v], if last(U)[1] = v[1] then U else endcons(v,U)), list, [list[1]]),
+   /* step 3 - start with the point on the y-axis */
    result: [pop(list)],
+   /* step 4 - rotate around the lower convex hull, adding points until we reach the horizontal */
    while length(list) > 0 do (
       nxt: last(result),
       slopes: map(lambda([u], ((nxt - u)[2] / (nxt - u)[1])), list),
@@ -270,21 +274,26 @@ newton_polygon(list) := block([result, nxt, slopes, lowest_slope],
    result
 )$
 
-newton_polygon(xy);
+lower_convex_points(xy);
 
 lower_convex_hull(list, x) := block(
   while length(list) >= 2 and list[2][1] < x do pop(list),
   if length(list) >= 2 then list[1][2] + (x - list[1][1]) * (list[2][2] - list[1][2])/(list[2][1] - list[1][1]) else %nan
 )$
 
-plot2d([[discrete, xy], 'lower_convex_hull(newton_polygon(xy), l)], [l,0,3], [y,0,3],
+newton_polygon(f, x, y, x0, y0, filename) := block([newton_points],
+   newton_points : lower_convex_points(monomial_powers(f,x,y,x0,y0)),
+   plot2d([[discrete, newton_points], 'lower_convex_hull(newton_points, l)], [l,0,3], [y,0,3],
        [style, points, lines], [color, red, blue],
        [point_type, bullet],
        [legend, false],
        [xlabel, false],
        [xtics, 1], [ytics, 1],
        [ylabel, false],
-       [pdf_file, "./07-GRAPH2.pdf"])$
+       [pdf_file, filename])
+)$
+
+newton_polygon(y^2-(x^2-1), x, y, 1, 0, "./07-GRAPH2.pdf")$
 \end{maximablock}
 
 \begin{figure}[H]
