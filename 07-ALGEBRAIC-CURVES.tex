@@ -202,6 +202,8 @@ analysis is facilitated by Newton polygons.
 
 \begin{maximablock}
 recenter_curve(f,x,y,x0,y0) := block([newf],
+   if expand(subst([y=y0, x=x0], f)) # 0 then
+      error("attempt to recenter to point not on curve"),
    newf : expand(subst([y=y+ev(y0), x=x+ev(x0)], ev(f))),
    subst([y=y-ev(y0), x=x-ev(x0)], newf)
 )$
@@ -229,6 +231,11 @@ non-zero, so neither of these multiple points are singular.
 recenter_curve(y^2=x^2-1, x, y, 1, 0);
 recenter_curve(y^2-(x^2-1), x, y, 1, 0);
 recenter_curve(y^2-(x^2-1), x, y, 0, %i);
+
+/* why doesn't this produce an error? */
+recenter_curve(y^2-(x^2-1), x, y, 0, 0);
+
+taylor(sin(x),x,0,3);
 \end{maximablock}
 
 \begin{maximablock}
@@ -254,20 +261,25 @@ monomial_powers(y^2-(x^2-1), x, y, 0, %i);
 xy: [[1, 0], [2, 0], [0, 2]]$
 xy: [[1, 1], [2, 0], [0, 3]]$
 
+swap_list_pairs(list) :=
+   map(lambda([u], [u[2], u[1]]), list)
+$
+
+swap_list_pairs(xy);
+
 /* list is a list of pairs, like xy */
 lower_convex_points(list) := block([result, nxt, slopes, lowest_slope],
    /* step 1 - sort the list first by increasing x values, then by increasing y values */
-   list: sort(list, lambda([u,v], u[1] < v[1] or u[2] < v[2])),
+   list: sort(list, lambda([u,v], u[1] < v[1] or (u[1] = v[1] and u[2] < v[2]))),
    /* step 2 - discard all points directly above other points */
    list: lreduce(lambda([U,v], if last(U)[1] = v[1] then U else endcons(v,U)), list, [list[1]]),
    /* step 3 - start with the point on the y-axis */
    result: [pop(list)],
-   /* step 4 - rotate around the lower convex hull, adding points until we reach the horizontal */
+   /* step 4 - rotate around the lower convex hull, adding points as we go */
    while length(list) > 0 do (
       nxt: last(result),
       slopes: map(lambda([u], ((nxt - u)[2] / (nxt - u)[1])), list),
       lowest_slope: sort(slopes)[1],
-      if lowest_slope >= 0 then return(result),
       while (length(slopes) > 0 and slopes[1] > lowest_slope) do (pop(slopes), pop(list)),
       while (length(slopes) > 0 and slopes[1] = lowest_slope) do (pop(slopes), result:endcons(pop(list), result))
    ),
@@ -276,15 +288,20 @@ lower_convex_points(list) := block([result, nxt, slopes, lowest_slope],
 
 lower_convex_points(xy);
 
-lower_convex_hull(list, x) := block(
+lower_convex_hull(inlist, x) := block([list],
+  list: sort(inlist, lambda([u,v], u[1] < v[1])),
   while length(list) >= 2 and list[2][1] < x do pop(list),
   if length(list) >= 2 then list[1][2] + (x - list[1][1]) * (list[2][2] - list[1][2])/(list[2][1] - list[1][1]) else %nan
 )$
 
-newton_polygon(f, x, y, x0, y0, filename) := block([newton_points],
-   newton_points : lower_convex_points(monomial_powers(f,x,y,x0,y0)),
-   plot2d([[discrete, newton_points], 'lower_convex_hull(newton_points, l)], [l,0,3], [y,0,3],
-       [style, points, lines], [color, red, blue],
+newton_polygon(f, x, y, x0, y0, filename) := block([newton_points, maxx, maxy, maxxy],
+   newton_points : swap_list_pairs(monomial_powers(f,x,y,x0,y0)),
+   convex_hull_points : lower_convex_points(newton_points),
+   maxx: lreduce(max, map(first, convex_hull_points)),
+   maxy: lreduce(max, map(second, convex_hull_points)),
+   maxxy: max(maxx, maxy),
+   plot2d([[discrete, newton_points], 'lower_convex_hull(convex_hull_points, l)], [l,0,maxxy+1], [y,0,maxxy+1],
+       [style, points, [lines, 5]], [color, red, blue],
        [point_type, bullet],
        [legend, false],
        [xlabel, false],
@@ -293,7 +310,9 @@ newton_polygon(f, x, y, x0, y0, filename) := block([newton_points],
        [pdf_file, filename])
 )$
 
-newton_polygon(y^2-(x^2-1), x, y, 1, 0, "./07-GRAPH2.pdf")$
+recenter_curve(y^2-x^2-1, x, y, 0, 1);
+monomial_powers(y^2-x^2-1, x, y, 0, 1);
+newton_polygon(y^2-x^2-1, x, y, 0, 1, "./07-GRAPH2.pdf")$
 \end{maximablock}
 
 \begin{figure}[H]
@@ -554,8 +573,17 @@ puiseux(f,x,y,pt,init_a0,deg) ::=
   ratwtlvl:n,
   rat(subst(ans,expansion)))$
 
-puiseux(y^2 - (t^2+%i)^2 - 1, t, y, 0, 0, 5);
-subst(t=sqrt(x+%i), %);
+ps: puiseux(y^2 - (t^2-%i)^2 - 1, t, y, 0, 0, 5);
+subst(t=sqrt(x-%i), %);
+expand(ps^2-(t^2-%i)^2-1);
+\end{maximablock}
+
+\begin{maximablock}
+load("taylor1.mac")$
+/* ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5); */
+ps: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1);
+expand(ps^2);
+expand(ps^2-x^2-1);
 \end{maximablock}
 
 \begin{comment}
