@@ -235,6 +235,7 @@ recenter_curve(y^2-(x^2-1), x, y, 0, %i);
 /* why doesn't this produce an error? */
 recenter_curve(y^2-(x^2-1), x, y, 0, 0);
 
+/* why doesn't this produce cdots? */
 taylor(sin(x),x,0,3);
 \end{maximablock}
 
@@ -258,14 +259,9 @@ monomial_powers(y^2-(x^2-1), x, y, 0, %i);
 \end{maximablock}
 
 \begin{maximablock}
-xy: [[1, 0], [2, 0], [0, 2]]$
-xy: [[1, 1], [2, 0], [0, 3]]$
-
 swap_list_pairs(list) :=
    map(lambda([u], [u[2], u[1]]), list)
 $
-
-swap_list_pairs(xy);
 
 /* list is a list of pairs, like xy */
 lower_convex_points(list) := block([result, nxt, slopes, lowest_slope],
@@ -285,8 +281,6 @@ lower_convex_points(list) := block([result, nxt, slopes, lowest_slope],
    ),
    result
 )$
-
-lower_convex_points(xy);
 
 lower_convex_hull(inlist, x) := block([list],
   list: sort(inlist, lambda([u,v], u[1] < v[1])),
@@ -312,7 +306,8 @@ newton_polygon(f, x, y, x0, y0, filename) := block([newton_points, maxx, maxy, m
 
 recenter_curve(y^2-x^2-1, x, y, 0, 1);
 monomial_powers(y^2-x^2-1, x, y, 0, 1);
-newton_polygon(y^2-x^2-1, x, y, 0, 1, "./07-GRAPH2.pdf")$
+/* newton_polygon(y^2-x^2-1, x, y, 0, 1, "./07-GRAPH2.pdf")$ */
+newton_polygon(y^2-x^2-1, x, y, %i, 0, "./07-GRAPH2.pdf")$
 \end{maximablock}
 
 \begin{figure}[H]
@@ -554,19 +549,21 @@ $x=t^2+i$.  $y^2 = x^2+1 = (t^2+i)^2+1 = t^4+2it^2$
 
 {\tt puiseux}, adopted from {\tt implicit_taylor} in the Maxima
 distribution, computes the Puiseux series of a function {\tt f} in
-variables $x$ and $y$, centered around place {\tt (pt,init_a0)},
+variables $x$ and $y$, centered around place {\tt (x0, y0)},
 to degree {\tt deg}.
 
 \begin{maximablock}
-puiseux(f,x,y,pt,init_a0,deg) ::=
+puiseux(f,x,y,x0,y0,deg) ::=
  block([n:ev(deg),ratwtlvl:ev(deg)+1,ratweights:[],expansion,res,ans:[],eqns],
   ratweight(x,1),
-  expansion:sum((x-ev(pt))^i*a[i],i,0,n+1),
+  expansion:sum((x-ev(x0))^i*a[i],i,0,n+1),
   res:subst([y=expansion],ev(f)),
   res:ratsimp(res),
   eqns:create_list(coeff(res,x,i),i,1,n+1),
-  ans:[a[0]=ev(init_a0)],
+  ans:[a[0]=ev(y0)],
   eqns:subst(ans,eqns),
+  display(res),
+  display(eqns),
   for i:1 thru n+1 do block([s:solve(eqns[i],a[i-1])],
     if length(s) >= 1 then ans:endcons(s[1],ans),
     eqns: subst(ans,eqns)),
@@ -576,14 +573,40 @@ puiseux(f,x,y,pt,init_a0,deg) ::=
 ps: puiseux(y^2 - (t^2-%i)^2 - 1, t, y, 0, 0, 5);
 subst(t=sqrt(x-%i), %);
 expand(ps^2-(t^2-%i)^2-1);
+ps: -ps;
+expand(ps^2-(t^2-%i)^2-1);
+
+puiseux(f,x,y,x0,y0,deg) ::=
+ block([n:ev(deg),ratwtlvl:ev(deg),ratweights:[],expansion,res,ans:[],eqns],
+  ratweight(x,1),
+  expansion:sum((x-ev(x0))^i*a[i],i,0,n),
+  res:subst([y=expansion],ev(f)),
+  res:ratsimp(res),
+  eqns:create_list(coeff(res,x,i),i,1,n),
+  ans:[a[0]=ev(y0)],
+  eqns:subst(ans,eqns),
+  display(res),
+  display(eqns),
+  for i:1 thru n do block([s:solve(eqns[i],a[i])],
+    if length(s) >= 1 then ans:endcons(s[1],ans),
+    eqns: subst(ans,eqns)),
+  subst(ans,expansion))$
+
+ps: puiseux(y^2 - (t^2-%i)^2 - 1, t, y, 0, 0, 5);
+
+ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5);
+
 \end{maximablock}
 
 \begin{maximablock}
 load("taylor1.mac")$
-/* ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5); */
+ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5);
 ps: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1);
 expand(ps^2);
 expand(ps^2-x^2-1);
+expand((-ps)^2-x^2-1);
+implicit_taylor(y^2 + y - x^3, 0, 10, 0);
+implicit_taylor(y^2 - x, 0, 10, 0);
 \end{maximablock}
 
 \begin{comment}
