@@ -596,6 +596,47 @@ ps: puiseux(y^2 - (t^2-%i)^2 - 1, t, y, 0, 0, 5);
 
 ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5);
 
+puiseux2(f,x,y,x0,y0,deg,r,s,p) ::=
+ block([n:ev(deg),ratwtlvl:ev(deg),ratweights:[],expansion,res,ans:[],eqns],
+  ratweight(x,1),
+  expansion:ev(y0) + sum(t^i*a[i],i,s,s+n),
+  res:subst([x=t^r + ev(x0), y=expansion],ev(f)),
+  res:ratsimp(res),
+  eqns:create_list(coeff(res,t,i),i,p,p+n),
+  ans:[],
+  eqns:subst(ans,eqns),
+  display(res),
+  display(eqns),
+  for i:0 thru n do block([s:solve(eqns[i+1],a[s+i])],
+    if length(s) >= 1 then ans:endcons(s[1],ans),
+    eqns: subst(ans,eqns)),
+  display(subst(ans,expansion)),
+  /* subst(ans,expansion))$ */
+  subst(t=(x-ev(x0))^(1/r), subst(ans,expansion)))$
+
+puiseux3(f,x,y,x0,y0,deg) ::=
+ block([mp, delta, g],
+   mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,ev(x0),ev(y0)))),
+   delta: mp[2]-mp[1],
+   g: gcd(delta[1],delta[2]),
+   f: ev(f), x0: ev(x0), y0: ev(y0), deg: ev(deg),
+   puiseux2(f,x,y,x0,y0,5,delta[2]/g,delta[1]/g,mp[1][2]*delta[1]/g)
+ )$
+
+/* puiseux3(y^2-x^2-1, x, y, 0, 1, 5); */
+
+recenter_curve(y^2-x^2-1, x, y, 0, 1);
+monomial_powers(y^2-x^2-1, x, y, 0, 1);
+ps: puiseux2(y^2 - x^2 - 1, x, y, 0, 1, 5, 1, 2, 2);
+expand(ps^2-x^2-1);
+
+ps: puiseux2(y^2 - x^2 - 1, x, y, %i, 0, 5, 2, 1, 2);
+
+expand(ps^2);
+expand(ps^2-x^2-1);
+
+
+
 \end{maximablock}
 
 \begin{maximablock}
