@@ -553,48 +553,6 @@ variables $x$ and $y$, centered around place {\tt (x0, y0)},
 to degree {\tt deg}.
 
 \begin{maximablock}
-puiseux(f,x,y,x0,y0,deg) ::=
- block([n:ev(deg),ratwtlvl:ev(deg)+1,ratweights:[],expansion,res,ans:[],eqns],
-  ratweight(x,1),
-  expansion:sum((x-ev(x0))^i*a[i],i,0,n+1),
-  res:subst([y=expansion],ev(f)),
-  res:ratsimp(res),
-  eqns:create_list(coeff(res,x,i),i,1,n+1),
-  ans:[a[0]=ev(y0)],
-  eqns:subst(ans,eqns),
-  display(res),
-  display(eqns),
-  for i:1 thru n+1 do block([s:solve(eqns[i],a[i-1])],
-    if length(s) >= 1 then ans:endcons(s[1],ans),
-    eqns: subst(ans,eqns)),
-  ratwtlvl:n,
-  rat(subst(ans,expansion)))$
-
-ps: puiseux(y^2 - (t^2-%i)^2 - 1, t, y, 0, 0, 5);
-subst(t=sqrt(x-%i), %);
-expand(ps^2-(t^2-%i)^2-1);
-ps: -ps;
-expand(ps^2-(t^2-%i)^2-1);
-
-puiseux(f,x,y,x0,y0,deg) ::=
- block([n:ev(deg),ratwtlvl:ev(deg),ratweights:[],expansion,res,ans:[],eqns],
-  ratweight(x,1),
-  expansion:sum((x-ev(x0))^i*a[i],i,0,n),
-  res:subst([y=expansion],ev(f)),
-  res:ratsimp(res),
-  eqns:create_list(coeff(res,x,i),i,1,n),
-  ans:[a[0]=ev(y0)],
-  eqns:subst(ans,eqns),
-  display(res),
-  display(eqns),
-  for i:1 thru n do block([s:solve(eqns[i],a[i])],
-    if length(s) >= 1 then ans:endcons(s[1],ans),
-    eqns: subst(ans,eqns)),
-  subst(ans,expansion))$
-
-ps: puiseux(y^2 - (t^2-%i)^2 - 1, t, y, 0, 0, 5);
-
-ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5);
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  block([n:deg,ratwtlvl:deg,ratweights:[],expansion,res,ans:[],eqns],
@@ -605,16 +563,12 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   eqns:create_list(coeff(res,t,i),i,p,p+n),
   ans:[],
   eqns:subst(ans,eqns),
-  display(res),
-  display(eqns),
   for i:0 thru n do block([s:solve(eqns[i+1],a[s+i])],
     if length(s) >= 1 then ans:endcons(s[1],ans),
     eqns: subst(ans,eqns)),
-  display(subst(ans,expansion)),
-  /* subst(ans,expansion))$ */
   subst(t=(x-x0)^(1/r), subst(ans,expansion)))$
 
-puiseux3(f,x,y,x0,y0,deg) :=
+puiseux(f,x,y,x0,y0,deg) :=
  block([mp, delta, g],
    mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
    delta: mp[2]-mp[1],
@@ -622,21 +576,11 @@ puiseux3(f,x,y,x0,y0,deg) :=
    puiseux2(f,x,y,x0,y0,deg,delta[1]/g,-delta[2]/g,mp[1][2]*delta[1]/g)
  )$
 
-puiseux3(y^2-x^2-1, x, y, 0, 1, 3);
+puiseux(y^2-x^2-1, x, y, 0, 1, 5);
 
-recenter_curve(y^2-x^2-1, x, y, 0, 1);
-monomial_powers(y^2-x^2-1, x, y, 0, 1);
-ps: puiseux2(y^2 - x^2 - 1, x, y, 0, 1, 5, 1, 2, 2);
-expand(ps^2-x^2-1);
+puiseux(b^2-a^2-1, a, b, 0, 1, 5);
 
-ps: puiseux2(y^2 - x^2 - 1, x, y, %i, 0, 5, 2, 1, 2);
-
-puiseux3(y^2-x^2-1, x, y, %i, 0, 5);
-
-expand(ps^2);
-expand(ps^2-x^2-1);
-
-
+puiseux(y^2-x^2-1, x, y, %i, 0, 5);
 
 \end{maximablock}
 
@@ -648,7 +592,9 @@ expand(ps^2);
 expand(ps^2-x^2-1);
 expand((-ps)^2-x^2-1);
 implicit_taylor(y^2 + y - x^3, 0, 10, 0);
+puiseux(y^2 + y - x^3, x, y, 0, 0, 10);
 implicit_taylor(y^2 - x, 0, 10, 0);
+puiseux(y^2 - x, x, y, 0, 0, 10);
 \end{maximablock}
 
 \begin{comment}
