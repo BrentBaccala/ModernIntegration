@@ -353,6 +353,69 @@ series is to use Newton polygons to determine ramification,
 then setup a trial series with the correct ramification and
 substitute it into the curve's defining equation.
 
+{\tt puiseux}, adopted from {\tt implicit_taylor} in the Maxima
+distribution, computes the Puiseux series of a function {\tt f} in
+variables $x$ and $y$, centered around place {\tt (x0, y0)},
+to degree {\tt deg}.
+
+{\tt puiseux2} is an auxilary function that computes a Puiseux series
+corresponding to a single line segment of the Newton polygon.  Letting
+$\alpha$ be the $x$ exponent and $\beta$ be the $y$ exponent, so the
+monomials in $f$ have the form $x^\alpha y^\beta$, then the equation
+of the line segment is $r\alpha + s\beta = p$, where $r$, $s$, and $p$
+are integers and $r$ and $s$ are relatively prime.  Making the 
+substitution $x=x_0+t^r$ and $y=y_0+t^s u(t)$, we obtain:
+
+$$f(x,y) = \sum A_{\alpha\beta} x^\alpha y^\beta$$
+
+\begin{maximablock}
+
+puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
+ block([n:deg,ratwtlvl:deg,ratweights:[],expansion,res,ans:[],eqns],
+  ratweight(x,1),
+  /* XXX what if s > n? */
+  expansion:y0 + sum(t^i*a[i],i,s,n),
+  res:subst([x=t^r + x0, y=expansion], f),
+  /* if there are fractions in x0 or y0, we'll get a rational function and need to extract the numerator */
+  res:num(ratsimp(res)),
+  eqns:create_list(coeff(res,t,i),i,p,p+(n-s)),
+  /* display(res, eqns), */
+  ans:[],
+  eqns:subst(ans,eqns),
+  for i:0 thru n-s do block([s:solve(eqns[i+1],a[s+i])],
+    if length(s) >= 1 then ans:endcons(s[1],ans),
+    eqns: subst(ans,eqns)),
+  subst(t=(x-x0)^(1/r), subst(ans,expansion)))$
+
+puiseux(f,x,y,x0,y0,deg) :=
+ block([mp, delta, g],
+   mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
+   delta: mp[2]-mp[1],
+   g: gcd(delta[1],delta[2]),
+   puiseux2(f,x,y,x0,y0,deg,delta[1]/g,-delta[2]/g,mp[1][2]*delta[1]/g)
+ )$
+
+puiseux(y^2-x^2-1, x, y, 0, 1, 5);
+
+puiseux(b^2-a^2-1, a, b, 0, 1, 5);
+
+puiseux(y^2-x^2-1, x, y, %i, 0, 5);
+
+\end{maximablock}
+
+\begin{maximablock}
+load("taylor1.mac")$
+ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5);
+ps: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1);
+expand(ps^2);
+expand(ps^2-x^2-1);
+expand((-ps)^2-x^2-1);
+implicit_taylor(y^2 + y - x^3, 0, 10, 0);
+puiseux(y^2 + y - x^3, x, y, 0, 0, 10);
+implicit_taylor(y^2 - x, 0, 10, 0);
+puiseux(y^2 - x, x, y, 0, 0, 10);
+\end{maximablock}
+
 %\mysection{meromorphic functions are analytic}
 %
 %first, trace of a meromorphic function is meromorphic on C(x), and is
@@ -547,64 +610,13 @@ Let's compute a Puiseux series expansion of $\frac{x}{x^2+1}y\,dx$
 at $(x,y)=(i,0)$.  We'll use the uniforming variable $t$, with
 $x=t^2+i$.  $y^2 = x^2+1 = (t^2+i)^2+1 = t^4+2it^2$
 
-{\tt puiseux}, adopted from {\tt implicit_taylor} in the Maxima
-distribution, computes the Puiseux series of a function {\tt f} in
-variables $x$ and $y$, centered around place {\tt (x0, y0)},
-to degree {\tt deg}.
-
 \begin{maximablock}
-
-puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
- block([n:deg,ratwtlvl:deg,ratweights:[],expansion,res,ans:[],eqns],
-  ratweight(x,1),
-  expansion:y0 + sum(t^i*a[i],i,s,s+n),
-  res:subst([x=t^r + x0, y=expansion], f),
-  res:ratsimp(res),
-  eqns:create_list(coeff(res,t,i),i,p,p+n),
-  ans:[],
-  eqns:subst(ans,eqns),
-  for i:0 thru n do block([s:solve(eqns[i+1],a[s+i])],
-    if length(s) >= 1 then ans:endcons(s[1],ans),
-    eqns: subst(ans,eqns)),
-  subst(t=(x-x0)^(1/r), subst(ans,expansion)))$
-
-puiseux(f,x,y,x0,y0,deg) :=
- block([mp, delta, g],
-   mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
-   delta: mp[2]-mp[1],
-   g: gcd(delta[1],delta[2]),
-   puiseux2(f,x,y,x0,y0,deg,delta[1]/g,-delta[2]/g,mp[1][2]*delta[1]/g)
- )$
-
-puiseux(y^2-x^2-1, x, y, 0, 1, 5);
-
-puiseux(b^2-a^2-1, a, b, 0, 1, 5);
-
-puiseux(y^2-x^2-1, x, y, %i, 0, 5);
-
+ps: puiseux(y^2 - x^2 - 1, x, y, %i, 0, 5);
+expand(ps*x/(x^2+1));
+puiseux((2*%i+t^2)*b-1, t, b, 0, 1/(2*%i), 5);
+ratsimp(subst(x=%i+t^2, t^2*x/(x^2+1)-b));
+puiseux(%, t, b, 0, 1/2, 5);
 \end{maximablock}
-
-\begin{maximablock}
-load("taylor1.mac")$
-ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5);
-ps: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1);
-expand(ps^2);
-expand(ps^2-x^2-1);
-expand((-ps)^2-x^2-1);
-implicit_taylor(y^2 + y - x^3, 0, 10, 0);
-puiseux(y^2 + y - x^3, x, y, 0, 0, 10);
-implicit_taylor(y^2 - x, 0, 10, 0);
-puiseux(y^2 - x, x, y, 0, 0, 10);
-\end{maximablock}
-
-\begin{comment}
-  for i:1 thru n do (ans:append(ans,solve(eqns[i],concat(a,i))),
-                   eqns: sublis(ans,eqns));
-  for i:1 thru n do (ans:append(ans,solve(eqns[i],a[i])),
-                   eqns: sublis(ans,eqns));
-  sublis(ans,expansion));
-\end{comment}
-
 
 \endexample
 
