@@ -388,14 +388,27 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   for i:0 thru n-s do block([s:solve(eqns[i+1],a[s+i])],
     if listp(s) and length(s) >= 1 then ans:endcons(s[1],ans),
     eqns: subst(ans,eqns)),
-  subst(t=(x-x0)^(1/r), subst(ans,expansion)))$
+  subst(ans,expansion))$
 
-puiseux(f,x,y,x0,y0,deg) :=
- block([mp, delta, g],
+puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
+ block([mp, delta, g, r, s, yseries, rf, result, ratwtlvl: deg, ratweights:[]],
    mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
    delta: mp[2]-mp[1],
    g: gcd(delta[1],delta[2]),
-   puiseux2(f,x,y,x0,y0,deg,delta[1]/g,-delta[2]/g,mp[1][2]*delta[1]/g)
+   r: delta[1]/g,
+   s: -delta[2]/g,
+   yseries: puiseux2(f,x,y,x0,y0,deg,r,s,mp[1][2]*r),
+   if length(ratfunc) > 0 then block([b],
+     rf: ratsimp(subst(x=x0+t^r, ratfunc[1]-b)),
+     rf: puiseux2(rf, t, b, 0, 0, deg, 1, -2, 0)
+   ) else rf: 1,
+   /* ratsimp to collect like terms together, but we get a common denominator */
+   result: ratsimp(rf*yseries),
+   /* this, combined with the ratsimp below, truncates our results at degree deg */
+   ratweight(t,1),
+   /* this map distributes over the common denominator */
+   result: map(lambda([u], ratsimp(u/denom(result))), num(result)),
+   subst(t=(x-x0)^(1/r), result)
  )$
 
 puiseux(y^2-x^2-1, x, y, 0, 1, 5);
@@ -610,22 +623,34 @@ plot3d ([sqrt((x**2-y**2+1)**2+(2*x*y)**2),
 \end{figure}
 
 Let's compute a Puiseux series expansion of $\frac{x}{x^2+1}y\,dx$
-at $(x,y)=(i,0)$.  We'll use the uniforming variable $t$, with
-$x=t^2+i$.  $y^2 = x^2+1 = (t^2+i)^2+1 = t^4+2it^2$
+at $(x,y)=(i,0)$.
+
+% We'll use the uniforming variable $t$, with
+% $x=t^2+i$.  $y^2 = x^2+1 = (t^2+i)^2+1 = t^4+2it^2$
 
 \begin{maximablock}
-ps: puiseux(y^2 - x^2 - 1, x, y, %i, 0, 5);
-ps: subst(x=%i+t^2, %);
-puiseux((2*%i+t^2)*b-1, t, b, 0, 1/(2*%i), 5);
-ratsimp(subst(x=%i+t^2, t^2*x/(x^2+1)-b));
-puiseux(%, t, b, 0, 1/2, 5);
-ratsimp(subst(x=%i+t^2, x/(x^2+1)-b));
-puiseux2(%, t, b, 0, 0, 5, 1, -2, 0);
-subst(t=sqrt(x-%i), %);
-%*ps;
+/* puiseux(y^2 - x^2 - 1, x, y, %i, 0, 5); */
+puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
+        x/(x^2+1));
+\end{maximablock}
+
+There appears to be a pole here, but appearances are deceptive.
+We can't integrate this series termwise with respect to $x$;
+we have to change variables in the differential:
+
+$$d \sqrt{x-i} = \frac{1}{2} \frac{1}{\sqrt{x-i}} dx$$
+$$dx = 2 \sqrt{x-i} d \sqrt{x-i}$$
+
+\begin{maximablock}
+distrib(% * 2 * sqrt(x-%i));
 \end{maximablock}
 
 \endexample
+
+So, even though the {\it integrand} has a pole at $(i,0)$, the {\it
+differential} does not... and the differential is what matters!
+
+The only other place we might have a pole is infinity.
 
 % A {\it Riemann surface}, more precisely, is a two-dimensional manifold
 % with a {\it complex analytic structure}.
