@@ -202,10 +202,16 @@ analysis is facilitated by Newton polygons.
 
 \begin{maximablock}
 recenter_curve(f,x,y,x0,y0) := block([newf],
+   if x0 = inf then (f:subst(x=1/x, f), x0:0),
+   /* if y0 = inf then (f:subst(y=1/y, f), y0:0), */
+   f: num(ratsimp(f)),
+/*
    if expand(subst([y=y0, x=x0], f)) # 0 then
       error("attempt to recenter to point not on curve"),
-   newf : expand(subst([y=y+ev(y0), x=x+ev(x0)], ev(f))),
-   subst([y=y-ev(y0), x=x-ev(x0)], newf)
+*/
+   newf : expand(subst([y=y+y0, x=x+x0], f)),
+   newf : subst([y=y-y0, x=x-x0], newf),
+   [newf, x0, y0]
 )$
 \end{maximablock}
 
@@ -232,6 +238,8 @@ non-zero, so neither of these multiple points are singular.
 recenter_curve(y^2-(x^2-1), x, y, 1, 0);
 recenter_curve(y^2-(x^2-1), x, y, 0, %i);
 
+recenter_curve(y^2-(x^2-1), x, y, inf, inf);
+
 /* errcatch(recenter_curve(y^2-(x^2-1), x, y, 0, 0)); */
 
 /* why doesn't this produce cdots? */
@@ -241,7 +249,7 @@ taylor(sin(x),x,0,3);
 \begin{maximablock}
 monomial_powers(f,x,y,x0,y0) := block([result, newf, xpow, ypow],
   result : [],
-  newf : recenter_curve(f,x,y,x0,y0),
+  [newf,x0,y0] : recenter_curve(f,x,y,x0,y0),
   for xpow: 0 thru hipow(newf, x-x0) do (
     xcoeff : coeff(newf,x-x0,xpow),
     if xcoeff # 0 then for ypow: 0 thru hipow(xcoeff, y-y0) do (
@@ -255,6 +263,7 @@ monomial_powers(f,x,y,x0,y0) := block([result, newf, xpow, ypow],
 \begin{maximablock}
 monomial_powers(y^2-(x^2-1), x, y, 1, 0);
 monomial_powers(y^2-(x^2-1), x, y, 0, %i);
+monomial_powers(y^2-(x^2-1), x, y, inf, inf);
 \end{maximablock}
 
 \begin{maximablock}
@@ -404,16 +413,38 @@ have a unique series expansion for $u(t)$ as a function of $t$.  If any of the r
 are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 (\cite{bliss} \S 15) that this procedure always terminates.
 
+\begin{comment}
+  if x0 # inf then
+    xexpansion: x0 + t^r
+  else
+    xexpansion: (1/t)^r,
+  /* XXX what if s > n? */
+  if y0 # inf then
+    yexpansion: y0 + sum(t^i*a[i],i,s,n)
+  else
+    yexpansion: sum((1/t)^i*a[i],i,s,n),
+\end{comment}
+
 \begin{maximablock}
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
- block([n:deg, /* ratwtlvl:deg,ratweights:[], */ expansion,res,ans:[],eqns],
+ block([n:deg, /* ratwtlvl:deg,ratweights:[], */ xexpansion, yexpansion, res,ans:[],eqns],
   /* ratweight(x,1), */
+  if x0 # inf then
+    xexpansion: x0 + t^r
+  else
+    xexpansion: (1/t)^r,
   /* XXX what if s > n? */
-  expansion:y0 + sum(t^i*a[i],i,s,n),
-  res:subst([x=t^r + x0, y=expansion], f),
+  if y0 # inf then
+    yexpansion: y0 + sum(t^i*a[i],i,s,n)
+  else
+    /* yexpansion: 1/sum(t^i*a[i],i,s,n), */
+    yexpansion: sum(t^i*a[i],i,s,n),
+  res:subst([x=xexpansion, y=yexpansion], f),
   /* if there are fractions in x0 or y0, we'll get a rational function and need to extract the numerator */
+display(res),
   res:num(ratsimp(res)),
+display(res),
   eqns:create_list(coeff(res,t,i),i,p,p+(n-s)),
   /* display(res, eqns), */
   ans:[],
@@ -421,7 +452,7 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   for i:0 thru n-s do block([s:solve(eqns[i+1],a[s+i])],
     if listp(s) and length(s) >= 1 then ans:endcons(s[1],ans),
     eqns: subst(ans,eqns)),
-  subst(ans,expansion))$
+  subst(ans,yexpansion))$
 
 /* puiseux_fracexp controls whether series are returned with
  * fractional exponents, or using an auxilary variable (t).
@@ -432,7 +463,10 @@ puiseux_fracexp : true$
 puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
  block([mp, delta, g, r, s, yseries, rf, result, ratwtlvl: deg, ratweights:[]],
    mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
-   delta: mp[2]-mp[1],
+   if y0 # inf then
+      delta: mp[2]-mp[1]
+   else
+      delta: last(mp) - lastn(mp,2)[1],
    g: gcd(delta[1],delta[2]),
    r: delta[1]/g,
    s: -delta[2]/g,
@@ -444,17 +478,18 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
      rf: subst(x=x0+t^r, taylor(ratfunc[1], x, x0, deg))
    ) else rf: 1,
    /* expand y to the requested degree, adjusted by the degree of rf */
-   yseries: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,mp[1][2]*r),
+   yseries: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,if y0 # inf then mp[1][2]*r else 0),
    /* ratsimp to collect like terms together, but we get a common denominator */
    result: ratsimp(rf*yseries),
    /* this, combined with the ratsimp below, truncates our results at degree deg */
    ratweight(t,1),
    /* this map distributes over the common denominator */
-   result: map(lambda([u], ratsimp(u/denom(result))), num(result)),
+   if not atom(num(result)) and part(num(result), 0) = "+" then
+      result: map(lambda([u], ratsimp(u/denom(result))), num(result)),
    if puiseux_fracexp then
       subst(t=(x-x0)^(1/r), result)
    else
-      [result, t^r=x-x0]
+      [result, if x0 # inf then t^r=x-x0 else t=1/x]
  )$
 
 puiseux(y^2-x^2-1, x, y, 0, 1, 5);
@@ -680,6 +715,8 @@ ev(puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
            x/(x^2+1)), puiseux_fracexp=false);
 puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
         x/(x^2+1));
+ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3),
+    puiseux_fracexp=false);
 \end{maximablock}
 
 There appears to be a pole here, but appearances are deceptive.
