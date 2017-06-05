@@ -203,7 +203,7 @@ analysis is facilitated by Newton polygons.
 \begin{maximablock}
 recenter_curve(f,x,y,x0,y0) := block([newf],
    if x0 = inf then (f:subst(x=1/x, f), x0:0),
-   /* if y0 = inf then (f:subst(y=1/y, f), y0:0), */
+   if y0 = inf then (f:subst(y=1/y, f), y0:0),
    f: num(ratsimp(f)),
 /*
    if expand(subst([y=y0, x=x0], f)) # 0 then
@@ -413,18 +413,6 @@ have a unique series expansion for $u(t)$ as a function of $t$.  If any of the r
 are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 (\cite{bliss} \S 15) that this procedure always terminates.
 
-\begin{comment}
-  if x0 # inf then
-    xexpansion: x0 + t^r
-  else
-    xexpansion: (1/t)^r,
-  /* XXX what if s > n? */
-  if y0 # inf then
-    yexpansion: y0 + sum(t^i*a[i],i,s,n)
-  else
-    yexpansion: sum((1/t)^i*a[i],i,s,n),
-\end{comment}
-
 \begin{maximablock}
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
@@ -442,9 +430,9 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
     yexpansion: sum(t^i*a[i],i,s,n),
   res:subst([x=xexpansion, y=yexpansion], f),
   /* if there are fractions in x0 or y0, we'll get a rational function and need to extract the numerator */
-display(res),
+  /* display(res), */
   res:num(ratsimp(res)),
-display(res),
+  /* display(res), */
   eqns:create_list(coeff(res,t,i),i,p,p+(n-s)),
   /* display(res, eqns), */
   ans:[],
@@ -462,11 +450,16 @@ puiseux_fracexp : true$
 
 puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
  block([mp, delta, g, r, s, yseries, rf, result, ratwtlvl: deg, ratweights:[]],
-   mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
-   if y0 # inf then
+   if y0 # inf then (
+      mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
       delta: mp[2]-mp[1]
-   else
-      delta: last(mp) - lastn(mp,2)[1],
+   ) else (
+      /* If we're expanding y at infinity, don't recenter y, but use
+       * rightmost points on the Newton polygon instead
+       */
+      mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,0))),
+      delta: last(mp) - lastn(mp,2)[1]
+   ),
    g: gcd(delta[1],delta[2]),
    r: delta[1]/g,
    s: -delta[2]/g,
@@ -475,10 +468,13 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
    if length(ratfunc) > 0 then block([b],
      /* rf: ratsimp(subst(x=x0+t^r, ratfunc[1]-b)), */
      /* rf: puiseux2(rf, t, b, 0, 0, deg, 1, -2, 0), display(rf) */
-     rf: subst(x=x0+t^r, taylor(ratfunc[1], x, x0, deg))
+     rf: subst(if x0 # inf then x=x0+t^r else x=1/t, taylor(ratfunc[1], x, x0, deg))
    ) else rf: 1,
    /* expand y to the requested degree, adjusted by the degree of rf */
-   yseries: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,if y0 # inf then mp[1][2]*r else 0),
+   if y0 # inf then
+      yseries: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,mp[1][2]*r)
+   else
+      yseries: puiseux2(f,x,y,x0,0,deg+lopow(rf,t),r,s,0),
    /* ratsimp to collect like terms together, but we get a common denominator */
    result: ratsimp(rf*yseries),
    /* this, combined with the ratsimp below, truncates our results at degree deg */
@@ -715,8 +711,6 @@ ev(puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
            x/(x^2+1)), puiseux_fracexp=false);
 puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
         x/(x^2+1));
-ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3),
-    puiseux_fracexp=false);
 \end{maximablock}
 
 There appears to be a pole here, but appearances are deceptive.
@@ -730,12 +724,33 @@ $$dx = 2 \sqrt{x-i} d \sqrt{x-i}$$
 distrib(% * 2 * sqrt(x-%i));
 \end{maximablock}
 
-\endexample
-
 So, even though the {\it integrand} has a pole at $(i,0)$, the {\it
 differential} does not... and the differential is what matters!
 
 The only other place we might have a pole is infinity.
+
+\begin{maximablock}
+ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, 1/(x^2+1)),
+    puiseux_fracexp=false);
+ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, x/(x^2+1)),
+    puiseux_fracexp=false);
+\end{maximablock}
+
+Now it appears that we have no pole, the expansion indicating simply
+that $\lim_{x\to\infty}\frac{x}{\sqrt{x^2+1}} = 1$, but again
+we have to take the differential into account.  Since $x=\frac{1}{t}$,
+$dx=-\frac{1}{t^2} dt$, and we actually have second order poles
+at infinity.
+
+Integrating termwise, we see that since our differential has second
+order poles at infinity, our integral must have first order poles
+at infinity, and theorem ? states that this completely
+characterizes the integral.
+
+We already know of a rational function with first order poles
+at infinity -- $y$ itself!
+
+\endexample
 
 % A {\it Riemann surface}, more precisely, is a two-dimensional manifold
 % with a {\it complex analytic structure}.
