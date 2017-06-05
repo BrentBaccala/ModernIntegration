@@ -416,8 +416,7 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 \begin{maximablock}
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
- block([n:deg, /* ratwtlvl:deg,ratweights:[], */ xexpansion, yexpansion, res,ans:[],eqns],
-  /* ratweight(x,1), */
+ block([n:deg, xexpansion, yexpansion, res, ans, eqns],
   if x0 # inf then
     xexpansion: x0 + t^r
   else
@@ -430,16 +429,31 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
     yexpansion: sum(t^i*a[i],i,s,n),
   res:subst([x=xexpansion, y=yexpansion], f),
   /* if there are fractions in x0 or y0, we'll get a rational function and need to extract the numerator */
-  /* display(res), */
-  res:num(ratsimp(res)),
-  /* display(res), */
-  eqns:create_list(coeff(res,t,i),i,p,p+(n-s)),
-  /* display(res, eqns), */
-  ans:[],
-  for i:0 thru n-s do block([s:solve(eqns[i+1],a[s+i])],
-    if listp(s) and length(s) >= 1 then ans:endcons(s[1],ans),
-    eqns: subst(ans,eqns)),
-  subst(ans,yexpansion))$
+  res: num(ratsimp(res)),
+  eqns: create_list(coeff(res,t,i),i,p,p+(n-s)),
+
+  ans: solve(eqns[1],a[s]),
+
+  /* If r > 1, then we expect each solution to be duplicated r times, */
+  /* differing only by r'th roots of unity.  These different solutions */
+  /* all correspond to the same branch, so remove all but one of each. */
+
+  if r > 1 then block([allans: ans],
+    ans: [],
+    for a in allans do
+       if not member(a^r, ans^r) then
+          ans: endcons(a, ans)
+  ),
+
+  /* ans is a list of lists.  Each outer list is a solution. */
+  ans: map(makelist, ans),
+  map(lambda([oneans], block([eqns2:subst(oneans, eqns)],
+    for i:1 thru n-s do block([s:solve(eqns2[i+1],a[s+i])],
+      if not listp(s) or length(s) # 1 then error("puiseux: internal error"),
+      if listp(s) and length(s) >= 1 then oneans:endcons(s[1],oneans),
+      eqns2: subst(oneans,eqns2)),
+    subst(oneans, yexpansion))), ans)
+  )$
 
 /* puiseux_fracexp controls whether series are returned with
  * fractional exponents, or using an auxilary variable (t).
@@ -448,7 +462,7 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
 puiseux_fracexp : true$
 
 puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
- block([mp, delta, g, r, s, yseries, rf, result, ratwtlvl: deg, ratweights:[]],
+ block([mp, delta, g, r, s, yseries, rf, result],
    if y0 # inf then (
       mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
       delta: mp[2]-mp[1]
@@ -478,21 +492,23 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
 
    /* expand y to the requested degree, adjusted by the degree of rf */
    if y0 # inf then
-      yseries: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,mp[1][2]*r)
+      yserieslist: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,mp[1][2]*r)
    else
-      yseries: puiseux2(f,x,y,x0,0,deg+lopow(rf,t),r,s,0),
+      yserieslist: puiseux2(f,x,y,x0,0,deg+lopow(rf,t),r,s,0),
 
-   /* ratsimp to collect like terms together, but we get a common denominator */
-   result: ratsimp(subst(y=yseries, rf)),
-   /* this, combined with the ratsimp below, truncates our results at degree deg */
-   ratweight(t,1),
-   /* this map distributes over the common denominator */
-   if not atom(num(result)) and part(num(result), 0) = "+" then
-      result: map(lambda([u], ratsimp(u/denom(result))), num(result)),
-   if puiseux_fracexp then
-      subst(t=(x-x0)^(1/r), result)
-   else
-      [result, if x0 # inf then t^r=x-x0 else t=1/x]
+   map(lambda([yseries], block([ratwtlvl: deg, ratweights: []],
+      /* ratsimp to collect like terms together, but we get a common denominator */
+      result: ratsimp(subst(y=yseries, rf)),
+      /* this, combined with the ratsimp below, truncates our results at degree deg */
+      ratweight(t,1),
+      /* this map distributes over the common denominator */
+      if not atom(num(result)) and part(num(result), 0) = "+" then
+         result: map(lambda([u], ratsimp(u/denom(result))), num(result)),
+      if puiseux_fracexp then
+         subst(t=(x-x0)^(1/r), result)
+      else
+         [result, if x0 # inf then t^r=x-x0 else t=1/x]
+   )), yserieslist)
  )$
 
 puiseux(y^2-x^2-1, x, y, 0, 1, 5);
@@ -586,6 +602,10 @@ in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
 x-series unchanged.
 
+\begin{maximablock}
+puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
+\end{maximablock}
+
 Now, let's analyze the singular point at infinity.  Again, we move
 infinity to a finite point (0) with the substitutions $x=u^{-1}$ and
 $y=v^{-1}$.  Our curve becomes:
@@ -607,6 +627,11 @@ coefficients to zero, we conclude:
 $$a_0 = 0; \qquad a_1 = \pm i; \qquad a_2 = 0; \qquad a_3 = \pm \frac{1}{2}i$$
 
 $$v = \pm i u \pm \frac{1}{2} i u^3 + \cdots$$
+
+\begin{maximablock}
+ev(puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3),
+   puiseux_fracexp = false);
+\end{maximablock}
 
 This time, without ramification, we actually have two distinct series
 that will yield two different values of $v$ for each value of $u$.
@@ -739,12 +764,14 @@ The only other place we might have a pole is infinity.
 \begin{maximablock}
 ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, 1/y),
     puiseux_fracexp=false);
-ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, y*x/(x^2+1)),
+ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, x/y),
     puiseux_fracexp=false);
 \end{maximablock}
 
-Now it appears that we have no pole, the expansion indicating simply
-that $\lim_{x\to\infty}\frac{x}{\sqrt{x^2+1}} = 1$, but again
+Now it appears that we have two sheets with no poles, the expansions indicating simply
+that $\lim_{x\to\infty}\frac{x}{\sqrt{x^2+1}} = \pm 1$, depending
+on whether we use the positive or negative square root,
+but again
 we have to take the differential into account.  Since $x=\frac{1}{t}$,
 $dx=-\frac{1}{t^2} dt$, and we actually have second order poles
 at infinity.
