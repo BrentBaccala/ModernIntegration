@@ -416,7 +416,7 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 \begin{maximablock}
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
- block([n:deg, xexpansion, yexpansion, res, ans, eqns],
+ block([n:max(deg,s), xexpansion, yexpansion, res, ans, eqns],
   if x0 # inf then
     xexpansion: x0 + t^r
   else
@@ -496,19 +496,20 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
    else
       yserieslist: puiseux2(f,x,y,x0,0,deg+lopow(rf,t),r,s,0),
 
-   map(lambda([yseries], block([ratwtlvl: deg, ratweights: []],
-      /* ratsimp to collect like terms together, but we get a common denominator */
+   map(lambda([yseries],
       result: ratsimp(subst(y=yseries, rf)),
-      /* this, combined with the ratsimp below, truncates our results at degree deg */
-      ratweight(t,1),
-      /* this map distributes over the common denominator */
+
       if not atom(num(result)) and part(num(result), 0) = "+" then
-         result: map(lambda([u], ratsimp(u/denom(result))), num(result)),
+         /* this map distributes over the common denominator */
+         result: map(lambda([u], if hipow(u,t) - hipow(denom(result), t) <= deg then u/denom(result) else 0), num(result))
+      else
+         result: if hipow(num(result), t) - hipow(denom(result), t) <= deg then result else 0,
+
       if puiseux_fracexp then
          subst(t=(x-x0)^(1/r), result)
       else
          [result, if x0 # inf then t^r=x-x0 else t=1/x]
-   )), yserieslist)
+   ), yserieslist)
  )$
 
 puiseux(y^2-x^2-1, x, y, 0, 1, 5);
@@ -567,18 +568,16 @@ We'll start with the finite zeros of $y$ at $(x,y)=(\pm 1, 0)$.  The
 analysis is almost the same in both cases, so I'll just do (1,0).
 First, construction of the Newton polygon requires recasting the
 curve's polynomial into a form centered about the point being
-analyzed, i.e, $y^2 + (x-1)^2 + 2(x-1) = 0$.  The polygon's only
-non-trivial line segment has slope -2 and width 1, telling us that
-we'll require a single Puiseux series with ramification index 2:
+analyzed, i.e, $y^2 + (x-1)^2 + 2(x-1) = 0$.  The only segment on the
+polygon lower convex hull has slope $-1/2$ and width 2, telling us
+that we'll require a single Puiseux series with ramification index 2:
 
-$$x=t^2+1; \qquad x^2=t^4+2t^2+1$$
+$$x=t^2+1$$
 
 We know that y can be expressed as a power series in t, so we'll write
 it in that form:
 
 $$y=a_0 + a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + \cdots$$
-
-$$y^2 = a_0^2 + 2 a_0 a_1 t + (2 a_0 a_2 + a_1^2) t^2 + (2 a_0 a_3 + 2 a_1 a_2) t^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) t^4 + \cdots$$
 
 Now, substituting these expressions for $x^2$ and $y^2$ into the
 curve's defining equation $y^2 + x^2 - 1 = 0$ and equating coefficients
@@ -600,10 +599,11 @@ It would seem that we have two different series to chose from.  This
 is not really the case, as they differ by only a $180^\circ$ rotation
 in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
-x-series unchanged.
+x-series unchanged.  Let's confirm this result with Maxima:
 
 \begin{maximablock}
-puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
+ev(puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3),
+   puiseux_fracexp = false);
 \end{maximablock}
 
 Now, let's analyze the singular point at infinity.  Again, we move
@@ -612,10 +612,11 @@ $y=v^{-1}$.  Our curve becomes:
 
 $$(u^2 - 1) v^2 - u^2 = 0$$
 
-The Newton polygon has a single line segment, slope -1, length 2,
-telling us that we'll have two separate cycles, each with ramification
-index 1.  Thus, $u$ can be used directly as a uniformizing variable,
-and we postulate an expansion for $v$ in the form:
+The Newton polygon's lower convex hull has a single line segment,
+slope $-1$, length $2$, telling us that we'll have two separate
+cycles, each with ramification index 1.  Thus, $u$ can be used
+directly as a uniformizing variable, and we postulate an expansion for
+$v$ in the form:
 
 $$v = a_0 + a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
 
@@ -624,12 +625,12 @@ $$v^2 = a_0^2 + 2 a_0 a_1 u + (2 a_0 a_2 + a_1^2) u^2 + (2 a_0 a_3 + 2 a_1 a_2) 
 Plugging this into $(u^2 - 1) v^2 - u^2$ and setting all the resulting
 coefficients to zero, we conclude:
 
-$$a_0 = 0; \qquad a_1 = \pm i; \qquad a_2 = 0; \qquad a_3 = \pm \frac{1}{2}i$$
+$$a_0 = 0; \qquad a_1 = \pm i; \qquad a_2 = 0; \qquad a_3 = \mp \frac{1}{2}i$$
 
-$$v = \pm i u \pm \frac{1}{2} i u^3 + \cdots$$
+$$v = \pm i u \mp \frac{1}{2} i u^3 + \cdots$$
 
 \begin{maximablock}
-ev(puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3),
+ev(puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, 1/y),
    puiseux_fracexp = false);
 \end{maximablock}
 
@@ -652,14 +653,13 @@ Remember that principal parts of an algebraic function are the parts
 of its series expansion with negative powers at its poles.  So, the
 first step is to locate the function's poles, which in this case is
 simply the places where the denominator is zero, and that's just
-$x=\pm 1$.  We're already computed a series expansion for $y$ at these
-points, so we can invert that solution to obtain a series for
-$\frac{1}{y}$.  We do this by noting that since $y$ has a simple zero
-at $(\pm 1, 0)$, $\frac{1}{y}$ must have a simple pole at these places,
-postulating a series expansion starting with $t^{-1}$, multiplying
-and equating terms:
+$x=\pm 1$.  Now, if we use {\tt puiseux}, we can just request a series
+truncated at the $-1$ term:
 
-$$\frac{1}{y} = \pm\left[ -\frac{\sqrt{2}}{2} it^{-1} + \cdots \right]$$
+\begin{maximablock}
+ev(puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y),
+   puiseux_fracexp = false);
+\end{maximablock}
 
 \endexample
 
