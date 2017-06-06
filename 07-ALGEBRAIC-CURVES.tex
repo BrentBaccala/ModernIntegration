@@ -421,7 +421,7 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
     xexpansion: x0 + t^r
   else
     xexpansion: (1/t)^r,
-  /* XXX what if s > n? */
+
   if y0 # inf then
     yexpansion: y0 + sum(t^i*a[i],i,s,n)
   else
@@ -432,16 +432,19 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   res: num(ratsimp(res)),
   eqns: create_list(coeff(res,t,i),i,p,p+(n-s)),
 
-  ans: solve(eqns[1],a[s]),
+  ans: sort(solve(eqns[1],a[s])),
 
   /* If r > 1, then we expect each solution to be duplicated r times, */
   /* differing only by r'th roots of unity.  These different solutions */
   /* all correspond to the same branch, so remove all but one of each. */
 
+  /* We exclude zero as a solution, since zero would correspond to a */
+  /* higher degree solution than the ones we're seeking. */
+
   if r > 1 then block([allans: ans],
     ans: [],
     for a in allans do
-       if not member(a^r, ans^r) then
+       if rhs(a) # 0 and not member(ratsimp(a^r), ratsimp(ans^r)) then
           ans: endcons(a, ans)
   ),
 
@@ -508,7 +511,7 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
       if puiseux_fracexp then
          subst(t=(x-x0)^(1/r), result)
       else
-         [result, if x0 # inf then t^r=x-x0 else t=1/x]
+         [result, if x0 # inf then t^r=x-x0 else t=1/x^r]
    ), yserieslist)
  )$
 
@@ -531,6 +534,22 @@ implicit_taylor(y^2 + y - x^3, 0, 10, 0);
 puiseux(y^2 + y - x^3, x, y, 0, 0, 10);
 implicit_taylor(y^2 - x, 0, 10, 0);
 puiseux(y^2 - x, x, y, 0, 0, 10);
+\end{maximablock}
+
+First example from \cite{bliss} \S 68: compute expansions
+at all multiple points of $y^3+x^3y+x=0$.
+
+\begin{maximablock}
+puiseux_fracexp: false;
+
+puiseux(y^3 + x^3*y +x, x, y, 0, 0, 10);
+puiseux(y^3 + x^3*y +x, x, y, inf, inf, 10);
+/* puiseux(y^3 + x^3*y +x, x, y, inf, 0, 1); */
+g: (-27/4)^(1/7);
+puiseux(y^3 + x^3*y +x, x, y, g, -3/(2*g^2), 1);
+puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
+
+puiseux_fracexp: true;
 \end{maximablock}
 
 %\mysection{meromorphic functions are analytic}
