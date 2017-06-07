@@ -109,15 +109,33 @@ So, $E(x) = \int_0^x e^{-t^2} dt$ is {\it integrable} on $[0,x]$ if $e^{-t^2}$ i
 and $e^{-t^2}$ is continuous everywhere on the real line.  We can easily plot $e^{-t^2}$:
 
 \begin{maximacode}
-plot2d (exp(-x^2),
-        [x, -6, 6], [ylabel, false], [grid2d, true], [legend, false],
-        [color, red],
-        [pdf_file, "./01-INTRO-GRAPH1.pdf"])$
+/* This code autogenerates filenames for pdf graphics so they */
+/* can be easily embedded into LaTeX. */
+
+pdf_graphics_fileno: 0$
+
+next_pdf_filename() := (
+   pdf_graphics_fileno : pdf_graphics_fileno + 1,
+   concat("./GRAPH-", pdf_graphics_fileno, ".pdf")
+)$
+
+embed_latex_graphic(filename) :=
+   ?princ(concat("\\optionalgraphics[width=0.7\\textwidth]{", filename, "}"))$
+
+pdfplot2d([args]) := block(
+   [filename: next_pdf_filename()],
+   apply(plot2d, endcons([pdf_file, filename], args)),
+   embed_latex_graphic(filename)
+)$
 \end{maximacode}
 
 \begin{figure}[H]
 \begin{center}
-\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH1.pdf}
+\begin{maximacode}
+pdfplot2d (exp(-x^2),
+           [x, -6, 6], [ylabel, false], [grid2d, true], [legend, false],
+           [color, red])$
+\end{maximacode}
 \end{center}
 \caption{$e^{-t^2}$}
 \end{figure}
@@ -128,19 +146,16 @@ Riemann sum exists and is unique.  We can also plot $E(x)$, using a
 numerical integration routine to approximate the integral at each
 point of the graph:
 
+\begin{figure}[H]
+\begin{center}
 \begin{maximacode}
 assume(x > 0)$
 f(x) := exp(-x^2)$
 F(x) := ''(integrate(f(x), x))$
-plot2d (F(x),
-        [x, -6, 6], [ylabel, false], [grid2d, true], [legend, false],
-        [color, red],
-        [pdf_file, "./01-INTRO-GRAPH2.pdf"])$
+pdfplot2d (F(x),
+          [x, -6, 6], [ylabel, false], [grid2d, true], [legend, false],
+          [color, red])$
 \end{maximacode}
-
-\begin{figure}[H]
-\begin{center}
-\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH2.pdf}
 \end{center}
 \caption{$\int_0^x e^{-t^2} dt$}
 \end{figure}
@@ -151,17 +166,14 @@ was calculated by numerically approximating a Riemann sum.
 Is this an anti-derivative of $e^{-t^2}$?  Plotting various tangent lines suggests
 that it {\it might} be...
 
-\begin{maximacode}
-line(x,x0,l) := if abs(x-x0) < l then F(x0) + f(x0)*(x-x0) else %nan$
-plot2d ([F(x), 'line(x,-1.5,1), 'line(x,1,1)],
-        [x, -6, 6], [y, -1, 1], [ylabel, false], [grid2d, true], [legend, false],
-        [color, red, blue, blue], [xtics, 20], [ytics, 2],
-        [pdf_file, "./01-INTRO-GRAPH3.pdf"])$
-\end{maximacode}
-
 \begin{figure}[H]
 \begin{center}
-\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH3.pdf}
+\begin{maximacode}
+line(x,x0,l) := if abs(x-x0) < l then F(x0) + f(x0)*(x-x0) else %nan$
+pdfplot2d ([F(x), 'line(x,-1.5,1), 'line(x,1,1)],
+           [x, -6, 6], [y, -1, 1], [ylabel, false], [grid2d, true], [legend, false],
+           [color, red, blue, blue], [xtics, 20], [ytics, 2])$
+\end{maximacode}
 \end{center}
 \caption{$\int_0^x e^{-t^2} dt$ (with tangent lines at $x_0=-1.5$ and $x_0=1$)}
 \end{figure}
@@ -241,17 +253,14 @@ We can patch up our function like this:
 
 It's usually called the {\it sinc} function, and it's easy to plot:
 
-\begin{maximacode}
-sinc(x) := if x = 0 then 1 else sin(x)/x$
-plot2d (sinc(x),
-        [x, -20, 20], [ylabel, false], [grid2d, true], [legend, false],
-        [color, red],
-        [pdf_file, "./01-INTRO-GRAPH4.pdf"])$
-\end{maximacode}
-
 \begin{figure}[H]
 \begin{center}
-\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH4.pdf}
+\begin{maximacode}
+sinc(x) := if x = 0 then 1 else sin(x)/x$
+pdfplot2d (sinc(x),
+           [x, -20, 20], [ylabel, false], [grid2d, true], [legend, false],
+           [color, red])$
+\end{maximacode}
 \end{center}
 \caption{${\rm sinc\,} t = \frac{\sin t}{t}$}
 \end{figure}
@@ -262,17 +271,14 @@ $${\rm Si}(x) = \int_0^x \frac{\sin(t)}{t} dt$$
 
 ...and we can plot it...
 
-\begin{maximacode}
-Si(x) := (quad_qag(sinc, t, 0, x, 1)[1])$
-plot2d (Si(x),
-        [x, -20, 20], [ylabel, false], [grid2d, true], [legend, false],
-        [color, red],
-        [pdf_file, "./01-INTRO-GRAPH5.pdf"])$
-\end{maximacode}
-
 \begin{figure}[H]
 \begin{center}
-\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH5.pdf}
+\begin{maximacode}
+Si(x) := (quad_qag(sinc, t, 0, x, 1)[1])$
+pdfplot2d (Si(x),
+          [x, -20, 20], [ylabel, false], [grid2d, true], [legend, false],
+          [color, red])$
+\end{maximacode}
 \end{center}
 \caption{$\int_0^x \frac{\sin t}{t} dt$}
 \end{figure}
@@ -281,17 +287,14 @@ plot2d (Si(x),
 
 $$ y(x) = {\rm Si}(x_0) + \frac{\sin x_0}{x_0}(x-x_0)$$
 
-\begin{maximacode}
-line(x,x0,l) := if abs(x-x0) < l then Si(x0) + sinc(x0)*(x-x0) else %nan$
-plot2d ([Si(x), 'line(x,-9,3), 'line(x,5,3)],
-        [x, -20, 20], [y, -2, 2], [ylabel, false], [grid2d, true], [legend, false],
-        [color, red, blue, blue], [xtics, 20], [ytics, 2],
-        [pdf_file, "./01-INTRO-GRAPH6.pdf"])$
-\end{maximacode}
-
 \begin{figure}[H]
 \begin{center}
-\optionalgraphics[width=0.7\textwidth]{01-INTRO-GRAPH6.pdf}
+\begin{maximacode}
+line(x,x0,l) := if abs(x-x0) < l then Si(x0) + sinc(x0)*(x-x0) else %nan$
+pdfplot2d ([Si(x), 'line(x,-9,3), 'line(x,5,3)],
+           [x, -20, 20], [y, -2, 2], [ylabel, false], [grid2d, true], [legend, false],
+           [color, red, blue, blue], [xtics, 20], [ytics, 2])$
+\end{maximacode}
 \end{center}
 \caption{$\int_0^x \frac{\sin t}{t} dt$ (with tangent lines at $x_0=-9$ and $x_0=5$)}
 \end{figure}

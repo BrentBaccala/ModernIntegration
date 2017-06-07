@@ -281,12 +281,13 @@ lower_convex_hull(inlist, x) := block([list],
   if length(list) >= 2 then list[1][2] + (x - list[1][1]) * (list[2][2] - list[1][2])/(list[2][1] - list[1][1]) else %nan
 )$
 
-newton_polygon(f, x, y, x0, y0, filename) := block([newton_points, maxx, maxy, maxxy],
-   newton_points : swap_list_pairs(monomial_powers(f,x,y,x0,y0)),
+newton_polygon(f, x, y, x0, y0) := block([newton_points, maxx, maxy, maxxy, filename],
+   newton_points : monomial_powers(f,x,y,x0,y0),
    convex_hull_points : lower_convex_points(newton_points),
    maxx: lreduce(max, map(first, convex_hull_points)),
    maxy: lreduce(max, map(second, convex_hull_points)),
    maxxy: max(maxx, maxy),
+   filename: next_pdf_filename(),
    plot2d([[discrete, newton_points], 'lower_convex_hull(convex_hull_points, l)], [l,0,maxxy+1], [y,0,maxxy+1],
        [style, points, [lines, 5]], [color, red, blue],
        [point_type, bullet],
@@ -294,7 +295,8 @@ newton_polygon(f, x, y, x0, y0, filename) := block([newton_points, maxx, maxy, m
        [xlabel, false],
        [xtics, 1], [ytics, 1],
        [ylabel, false],
-       [pdf_file, filename])
+       [pdf_file, filename]),
+   embed_latex_graphic(filename)
 )$
 
 recenter_curve(y^2-x^2-1, x, y, 0, 1);
@@ -317,13 +319,9 @@ discriminant, which are $x = \pm 1$.  The partial derivative of the
 polynomial with respect to $x$ is $-2x$, which is non-zero, so neither
 of these multiple points are singular.
 
-\begin{maximablock}
-newton_polygon(y^2-x^2-1, x, y, %i, 0, "./07-GRAPH2.pdf")$
-\end{maximablock}
-
 \begin{figure}[H]
 \begin{center}
-\optionalgraphics[width=0.7\textwidth]{07-GRAPH2.pdf}
+\maximac{newton_polygon(y^2-x^2-1, x, y, %i, 0)$}
 \end{center}
 \end{figure}
 

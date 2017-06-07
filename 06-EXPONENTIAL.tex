@@ -1327,7 +1327,8 @@ $\theta = \exp x$ and $\psi = \exp\left( \frac{x^2-1}{x}+\frac{1}{\theta+x}\righ
 
 \begin{maximacode}
 /* kill(allbut(functions, macros, props))$ */
-kill(values, arrays)$
+/* kill(values, arrays)$ */
+kill(pf, denoms, n, c, R, Q, D, C, a, A)$
 /* have to redefine D because it was also a variable and got killed! */
 D(f) := diff(f,x)$
 \end{maximacode}
