@@ -201,6 +201,11 @@ point, while at least one is non-zero at ordinary points.  This
 analysis is facilitated by Newton polygons.
 
 \begin{maximablock}
+discriminant(f,y) :=
+  resultant(diff(f,y), f, y)$
+\end{maximablock}
+
+\begin{maximablock}
 recenter_curve(f,x,y,x0,y0) := block([newf],
    if x0 = inf then (f:subst(x=1/x, f), x0:0),
    if y0 = inf then (f:subst(y=1/y, f), y0:0),
@@ -222,16 +227,14 @@ We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
 defining polynomial is second degree for all finite values of $x$.
 Where does it have multiple roots?  We compute the discriminant:
 
-$${\rm disc}_y(y^2 - x^2 +1) = {\rm res}_y(y^2-x^2+1, 2y) =
-\det\left\vert \begin{matrix}
-1 & 0 & -x^2+1 \cr
-2 & 0 & 0 \cr
-0 & 2 & 0\end{matrix} \right\vert = 4(x^2-1)$$
+\begin{maximablock}
+discriminant(y^2-x^2+1, y);
+\end{maximablock}
 
-Thus, we conclude that the multiple points of $y^2 = x^2 - 1$ lie at
-the roots of the discriminant, which are $x = \pm 1$.  The partial
-derivative of the polynomial with respect to $x$ is $-2x$, which is
-non-zero, so neither of these multiple points are singular.
+The multiple points of $y^2 = x^2 - 1$ lie at the roots of the
+discriminant, which are $x = \pm 1$.  The partial derivative of the
+polynomial with respect to $x$ is $-2x$, which is non-zero, so neither
+of these multiple points are singular.
 
 \begin{maximablock}
 /* recenter_curve(y^2=x^2-1, x, y, 1, 0); */
@@ -427,10 +430,9 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   else
     /* yexpansion: 1/sum(t^i*a[i],i,s,n), */
     yexpansion: sum(t^i*a[i],i,s,n),
-  res:subst([x=xexpansion, y=yexpansion], f),
-  /* if there are fractions in x0 or y0, we'll get a rational function and need to extract the numerator */
+  res: subst([x=xexpansion, y=yexpansion], f/t^p),
   res: num(ratsimp(res)),
-  eqns: create_list(coeff(res,t,i),i,p,p+(n-s)),
+  eqns: create_list(coeff(res,t,i),i,0,(n-s)),
 
   ans: sort(solve(eqns[1],a[s])),
 
@@ -511,7 +513,7 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
       if puiseux_fracexp then
          subst(t=(x-x0)^(1/r), result)
       else
-         [result, if x0 # inf then t^r=x-x0 else t=1/x^r]
+         [result, if x0 # inf then t^r=x-x0 else t^r=1/x]
    ), yserieslist)
  )$
 
@@ -534,23 +536,53 @@ implicit_taylor(y^2 + y - x^3, 0, 10, 0);
 puiseux(y^2 + y - x^3, x, y, 0, 0, 10);
 implicit_taylor(y^2 - x, 0, 10, 0);
 puiseux(y^2 - x, x, y, 0, 0, 10);
+puiseux_fracexp: false;
 \end{maximablock}
 
-First example from \cite{bliss} \S 68: compute expansions
-at all multiple points of $y^3+x^3y+x=0$.
+\example \cite{bliss} \S 68
+Compute expansions at all multiple points of
+
+$$y^3+x^3y+x=0$$
+
+We begin by computing the discriminant of the
+equation, which gives us the locations of the multiple points.
 
 \begin{maximablock}
-puiseux_fracexp: false;
+discriminant(y^3 + x^3*y + x, y);
+\end{maximablock}
 
+The multiple points lie over the roots of this equation: $x=0$ and
+the seven roots of $4x^7+27=0$.  Infinity also needs to be
+examined.  We begin with $x=0$:
+
+\begin{maximablock}
 puiseux(y^3 + x^3*y +x, x, y, 0, 0, 10);
-puiseux(y^3 + x^3*y +x, x, y, inf, inf, 10);
-/* puiseux(y^3 + x^3*y +x, x, y, inf, 0, 1); */
+\end{maximablock}
+
+This result shows that we have a single cycle at $(x,y)=(0,0)$ with
+three sheets.  Now, let's look at a specimen root
+of $4x^7+27=0$:
+
+\begin{maximablock}
 g: (-27/4)^(1/7);
 puiseux(y^3 + x^3*y +x, x, y, g, -3/(2*g^2), 1);
 puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
-
-puiseux_fracexp: true;
 \end{maximablock}
+
+We have one sheet of two cycles at $(g,-3/(2g^2))$
+and an ordinary point at $(g,3/g^2)$.
+
+Finally, let's look at what happens when $x$ goes to infinity:
+
+\begin{maximablock}
+puiseux(y^3 + x^3*y +x, x, y, inf, inf, 10);
+puiseux(y^3 + x^3*y +x, x, y, inf, 0, 10);
+\end{maximablock}
+
+Here we have a single cycle of two sheets at $(\infty,\infty)$
+and an ordinary point at $(\infty,0)$.
+
+\endexample
 
 %\mysection{meromorphic functions are analytic}
 %
@@ -621,8 +653,7 @@ transforms one of the y-series into the other, while leaving the
 x-series unchanged.  Let's confirm this result with Maxima:
 
 \begin{maximablock}
-ev(puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3),
-   puiseux_fracexp = false);
+puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
 \end{maximablock}
 
 Now, let's analyze the singular point at infinity.  Again, we move
@@ -649,8 +680,7 @@ $$a_0 = 0; \qquad a_1 = \pm i; \qquad a_2 = 0; \qquad a_3 = \mp \frac{1}{2}i$$
 $$v = \pm i u \mp \frac{1}{2} i u^3 + \cdots$$
 
 \begin{maximablock}
-ev(puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, 1/y),
-   puiseux_fracexp = false);
+puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, 1/y);
 \end{maximablock}
 
 This time, without ramification, we actually have two distinct series
@@ -676,8 +706,7 @@ $x=\pm 1$.  Now, if we use {\tt puiseux}, we can just request a series
 truncated at the $-1$ term:
 
 \begin{maximablock}
-ev(puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y),
-   puiseux_fracexp = false);
+puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y);
 \end{maximablock}
 
 \endexample
@@ -781,10 +810,8 @@ differential} does not... and the differential is what matters!
 The only other place we might have a pole is infinity.
 
 \begin{maximablock}
-ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, 1/y),
-    puiseux_fracexp=false);
-ev(puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, x/y),
-    puiseux_fracexp=false);
+puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, 1/y);
+puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, x/y);
 \end{maximablock}
 
 Now it appears that we have two sheets with no poles, the expansions indicating simply
