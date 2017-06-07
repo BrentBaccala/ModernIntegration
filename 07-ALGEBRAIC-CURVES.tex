@@ -168,24 +168,16 @@ less than $n$ solutions due to having a polynomial of degree less than
 $n$, or the polynomial has multiple identical roots, a {\it multiple
 point} of the algebraic curve.
 
-Now, the coefficient of $y^n$ in the defining polynomial will be a
-polynomial in $x$, which has a finite number of roots at which it is
-zero, so there are only a finite number of points where the defining
-polynomial is of degree less than $n$ in $y$.  As $x$ approaches one
-of these points, the value of the $y^n$ coefficient approaches zero,
-which causes at least one of the roots to approach infinity.  We'll
-deal with these points by introducing a line at infinity, forming
-{\it projective space} and creating a {\it compact} surface.
+There are only a finite number of multiple points, as can be seen by
+considering the {\it discriminant} of the defining polynomial, which
+is the resultant of the polynomial with its partial derivative.  The
+discriminant will be zero at multiple points, so these points can be
+located by computing the zeros of a univariate polynomial.
 
-Likewise, there are only a finite number of multiple points with
-multiple identical roots, as can be seen by considering the
-discriminant of defining polynomial (Theorem ?), regarded as a
-polynomial in $y$, with coefficients in ${\bf C}[x]$.  The
-discriminant, as the determinant of a matrix with coefficients in
-${\bf C}[x]$, exists itself in ${\bf C}[x]$, and therefore will have
-only a finite number of points where it is zero.  Thus, an algebraic
-curve has only a finite number of multiple points, which can be found
-by computing the zeros of simple, univariate polynomials.
+\begin{maximablock}
+discriminant(f,y) :=
+  resultant(diff(f,y), f, y)$
+\end{maximablock}
 
 Multiple points are further classified according to whether or not the
 curve is locally Euclidean in their neighborhood.  Geometrically, this
@@ -200,10 +192,14 @@ partial derivatives of the curve's polynomial are zero at a singular
 point, while at least one is non-zero at ordinary points.  This
 analysis is facilitated by Newton polygons.
 
-\begin{maximablock}
-discriminant(f,y) :=
-  resultant(diff(f,y), f, y)$
-\end{maximablock}
+Now, the coefficient of $y^n$ in the defining polynomial will be a
+polynomial in $x$, which has a finite number of roots at which it is
+zero, so there are only a finite number of points where the defining
+polynomial is of degree less than $n$ in $y$.  As $x$ approaches one
+of these points, the value of the $y^n$ coefficient approaches zero,
+which causes at least one of the roots to approach infinity.  We'll
+deal with these points by introducing a line at infinity, forming
+{\it projective space} and creating a {\it compact} surface.
 
 \begin{maximablock}
 recenter_curve(f,x,y,x0,y0) := block([newf],
@@ -219,22 +215,6 @@ recenter_curve(f,x,y,x0,y0) := block([newf],
    [newf, x0, y0]
 )$
 \end{maximablock}
-
-\example Find the singular points of $y^2 = x^2 - 1$
-
-We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
-0$, and begin by noting that the coefficient of $y^2$ is 1, so the
-defining polynomial is second degree for all finite values of $x$.
-Where does it have multiple roots?  We compute the discriminant:
-
-\begin{maximablock}
-discriminant(y^2-x^2+1, y);
-\end{maximablock}
-
-The multiple points of $y^2 = x^2 - 1$ lie at the roots of the
-discriminant, which are $x = \pm 1$.  The partial derivative of the
-polynomial with respect to $x$ is $-2x$, which is non-zero, so neither
-of these multiple points are singular.
 
 \begin{maximablock}
 /* recenter_curve(y^2=x^2-1, x, y, 1, 0); */
@@ -321,7 +301,25 @@ newton_polygon(f, x, y, x0, y0, filename) := block([newton_points, maxx, maxy, m
 
 recenter_curve(y^2-x^2-1, x, y, 0, 1);
 monomial_powers(y^2-x^2-1, x, y, 0, 1);
-/* newton_polygon(y^2-x^2-1, x, y, 0, 1, "./07-GRAPH2.pdf")$ */
+\end{maximablock}
+
+\example Locate and characterize the multiple points of $y^2 = x^2 - 1$
+
+We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
+0$, and begin by noting that the coefficient of $y^2$ is 1, so the
+defining polynomial is second degree for all finite values of $x$.
+Where does it have multiple roots?  We compute the discriminant:
+
+\begin{maximablock}
+discriminant(y^2-x^2+1, y);
+\end{maximablock}
+
+The multiple points of $y^2 = x^2 - 1$ lie at the roots of the
+discriminant, which are $x = \pm 1$.  The partial derivative of the
+polynomial with respect to $x$ is $-2x$, which is non-zero, so neither
+of these multiple points are singular.
+
+\begin{maximablock}
 newton_polygon(y^2-x^2-1, x, y, %i, 0, "./07-GRAPH2.pdf")$
 \end{maximablock}
 
@@ -416,7 +414,7 @@ have a unique series expansion for $u(t)$ as a function of $t$.  If any of the r
 are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 (\cite{bliss} \S 15) that this procedure always terminates.
 
-\begin{maximablock}
+{\small\begin{maximablock}
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  block([n:max(deg,s), xexpansion, yexpansion, res, ans, eqns],
@@ -517,15 +515,16 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
    ), yserieslist)
  )$
 
+\end{maximablock}
+}
+
+\begin{maximablock}
 puiseux(y^2-x^2-1, x, y, 0, 1, 5);
 
 puiseux(b^2-a^2-1, a, b, 0, 1, 5);
 
 puiseux(y^2-x^2-1, x, y, %i, 0, 5);
 
-\end{maximablock}
-
-\begin{maximablock}
 load("taylor1.mac")$
 ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5);
 ps: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1);
@@ -538,79 +537,6 @@ implicit_taylor(y^2 - x, 0, 10, 0);
 puiseux(y^2 - x, x, y, 0, 0, 10);
 puiseux_fracexp: false;
 \end{maximablock}
-
-\example \cite{bliss} \S 68
-Compute expansions at all multiple points of
-
-$$y^3+x^3y+x=0$$
-
-We begin by computing the discriminant of the
-equation, which gives us the locations of the multiple points.
-
-\begin{maximablock}
-discriminant(y^3 + x^3*y + x, y);
-\end{maximablock}
-
-The multiple points lie over the roots of this equation: $x=0$ and
-the seven roots of $4x^7+27=0$.  Infinity also needs to be
-examined.  We begin with $x=0$:
-
-\begin{maximablock}
-puiseux(y^3 + x^3*y +x, x, y, 0, 0, 10);
-\end{maximablock}
-
-This result shows that we have a single cycle at $(x,y)=(0,0)$ with
-three sheets.  Now, let's look at a specimen root
-of $4x^7+27=0$:
-
-\begin{maximablock}
-g: (-27/4)^(1/7);
-puiseux(y^3 + x^3*y +x, x, y, g, -3/(2*g^2), 1);
-puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
-\end{maximablock}
-
-We have one sheet of two cycles at $(g,-3/(2g^2))$
-and an ordinary point at $(g,3/g^2)$.
-
-Finally, let's look at what happens when $x$ goes to infinity:
-
-\begin{maximablock}
-puiseux(y^3 + x^3*y +x, x, y, inf, inf, 10);
-puiseux(y^3 + x^3*y +x, x, y, inf, 0, 10);
-\end{maximablock}
-
-Here we have a single cycle of two sheets at $(\infty,\infty)$
-and an ordinary point at $(\infty,0)$.
-
-\endexample
-
-%\mysection{meromorphic functions are analytic}
-%
-%first, trace of a meromorphic function is meromorphic on C(x), and is
-%thus a rational function
-%
-%Liouville's theorem: a bounded entire function is constant
-%
-%Proof A: (Silverman) use a Taylor series expansion around z=0, which
-%is valid in the entire plane (since the function is entire).  Cauchy's
-%inequality $|f| \le M ==> |c_n| \le M/{R^n}$ (eq. 10.8') as R->infty
-%implies that the function is constant.
-%
-%Lemma: A entire function with no singularities, even at infinity, is
-%constant.
-%
-%Proof: We can do a Taylor series expansion at the origin, whose
-%non-zero terms will correspond to the principle part of the expansion
-%at infinity, which must therefore be zero.
-%
-%Next: A entire function with only a pole at infinity is a polynomial.
-%The principle part at infinity will be a polynomial.  Subtract it out
-%to get a function with no singularities, which must be constant.
-%
-%Next: Given a function with only a finite number of finite poles,
-%multiply it by a polynomial (the denominator) matching the poles with
-%zeros.  Now we've got a function with only a pole at infinity, which
-%must be a polynomial (the numerator).
 
 \example Find the Puiseux expansions of y at the multiple points of the
 curve $y^2 = 1 - x^2$
@@ -694,6 +620,79 @@ since it has an infinite number of negative exponents.  We can invert
 the series (HOW?) to obtain our final result:
 
 \endexample
+
+\example \cite{bliss} \S 68
+Compute expansions at all multiple points of
+
+$$y^3+x^3y+x=0$$
+
+We begin by computing the discriminant of the
+equation, which gives us the locations of the multiple points.
+
+\begin{maximablock}
+discriminant(y^3 + x^3*y + x, y);
+\end{maximablock}
+
+The multiple points lie over the roots of this equation: $x=0$ and
+the seven roots of $4x^7+27=0$.  Infinity also needs to be
+examined.  We begin with $x=0$:
+
+\begin{maximablock}
+puiseux(y^3 + x^3*y +x, x, y, 0, 0, 10);
+\end{maximablock}
+
+This result shows that we have a single cycle at $(x,y)=(0,0)$ with
+three sheets.  Now, let's look at a specimen root
+of $4x^7+27=0$:
+
+\begin{maximablock}
+g: (-27/4)^(1/7);
+puiseux(y^3 + x^3*y +x, x, y, g, -3/(2*g^2), 1);
+puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
+\end{maximablock}
+
+We have one sheet of two cycles at $(g,-3/(2g^2))$
+and an ordinary point at $(g,3/g^2)$.
+
+Finally, let's look at what happens when $x$ goes to infinity:
+
+\begin{maximablock}
+puiseux(y^3 + x^3*y +x, x, y, inf, inf, 10);
+puiseux(y^3 + x^3*y +x, x, y, inf, 0, 10);
+\end{maximablock}
+
+Here we have a single cycle of two sheets at $(\infty,\infty)$
+and an ordinary point at $(\infty,0)$.
+
+\endexample
+
+%\mysection{meromorphic functions are analytic}
+%
+%first, trace of a meromorphic function is meromorphic on C(x), and is
+%thus a rational function
+%
+%Liouville's theorem: a bounded entire function is constant
+%
+%Proof A: (Silverman) use a Taylor series expansion around z=0, which
+%is valid in the entire plane (since the function is entire).  Cauchy's
+%inequality $|f| \le M ==> |c_n| \le M/{R^n}$ (eq. 10.8') as R->infty
+%implies that the function is constant.
+%
+%Lemma: A entire function with no singularities, even at infinity, is
+%constant.
+%
+%Proof: We can do a Taylor series expansion at the origin, whose
+%non-zero terms will correspond to the principle part of the expansion
+%at infinity, which must therefore be zero.
+%
+%Next: A entire function with only a pole at infinity is a polynomial.
+%The principle part at infinity will be a polynomial.  Subtract it out
+%to get a function with no singularities, which must be constant.
+%
+%Next: Given a function with only a finite number of finite poles,
+%multiply it by a polynomial (the denominator) matching the poles with
+%zeros.  Now we've got a function with only a pole at infinity, which
+%must be a polynomial (the numerator).
 
 \example Find the principal parts of $\frac{1}{y}$ on the curve
 $y^2 = 1 - x^2$
