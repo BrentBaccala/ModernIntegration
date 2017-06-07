@@ -230,14 +230,16 @@ taylor(sin(x),x,0,3);
 \end{maximablock}
 
 \begin{maximablock}
-monomial_powers(f,x,y,x0,y0) := block([result, newf, xpow, ypow],
-  result : [],
-  [newf,x0,y0] : recenter_curve(f,x,y,x0,y0),
-  for xpow: 0 thru hipow(newf, x-x0) do (
-    xcoeff : coeff(newf,x-x0,xpow),
-    if xcoeff # 0 then for ypow: 0 thru hipow(xcoeff, y-y0) do (
-       if coeff(xcoeff,y-y0,ypow) # 0 then result : endcons([xpow,ypow], result)
-    )
+monomial_powers(f,x,y,x0,y0) := block(
+  [result: [], xcoeff],
+  [f,x0,y0] : recenter_curve(f,x,y,x0,y0),
+  for xpow: 0 thru hipow(f, x-x0) do (
+    xcoeff : coeff(f, x-x0, xpow),
+    if xcoeff # 0 then
+       for ypow: 0 thru hipow(xcoeff, y-y0) do (
+          if coeff(xcoeff, y-y0, ypow) # 0 then
+             result: endcons([ypow,xpow], result)
+       )
   ),
   result
 )$
@@ -250,10 +252,6 @@ monomial_powers(y^2-(x^2-1), x, y, inf, inf);
 \end{maximablock}
 
 \begin{maximablock}
-swap_list_pairs(list) :=
-   map(lambda([u], [u[2], u[1]]), list)
-$
-
 /* list is a list of pairs, like [[0,1], [0,2], [2,0]] */
 /* this function returns the subset of points on the lower convex hull */
 
@@ -467,13 +465,13 @@ puiseux_fracexp : true$
 puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
  block([mp, delta, g, r, s, yseries, rf, result],
    if y0 # inf then (
-      mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,y0))),
+      mp: lower_convex_points(monomial_powers(f,x,y,x0,y0)),
       delta: mp[2]-mp[1]
    ) else (
       /* If we're expanding y at infinity, don't recenter y, but use
        * rightmost points on the Newton polygon instead
        */
-      mp: lower_convex_points(swap_list_pairs(monomial_powers(f,x,y,x0,0))),
+      mp: lower_convex_points(monomial_powers(f,x,y,x0,0)),
       delta: last(mp) - lastn(mp,2)[1]
    ),
    g: gcd(delta[1],delta[2]),
@@ -785,11 +783,11 @@ at $(x,y)=(i,0)$.
 % $x=t^2+i$.  $y^2 = x^2+1 = (t^2+i)^2+1 = t^4+2it^2$
 
 \begin{maximablock}
-/* puiseux(y^2 - x^2 - 1, x, y, %i, 0, 5); */
-ev(puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
-           y*x/(x^2+1)), puiseux_fracexp=false);
 puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
         y*x/(x^2+1));
+ev(puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
+           y*x/(x^2+1)),
+   puiseux_fracexp=true);
 \end{maximablock}
 
 There appears to be a pole here, but appearances are deceptive.
