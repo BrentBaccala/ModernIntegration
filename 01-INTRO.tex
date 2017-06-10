@@ -518,6 +518,26 @@ mapu(u+4, [1,2,3]);
 mapu(denom(u), [x,1,1/x,1/x^2]);
 \end{maximablock}
 
+The $cis$ function is a useful shorthand for constructing
+roots of unity:
+
+\begin{maximablock}
+cis(theta) := %i*sin(theta) + cos(theta)$
+\end{maximablock}
+
+Example \ref{an integral Maxima can't solve} uses
+trigonometric functions of $\frac{\pi}{8}$, which
+Maxima does not expand by default.
+
+\begin{maximablock}
+matchdeclare(ii, integerp, xx, true)$
+
+tellsimpafter(sin(ii*%pi/8),
+   subst(x=ii*%pi/4, ev(sin(x/2), halfangles=true)))$
+tellsimpafter(cos(ii*%pi/8),
+   subst(x=ii*%pi/4, ev(cos(x/2), halfangles=true)))$
+\end{maximablock}
+
 \subsection{List Functions}
 
 Here's a function that finds the index of an
