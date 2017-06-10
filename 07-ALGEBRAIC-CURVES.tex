@@ -202,7 +202,7 @@ deal with these points by introducing a line at infinity, forming
 {\it projective space} and creating a {\it compact} surface.
 
 \begin{maximablock}
-recenter_curve(f,x,y,x0,y0) := block([newf],
+recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
    if x0 = inf then (f:subst(x=1/x, f), x0:0),
    if y0 = inf then (f:subst(y=1/y, f), y0:0),
    f: num(ratsimp(f)),
@@ -210,7 +210,12 @@ recenter_curve(f,x,y,x0,y0) := block([newf],
    if expand(subst([y=y0, x=x0], f)) # 0 then
       error("attempt to recenter to point not on curve"),
 */
-   newf : expand(subst([y=y+y0, x=x+x0], f)),
+   f : expand(subst([y=y+y0, x=x+x0], f)),
+   for xpow: 0 thru hipow(f, x) do (
+      xcoeff : coeff(f, x, xpow),
+      for ypow: 0 thru hipow(xcoeff, y) do
+         newf : newf + ratsimp(coeff(xcoeff, y, ypow))*x^xpow*y^ypow
+   ),
    newf : subst([y=y-y0, x=x-x0], newf),
    [newf, x0, y0]
 )$
@@ -413,7 +418,7 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 {\small\begin{maximablock}
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
- block([n:max(deg,s), xexpansion, yexpansion, res, ans, eqns],
+ block([n:max(deg,s), xexpansion, yexpansion, res, allans, ans, eqns],
   if x0 # inf then
     xexpansion: x0 + t^r
   else
@@ -425,10 +430,10 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
     /* yexpansion: 1/sum(t^i*a[i],i,s,n), */
     yexpansion: sum(t^i*a[i],i,s,n),
   res: subst([x=xexpansion, y=yexpansion], f/t^p),
-  res: num(ratsimp(res)),
+  res: expand(num(ratsimp(res))),
   eqns: create_list(coeff(res,t,i),i,0,(n-s)),
 
-  ans: sort(solve(eqns[1],a[s])),
+  allans: sort(solve(eqns[1],a[s])),
 
   /* If r > 1, then we expect each solution to be duplicated r times, */
   /* differing only by r'th roots of unity.  These different solutions */
@@ -437,12 +442,10 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   /* We exclude zero as a solution, since zero would correspond to a */
   /* higher degree solution than the ones we're seeking. */
 
-  if r > 1 then block([allans: ans],
-    ans: [],
-    for a in allans do
-       if rhs(a) # 0 and not member(ratsimp(a^r), ratsimp(ans^r)) then
-          ans: endcons(a, ans)
-  ),
+  ans: [],
+  for a in allans do
+     if rhs(a) # 0 and not member(ratsimp(a^r), ratsimp(ans^r)) then
+        ans: endcons(a, ans),
 
   /* ans is a list of lists.  Each outer list is a solution. */
   ans: map(makelist, ans),
@@ -461,20 +464,22 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
 puiseux_fracexp : true$
 
 puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
- block([mp, delta, g, r, s, yseries, rf, result],
+ block([mp, pair, delta, g, r, s, p, yseries, rf, result],
    if y0 # inf then (
       mp: lower_convex_points(monomial_powers(f,x,y,x0,y0)),
-      delta: mp[2]-mp[1]
+      pair: firstn(mp,2)
    ) else (
       /* If we're expanding y at infinity, don't recenter y, but use
        * rightmost points on the Newton polygon instead
        */
       mp: lower_convex_points(monomial_powers(f,x,y,x0,0)),
-      delta: last(mp) - lastn(mp,2)[1]
+      pair: lastn(mp,2)
    ),
+   delta: pair[2]-pair[1],
    g: gcd(delta[1],delta[2]),
    r: delta[1]/g,
    s: -delta[2]/g,
+   p: pair[1][2]*r - pair[1][1]*s,
 
    /* if the caller requested a specific rational function, */
    /* use modulo to normalize it, then expand each of the */
@@ -484,14 +489,16 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
 
    if length(ratfunc) > 0 then block([b: modulo(ratfunc[1], f, y)],
      rf: 0,
+
      for i: 0 thru hipow(b, y) do (
-        rf: rf + subst(if x0 # inf then x=x0+t^r else x=1/t^r, taylor(ratsimp(coeff(b, y, i)), x, x0, deg))*y^i
+        /* deg-s is the highest t-degree required.  Divide by r to get x-degree required */
+        rf: rf + subst(if x0 # inf then x=x0+t^r else x=1/t^r, taylor(ratsimp(coeff(b, y, i)), x, x0, ceiling((deg-s)/r)))*y^i
      )
    ) else rf: y,
 
    /* expand y to the requested degree, adjusted by the degree of rf */
    if y0 # inf then
-      yserieslist: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,mp[1][2]*r)
+      yserieslist: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,p)
    else
       yserieslist: puiseux2(f,x,y,x0,0,deg+lopow(rf,t),r,s,0),
 
@@ -1471,5 +1478,36 @@ $$\int {{(2x^6+4x^5+7x^4-3x^3-x^2-8x-8)y}\over{(2x^2-1)^2(x^4+4 x^3+2 x^2+1)}} \
 = {{(x+{1\over2})y}\over{2x^2-1}} + {1\over2}\ln{{A(x)y - B(x)}\over{C(x)}}
 $$
 
+
+\endexample
+
+\vfill\eject
+\mysection{An integral Maxima can't solve}
+
+\example
+\label{an integral Maxima can't solve}
+Integrate $\int \frac{x^9+2x^7-x}{(x^4+2x^2+1)\sqrt{x^8+1}}\, dx$
+
+When I say that Maxima can't solve this integral, I mean that its
+built-in integration routine can't solve the integral:
+
+\begin{maximablock}
+f: y^2 - x^8 - 1$
+
+integrand: (x^9+2*x^7-x)/((x^4+2*x^2+1)*y);
+
+integrate(subst([y=sqrt(x^8+1)], integrand), x);
+\end{maximablock}
+
+Now let's attack the problem using the techniques of this book.
+
+Since $x^4+2x^2+1=(x^2+1)^2$, our finite poles are at $x=\pm i$,
+as well as the eighth roots of $x^8+1=0$.
+
+\begin{maximablock}
+puiseux(f, x, y, %i, sqrt(2), -1, integrand);
+puiseux(f, x, y, cis(%pi/8), 0, -1, integrand);
+puiseux(f, x, y, inf, inf, 2, integrand);
+\end{maximablock}
 
 \endexample
