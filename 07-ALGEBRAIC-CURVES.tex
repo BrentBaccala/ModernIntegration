@@ -420,16 +420,14 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  block([n:max(deg,s), xexpansion, yexpansion, res,
         allans, ans, eqns, deqn],
+
   if x0 # inf then
     xexpansion: x0 + t^r
   else
     xexpansion: (1/t)^r,
 
-  if y0 # inf then
-    yexpansion: y0 + sum(t^i*a[i],i,s,n)
-  else
-    /* yexpansion: 1/sum(t^i*a[i],i,s,n), */
-    yexpansion: sum(t^i*a[i],i,s,n),
+  yexpansion: y0 + sum(t^i*a[i],i,s,n),
+
   res: subst([x=xexpansion, y=yexpansion], f/t^p),
   res: expand(num(ratsimp(res))),
   eqns: create_list(coeff(res,t,i),i,0,(n-s)),
@@ -440,6 +438,12 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
 
   deqn: diff(eqns[1], a[s]),
   allans: sort(solve(eqns[1],a[s])),
+
+  /* Maxima's solve() can't handle arbitrary high powered */
+  /* polynomials.  Check to see if it worked. */
+
+  if apply("+", multiplicities) # hipow(eqns[1], a[s]) then
+     error("NYI: solve didn't work in puiseux2"),
 
   /* If r > 1, then we expect each solution to be duplicated */
   /* r times, differing only by r'th roots of unity.  These */
@@ -465,9 +469,9 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   map(lambda([oneans], block([eqns2:subst(oneans, eqns)],
     for i:1 thru n-s do block([s:solve(eqns2[i+1],a[s+i])],
       if not listp(s) or length(s) # 1 then
-         error("puiseux: internal error"),
-      oneans:endcons(s[1],oneans),
-      eqns2: subst(oneans,eqns2)),
+         error("puiseux2: internal error"),
+      oneans: endcons(s[1], oneans),
+      eqns2: subst(oneans, eqns2)),
     subst(oneans, yexpansion))), ans)
   )$
 
@@ -477,44 +481,32 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
 
 puiseux_fracexp : true$
 
-puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
- block([mp, pair, delta, g, r, s, p, yseries, rf, result],
-   if y0 # inf then (
-      mp: lower_convex_points(monomial_powers(f,x,y,x0,y0)),
-      pair: firstn(mp,2)
-   ) else (
-      /* If we're expanding y at infinity, don't recenter y, but use
-       * rightmost points on the Newton polygon instead
-       */
-      mp: lower_convex_points(monomial_powers(f,x,y,x0,0)),
-      pair: lastn(mp,2)
-   ),
-   delta: pair[2]-pair[1],
-   g: gcd(delta[1],delta[2]),
-   r: delta[1]/g,
-   s: -delta[2]/g,
-   p: pair[1][2]*r - pair[1][1]*s,
-
+puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
+ block([xsubst, tsubst, rf:0, yserieslist, result],
    /* if the caller requested a specific rational function, */
    /* use modulo to normalize it, then expand each of the */
    /* coefficients as a Taylor or Laurent series in x, */
    /* leaving y alone.  We'll later substitute a Puiseux */
    /* series for y.  Default rf is y itself. */
 
-   if length(ratfunc) > 0 then block([b: modulo(ratfunc[1], f, y)],
-     rf: 0,
+   if x0 # inf then (
+      xsubst: x = x0 + t^r,
+      tsubst: t^r = x - x0
+   ) else (
+      xsubst: x = 1 / t^r,
+      tsubst: t^r = 1/x
+   ),
 
-     for i: 0 thru hipow(b, y) do (
-        /* deg-s is the highest t-degree required.  Divide by r to get x-degree required */
-        rf: rf + subst(if x0 # inf then x=x0+t^r else x=1/t^r, taylor(ratsimp(coeff(b, y, i)), x, x0, ceiling((deg-s)/r)))*y^i
-     )
-   ) else rf: y,
+   for i: 0 thru hipow(b, y) do (
+      /* deg-s is the highest t-degree required. */
+      /* Divide by r to get x-degree required. */
+      rf: rf + subst(xsubst, taylor(ratsimp(coeff(b, y, i)),
+                                    x, x0, ceiling((deg-s)/r)))
+                 * y^i
+   ),
 
    /* expand y to the requested degree, adjusted by the degree of rf */
-   if y0 # inf then
-      yserieslist: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,p)
-   else
-      yserieslist: puiseux2(f,x,y,x0,0,deg+lopow(rf,t),r,s,0),
+   yserieslist: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,p),
 
    map(lambda([yseries],
       result: ratsimp(subst(y=yseries, rf)),
@@ -528,8 +520,49 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
       if puiseux_fracexp then
          subst(t=(x-x0)^(1/r), result)
       else
-         [result, if x0 # inf then t^r=x-x0 else t^r=1/x]
+         [result, tsubst]
    ), yserieslist)
+ )$
+
+puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
+ block([result: [], mp, pairs, sign, delta, g, r, s, p, rf],
+
+   /* If the caller requested a specific rational function to */
+   /* be expaned, use modulo to normalize it.  Default is y. */
+
+   if length(ratfunc) > 0 then
+      rf: modulo(ratfunc[1], f, y)
+   else
+      rf: y,
+
+   /* XXX eliminate segments with the same slope */
+
+   if y0 # inf then (
+      sign: -1
+   ) else (
+      /* If we're expanding y at infinity, don't recenter y, */
+      /* but use upward sloping segments on the Newton polygon */
+
+      y0 : 0,
+      sign: 1
+   ),
+
+   /* Make a list of all line segments on the Newton polygon */
+   mp: lower_convex_points(monomial_powers(f,x,y,x0,y0)),
+   pairs: makelist([mp[i], mp[i+1]], i, length(mp)-1),
+
+   for pair in pairs do (
+     delta: pair[2]-pair[1],
+     if delta[2] * sign > 0 then (
+       g: gcd(delta[1],delta[2]),
+       r: delta[1]/g,
+       s: -delta[2]/g,
+       p: pair[1][2]*r - pair[1][1]*s,
+
+       result: append(result, puiseux3(f,x,y,x0,y0,deg,r,s,p,rf))
+     )
+   ),
+   result
  )$
 
 \end{maximablock}
