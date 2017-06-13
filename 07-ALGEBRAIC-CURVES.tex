@@ -418,7 +418,8 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 {\small\begin{maximablock}
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
- block([n:max(deg,s), xexpansion, yexpansion, res, allans, ans, eqns],
+ block([n:max(deg,s), xexpansion, yexpansion, res,
+        allans, ans, eqns, deqn],
   if x0 # inf then
     xexpansion: x0 + t^r
   else
@@ -433,26 +434,39 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   res: expand(num(ratsimp(res))),
   eqns: create_list(coeff(res,t,i),i,0,(n-s)),
 
+  /* eqns[1] should be a polynomial in a[s] */
+  /* We can only handle its simple roots, so compute */
+  /* its derivative to check that */
+
+  deqn: diff(eqns[1], a[s]),
   allans: sort(solve(eqns[1],a[s])),
 
-  /* If r > 1, then we expect each solution to be duplicated r times, */
-  /* differing only by r'th roots of unity.  These different solutions */
-  /* all correspond to the same branch, so remove all but one of each. */
+  /* If r > 1, then we expect each solution to be duplicated */
+  /* r times, differing only by r'th roots of unity.  These */
+  /* different solutions all correspond to the same branch, */
+  /* so we'll remove all but one of each. */
 
-  /* We exclude zero as a solution, since zero would correspond to a */
-  /* higher degree solution than the ones we're seeking. */
+  /* We exclude zero as a solution, since zero corresponds */
+  /* to a higher degree solution than the ones we're seeking. */
 
   ans: [],
   for a in allans do
-     if rhs(a) # 0 and not member(ratsimp(a^r), ratsimp(ans^r)) then
-        ans: endcons(a, ans),
+     if rhs(a) # 0
+        and not member(ratsimp(a^r), ratsimp(ans^r)) then
+           if ratsimp(subst(a[s]=a, deqn)) = 0 then
+              error("NYI: multiple root in puiseux2")
+           else
+              ans: endcons(a, ans),
 
-  /* ans is a list of lists.  Each outer list is a solution. */
+  /* For each solution to eqns[1], solve the remaining eqns. */
+  /* IFT guarantees unique solutions to all eqns. */
+
   ans: map(makelist, ans),
   map(lambda([oneans], block([eqns2:subst(oneans, eqns)],
     for i:1 thru n-s do block([s:solve(eqns2[i+1],a[s+i])],
-      if not listp(s) or length(s) # 1 then error("puiseux: internal error"),
-      if listp(s) and length(s) >= 1 then oneans:endcons(s[1],oneans),
+      if not listp(s) or length(s) # 1 then
+         error("puiseux: internal error"),
+      oneans:endcons(s[1],oneans),
       eqns2: subst(oneans,eqns2)),
     subst(oneans, yexpansion))), ans)
   )$
