@@ -482,12 +482,7 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
 puiseux_fracexp : true$
 
 puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
- block([xsubst, tsubst, rf:0, yserieslist, result],
-   /* if the caller requested a specific rational function, */
-   /* use modulo to normalize it, then expand each of the */
-   /* coefficients as a Taylor or Laurent series in x, */
-   /* leaving y alone.  We'll later substitute a Puiseux */
-   /* series for y.  Default rf is y itself. */
+ block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, rf:0, yserieslist, result],
 
    if x0 # inf then (
       xsubst: x = x0 + t^r,
@@ -497,12 +492,44 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
       tsubst: t^r = 1/x
    ),
 
+   /* deg is the highest t-degree we want in our final result */
+   /* s is the lowest t-degree expected in the expansion of y */
+   /* therefore, deg-s is the highest t-degree required in rf's expansion */
+
+   maxpow: deg-s,
+
+   if not freeof(del(x), b) then (
+      b: ratsimp(b/del(x)),
+      if not freeof(del(x), b) then
+         error("puiseux: requested differential can't be normalized"),
+      differential: del(t),
+      if x0 # inf then (
+         /* x= t^r  ->  dx = r t^(r-1) dt */
+         /* so we don't need as many terms to get to maxpow */
+         maxpow : maxpow - (r-1),
+         adjustment : r * t^(r-1)
+      ) else (
+         /* x= t^-r  ->  dx = -r t^(-r-1) dt */
+         /* so we need more terms to get to maxpow */
+         maxpow : maxpow + (r+1),
+         adjustment : -r * t^(-r-1)
+      )
+   ),
+
+   /* Divide by r to get x-degree required. */
+
+   maxpow: ceiling(maxpow/r),
+
+   /* Expand each of the coefficients of the requested */
+   /* function as a Taylor or Laurent series in x, */
+   /* leaving y alone.  We'll later substitute a Puiseux */
+   /* series for y. */
+
    for i: 0 thru hipow(b, y) do (
-      /* deg-s is the highest t-degree required. */
-      /* Divide by r to get x-degree required. */
-      rf: rf + subst(xsubst, taylor(ratsimp(coeff(b, y, i)),
-                                    x, x0, ceiling((deg-s)/r)))
-                 * y^i
+      rf: rf + ratsimp(subst(xsubst, taylor(ratsimp(coeff(b, y, i)),
+                                            x, x0, maxpow))
+                       * adjustment)
+               * y^i
    ),
 
    /* expand y to the requested degree, adjusted by the degree of rf */
@@ -520,7 +547,7 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
       if puiseux_fracexp then
          subst(t=(x-x0)^(1/r), result)
       else
-         [result, tsubst]
+         [result * differential, tsubst]
    ), yserieslist)
  )$
 
@@ -794,6 +821,11 @@ so $\ud x = -\frac{1}{u^2} \ud u$
 $$\frac{x}{y} \ud x = \pm \frac{1}{u} \left[ i u + \frac{1}{2} i u^3 + \cdots \right] \left[-\frac{1}{u^2} \ud u\right]$$
 $$ = \mp \left[ i u^{-2} + \frac{1}{2} i + \cdots \right] \ud u$$
 
+\begin{maximablock}
+puiseux(y^2 + x^2 - 1, x, y, 1, 0, 1, 1/y * del(x));
+puiseux(y^2 + x^2 - 1, x, y, inf, inf, 12, x/y);
+puiseux(y^2 + x^2 - 1, x, y, inf, inf, 10, x/y * del(x));
+\end{maximablock}
 
 \endexample
 
