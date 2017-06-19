@@ -415,7 +415,7 @@ have a unique series expansion for $u(t)$ as a function of $t$.  If any of the r
 are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 (\cite{bliss} \S 15) that this procedure always terminates.
 
-{\small\begin{maximablock}
+\begin{maximablocksmall}
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  block([n:max(deg,s), xexpansion, yexpansion, res,
@@ -593,8 +593,7 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
    result
  )$
 
-\end{maximablock}
-}
+\end{maximablocksmall}
 
 \begin{maximablock}
 puiseux(y^2-x^2-1, x, y, 0, 1, 5);

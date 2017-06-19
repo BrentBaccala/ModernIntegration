@@ -486,14 +486,12 @@ $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\o
 
 Due to the complexity of this integral, I'll use Maxima for the entire calculation.
 
-{\small
-\begin{maximablock}
+\begin{maximablocksmall}
 integrand:
    x*((x^2*exp(2*x^2)-log(x+1)^2)^2
       +2*x*exp(3*x^2)*(x-(2*x^3+2*x^2+x+1)*log(x+1)))
    / ((x+1)*(log(x+1)^2 - x^2*exp(2*x^2))^2);
-\end{maximablock}
-}
+\end{maximablocksmall}
 
 We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x^2)$ and $\theta = \ln (x+1)$.
 
