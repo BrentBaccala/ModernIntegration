@@ -149,7 +149,10 @@ resetmargins=true}
 % maximacode (the environment to only execute) and then print the
 % output using some new macros, instead of the default behavior.
 
+\newenvironment{maximablocksmall}{\small\maximablock}{\endmaximablock}
+
 \renewenvironment{maximablock}{\renewcommand{\maximaoutputmath}[1]{}\renewcommand{\maximaoutputstring}{}\maximacode}{\endmaximacode
+
 % Command called by python code that processes maximacode input
 % Command number is in argument 1
 % Command text is saved in verbatim block MaximaCode
