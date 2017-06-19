@@ -482,7 +482,7 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
 puiseux_fracexp : true$
 
 puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
- block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, rf:0, yserieslist, result],
+ block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, maxypow, rf:0, yserieslist, result],
 
    if x0 # inf then (
       xsubst: x = x0 + t^r,
@@ -493,10 +493,8 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
    ),
 
    /* deg is the highest t-degree we want in our final result */
-   /* s is the lowest t-degree expected in the expansion of y */
-   /* therefore, deg-s is the highest t-degree required in rf's expansion */
 
-   maxpow: deg-s,
+   maxpow: deg,
 
    if not freeof(del(x), b) then (
       b: ratsimp(b/del(x)),
@@ -516,24 +514,27 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
       )
    ),
 
-   /* Divide by r to get x-degree required. */
-
-   maxpow: ceiling(maxpow/r),
-
    /* Expand each of the coefficients of the requested */
    /* function as a Taylor or Laurent series in x, */
    /* leaving y alone.  We'll later substitute a Puiseux */
    /* series for y. */
 
-   for i: 0 thru hipow(b, y) do (
-      rf: rf + ratsimp(subst(xsubst, taylor(ratsimp(coeff(b, y, i)),
-                                            x, x0, maxpow))
-                       * adjustment)
-               * y^i
+   maxypow : 0,
+   for i: 0 thru hipow(b, y) do block([icomponent],
+      /* s is the lowest t-degree expected in the expansion of y */
+      /* therefore, maxpow-s*i is the highest t-degree required in rf's expansion */
+      /* ceiling((maxpow-s*i)/r) is the highest x-degree required */
+      icomponent: ratsimp(subst(xsubst, taylor(ratsimp(coeff(b, y, i)),
+                                            x, x0, ceiling((maxpow-s*i)/r)))
+                          * adjustment),
+      /* maxpow(rf) = minpow(icomponent) + maxpow(y) * i */
+      if i # 0 then
+         maxypow: ceiling((deg - lopow(icomponent,t))/i),
+      rf: rf + icomponent * y^i
    ),
 
-   /* expand y to the requested degree, adjusted by the degree of rf */
-   yserieslist: puiseux2(f,x,y,x0,y0,deg+lopow(rf,t),r,s,p),
+   /* expand y to the requested degree */
+   yserieslist: puiseux2(f,x,y,x0,y0,maxypow,r,s,p),
 
    map(lambda([yseries],
       result: ratsimp(subst(y=yseries, rf)),
@@ -882,11 +883,16 @@ $$d \sqrt{x-i} = \frac{1}{2} \frac{1}{\sqrt{x-i}} dx$$
 $$dx = 2 \sqrt{x-i} d \sqrt{x-i}$$
 
 \begin{maximablock}
-distrib(% * 2 * sqrt(x-%i));
+distrib(2 * %[1] * sqrt(x-%i));
 \end{maximablock}
 
 So, even though the {\it integrand} has a pole at $(i,0)$, the {\it
 differential} does not... and the differential is what matters!
+
+\begin{maximablock}
+puiseux(y^2 - x^2 - 1, x, y, %i, 0, 4,
+        y*x/(x^2+1) * del(x));
+\end{maximablock}
 
 The only other place we might have a pole is infinity.
 
@@ -902,6 +908,11 @@ but again
 we have to take the differential into account.  Since $x=\frac{1}{t}$,
 $dx=-\frac{1}{t^2} dt$, and we actually have second order poles
 at infinity.
+
+\begin{maximablock}
+puiseux(y^2 - x^2 - 1, x, y, inf, inf, 0,
+        x/y * del(x));
+\end{maximablock}
 
 Integrating termwise, we see that since our differential has second
 order poles at infinity, our integral must have first order poles
