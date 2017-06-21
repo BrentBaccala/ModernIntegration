@@ -127,6 +127,12 @@ pdfplot2d([args]) := block(
    apply(plot2d, endcons([pdf_file, filename], args)),
    embed_latex_graphic(filename)
 )$
+
+pdfplot3d([args]) := block(
+   [filename: next_pdf_filename()],
+   apply(plot3d, endcons([pdf_file, filename], args)),
+   embed_latex_graphic(filename)
+)$
 \end{maximacode}
 
 \begin{figure}[H]

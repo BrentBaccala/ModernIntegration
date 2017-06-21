@@ -883,18 +883,15 @@ where $x^2+1=0$, over the points $x=\pm i$.  These are also
 ramification points of the algebraic curve.  Its Riemann surface
 looks something like this:
 
+\begin{figure}[H]
+\begin{center}
 \begin{maximacode}
-plot3d ([sqrt((x**2-y**2+1)**2+(2*x*y)**2),
+pdfplot3d ([sqrt((x**2-y**2+1)**2+(2*x*y)**2),
    -sqrt((x**2-y**2+1)**2+(2*x*y)**2), [x, -2, 2], [y, -2, 2]],
    [legend, false], [xlabel, "Re"], [ylabel, "Im"], [zlabel, false],
    [xtics, -1,1,1], [ytics, -1,1,1], [ztics, false],
-   [azimuth, 70], [elevation, 80], [grid, 100, 100], [mesh_lines_color, false],
-   [pdf_file, "./07-GRAPH1.pdf"])$
+   [azimuth, 70], [elevation, 80], [grid, 100, 100], [mesh_lines_color, false])$
 \end{maximacode}
-
-\begin{figure}[H]
-\begin{center}
-\optionalgraphics[width=0.7\textwidth]{07-GRAPH1.pdf}
 \end{center}
 \end{figure}
 
