@@ -214,7 +214,7 @@ recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
    for xpow: 0 thru hipow(f, x) do (
       xcoeff : coeff(f, x, xpow),
       for ypow: 0 thru hipow(xcoeff, y) do
-         newf : newf + ratsimp(coeff(xcoeff, y, ypow))*x^xpow*y^ypow
+         newf : newf + radcan(ratsimp(coeff(xcoeff, y, ypow)))*x^xpow*y^ypow
    ),
    newf : subst([y=y-y0, x=x-x0], newf),
    [newf, x0, y0]
@@ -416,7 +416,6 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 (\cite{bliss} \S 15) that this procedure always terminates.
 
 \begin{maximablocksmall}
-
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  block([n:max(deg,s), xexpansion, yexpansion, res,
         allans, ans, eqns, deqn],
@@ -429,7 +428,8 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   yexpansion: y0 + sum(t^i*a[i],i,s,n),
 
   res: subst([x=xexpansion, y=yexpansion], f/t^p),
-  res: expand(num(ratsimp(res))),
+
+  res: expand(num(radcan(ratsimp(res)))),
   eqns: create_list(coeff(res,t,i),i,0,(n-s)),
 
   /* eqns[1] should be a polynomial in a[s] */
@@ -437,7 +437,7 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   /* its derivative to check that */
 
   deqn: diff(eqns[1], a[s]),
-  allans: sort(solve(eqns[1],a[s])),
+  allans: sort(radcan(solve(eqns[1],a[s]))),
 
   /* Maxima's solve() can't handle arbitrary high powered */
   /* polynomials.  Check to see if it worked. */
@@ -467,20 +467,25 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
 
   ans: map(makelist, ans),
   map(lambda([oneans], block([eqns2:subst(oneans, eqns)],
-    for i:1 thru n-s do block([s:solve(eqns2[i+1],a[s+i])],
+    for i:1 thru n-s do block([s:radcan(solve(eqns2[i+1],a[s+i]))],
       if not listp(s) or length(s) # 1 then
          error("puiseux2: internal error"),
       oneans: endcons(s[1], oneans),
       eqns2: subst(oneans, eqns2)),
     subst(oneans, yexpansion))), ans)
   )$
+\end{maximablocksmall}
 
+\begin{maximablocksmall}
 /* puiseux_fracexp controls whether series are returned with
  * fractional exponents, or using an auxilary variable (t).
  */
 
-puiseux_fracexp : false$
+puiseux_fracexp : false $
 
+\end{maximablocksmall}
+
+\begin{maximablocktiny}
 puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
  block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, maxypow, rf:0, yserieslist, result],
 
@@ -551,7 +556,9 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
          [result * differential, tsubst]
    ), yserieslist)
  )$
+\end{maximablocktiny}
 
+\begin{maximablocksmall}
 puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
  block([result: [], mp, pairs, sign, delta, g, r, s, p, rf],
 
@@ -562,6 +569,18 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
       rf: modulo(ratfunc[1], f, y)
    else
       rf: y,
+
+   if y0 = false then block([ys, f0],
+      f0 : subst(x=x0, f),
+      ys : unique(radcan(solve(f0))),
+      if apply("+", multiplicities) # hipow(f0, y) then
+         error("NYI: solve didn't work in puiseux"),
+      for yi in ys do (
+         result: append(result, puiseux(f,x,y,x0,rhs(yi),deg,rf))
+      )
+   ),
+
+   if result # [] then return(result),
 
    /* XXX eliminate segments with the same slope */
 
@@ -576,6 +595,7 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
    ),
 
    /* Make a list of all line segments on the Newton polygon */
+
    mp: lower_convex_points(monomial_powers(f,x,y,x0,y0)),
    pairs: makelist([mp[i], mp[i+1]], i, length(mp)-1),
 
@@ -747,17 +767,22 @@ the seven roots of $4x^7+27=0$.  Infinity also needs to be
 examined.  We begin with $x=0$:
 
 \begin{maximablock}
-puiseux(y^3 + x^3*y +x, x, y, 0, 0, 10);
+puiseux(y^3 + x^3*y +x, x, y, 0, false, 10);
 \end{maximablock}
 
 This result shows that we have a single cycle at $(x,y)=(0,0)$ with
 three sheets.  Now, let's look at a specimen root
 of $4x^7+27=0$:
 
-\begin{maximablock}
-g: (-27/4)^(1/7);
+\begin{comment}
 puiseux(y^3 + x^3*y +x, x, y, g, -3/(2*g^2), 1);
 puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
+puiseux(y^3 + x^3*y +x, x, y, g, -(3/8)^(1/7), 1);
+\end{comment}
+
+\begin{maximablock}
+g: (-27/4)^(1/7);
+puiseux(y^3 + x^3*y +x, x, y, g, false, 1);
 \end{maximablock}
 
 We have one sheet of two cycles at $(g,-3/(2g^2))$
