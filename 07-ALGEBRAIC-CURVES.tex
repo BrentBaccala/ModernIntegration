@@ -479,7 +479,7 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  * fractional exponents, or using an auxilary variable (t).
  */
 
-puiseux_fracexp : true$
+puiseux_fracexp : false$
 
 puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
  block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, maxypow, rf:0, yserieslist, result],
@@ -595,24 +595,37 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
 
 \end{maximablocksmall}
 
-\begin{maximablock}
-puiseux(y^2-x^2-1, x, y, 0, 1, 5);
+\begin{maximacode}
 
-puiseux(b^2-a^2-1, a, b, 0, 1, 5);
-
-puiseux(y^2-x^2-1, x, y, %i, 0, 5);
+/* This is a small test suite to verify puiseux's correct operation. */
 
 load("taylor1.mac")$
-ps: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5);
-ps: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1);
-expand(ps^2);
-expand(ps^2-x^2-1);
-expand((-ps)^2-x^2-1);
-implicit_taylor(y^2 + y - x^3, 0, 10, 0);
-puiseux(y^2 + y - x^3, x, y, 0, 0, 10);
-implicit_taylor(y^2 - x, 0, 10, 0);
-puiseux(y^2 - x, x, y, 0, 0, 10);
-puiseux_fracexp: false;
+
+ev((
+  test1: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5),
+  test2: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1),
+  if is(test1[1] # test2) then error("puiseux: test failed"),
+
+  test3: puiseux(b^2-a^2-1, a, b, 0, 1, 5),
+  if is(test1 # subst(a=x, test3)) then error("puiseux: test failed"),
+
+  test4: puiseux(y^2 + y - x^3, x, y, 0, 0, 10),
+  test5: implicit_taylor(y^2 + y - x^3, 0, 10, 0),
+  if test4[1] # test5 then error("puiseux: test failed"),
+
+  test6: puiseux(y^2 - x, x, y, 0, 0, 10),
+  if test6[1] # -sqrt(x) then error("puiseux: test failed")),
+puiseux_fracexp: true)$
+
+ev((
+  test7: puiseux(y^2 + x^2 - 1, x, y, inf, inf, 12, x/y),
+  test8: puiseux(y^2 + x^2 - 1, x, y, inf, inf, 10, x/y * del(x)),
+  if not(test8[1][1] === - test7[1][1] * t^-2 * del(t)) then error("puiseux: test failed")),
+puiseux_fracexp: false)$
+\end{maximacode}
+
+\begin{maximablock}
+puiseux(y^2-x^2-1, x, y, %i, 0, 5);
 \end{maximablock}
 
 \example Find the Puiseux expansions of y at the multiple points of the
@@ -622,28 +635,37 @@ We'll start with the finite zeros of $y$ at $(x,y)=(\pm 1, 0)$.  The
 analysis is almost the same in both cases, so I'll just do (1,0).
 First, construction of the Newton polygon requires recasting the
 curve's polynomial into a form centered about the point being
-analyzed, i.e, $y^2 + (x-1)^2 + 2(x-1) = 0$.  The only segment on the
-polygon lower convex hull has slope $-1/2$ and width 2, telling us
-that we'll require a single Puiseux series with ramification index 2:
+analyzed, i.e, $y^2 + (x-1)^2 + 2(x-1) = 0$.  Next, we
+plot the Newton polygon by putting the $y$ exponents on the horizontal
+axis and the $x$ exponents on the vertical:
+
+\begin{figure}[H]
+\begin{center}
+\maximac{newton_polygon(y^2+x^2-1, x, y, 1, 0)$}
+\end{center}
+\end{figure}
+
+The only segment on the polygon lower convex hull has slope $-1/2$ and
+width 2, telling us that two of our roots (the width of the segment)
+will require a single Puiseux series with ramification index 2 (the
+denominator of the slope):
 
 $$x=t^2+1$$
 
-We know that y can be expressed as a power series in t, so we'll write
-it in that form:
+We know that y can be expressed as a power series in t with
+initial exponent 1 (the numerator of the slope):
 
-$$y=a_0 + a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + \cdots$$
+$$y= a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + \cdots$$
 
 Now, substituting these expressions for $x^2$ and $y^2$ into the
 curve's defining equation $y^2 + x^2 - 1 = 0$ and equating coefficients
 of like powers of $t$, we find:
 
-$$a_0^2=0 \qquad 2 a_0 a_1 = 0 \qquad 2 + 2 a_0 a_2 + a_1^2 = 0$$
-$$2 a_0 a_3 + 2 a_1 a_2 = 0 \qquad 1 + 2 a_0 a_4 + 2 a_1 a_3 + a_2^2 = 0$$
+$$2 + a_1^2 = 0 \qquad 2 a_1 a_2 = 0 \qquad 1 + 2 a_1 a_3 + a_2^2 = 0$$
 
-The first equation tells us that $a_0 = 0$, the second equation tells
-us nothing (becasue $a_0=0$), the third equation tells us that $a_1
-= \pm\sqrt{2}i$, the fourth equation tells us that $a_2=0$ and the
-fifth equation tells us that $a_3 = \pm \frac{\sqrt{2}}{4} i$, so
+The first equation tells us that $a_1 = \pm\sqrt{2}i$,
+the second equation tells us that $a_2=0$ and the
+third equation tells us that $a_3 = \pm \frac{\sqrt{2}}{4} i$, so
 
 % $$a_0=0; \qquad a_1 = \pm\sqrt{2}i; \qquad a_2 = 0; \qquad a_3 = \pm \frac{\sqrt{2}}{4} i$$
 
@@ -665,20 +687,26 @@ $y=v^{-1}$.  Our curve becomes:
 
 $$(u^2 - 1) v^2 - u^2 = 0$$
 
+\begin{figure}[H]
+\begin{center}
+\maximac{newton_polygon(y^2+x^2-1, x, y, inf, inf)$}
+\end{center}
+\end{figure}
+
 The Newton polygon's lower convex hull has a single line segment,
 slope $-1$, length $2$, telling us that we'll have two separate
 cycles, each with ramification index 1.  Thus, $u$ can be used
 directly as a uniformizing variable, and we postulate an expansion for
 $v$ in the form:
 
-$$v = a_0 + a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
+$$v = a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
 
-$$v^2 = a_0^2 + 2 a_0 a_1 u + (2 a_0 a_2 + a_1^2) u^2 + (2 a_0 a_3 + 2 a_1 a_2) u^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) u^4 + \cdots$$
+% $$v^2 = a_0^2 + 2 a_0 a_1 u + (2 a_0 a_2 + a_1^2) u^2 + (2 a_0 a_3 + 2 a_1 a_2) u^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) u^4 + \cdots$$
 
 Plugging this into $(u^2 - 1) v^2 - u^2$ and setting all the resulting
 coefficients to zero, we conclude:
 
-$$a_0 = 0; \qquad a_1 = \pm i; \qquad a_2 = 0; \qquad a_3 = \mp \frac{1}{2}i$$
+$$a_1 = \pm i; \qquad a_2 = 0; \qquad a_3 = \mp \frac{1}{2}i$$
 
 $$v = \pm i u \mp \frac{1}{2} i u^3 + \cdots$$
 
@@ -695,6 +723,10 @@ $$y^{-1} = \pm \left[ i x^{-1} + \frac{1}{2} i x^{-3} + \cdots \right]$$
 Yet this is not an expansion for $y$, nor is it a Puiseux series,
 since it has an infinite number of negative exponents.  We can invert
 the series (HOW?) to obtain our final result:
+
+\begin{maximablock}
+puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, y);
+\end{maximablock}
 
 \endexample
 
@@ -774,9 +806,12 @@ and an ordinary point at $(\infty,0)$.
 \example Find the principal parts of $\frac{1}{y}$ on the curve
 $y^2 = 1 - x^2$
 
-Remember that principal parts of an algebraic function are the parts
-of its series expansion with negative powers at its poles.  So, the
-first step is to locate the function's poles, which in this case is
+The {\it principal part} of an algebraic function is the part
+of its series expansion with negative exponents.  Theorem ?
+states that an algebraic function is completely determined,
+up to adding a constant, by its principal parts.
+
+The first step is to locate the function's poles, which in this case is
 simply the places where the denominator is zero, and that's just
 $x=\pm 1$.  Now, if we use {\tt puiseux}, we can just request a series
 truncated at the $-1$ term:
@@ -801,31 +836,34 @@ puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y);
 $y^2 = 1 - x^2$
 
 Differential forms are not functions, and have different series
-expansions.  This is primarily due to the presence of the
-differential, which must be adjusted at ramification points.  Thus,
-we've already computed a series expansion for $\frac{1}{y}$ at $x=\pm
-1$, expressed in terms of $t$.  Now $x=\pm 1 + t^2$, so $\ud x=2t\ud
-t$
+expansions, due to the presence of the
+differential, which must be adjusted at ramification points.
 
-$$\frac{x}{y} \ud x = \pm \left[\pm 1 + t^2 \right] \left[ -\frac{\sqrt{2}}{2} it^{-1} + \cdots \right] 2t \ud t$$
-
-$$\frac{x}{y} \ud x = \left[ -\sqrt{2} i + \cdots \right] \ud t$$
-
-In short, even though both $\frac{1}{y}$ and $\frac{x}{y}$ have poles
-at $x=\pm 1$, $\frac{x}{y} \ud x$ does not!  Its behavior at infinity
-also requires analysis, since $x$ and $\ud x$ both have poles at
-infinity, but $\frac{1}{y}$ does not (it has a zero at infinity).
-As before, we'll use $u=\frac{1}{x}$ for a uniformizing variable,
-so $\ud x = -\frac{1}{u^2} \ud u$
-
-$$\frac{x}{y} \ud x = \pm \frac{1}{u} \left[ i u + \frac{1}{2} i u^3 + \cdots \right] \left[-\frac{1}{u^2} \ud u\right]$$
-$$ = \mp \left[ i u^{-2} + \frac{1}{2} i + \cdots \right] \ud u$$
+Let's expand $\frac{x}{y}$ at $x=1$:
 
 \begin{maximablock}
-puiseux(y^2 + x^2 - 1, x, y, 1, 0, 1, 1/y * del(x));
-puiseux(y^2 + x^2 - 1, x, y, inf, inf, 12, x/y);
-puiseux(y^2 + x^2 - 1, x, y, inf, inf, 10, x/y * del(x));
+puiseux(y^2 + x^2 - 1, x, y, 1, 0, 5, x/y);
 \end{maximablock}
+
+Now $x=t^2+1$, so $\ud x=2t\ud t$.  Thus, multiplying $\frac{x}{y}$
+by $\ud x$ and changing our variable to $t$ will multiply
+all of the terms in our expansion by $2t$:
+
+\begin{maximablock}
+puiseux(y^2 + x^2 - 1, x, y, 1, 0, 6, x/y*del(x));
+\end{maximablock}
+
+Even though both $\frac{1}{y}$ and $\frac{x}{y}$ have poles
+at $x=1$, $\frac{x}{y} \ud x$ does not!
+
+Its behavior at infinity also requires analysis.
+
+\begin{maximablock}
+puiseux(y^2 + x^2 - 1, x, y, inf, inf, -1, x/y * del(x));
+\end{maximablock}
+
+In short, while $\frac{x}{y}$ has poles at $(\pm 1,0)$,
+$\frac{x}{y} \ud x$ has poles only at infinity.
 
 \endexample
 
