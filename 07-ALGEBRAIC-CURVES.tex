@@ -822,6 +822,26 @@ a single cycle of two sheets at $(\infty,\infty)$.
 
 \endexample
 
+\example \cite{bliss} \S 68
+Compute expansions at all multiple points of
+
+$$y^3-3y+2x=0$$
+
+\begin{maximablock}
+discriminant(y^3 - 3*y + 2*x, y);
+puiseux(y^3 - 3*y + 2*x, x, y, 1, false, 2);
+puiseux(y^3 - 3*y + 2*x, x, y, inf, false, 2);
+\end{maximablock}
+
+$$y^3+3y-x$$
+
+\begin{maximablock}
+discriminant(y^3 + 3*y - x, y);
+puiseux(y^3 + 3*y - x, x, y, 2*%i, false, 10);
+\end{maximablock}
+
+\endexample
+
 %\mysection{meromorphic functions are analytic}
 %
 %first, trace of a meromorphic function is meromorphic on C(x), and is
