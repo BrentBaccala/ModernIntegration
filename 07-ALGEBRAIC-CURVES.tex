@@ -559,28 +559,8 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
 \end{maximablocktiny}
 
 \begin{maximablocksmall}
-puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
- block([result: [], mp, pairs, sign, delta, g, r, s, p, rf],
-
-   /* If the caller requested a specific rational function to */
-   /* be expaned, use modulo to normalize it.  Default is y. */
-
-   if length(ratfunc) > 0 then
-      rf: modulo(ratfunc[1], f, y)
-   else
-      rf: y,
-
-   if y0 = false then block([ys, f0],
-      f0 : subst(x=x0, f),
-      ys : unique(radcan(solve(f0))),
-      if apply("+", multiplicities) # hipow(f0, y) then
-         error("NYI: solve didn't work in puiseux"),
-      for yi in ys do (
-         result: append(result, puiseux(f,x,y,x0,rhs(yi),deg,rf))
-      )
-   ),
-
-   if result # [] then return(result),
+puiseux4(f,x,y,x0,y0,deg,rf) :=
+ block([result: [], mp, pairs, sign, delta, g, r, s, p],
 
    /* XXX eliminate segments with the same slope */
 
@@ -613,6 +593,43 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
    result
  )$
 
+\end{maximablocksmall}
+
+\begin{maximablocksmall}
+puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
+ block([result: [], rf],
+
+   /* If the caller requested a specific rational function to */
+   /* be expaned, use modulo to normalize it.  Default is y. */
+
+   if length(ratfunc) > 0 then
+      rf: modulo(ratfunc[1], f, y)
+   else
+      rf: y,
+
+   /* If y0 is false, compute the possible solutions for y0. */
+
+   if y0 = false then block([ys, f0],
+      if x0 # inf then
+         f0 : subst(x=x0, f)
+      else
+         f0 : subst(x=0, num(ratsimp(subst(x=1/x, f)))),
+      ys : unique(radcan(solve(f0))),
+      if apply("+", multiplicities) # hipow(f0, y) then
+         error("NYI: solve didn't work in puiseux"),
+      for yi in ys do
+         result: append(result, puiseux4(f,x,y,x0,rhs(yi),deg,rf)),
+
+      /* If substituting x0 into f reduced hipow(y), then */
+      /* some of our solutions are at infinity. */
+
+      if hipow(f,y) # hipow(f0,y) then
+         result: append(result, puiseux4(f,x,y,x0,inf,deg,rf))
+   ) else
+      result: puiseux4(f,x,y,x0,y0,deg,rf),
+
+   result
+ )$
 \end{maximablocksmall}
 
 \begin{maximacode}
@@ -797,12 +814,11 @@ and an ordinary point at $(g,3/g^2)$.
 Finally, let's look at what happens when $x$ goes to infinity:
 
 \begin{maximablock}
-puiseux(y^3 + x^3*y +x, x, y, inf, inf, 10);
-puiseux(y^3 + x^3*y +x, x, y, inf, 0, 10);
+puiseux(y^3 + x^3*y +x, x, y, inf, false, 10);
 \end{maximablock}
 
-Here we have a single cycle of two sheets at $(\infty,\infty)$
-and an ordinary point at $(\infty,0)$.
+Here we have an ordinary point at $(\infty,0)$ and
+a single cycle of two sheets at $(\infty,\infty)$.
 
 \endexample
 
