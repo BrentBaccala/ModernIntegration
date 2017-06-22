@@ -672,14 +672,20 @@ denominator of the slope):
 
 $$x=t^2+1$$
 
-We know that y can be expressed as a power series in t with
+We know that y can be expressed as a power series in $t$ with
 initial exponent 1 (the numerator of the slope):
 
-$$y= a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + \cdots$$
+$$y= a_1 t + a_2 t^2 + a_3 t^3 + \cdots$$
 
 Now, substituting these expressions for $x^2$ and $y^2$ into the
-curve's defining equation $y^2 + x^2 - 1 = 0$ and equating coefficients
-of like powers of $t$, we find:
+curve's defining equation $y^2 + x^2 - 1 = 0$ and setting all
+coefficients of $t$ to zero, we find:
+
+\begin{maximablock}
+ratsimp(subst(
+   [x=t^2+1, y=a[1]*t+a[2]*t^2+a[3]*t^3],
+   y^2+x^2-1));
+\end{maximablock}
 
 $$2 + a_1^2 = 0 \qquad 2 a_1 a_2 = 0 \qquad 1 + 2 a_1 a_3 + a_2^2 = 0$$
 
