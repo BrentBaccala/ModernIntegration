@@ -842,22 +842,110 @@ a single cycle of two sheets at $(\infty,\infty)$.
 
 \endexample
 
-\example \cite{bliss} \S 68
+\example
 Compute expansions at all multiple points of
+the exercises in \cite{bliss} \S 68.
+
+\begin{maximablock}
+analyze_multiple_points(f, x, y) := block(
+  [discriminant: discriminant(f, y)],
+  display(discriminant),
+  for r in solve(discriminant) do
+    disp(puiseux(f, x, y, rhs(r), false, 2)),
+  disp(puiseux(f, x, y, inf, false, 5))
+)$
+\end{maximablock}
 
 $$y^3-3y+2x=0$$
 
 \begin{maximablock}
-discriminant(y^3 - 3*y + 2*x, y);
-puiseux(y^3 - 3*y + 2*x, x, y, 1, false, 2);
-puiseux(y^3 - 3*y + 2*x, x, y, inf, false, 2);
+analyze_multiple_points(y^3 - 3*y + 2*x, x, y)$
 \end{maximablock}
 
 $$y^3+3y-x$$
 
 \begin{maximablock}
-discriminant(y^3 + 3*y - x, y);
-puiseux(y^3 + 3*y - x, x, y, 2*%i, false, 10);
+analyze_multiple_points(y^3 + 3*y - x, x, y)$
+\end{maximablock}
+
+$$y^3-3y^2-x$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*y^2 - x, x, y)$
+\end{maximablock}
+
+$$y^4-4y-x$$
+
+\begin{maximablock}
+analyze_multiple_points(y^4 - 4*y - x, x, y)$
+\end{maximablock}
+
+$$y^4+2(1-2x)y^2+1$$
+
+\begin{maximablock}
+analyze_multiple_points(y^4+2*(1-2*x)*y^2+1, x, y)$
+\end{maximablock}
+
+$$y^3-3y^2+x^6$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3-3*y^2+x^6, x, y)$
+puiseux(y^3-3*y^2+x^6, x, y, 0, 0, 5);
+puiseux(y^3-3*y^2+x^6, x, y, 0, 3, 5);
+\end{maximablock}
+
+$$y^3-3y+2x^2(2-x^2)$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3-3*y+2*x^2*(2-x^2), x, y)$
+\end{maximablock}
+
+$$y^3-3y+2x^3(2-x^3)$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3), x, y)$
+\end{maximablock}
+
+$$3x(x-1)y^4 -4(x-1)(x-2)y^3 + (4/27)(x-2)^4$$
+
+\begin{maximablock}
+/* analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4, x, y)$ */
+\end{maximablock}
+
+$$y^5 + (x^2-1)y^4 - (4^4)/(5^5)x^2(x^2-1)$$
+
+\begin{maximablock}
+/* analyze_multiple_points(y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1), x, y)$ */
+\end{maximablock}
+
+$$y^3 - 3axy + x^3$$
+
+This function can't be analyzed with the present code because
+it contains an extra variable and is, in fact, a family
+of algebraic curves.
+
+$$y^3 - xy - x^2$$
+
+\begin{maximablock}
+/* analyze_multiple_points(y^3 - x*y - x^2, x, y)$ */
+\end{maximablock}
+
+$$y^3 - 3x^2y + 2x$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*x^2*y + 2*x, x, y)$
+\end{maximablock}
+
+$$y^3 - 3xy + 2x^2$$
+
+\begin{maximablock}
+/* analyze_multiple_points(y^3 - 3*x*y + 2*x^2, x, y)$ */
+\end{maximablock}
+
+$$y^3 - 3y + x^6$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*y + x^6, x, y)$
 \end{maximablock}
 
 \endexample
