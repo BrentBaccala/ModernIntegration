@@ -919,9 +919,12 @@ analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4, x, y)
 
 $$y^5 + (x^2-1)y^4 - (4^4)/(5^5)x^2(x^2-1)$$
 
-\begin{maximablock}
-/* analyze_multiple_points(y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1), x, y)$ */
-\end{maximablock}
+This function produces a complicated fifth degree equation that
+Maxima can't {\tt solve()}.
+
+\begin{comment}
+analyze_multiple_points(y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1), x, y)$
+\end{comment}
 
 $$y^3 - 3axy + x^3$$
 
@@ -932,7 +935,7 @@ of algebraic curves.
 $$y^3 - xy - x^2$$
 
 \begin{maximablock}
-/* analyze_multiple_points(y^3 - x*y - x^2, x, y)$ */
+analyze_multiple_points(y^3 - x*y - x^2, x, y)$
 \end{maximablock}
 
 $$y^3 - 3x^2y + 2x$$
@@ -944,7 +947,7 @@ analyze_multiple_points(y^3 - 3*x^2*y + 2*x, x, y)$
 $$y^3 - 3xy + 2x^2$$
 
 \begin{maximablock}
-/* analyze_multiple_points(y^3 - 3*x*y + 2*x^2, x, y)$ */
+analyze_multiple_points(y^3 - 3*x*y + 2*x^2, x, y)$
 \end{maximablock}
 
 $$y^3 - 3y + x^6$$
