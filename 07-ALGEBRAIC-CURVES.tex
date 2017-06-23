@@ -176,7 +176,7 @@ located by computing the zeros of a univariate polynomial.
 
 \begin{maximablock}
 discriminant(f,y) :=
-  resultant(diff(f,y), f, y)$
+  factor(resultant(diff(f,y), f, y))$
 \end{maximablock}
 
 Multiple points are further classified according to whether or not the
@@ -582,9 +582,7 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
 
 \begin{maximablocksmall}
 puiseux4(f,x,y,x0,y0,deg,rf) :=
- block([result: [], mp, pairs, sign, delta, g, r, s, p],
-
-   /* XXX eliminate segments with the same slope */
+ block([result: [], lastslope : 0, mp, pairs, sign, delta, g, r, s, p],
 
    if y0 # inf then (
       sign: -1
@@ -607,9 +605,12 @@ puiseux4(f,x,y,x0,y0,deg,rf) :=
        g: gcd(delta[1],delta[2]),
        r: delta[1]/g,
        s: -delta[2]/g,
-       p: pair[1][2]*r - pair[1][1]*s,
+       p: pair[1][2]*r + pair[1][1]*s,
 
-       result: append(result, puiseux3(f,x,y,x0,y0,deg,r,s,p,rf))
+       if s/r # lastslope then
+          result: append(result, puiseux3(f,x,y,x0,y0,deg,r,s,p,rf)),
+
+       lastslope : s/r
      )
    ),
    result
@@ -912,9 +913,9 @@ analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3), x, y)$
 
 $$3x(x-1)y^4 -4(x-1)(x-2)y^3 + (4/27)(x-2)^4$$
 
-\begin{maximablock}
-/* analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4, x, y)$ */
-\end{maximablock}
+\begin{maximablocksmall}
+analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4, x, y)$
+\end{maximablocksmall}
 
 $$y^5 + (x^2-1)y^4 - (4^4)/(5^5)x^2(x^2-1)$$
 
