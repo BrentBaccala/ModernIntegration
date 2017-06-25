@@ -637,7 +637,7 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
          f0 : subst(x=x0, f)
       else
          f0 : subst(x=0, num(ratsimp(subst(x=1/x, f)))),
-      ys : unique(radcan(rectform(solve(f0)))),
+      ys : unique(radcan(rectform(solve(f0, y)))),
 
       if apply("+", multiplicities) # hipow(f0, y) then
          error("NYI: solve didn't work in puiseux"),
@@ -854,7 +854,7 @@ the exercises in \cite{bliss} \S 68.
 analyze_multiple_points(f, x, y, [args]) := block(
   [discriminant: discriminant(f, y)],
   display(discriminant),
-  for r in solve(discriminant) do
+  for r in solve(discriminant, x) do
     disp(puiseux(f, x, y, rhs(r), false,
                  if length(args) > 0 then args[1] else 2)),
   disp(puiseux(f, x, y, inf, false, 5))
@@ -927,15 +927,14 @@ errcatch(analyze_multiple_points(
    y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1), x, y))$
 \end{maximablocksmall}
 
-\begin{comment}
-analyze_multiple_points(y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1), x, y)$
-\end{comment}
-
 $$y^3 - 3axy + x^3$$
 
-This function can't be analyzed with the present code because
-it contains an extra variable and is, in fact, a family
-of algebraic curves.
+This function contains an extra variable and is, in fact, a family of
+algebraic curves.
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*a*x*y + x^3, x, y)$
+\end{maximablock}
 
 $$y^3 - xy - x^2$$
 
