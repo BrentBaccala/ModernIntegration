@@ -919,8 +919,13 @@ analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4, x, y)
 
 $$y^5 + (x^2-1)y^4 - (4^4)/(5^5)x^2(x^2-1)$$
 
-This function produces a complicated fifth degree equation that
+This function produces complicated fifth degree equations that
 Maxima can't {\tt solve()}.
+
+\begin{maximablocksmall}
+errcatch(analyze_multiple_points(
+   y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1), x, y))$
+\end{maximablocksmall}
 
 \begin{comment}
 analyze_multiple_points(y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1), x, y)$
