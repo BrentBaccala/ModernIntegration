@@ -203,25 +203,9 @@ deal with these points by introducing a line at infinity, forming
 {\it projective space} and creating a {\it compact} surface.
 
 \begin{maximablock}
-recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
-   if x0 = inf then (f:subst(x=1/x, f), x0:0),
-   if y0 = inf then (f:subst(y=1/y, f), y0:0),
-   f: num(ratsimp(f)),
-/*
-   if expand(subst([y=y0, x=x0], f)) # 0 then
-      error("attempt to recenter to point not on curve"),
-*/
-   f : expand(subst([y=y+y0, x=x+x0], f)),
-   for xpow: 0 thru hipow(f, x) do (
-      xcoeff : coeff(f, x, xpow),
-      for ypow: 0 thru hipow(xcoeff, y) do
-         newf : newf + radcan(ratsimp(coeff(xcoeff, y, ypow)))*x^xpow*y^ypow
-   ),
-   newf : subst([y=y-y0, x=x-x0], newf),
-   [newf, x0, y0]
-)$
+in_namespace(puiseux)$
 
-recenter_curve2(f,x,y,x0,y0) := block([xcoeff, newf:0],
+recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
    if x0 = inf then (f:subst(x=1/x, f), x0:0),
    if y0 = inf then (f:subst(y=1/y, f), y0:0),
    f: num(ratsimp(f)),
@@ -240,14 +224,6 @@ recenter_curve2(f,x,y,x0,y0) := block([xcoeff, newf:0],
 \end{maximablock}
 
 \begin{maximablock}
-/* recenter_curve(y^2=x^2-1, x, y, 1, 0); */
-recenter_curve(y^2-(x^2-1), x, y, 1, 0);
-recenter_curve(y^2-(x^2-1), x, y, 0, %i);
-
-recenter_curve(y^2-(x^2-1), x, y, inf, inf);
-
-/* errcatch(recenter_curve(y^2-(x^2-1), x, y, 0, 0)); */
-
 /* why doesn't this produce cdots? */
 taylor(sin(x),x,0,3);
 \end{maximablock}
@@ -255,7 +231,7 @@ taylor(sin(x),x,0,3);
 \begin{maximablock}
 monomial_powers(f,x,y,x0,y0) := block(
   [result: [], xcoeff],
-  f : recenter_curve2(f,x,y,x0,y0),
+  f : recenter_curve(f,x,y,x0,y0),
   for xpow: 0 thru hipow(f, x) do (
     xcoeff : coeff(f, x, xpow),
     if xcoeff # 0 then
@@ -266,12 +242,6 @@ monomial_powers(f,x,y,x0,y0) := block(
   ),
   result
 )$
-\end{maximablock}
-
-\begin{maximablock}
-monomial_powers(y^2-(x^2-1), x, y, 1, 0);
-monomial_powers(y^2-(x^2-1), x, y, 0, %i);
-monomial_powers(y^2-(x^2-1), x, y, inf, inf);
 \end{maximablock}
 
 \begin{maximablock}
@@ -322,8 +292,6 @@ newton_polygon(f, x, y, x0, y0) := block([newton_points, maxx, maxy, maxxy, file
    embed_latex_graphic(filename)
 )$
 
-recenter_curve(y^2-x^2-1, x, y, 0, 1);
-monomial_powers(y^2-x^2-1, x, y, 0, 1);
 \end{maximablock}
 
 \example Locate and characterize the multiple points of $y^2 = x^2 - 1$
@@ -334,7 +302,7 @@ defining polynomial is second degree for all finite values of $x$.
 Where does it have multiple roots?  We compute the discriminant:
 
 \begin{maximablock}
-discriminant(y^2-x^2+1, y);
+maxima|discriminant(y^2-x^2+1, y);
 \end{maximablock}
 
 The multiple points of $y^2 = x^2 - 1$ lie at the roots of the
@@ -640,7 +608,7 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
    /* be expaned, use modulo to normalize it.  Default is y. */
 
    if length(ratfunc) > 0 then
-      rf: modulo(ratfunc[1], f, y)
+      rf: maxima|modulo(ratfunc[1], f, y)
    else
       rf: y,
 
@@ -668,6 +636,10 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
 
    result
  )$
+
+export(puiseux, puiseux_fracexp, newton_polygon)$
+in_namespace(maxima)$
+import(puiseux)$
 \end{maximablocksmall}
 
 \begin{maximacode}
@@ -679,29 +651,25 @@ load("taylor1.mac")$
 ev((
   test1: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5),
   test2: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1),
-  if is(test1[1] # test2) then error("puiseux: test failed"),
+  if is(test1[1] # test2) then error("puiseux: test1/2 failed"),
 
   test3: puiseux(b^2-a^2-1, a, b, 0, 1, 5),
-  if is(test1 # subst(a=x, test3)) then error("puiseux: test failed"),
+  if is(test1 # subst(a=x, test3)) then error("puiseux: test3 failed"),
 
   test4: puiseux(y^2 + y - x^3, x, y, 0, 0, 10),
   test5: implicit_taylor(y^2 + y - x^3, 0, 10, 0),
-  if test4[1] # test5 then error("puiseux: test failed"),
+  if test4[1] # test5 then error("puiseux: test4/5 failed"),
 
   test6: puiseux(y^2 - x, x, y, 0, 0, 10),
-  if test6[1] # -sqrt(x) then error("puiseux: test failed")),
+  if test6[1] # -sqrt(x) then error("puiseux: test6 failed")),
 puiseux_fracexp: true)$
 
 ev((
   test7: puiseux(y^2 + x^2 - 1, x, y, inf, inf, 12, x/y),
   test8: puiseux(y^2 + x^2 - 1, x, y, inf, inf, 10, x/y * del(x)),
-  if not(test8[1][1] === - test7[1][1] * t^-2 * del(t)) then error("puiseux: test failed")),
+  if not(test8[1][1] === - test7[1][1] * t^-2 * del(t)) then error("puiseux7/8: test failed")),
 puiseux_fracexp: false)$
 \end{maximacode}
-
-\begin{maximablock}
-puiseux(y^2-x^2-1, x, y, %i, 0, 5);
-\end{maximablock}
 
 \example Find the Puiseux expansions of y at the multiple points of the
 curve $y^2 = 1 - x^2$

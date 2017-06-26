@@ -512,6 +512,14 @@ I often want to differentiate with respect to $x$, so I use a shorthand for this
 D(f) := diff(f,x)$
 \end{maximablock}
 
+Maxima has some basic support for namespaces, which allows us to hide
+the definitions of auxiliary functions and only make the primary
+functions visible.
+
+\begin{maximablock}
+load("share/contrib/namespaces/namespaces.lisp")$
+\end{maximablock}
+
 I use lambda expressions with a single variable so much that I find it
 useful to create a version of {\tt map} that treats its first argument
 as a lambda expression in $u$.
