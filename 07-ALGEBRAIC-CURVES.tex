@@ -189,8 +189,9 @@ ordinary point} of the curve, albeit one with {\it ramification}, the
 point.  Otherwise, multiple cycles are required to cover all of the
 sheets, and we have a {\it singular point}.  Analytically, both
 partial derivatives of the curve's polynomial are zero at a singular
-point, while at least one is non-zero at ordinary points.  This
-analysis is facilitated by Newton polygons.
+point, while at least one is non-zero at ordinary points.
+
+% This analysis is facilitated by Newton polygons.
 
 Now, the coefficient of $y^n$ in the defining polynomial will be a
 polynomial in $x$, which has a finite number of roots at which it is
@@ -360,14 +361,27 @@ Any ordinary point can be expanded using a power series in
 $(x-\alpha)$, which for non-ramified points is a straightforward
 application of the Implicit Function Theorem.
 
-IFT: [Baby Rudin 9.28; 2-dim complex version] Let f be an analytic
+\theorem
+{\bf Implicit Function Theorem}
+\label{implicit function theorem}
+
+\cite{baby rudin} Theorem 9.28 is a real version of the theorem.
+
+\cite{guillemin} Lecture 7 starts with a complex version of the theorem.
+
+See {\tt https://math.stackexchange.com/questions/489789}
+
+The two-dimensional complex analytic version:
+
+Let f be an analytic
 mapping of an open set $E \in {\mathbb C}^2$ into ${\mathbb C}$, such
 that $f(x,y)=0$ and $\frac{df}{dy} \ne 0$, then an analytic
 function $g(x)$ exists such that $f(x,g(x))=0$.
+\endtheorem
 
 For infinity and/or poles, substitute z=1/x or v=1/y.
 
-For ramification points, we use substitution of the form
+For ramification points, we'll use a substitution of the form
 $x=t^r+\alpha$, where $r$ is the {\it ramification index}, then use
 composition of analytic functions (x is analytic everywhere; y is
 analytic as a function of x everywhere except at t=0, so y is analytic
