@@ -111,7 +111,7 @@ until the 1960s.  Before heading into {\it modern algebraic geometry},
 let's see how far we can get with the classical algebraic geometry of
 the nineteenth century.
 
-\section{Basic Algebraic Geometry}
+\section{Puiseux Expansions}
 
 The roots of algebraic geometry lie in studying the zeros of
 polynomial equations.  We began with a single polynomial in a single
@@ -191,8 +191,6 @@ sheets, and we have a {\it singular point}.  Analytically, both
 partial derivatives of the curve's polynomial are zero at a singular
 point, while at least one is non-zero at ordinary points.
 
-% This analysis is facilitated by Newton polygons.
-
 Now, the coefficient of $y^n$ in the defining polynomial will be a
 polynomial in $x$, which has a finite number of roots at which it is
 zero, so there are only a finite number of points where the defining
@@ -201,6 +199,151 @@ of these points, the value of the $y^n$ coefficient approaches zero,
 which causes at least one of the roots to approach infinity.  We'll
 deal with these points by introducing a line at infinity, forming
 {\it projective space} and creating a {\it compact} surface.
+
+Any ordinary point can be expanded using a power series in
+$(x-\alpha)$, which for non-ramified points is a straightforward
+application of the Implicit Function Theorem.
+
+\theorem
+{\bf Implicit Function Theorem}
+\label{implicit function theorem}
+
+\cite{baby rudin} Theorem 9.28 is a real version of the theorem.
+
+\cite{guillemin} Lecture 7 starts with a complex version of the theorem.
+
+See {\tt https://math.stackexchange.com/questions/489789}
+
+The two-dimensional complex analytic version:
+
+Let f be an analytic
+mapping of an open set $E \in {\mathbb C}^2$ into ${\mathbb C}$, such
+that $f(x,y)=0$ and $\frac{df}{dy} \ne 0$, then an analytic
+function $g(x)$ exists such that $f(x,g(x))=0$.
+\endtheorem
+
+For infinity and/or poles, substitute z=1/x or v=1/y.
+
+For ramification points, we'll use a substitution of the form
+$x=t^r+\alpha$, where $r$ is the {\it ramification index}, then use
+composition of analytic functions (x is analytic everywhere; y is
+analytic as a function of x everywhere except at t=0, so y is analytic
+as a function of t everywhere except at t=0) to establish that y is
+analytic everywhere on the t-plane except possibly at the origin.
+Then use existence of the Laurent series (Silverman 11.2) and
+continuity of the roots (HOW?) to establish analyticity at the
+multiple point, and consequently existance of a power series, but in
+$t=(x-\alpha)^{1/r}$, not $(x-\alpha)$, a {\it Puiseux series}.
+
+Singular points will admit multiple Puiseux series, each one
+corresponding to a single cycle.
+
+% This analysis is facilitated by Newton polygons.
+
+The most straightforward way to compute Puiseux series is to use {\it Newton
+polygons} to determine ramification, then setup a trial series with
+the correct ramification and substitute it into the curve's defining
+equation.
+
+Consider factoring the defining polynomial of an algebraic curve.
+
+$$p_n y^n + p_{n-1}y^{n-1} + \cdots + p_0 = (y-r_1)(y-r_2)\cdots(y-r_n)$$
+
+$p_i$ is a sum of terms, each term with $y^i$ and $n-i$ of the $r$'s
+multiplied together.
+
+Consider a Puiseux series
+corresponding to a single line segment of the Newton polygon.
+Letting
+$\alpha$ be the $x$ exponent and $\beta$ be the $y$ exponent, so the
+monomials in $f$ have the form $x^\alpha y^\beta$, then the equation
+of the line segment is $r\alpha + s\beta = p$, where $r$, $s$, and $p$
+are integers and $r$ and $s$ are relatively prime.  Making the
+substitution $x=t^r$ and $y=t^s u(t)$, we obtain:
+
+$$f(x,y) = \sum A_{\alpha\beta} x^\alpha y^\beta$$
+$$ = \sum A_{\alpha\beta} t^{r \alpha} t^{s \beta} u(t)^\beta$$
+$$ = t^p \underbrace{\sum A_{\alpha\beta} t^{r \alpha + s \beta - p} u(t)^\beta}_{g(t,u)}$$
+
+At least two of the $(r \alpha + s \beta - p)$ exponents will be zero
+(those monomials corresponding to the endpoints of the line segment on
+the Newton polygon); all of the remaining exponents will be positive.
+This means that if we expand $u(t)$ in a power series in $t$:
+
+$$u(t) = u_0 + u_1 t + u_2 t^2 + u_3 t^3 + \cdots$$
+
+then any power of $u(t)$ will have the form:
+
+$$u(t)^\beta = U_0(u_0) + U_1(u_0, u_1) t + U_2(u_0, u_1, u_2) t^2 + U_3(u_0,u_1,u_2,u_3) t^3 + \cdots$$
+
+then $g(t,u)$ will also have the form:
+
+$$g(t,u) = G_0(u_0) + G_1(u_0, u_1) t + G_2(u_0, u_1, u_2) t^2 + G_3(u_0,u_1,u_2,u_3) t^3 + \cdots$$
+
+In order for $g(t,u)=0$ at $t=0$, $G_0(u_0)$ must be zero, and since $G_0(u_0)$ is a polynomial
+in $u_0$, this gives us a finite number of values for $u_0$ that can solve our equation.
+
+Now, by setting $g(t,u)=0$, can we obtain $u(t)$ as a function of $t$?
+
+The Implicit Function Theorem states that we can, if $\frac{\delta g}{\delta u}$ is not zero
+at the point we wish to expand around.
+
+$$\frac{\delta g}{\delta u}(0,u_0) = \frac{\delta}{\delta u} G_0(u_0)$$
+
+In short, the roots of $G_0(u_0)$ give us the starting values for our series expansion,
+and if the roots are simple, then the Implicit Function Theorem guarantees that we'll
+have a unique series expansion for $u(t)$ as a function of $t$.  If any of the roots
+are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
+(\cite{bliss} \S 15) that this procedure always terminates.
+
+\vfill\eject
+
+{\tt puiseux(f,x,y,x0,y0,deg,[ratfunc])}, adopted from {\tt
+implicit_taylor} in the Maxima distribution, computes the Puiseux
+series of a function {\tt f} in variables $x$ and $y$, centered around
+place {\tt (x0, y0)}, to degree {\tt deg}.  An optional seventh
+argument {\tt ratfunc} specifies a rational function in $x$ and $y$ to
+be expanded; the default is $y$.  {\tt ratfunc} may also be a
+differential.  Either {\tt x0} or {\tt y0}, or both, may be {\tt inf}
+to request expansions at infinity.  {\tt y0} may be {\tt false}
+to request expansions at all points of the curve lying over {\tt x0}.
+
+{\tt puiseux_fracexp} controls whether {\tt puiseux}'s results
+should be returned as fractional powers in $x$, or using
+an auxilary variable $t$.
+
+{\tt newton_polygon} graphs the Newton polygon corresponding to
+an algebraic curve.
+
+Several auxilary functions are also used; these are internal to
+the namespace {\tt puiseux}:
+
+{\tt puiseux4} computes a Puiseux series corresponding to a single
+place on the algebraic curve; it is called multiple times by
+{\tt puiseux} if {\tt y0} is {\tt false}.
+
+{\tt puiseux3} computes a Puiseux series corresponding to a single
+line segment of the Newton polygon.
+
+{\tt puiseux2} computes a Puiseux series of $y$ corresponding to a
+single line segment of the Newton polygon.
+
+{\tt distribute_denominator(frac, var, lim)} distributes the numerator
+of a fraction over its denominator, limiting the powers of {\tt var}
+to be no higher than {\tt lim}.
+
+{\tt recenter_curve(f,x,y,x0,y0)} changes variables on an algebraic curve
+so that a given point {\tt (x0,y0)} is moved to {\tt (0,0)}.
+
+{\tt monomial_powers(f,x,y,x0,y0)} returns a list of the powers that
+appear in the monomials of a recentered curve.
+
+{\tt lower_convex_points(list)} takes a {\tt monomial_powers} list as
+input and returns the subset corresponding to the lower convex hull
+of the Newton polygon.
+
+{\tt lower_convex_hull(list, x)} is used by {\tt newton_polygon}
+to graph the lower convex hull.
 
 \begin{maximablock}
 in_namespace(puiseux)$
@@ -294,126 +437,6 @@ newton_polygon(f, x, y, x0, y0) := block([newton_points, maxx, maxy, maxxy, file
 
 \end{maximablock}
 
-\example Locate and characterize the multiple points of $y^2 = x^2 - 1$
-
-We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
-0$, and begin by noting that the coefficient of $y^2$ is 1, so the
-defining polynomial is second degree for all finite values of $x$.
-Where does it have multiple roots?  We compute the discriminant:
-
-\begin{maximablock}
-maxima|discriminant(y^2-x^2+1, y);
-\end{maximablock}
-
-The multiple points of $y^2 = x^2 - 1$ lie at the roots of the
-discriminant, which are $x = \pm 1$.  The partial derivative of the
-polynomial with respect to $x$ is $-2x$, which is non-zero, so neither
-of these multiple points are singular.
-
-\begin{figure}[H]
-\begin{center}
-\maximac{newton_polygon(y^2-x^2-1, x, y, %i, 0)$}
-\end{center}
-\end{figure}
-
-What about the points at infinity?  Introducing the subsitutions
-$u=x^{-1}$ and $v=y^{-1}$, our curve becomes $u^2 - v^2 + u^2 v^2 =
-v^2 (u^2 - 1) + u^2 = 0$, which has a multiple point at $(0,0)$,
-since when $u=0$, both of the roots of $-v^2 = 0$ are identical.
-Also, both partial derivatives are zero, so this is a singular
-point of the curve.
-
-\endexample
-
-Any ordinary point can be expanded using a power series in
-$(x-\alpha)$, which for non-ramified points is a straightforward
-application of the Implicit Function Theorem.
-
-\theorem
-{\bf Implicit Function Theorem}
-\label{implicit function theorem}
-
-\cite{baby rudin} Theorem 9.28 is a real version of the theorem.
-
-\cite{guillemin} Lecture 7 starts with a complex version of the theorem.
-
-See {\tt https://math.stackexchange.com/questions/489789}
-
-The two-dimensional complex analytic version:
-
-Let f be an analytic
-mapping of an open set $E \in {\mathbb C}^2$ into ${\mathbb C}$, such
-that $f(x,y)=0$ and $\frac{df}{dy} \ne 0$, then an analytic
-function $g(x)$ exists such that $f(x,g(x))=0$.
-\endtheorem
-
-For infinity and/or poles, substitute z=1/x or v=1/y.
-
-For ramification points, we'll use a substitution of the form
-$x=t^r+\alpha$, where $r$ is the {\it ramification index}, then use
-composition of analytic functions (x is analytic everywhere; y is
-analytic as a function of x everywhere except at t=0, so y is analytic
-as a function of t everywhere except at t=0) to establish that y is
-analytic everywhere on the t-plane except possibly at the origin.
-Then use existence of the Laurent series (Silverman 11.2) and
-continuity of the roots (HOW?) to establish analyticity at the
-multiple point, and consequently existance of a power series, but in
-$t$, not $(x-\alpha)$, a {\it Puiseux series}.
-
-Singular points will admit multiple Puiseux series, each one
-corresponding to a single cycle.  The simplest way to compute Puiseux
-series is to use Newton polygons to determine ramification,
-then setup a trial series with the correct ramification and
-substitute it into the curve's defining equation.
-
-{\tt puiseux}, adopted from {\tt implicit_taylor} in the Maxima
-distribution, computes the Puiseux series of a function {\tt f} in
-variables $x$ and $y$, centered around place {\tt (x0, y0)},
-to degree {\tt deg}.
-
-{\tt puiseux2} is an auxilary function that computes a Puiseux series
-corresponding to a single line segment of the Newton polygon.  Letting
-$\alpha$ be the $x$ exponent and $\beta$ be the $y$ exponent, so the
-monomials in $f$ have the form $x^\alpha y^\beta$, then the equation
-of the line segment is $r\alpha + s\beta = p$, where $r$, $s$, and $p$
-are integers and $r$ and $s$ are relatively prime.  Making the 
-substitution $x=t^r$ and $y=t^s u(t)$, we obtain:
-
-$$f(x,y) = \sum A_{\alpha\beta} x^\alpha y^\beta$$
-$$ = \sum A_{\alpha\beta} t^{r \alpha} t^{s \beta} u(t)^\beta$$
-$$ = t^p \underbrace{\sum A_{\alpha\beta} t^{r \alpha + s \beta - p} u(t)^\beta}_{g(t,u)}$$
-
-At least two of the $(r \alpha + s \beta - p)$ exponents will be zero
-(those monomials corresponding to the endpoints of the line segment on
-the Newton polygon); all of the remaining exponents will be positive.
-This means that if we expand $u(t)$ in a power series in $t$:
-
-$$u(t) = u_0 + u_1 t + u_2 t^2 + u_3 t^3 + \cdots$$
-
-then any power of $u(t)$ will have the form:
-
-$$u(t)^\beta = U_0(u_0) + U_1(u_0, u_1) t + U_2(u_0, u_1, u_2) t^2 + U_3(u_0,u_1,u_2,u_3) t^3 + \cdots$$
-
-then $g(t,u)$ will also have the form:
-
-$$g(t,u) = G_0(u_0) + G_1(u_0, u_1) t + G_2(u_0, u_1, u_2) t^2 + G_3(u_0,u_1,u_2,u_3) t^3 + \cdots$$
-
-In order for $g(t,u)=0$ at $t=0$, $G_0(u_0)$ must be zero, and since $G_0(u_0)$ is a polynomial
-in $u_0$, this gives us a finite number of values for $u_0$ that can solve our equation.
-
-Now, by setting $g(t,u)=0$, can we obtain $u(t)$ as a function of $t$?
-
-The Implicit Function Theorem states that we can, if $\frac{\delta g}{\delta u}$ is not zero
-at the point we wish to expand around.
-
-$$\frac{\delta g}{\delta u}(0,u_0) = \frac{\delta}{\delta u} G_0(u_0)$$
-
-In short, the roots of $G_0(u_0)$ give us the starting values for our series expansion,
-and if the roots are simple, then the Implicit Function Theorem guarantees that we'll
-have a unique series expansion for $u(t)$ as a function of $t$.  If any of the roots
-are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
-(\cite{bliss} \S 15) that this procedure always terminates.
-
 \begin{maximablocksmall}
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  block([n:max(deg,s), xexpansion, yexpansion, res,
@@ -485,7 +508,7 @@ puiseux_fracexp : false $
 \end{maximablocksmall}
 
 \begin{maximablocksmall}
-distribute_denominator_limited(frac, var, lim) := block(
+distribute_denominator(frac, var, lim) := block(
   [result: 0, n: num(expand(frac)), d: denom(expand(frac))],
   for i: lopow(n, var) thru min(hipow(n, var), lim + hipow(d, var)) do
     result : result + radcan(rectform(ratsimp(coeff(n, var, i)/d)))*var^i,
@@ -552,7 +575,7 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
 
    map(lambda([yseries],
       result: ratsimp(subst(y=yseries, rf)),
-      result: distribute_denominator_limited(result, t, deg),
+      result: distribute_denominator(result, t, deg),
 
       if puiseux_fracexp then
          subst(t=(x-x0)^(1/r), result)
@@ -670,6 +693,37 @@ ev((
   if not(test8[1][1] === - test7[1][1] * t^-2 * del(t)) then error("puiseux7/8: test failed")),
 puiseux_fracexp: false)$
 \end{maximacode}
+
+\example Locate and characterize the multiple points of $y^2 = x^2 - 1$
+
+We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
+0$, and begin by noting that the coefficient of $y^2$ is 1, so the
+defining polynomial is second degree for all finite values of $x$.
+Where does it have multiple roots?  We compute the discriminant:
+
+\begin{maximablock}
+discriminant(y^2-x^2+1, y);
+\end{maximablock}
+
+The multiple points of $y^2 = x^2 - 1$ lie at the roots of the
+discriminant, which are $x = \pm 1$.  The partial derivative of the
+polynomial with respect to $x$ is $-2x$, which is non-zero, so neither
+of these multiple points are singular.
+
+\begin{figure}[H]
+\begin{center}
+\maximac{newton_polygon(y^2-x^2-1, x, y, %i, 0)$}
+\end{center}
+\end{figure}
+
+What about the points at infinity?  Introducing the subsitutions
+$u=x^{-1}$ and $v=y^{-1}$, our curve becomes $u^2 - v^2 + u^2 v^2 =
+v^2 (u^2 - 1) + u^2 = 0$, which has a multiple point at $(0,0)$,
+since when $u=0$, both of the roots of $-v^2 = 0$ are identical.
+Also, both partial derivatives are zero, so this is a singular
+point of the curve.
+
+\endexample
 
 \example Find the Puiseux expansions of y at the multiple points of the
 curve $y^2 = 1 - x^2$
