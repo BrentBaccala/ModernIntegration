@@ -250,7 +250,13 @@ Consider factoring the defining polynomial of an algebraic curve.
 $$p_n y^n + p_{n-1}y^{n-1} + \cdots + p_0 = (y-r_1)(y-r_2)\cdots(y-r_n)$$
 
 $p_i$ is a sum of terms, each term with $y^i$ and $n-i$ of the $r$'s
-multiplied together.
+multiplied together.  The term with the lowest order will be formed by
+multiplying the $n-i$ lowest order roots, but there may be
+cancellation between multiple sets of $n-i$ such roots.
+
+$p_0$'s order will be the sum of all of the $r_i$'s orders.
+
+Increasing $i$ by one will...
 
 Consider a Puiseux series
 corresponding to a single line segment of the Newton polygon.
@@ -276,7 +282,7 @@ then any power of $u(t)$ will have the form:
 
 $$u(t)^\beta = U_0(u_0) + U_1(u_0, u_1) t + U_2(u_0, u_1, u_2) t^2 + U_3(u_0,u_1,u_2,u_3) t^3 + \cdots$$
 
-then $g(t,u)$ will also have the form:
+and $g(t,u)$ will also have the form:
 
 $$g(t,u) = G_0(u_0) + G_1(u_0, u_1) t + G_2(u_0, u_1, u_2) t^2 + G_3(u_0,u_1,u_2,u_3) t^3 + \cdots$$
 
@@ -307,6 +313,13 @@ be expanded; the default is $y$.  {\tt ratfunc} may also be a
 differential.  Either {\tt x0} or {\tt y0}, or both, may be {\tt inf}
 to request expansions at infinity.  {\tt y0} may be {\tt false}
 to request expansions at all points of the curve lying over {\tt x0}.
+
+{\bf Limitations.}  {\tt puiseux()} constructs the Puiseux series
+coefficients using Maxima's built-in {\tt solve()} routine, which is
+limited to solving polynomials using radicals.  Therefore, {\tt
+puiseux()} can fail on algebraic curves of fifth degree and higher.
+Also, {\tt puiseux()} does not yet implement the recursion case
+described above (when $\frac{\delta g}{\delta u}$ is zero).
 
 {\tt puiseux_fracexp} controls whether {\tt puiseux}'s results
 should be returned as fractional powers in $x$, or using
@@ -578,7 +591,7 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
       result: distribute_denominator(result, t, deg),
 
       if puiseux_fracexp then
-         subst(t=(x-x0)^(1/r), result)
+         subst(t=(x-x0)^(1/r), result * differential)
       else
          [result * differential, tsubst]
    ), yserieslist)
@@ -1142,7 +1155,9 @@ $$d \sqrt{x-i} = \frac{1}{2} \frac{1}{\sqrt{x-i}} dx$$
 $$dx = 2 \sqrt{x-i} d \sqrt{x-i}$$
 
 \begin{maximablock}
-distrib(2 * %[1] * sqrt(x-%i));
+ev(puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
+           x/y*del(x)),
+   puiseux_fracexp=true);
 \end{maximablock}
 
 So, even though the {\it integrand} has a pole at $(i,0)$, the {\it
