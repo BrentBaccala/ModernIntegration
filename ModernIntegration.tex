@@ -187,15 +187,12 @@ resetmargins=true}
 \def\maximalabeltext{}
 }
 \renewcommand{\maximaoutputmath}[1]{
-\bgroup
-\def\arraystretch{1.5}
 \begin{tabular}{L{1.5cm} L{10cm}}
 \textcolor{darkred}{\ttfamily\maximalabeltext} &
+\end{tabular}
 \begin{dmath*}
 ##1
 \end{dmath*}
-\end{tabular}
-\egroup\break
 \def\maximalabeltext{}
 }
 % Wrap everything in a nice colored frame and print it
