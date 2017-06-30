@@ -757,47 +757,32 @@ puiseux_fracexp: false)$
 /* puiseux(x*y - 1, x, y, inf, inf, 5); */
 \end{maximacode}
 
-\example Locate and characterize the multiple points of $y^2 = x^2 - 1$
+\vfill\eject
 
-We normalize the defining polynomial by writing it as $y^2 - x^2 + 1 =
-0$, and begin by noting that the coefficient of $y^2$ is 1, so the
-defining polynomial is second degree for all finite values of $x$.
-Where does it have multiple roots?  We compute the discriminant:
-
-\begin{maximablock}
-discriminant(y^2-x^2+1, y);
-\end{maximablock}
-
-The multiple points of $y^2 = x^2 - 1$ lie at the roots of the
-discriminant, which are $x = \pm 1$.  The partial derivative of the
-polynomial with respect to $x$ is $-2x$, which is non-zero, so neither
-of these multiple points are singular.
-
-\begin{figure}[H]
-\begin{center}
-\maximac{newton_polygon(y^2-x^2-1, x, y, %i, 0)$}
-\end{center}
-\end{figure}
-
-What about the points at infinity?  Introducing the subsitutions
-$u=x^{-1}$ and $v=y^{-1}$, our curve becomes $u^2 - v^2 + u^2 v^2 =
-v^2 (u^2 - 1) + u^2 = 0$, which has a multiple point at $(0,0)$,
-since when $u=0$, both of the roots of $-v^2 = 0$ are identical.
-Also, both partial derivatives are zero, so this is a singular
-point of the curve.
-
-\endexample
-
-\example Find the Puiseux expansions of y at the multiple points of the
+\example Construct Puiseux expansions of $y$ at the multiple points of the
 curve $y^2 = 1 - x^2$
 
-We'll start with the finite zeros of $y$ at $(x,y)=(\pm 1, 0)$.  The
-analysis is almost the same in both cases, so I'll just do (1,0).
+We normalize the defining polynomial by writing it as
+$y^2 + x^2 - 1 = 0$.  Where does it have multiple points?
+We compute the discriminant:
+
+\begin{maximablock}
+discriminant(y^2 + x^2 - 1, y);
+\end{maximablock}
+
+The multiple points of $y^2 = 1 - x^2$ lie at the roots of the
+discriminant, which are $x = \pm 1$.  In both cases, $y=0$ is the only
+solution, so the curve has multiple points at $(x,y)=(\pm 1, 0)$.  The
+partial derivative of the defining polynomial with respect to $x$
+is $2x$, which is non-zero, so neither of these multiple
+points are singular; we'll get ramification instead.
+The analysis is almost the same in both cases, so I'll just do $(1,0)$.
+
 First, construction of the Newton polygon requires recasting the
 curve's polynomial into a form centered about the point being
-analyzed, i.e, $y^2 + (x-1)^2 + 2(x-1) = 0$.  Next, we
-plot the Newton polygon by putting the $y$ exponents on the horizontal
-axis and the $x$ exponents on the vertical:
+analyzed, i.e, $y^2 + (x-1)^2 + 2(x-1) = 0$.  Next, we construct the Newton
+polygon by plotting the monomial powers, putting the $y$ exponents on the horizontal axis and the
+$(x-1)$ exponents on the vertical:
 
 \begin{figure}[H]
 \begin{center}
@@ -805,10 +790,10 @@ axis and the $x$ exponents on the vertical:
 \end{center}
 \end{figure}
 
-The only segment on the polygon lower convex hull has slope $-1/2$ and
-width 2, telling us that two of our roots (the width of the segment)
-will require a single Puiseux series with ramification index 2 (the
-denominator of the slope):
+The only segment on the Newton polygon's lower convex hull has slope
+$-1/2$ and width 2, telling us that two of our roots (the width of the
+segment) will require a single Puiseux series with ramification index
+2 (the denominator of the slope):
 
 $$x=t^2+1$$
 
