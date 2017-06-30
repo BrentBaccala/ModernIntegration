@@ -256,7 +256,18 @@ cancellation between multiple sets of $n-i$ such roots.
 
 $p_0$'s order will be the sum of all of the $r_i$'s orders.
 
-Increasing $i$ by one will...
+Increasing $i$ by one will lower $p_1$'s order by the largest
+of $r_i$'s orders, unless there are multiple $r_i$'s with
+the same order.  If there are $j$ $r_i$'s with the same
+largest order, increasing $i$ by $j$ will lower $p_i$'s
+order by $j$ times that largest order.
+
+Thus, a segment on the lower convex hull of the Newton polygon will
+correspond to as many solutions as the width of the line segment, each
+with order equal to the change in height divided by the width, i.e,
+the negative slope of the line segment.  The denominator of the slope
+will be the ramification index, and the numerator of the slope will be
+the lowest exponent expected in the expansion of $y$.
 
 Consider a Puiseux series
 corresponding to a single line segment of the Newton polygon.
@@ -358,17 +369,15 @@ of the Newton polygon.
 {\tt lower_convex_hull(list, x)} is used by {\tt newton_polygon}
 to graph the lower convex hull.
 
+\vfill\eject
+
 \begin{maximablock}
 in_namespace(puiseux)$
 
 recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
    if x0 = inf then (f:subst(x=1/x, f), x0:0),
    if y0 = inf then (f:subst(y=1/y, f), y0:0),
-   f: num(ratsimp(f)),
-/*
-   if expand(subst([y=y0, x=x0], f)) # 0 then
-      error("attempt to recenter to point not on curve"),
-*/
+   f : num(ratsimp(f)),
    f : expand(subst([y=y+y0, x=x+x0], f)),
    for xpow: 0 thru hipow(f, x) do (
       xcoeff : coeff(f, x, xpow),
@@ -400,24 +409,40 @@ monomial_powers(f,x,y,x0,y0) := block(
 )$
 \end{maximablock}
 
-\begin{maximablock}
+\begin{maximablocksmall}
 /* list is a list of pairs, like [[0,1], [0,2], [2,0]] */
-/* this function returns the subset of points on the lower convex hull */
+/* this function returns the points on the lower convex hull */
 
-lower_convex_points(list) := block([result, nxt, slopes, lowest_slope],
-   /* step 1 - sort the list first by increasing x values, then by increasing y values */
-   list: sort(list, lambda([u,v], u[1] < v[1] or (u[1] = v[1] and u[2] < v[2]))),
+lower_convex_points(list) := block(
+   [result, nxt, slopes, lowest_slope],
+
+   /* step 1 - sort the list first by increasing x values, */
+   /*    then by increasing y values */
+
+   list: sort(list, lambda([u,v],
+      u[1] < v[1] or (u[1] = v[1] and u[2] < v[2]))),
+
    /* step 2 - discard all points directly above other points */
-   list: lreduce(lambda([U,v], if last(U)[1] = v[1] then U else endcons(v,U)), list, [list[1]]),
-   /* step 3 - start with the point on the y-axis */
+
+   list: lreduce(lambda([U,v],
+        if last(U)[1] = v[1] then U else endcons(v,U)),
+      list, [list[1]]),
+
+   /* step 3 - start with the point on the y-axis, */
+   /*    then rotate around the lower convex hull, */
+   /*    adding points as we go */
+
    result: [pop(list)],
-   /* step 4 - rotate around the lower convex hull, adding points as we go */
+
    while length(list) > 0 do (
       nxt: last(result),
-      slopes: map(lambda([u], ((nxt - u)[2] / (nxt - u)[1])), list),
+      slopes: map(lambda([u],
+         ((nxt - u)[2] / (nxt - u)[1])), list),
       lowest_slope: sort(slopes)[1],
-      while (length(slopes) > 0 and slopes[1] > lowest_slope) do (pop(slopes), pop(list)),
-      while (length(slopes) > 0 and slopes[1] = lowest_slope) do (pop(slopes), result:endcons(pop(list), result))
+      while (length(slopes) > 0 and slopes[1] > lowest_slope) do
+         (pop(slopes), pop(list)),
+      while (length(slopes) > 0 and slopes[1] = lowest_slope) do
+         (pop(slopes), result:endcons(pop(list), result))
    ),
    result
 )$
@@ -427,18 +452,29 @@ lower_convex_points(list) := block([result, nxt, slopes, lowest_slope],
 lower_convex_hull(inlist, x) := block([list],
   list: sort(inlist, lambda([u,v], u[1] < v[1])),
   while length(list) >= 2 and list[2][1] < x do pop(list),
-  if length(list) >= 2 then list[1][2] + (x - list[1][1]) * (list[2][2] - list[1][2])/(list[2][1] - list[1][1]) else %nan
+  if length(list) >= 2 then
+     list[1][2] + (x - list[1][1])
+                  * (list[2][2] - list[1][2])
+                  / (list[2][1] - list[1][1])
+  else
+     %nan
 )$
 
-newton_polygon(f, x, y, x0, y0) := block([newton_points, maxx, maxy, maxxy, filename],
+newton_polygon(f, x, y, x0, y0) := block(
+   [newton_points, convex_hull_points, maxx, maxy, maxxy, filename],
+
    newton_points : monomial_powers(f,x,y,x0,y0),
    convex_hull_points : lower_convex_points(newton_points),
    maxx: lreduce(max, map(first, convex_hull_points)),
    maxy: lreduce(max, map(second, convex_hull_points)),
    maxxy: max(maxx, maxy),
    filename: next_pdf_filename(),
-   plot2d([[discrete, newton_points], 'lower_convex_hull(convex_hull_points, l)], [l,0,maxxy+1], [y,0,maxxy+1],
-       [style, points, [lines, 5]], [color, red, blue],
+
+   plot2d([[discrete, newton_points],
+           'lower_convex_hull(convex_hull_points, l)],
+       [l,0,maxxy+1], [y,0,maxxy+1],
+       [style, points, [lines, 5]],
+       [color, red, blue],
        [point_type, bullet],
        [legend, false],
        [xlabel, false],
@@ -448,7 +484,7 @@ newton_polygon(f, x, y, x0, y0) := block([newton_points, maxx, maxy, maxxy, file
    embed_latex_graphic(filename)
 )$
 
-\end{maximablock}
+\end{maximablocksmall}
 
 \begin{maximablocksmall}
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
@@ -600,7 +636,7 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
 
 \begin{maximablocksmall}
 puiseux4(f,x,y,x0,y0,deg,rf) :=
- block([result: [], lastslope : 0, mp, pairs, sign, delta, g, r, s, p],
+ block([result: [], lastslope : 0, sign, mp, pairs],
 
    if y0 # inf then (
       sign: -1
@@ -615,9 +651,15 @@ puiseux4(f,x,y,x0,y0,deg,rf) :=
    /* Make a list of all line segments on the Newton polygon */
 
    mp: lower_convex_points(monomial_powers(f,x,y,x0,y0)),
+
+   if sign = -1 and mp[1] = [0,0] then
+      error(concat("puiseux: coordinates do not solve equation of curve")),
+   if sign = 1 and last(mp)[2] = 0 then
+      error(concat("puiseux: coordinates do not solve equation of curve")),
+
    pairs: makelist([mp[i], mp[i+1]], i, length(mp)-1),
 
-   for pair in pairs do (
+   for pair in pairs do block([delta, g, r, s, p],
      delta: pair[2]-pair[1],
      if delta[2] * sign > 0 then (
        g: gcd(delta[1],delta[2]),
@@ -705,6 +747,14 @@ ev((
   test8: puiseux(y^2 + x^2 - 1, x, y, inf, inf, 10, x/y * del(x)),
   if not(test8[1][1] === - test7[1][1] * t^-2 * del(t)) then error("puiseux7/8: test failed")),
 puiseux_fracexp: false)$
+
+/* I'd like to check that these throw errors, but I've got no */
+/* good way to remove error messages from the output. */
+
+/* puiseux(y^2 + x^2 - 1, x, y, 0, 0, 5); */
+/* puiseux(y^2 + x^2 - 1, x, y, 0, inf, 5); */
+/* puiseux(y^2 + x^2 - 1, x, y, inf, 0, 5); */
+/* puiseux(x*y - 1, x, y, inf, inf, 5); */
 \end{maximacode}
 
 \example Locate and characterize the multiple points of $y^2 = x^2 - 1$
@@ -932,8 +982,11 @@ analyze_multiple_points(y^3 - 3*y^2 - x, x, y)$
 
 $$y^4-4y-x$$
 
+This curve produces coordinates that aren't {\tt recenter}'ed
+properly.
+
 \begin{maximablock}
-analyze_multiple_points(y^4 - 4*y - x, x, y)$
+errcatch(analyze_multiple_points(y^4 - 4*y - x, x, y))$
 \end{maximablock}
 
 $$y^4+2(1-2x)y^2+1$$
