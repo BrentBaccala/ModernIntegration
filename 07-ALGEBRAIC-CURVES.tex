@@ -929,127 +929,6 @@ a single cycle of two sheets at $(\infty,\infty)$.
 
 \endexample
 
-\example
-Compute expansions at all multiple points of
-the exercises in \cite{bliss} \S 68.
-
-\begin{maximablock}
-analyze_multiple_points(f, x, y, [args]) := block(
-  [discriminant: discriminant(f, y)],
-  display(discriminant),
-  for r in solve(discriminant, x) do
-    disp(puiseux(f, x, y, rhs(r), false,
-                 if length(args) > 0 then args[1] else 2)),
-  disp(puiseux(f, x, y, inf, false, 5))
-)$
-\end{maximablock}
-
-%% \begin{comment}
-
-$$y^3-3y+2x=0$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*y + 2*x, x, y)$
-\end{maximablock}
-
-$$y^3+3y-x$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 + 3*y - x, x, y)$
-\end{maximablock}
-
-$$y^3-3y^2-x$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*y^2 - x, x, y)$
-\end{maximablock}
-
-$$y^4-4y-x$$
-
-This curve produces coordinates that aren't {\tt recenter}'ed
-properly.
-
-\begin{maximablock}
-errcatch(analyze_multiple_points(y^4 - 4*y - x, x, y))$
-\end{maximablock}
-
-$$y^4+2(1-2x)y^2+1$$
-
-\begin{maximablock}
-analyze_multiple_points(y^4+2*(1-2*x)*y^2+1, x, y)$
-\end{maximablock}
-
-$$y^3-3y^2+x^6$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3-3*y^2+x^6, x, y, 6)$
-\end{maximablock}
-
-$$y^3-3y+2x^2(2-x^2)$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3-3*y+2*x^2*(2-x^2), x, y)$
-\end{maximablock}
-
-$$y^3-3y+2x^3(2-x^3)$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3), x, y)$
-\end{maximablock}
-
-$$3x(x-1)y^4 -4(x-1)(x-2)y^3 + (4/27)(x-2)^4$$
-
-\begin{maximablocksmall}
-analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4, x, y)$
-\end{maximablocksmall}
-
-$$y^5 + (x^2-1)y^4 - (4^4)/(5^5)x^2(x^2-1)$$
-
-This function produces complicated fifth degree equations that
-Maxima can't {\tt solve()}.
-
-\begin{maximablocksmall}
-errcatch(analyze_multiple_points(
-   y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1), x, y))$
-\end{maximablocksmall}
-
-$$y^3 - 3axy + x^3$$
-
-This function contains an extra variable and is, in fact, a family of
-algebraic curves.
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*a*x*y + x^3, x, y)$
-\end{maximablock}
-
-$$y^3 - xy - x^2$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - x*y - x^2, x, y)$
-\end{maximablock}
-
-$$y^3 - 3x^2y + 2x$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*x^2*y + 2*x, x, y)$
-\end{maximablock}
-
-$$y^3 - 3xy + 2x^2$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*x*y + 2*x^2, x, y)$
-\end{maximablock}
-
-$$y^3 - 3y + x^6$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*y + x^6, x, y)$
-\end{maximablock}
-
-%% \end{comment}
-
-\endexample
-
 %\mysection{meromorphic functions are analytic}
 %
 %first, trace of a meromorphic function is meromorphic on C(x), and is
@@ -1128,19 +1007,160 @@ all of the terms in our expansion by $2t$:
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 6, x/y*del(x));
 \end{maximablock}
 
-Even though both $\frac{1}{y}$ and $\frac{x}{y}$ have poles
+Even though $\frac{x}{y}$ has a pole
 at $x=1$, $\frac{x}{y} \ud x$ does not!
 
 Its behavior at infinity also requires analysis.
 
 \begin{maximablock}
-puiseux(y^2 + x^2 - 1, x, y, inf, inf, -1, x/y * del(x));
+puiseux(y^2 + x^2 - 1, x, y, inf, inf, 1, x/y);
 \end{maximablock}
 
-In short, while $\frac{x}{y}$ has poles at $(\pm 1,0)$,
+$\frac{x}{y}$ has no poles at infinity, and approaches
+the limiting values $\pm i$ as $x$ and $y$ approach
+infinity.  The differential $\frac{x}{y} \ud x$,
+on the other hand, requires us to multiply by $\ud x$,
+and since $x=\frac{1}{t}$, $\ud x = - \frac{1}{t^2} \ud t$.
+
+\begin{maximablock}
+puiseux(y^2 + x^2 - 1, x, y, inf, inf, -1,
+        x/y * del(x));
+\end{maximablock}
+
+In short, while $\frac{x}{y}$ has poles only at $(\pm 1,0)$,
 $\frac{x}{y} \ud x$ has poles only at infinity.
 
 \endexample
+
+\example
+Compute expansions at all multiple points of
+the exercises in \cite{bliss} \S 68.
+
+To facilitate this example, let's define an
+auxiliary function to perform the analysis:
+
+\begin{maximablock}
+analyze_multiple_points(f, [args]) := block(
+  [discriminant: discriminant(f, y), deg],
+  display(discriminant),
+  deg : if length(args) > 0 then args[1] else 2,
+  for r in solve(discriminant, x) do
+    disp(puiseux(f, x, y, rhs(r), false, deg)),
+  disp(puiseux(f, x, y, inf, false, 5))
+)$
+\end{maximablock}
+
+%% \begin{comment}
+
+$$y^3-3y+2x=0$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*y + 2*x)$
+\end{maximablock}
+
+$$y^3+3y-x$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 + 3*y - x)$
+\end{maximablock}
+
+$$y^3-3y^2-x$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*y^2 - x)$
+\end{maximablock}
+
+$$y^4-4y-x$$
+
+This curve produces coordinates that aren't {\tt recenter}'ed
+properly.
+
+\begin{maximablock}
+errcatch(analyze_multiple_points(y^4 - 4*y - x))$
+\end{maximablock}
+
+$$y^4+2(1-2x)y^2+1$$
+
+\begin{maximablock}
+analyze_multiple_points(y^4+2*(1-2*x)*y^2+1)$
+\end{maximablock}
+
+$$y^3-3y^2+x^6$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3-3*y^2+x^6, 6)$
+\end{maximablock}
+
+$$y^3-3y+2x^2(2-x^2)$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3-3*y+2*x^2*(2-x^2))$
+\end{maximablock}
+
+$$y^3-3y+2x^3(2-x^3)$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3))$
+\end{maximablock}
+
+$$3x(x-1)y^4 -4(x-1)(x-2)y^3 + (4/27)(x-2)^4$$
+
+\begin{maximablocksmall}
+analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4)$
+\end{maximablocksmall}
+
+$$y^5 + (x^2-1)y^4 - (4^4)/(5^5)x^2(x^2-1)$$
+
+This function produces complicated fifth degree equations that
+Maxima can't {\tt solve()}.
+
+\begin{maximablocksmall}
+errcatch(analyze_multiple_points(
+   y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1)))$
+\end{maximablocksmall}
+
+$$y^3 - 3axy + x^3$$
+
+This function contains an extra variable and is, in fact, a family of
+algebraic curves.
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*a*x*y + x^3)$
+\end{maximablock}
+
+$$y^3 - xy - x^2$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - x*y - x^2)$
+\end{maximablock}
+
+$$y^3 - 3x^2y + 2x$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*x^2*y + 2*x)$
+\end{maximablock}
+
+$$y^3 - 3xy + 2x^2$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*x*y + 2*x^2)$
+\end{maximablock}
+
+$$y^3 - 3y + x^6$$
+
+\begin{maximablock}
+analyze_multiple_points(y^3 - 3*y + x^6)$
+\end{maximablock}
+
+%% \end{comment}
+
+\endexample
+
+% A {\it Riemann surface}, more precisely, is a two-dimensional manifold
+% with a {\it complex analytic structure}.
+
+\vfill\eject
+\mysection{Examples}
 
 \example Evaluate $\int \frac{x}{\sqrt{x^2+1}}\,dx$
 
@@ -1234,12 +1254,6 @@ We already know of a rational function with first order poles
 at infinity -- $y$ itself!
 
 \endexample
-
-% A {\it Riemann surface}, more precisely, is a two-dimensional manifold
-% with a {\it complex analytic structure}.
-
-\vfill\eject
-\mysection{Examples}
 
 \example Compute $\int \sqrt{4-x^2} \,dx$
 
