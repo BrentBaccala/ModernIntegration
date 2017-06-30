@@ -832,48 +832,47 @@ x-series unchanged.  Let's confirm this result with Maxima:
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
 \end{maximablock}
 
-Now, let's analyze the singular point at infinity.  Again, we move
-infinity to a finite point (0) with the substitutions $x=u^{-1}$ and
-$y=v^{-1}$.  Our curve becomes:
+Now, let's analyze the point at infinity.  We move infinity to a
+finite point (0) with the substitution $x=u^{-1}$, then combine all of
+our terms over a common denominator and discard the denominator.  Our
+curve becomes:
 
-$$(u^2 - 1) v^2 - u^2 = 0$$
+$$y^2 u^2 + 1 - u^2 = 0$$
 
 \begin{figure}[H]
 \begin{center}
-\maximac{newton_polygon(y^2+x^2-1, x, y, inf, inf)$}
+\maximac{newton_polygon(y^2+x^2-1, x, y, inf, 0)$}
 \end{center}
 \end{figure}
 
 The Newton polygon's lower convex hull has a single line segment,
-slope $-1$, length $2$, telling us that we'll have two separate
-cycles, each with ramification index 1.  Thus, $u$ can be used
+slope $1$, length $2$, telling us that we'll have two separate
+poles, each with ramification index 1.  Thus, $u$ can be used
 directly as a uniformizing variable, and we postulate an expansion for
-$v$ in the form:
+$y$ in the form:
 
-$$v = a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
+$$y = a_{-1} \frac{1}{u} + a_0 + a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
 
-% $$v^2 = a_0^2 + 2 a_0 a_1 u + (2 a_0 a_2 + a_1^2) u^2 + (2 a_0 a_3 + 2 a_1 a_2) u^3 + (2 a_0 a_4 + 2 a_1 a_3 + a_2^2) u^4 + \cdots$$
-
-Plugging this into $(u^2 - 1) v^2 - u^2$ and setting all the resulting
+Plugging this into $y^2 u^2 + 1 - u^2$ and setting all the resulting
 coefficients to zero, we conclude:
 
-$$a_1 = \pm i; \qquad a_2 = 0; \qquad a_3 = \mp \frac{1}{2}i$$
-
-$$v = \pm i u \mp \frac{1}{2} i u^3 + \cdots$$
-
 \begin{maximablock}
-puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, 1/y);
+ratsimp(subst(
+   [y=a[-1]*(1/u)+a[0]+a[1]*u+a[2]*u^2+a[3]*u^3],
+   y^2*u^2+1-u^2));
 \end{maximablock}
 
-This time, without ramification, we actually have two distinct series
-that will yield two different values of $v$ for each value of $u$.
-Inverting back to our original coordinates, we obtain:
+%% $$a_{-1}^2 + 1 = 0; \qquad 2 a_{-1} a_0 = 0 \qquad (2a_{-1}a_1+a_0^2-1)=0$$
 
-$$y^{-1} = \pm \left[ i x^{-1} + \frac{1}{2} i x^{-3} + \cdots \right]$$
+$$a_{-1} = \pm i; \qquad a_0 = 0; \qquad a_1 = \mp \frac{1}{2}i; \qquad a_2 = 0; \qquad a_3 = \mp \frac{1}{8}i$$
 
-Yet this is not an expansion for $y$, nor is it a Puiseux series,
-since it has an infinite number of negative exponents.  We can invert
-the series (HOW?) to obtain our final result:
+$$y = \pm i \frac{1}{u} \mp \frac{1}{2} i u \mp \frac{1}{8} i u^3 + \cdots$$
+
+This time, there is no ramification, since $u$, and not a power of
+$u$, is $\frac{1}{x}$.  We actually have two distinct series that will
+yield two different values of $y$ for each value of $u$.
+Geometrically, we have two sheets that approach each other and touch
+at a singular point where the curve is not locally Euclidean.
 
 \begin{maximablock}
 puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, y);
