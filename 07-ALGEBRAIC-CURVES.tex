@@ -135,16 +135,18 @@ third degree; all others second degree or less).  In the general case,
 $\sum a_{ij} x^i y^j = 0$ is called an {\it algebraic curve}, and a
 rational function in $x$ and $y$ is called an {\it algebraic
 function}.  These will be our main focus of attention in this chapter.
+Note that an algebraic curve's rational functions form a field, the
+{\it function field} of the curve.
 
-The first problem we face when dealing with algebraic curves is the
-multi-valued nature of their solutions.  Consider, once again, the
-algebraic function $y$ defined on the algebraic curve $y^2 = x^2 - 1$.
-There are, in fact, two seperate algebraic functions that solve this
+One of the first problems we face when dealing with algebraic curves
+is the multi-valued nature of their solutions.  Consider the algebraic
+function $y$ defined on the algebraic curve $y^2 = x^2 - 1$.  There
+are, in fact, two seperate algebraic functions that solve this
 equation --- both $y$ and $-y$ are solutions.  Conventionally, we
 express this by writing something like $y = \pm\sqrt{x-1}$, but for
 higher degree curves this kind of notation becomes unsuitable.  How,
 for example, do you express the three possible solutions to a cube
-root, and how do you deal with the general case where y can appear
+root, and how do you deal with the general case where $y$ appears
 multiple times in the curve's defining polynomial?
 
 Our solution to this problem is to regard the entire algebraic curve
@@ -160,27 +162,28 @@ polynomial.
 
 The defining polynomial can be regarded as a polynomial in $y$, whose
 coefficients are polynomials in $x$, simply by collecting terms with
-like powers of $y$.  For any given value of $x$, we have a polynomial
-in $y$ with complex coefficients that yields at most $n$ solutions.
-We can be more specific.  For any given value of $x$, we have {\it
+like powers of $y$.  If we fix a given complex value of $x$, we have a
+polynomial in $y$ with complex coefficients that can be solved as a
+univariate polynomial and yields at most $n$ solutions for $y$.  We
+can be more specific.  For any given value of $x$, we have {\it
 exactly} $n$ solutions for $y$ {\it unless} one of two things happen.
 Either the leading ($y^n$) coefficient is zero, in which case we have
 less than $n$ solutions due to having a polynomial of degree less than
-$n$, or the polynomial has multiple identical roots, a {\it multiple
-point} of the algebraic curve.
+$n$, or the polynomial has multiple identical roots.
 
-There are only a finite number of multiple points, as can be seen by
-considering the {\it discriminant} of the defining polynomial, which
-is the resultant of the polynomial with its partial derivative.  The
-discriminant will be zero at multiple points, so these points can be
-located by computing the zeros of a univariate polynomial.
+There are only a finite number of these special points, as can be seen
+by considering the {\it discriminant} of the defining polynomial,
+which is the resultant of the polynomial with its partial derivative
+with respect to one of its variables.  The discriminant will be zero
+at special points, so these points can be located by computing the
+zeros of a univariate polynomial.
 
 \begin{maximablock}
 discriminant(f,y) :=
   factor(resultant(diff(f,y), f, y))$
 \end{maximablock}
 
-Multiple points are further classified according to whether or not the
+These points are further classified according to whether or not the
 curve is locally Euclidean in their neighborhood.  Geometrically, this
 corresponds to looping around the point until you return to your
 starting point.  If a single such {\it cycle} covers all the sheets of
@@ -201,9 +204,67 @@ which causes at least one of the roots to approach infinity.  We'll
 deal with these points by introducing a line at infinity, forming
 {\it projective space} and creating a {\it compact} surface.
 
-Any ordinary point can be expanded using a power series in
-$(x-\alpha)$, which for non-ramified points is a straightforward
-application of the Implicit Function Theorem.
+There are several crucial theorems that depend on the topological
+property of {\it compactness}.  The complex plane is not compact; we
+remedy this by adding a point at infinity.  Likewise, two-dimensional
+complex space is not compact, either; we remedy this by adding a
+line at infinity and obtaining {\it projective space}.
+
+Projective space.  Compactness.
+
+Another highly desirable property is to be locally isomorphic to
+Euclidean space.  A differentiable surface that is everywhere locally
+Euclidean is called a {\it manifold}.
+
+By adding a line at infinity and resolving our singularities, we can
+coax our algebraic curve into a compact, connected, complex manifold.
+The primary utility of this construction is embodied in the following
+theorems.
+
+\theorem
+\label{holomorphic functions on compact manifolds are constant}
+
+Every holomorphic function $M \to C$ on a compact, connected, complex manifold $M$ is constant.
+
+\proof
+
+{\tt https://math.stackexchange.com/questions/881742}
+
+\cite{guillemin} Lecture 2 contains a proof of the Maximum Modulus Priciple.
+
+\endtheorem
+
+\theorem
+
+An algebraic function on an algebraic curve is completely characterized, up to an additive
+constant, by its principle parts.
+
+\proof
+
+Consider two algebraic functions $f$ and $g$ with identical principle
+parts.  Taking the difference between them, we obtain a function $f-g$
+with no principle parts, i.e, a holomorphic function.  By
+Theorem \ref{holomorphic functions on compact manifolds are constant},
+$f-g$ must be constant.
+
+\endtheorem
+
+Given the importance of an algebraic function's principle parts, we will
+now develop tools to calculate them.
+
+\mysection{Puiseux Expansions}
+
+Given an algebraic function on an algebraic curve, we wish to compute
+its principle parts by locating its poles and computing series
+expansions there.  Since the powers of $y$ form a ${\cal C}(x)$ basis
+for the curve's function field (PROOF), our primary goal is to compute
+series expansions for $y$ at arbitrary points on the curve.  With such
+expansions in hand, it is straightforward to construct expansions for
+any algebraic function.
+
+At any point where the discriminant is non-zero, a series expansion
+for $y$ exists as a power series in $(x-\alpha)$, which is a
+straightforward application of the Implicit Function Theorem.
 
 \theorem
 {\bf Implicit Function Theorem}
@@ -223,18 +284,24 @@ that $f(x,y)=0$ and $\frac{df}{dy} \ne 0$, then an analytic
 function $g(x)$ exists such that $f(x,g(x))=0$.
 \endtheorem
 
-For infinity and/or poles, substitute z=1/x or v=1/y.
+% For infinity and/or poles, substitute z=1/x or v=1/y.
 
 For ramification points, we'll use a substitution of the form
-$x=t^r+\alpha$, where $r$ is the {\it ramification index}, then use
-composition of analytic functions (x is analytic everywhere; y is
-analytic as a function of x everywhere except at t=0, so y is analytic
-as a function of t everywhere except at t=0) to establish that y is
-analytic everywhere on the t-plane except possibly at the origin.
-Then use existence of the Laurent series (Silverman 11.2) and
-continuity of the roots (HOW?) to establish analyticity at the
-multiple point, and consequently existance of a power series, but in
-$t=(x-\alpha)^{1/r}$, not $(x-\alpha)$, a {\it Puiseux series}.
+$x=t^r+\alpha$, where $r$ is the {\it ramification index}, and
+construct a power series, not in $(x-\alpha)$, but in
+$t=(x-\alpha)^{1/r}$, a {\it Puiseux series}.
+
+As a function of $t$, both $x$ and $y$ are analytic in an open
+neighborhood of $t=0$.  $x$ is analytic as a function of $t$ because
+of the I.F.T. applied to $x=t^r+\alpha$.  $y$ is analytic as a
+function of $x$ because of the I.F.T. applied to the defining equation
+of the curve.  Composition of analytic functions are analytic,
+showing that $y$ is analytic as function of $x$.
+
+These arguments hold in an open neighborhood of $t=0$.  Continuity of
+the roots shows that $y$ is continuous at $t=0$.  Then use existence
+of the Laurent series (Silverman 11.2) and continuity of the roots
+(HOW?) to establish analyticity at the ramification point.
 
 Singular points will admit multiple Puiseux series, each one
 corresponding to a single cycle.
@@ -1151,7 +1218,10 @@ analyze_multiple_points(y^3 - 3*y + x^6)$
 % with a {\it complex analytic structure}.
 
 \vfill\eject
-\mysection{Examples}
+\mysection{Riemann-Roch spaces}
+
+\vfill\eject
+\mysection{Integration Examples}
 
 \example Evaluate $\int \frac{x}{\sqrt{x^2+1}}\,dx$
 
