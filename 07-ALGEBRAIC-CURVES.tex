@@ -55,14 +55,19 @@ Instead, we'll use a different approach...
 
 \end{comment}
 
-How might we handle a simple algebraic extension?  A crucial property
-of {\it algebraic functions}, as elements of an algebraic extension
-are called, is that they admit series expansions everywhere, including
-infinity, so long as we allow a finite number of negative exponents.
-Such functions are called {\it meromorphic}.  The logarithm function
-fails to be meromorphic at the origin, and the exponential function
-fails to be meromorphic at infinity, but algebraic functions are
-meromorphic everywhere, including infinity.
+In this chapter, we'll begin studying {\it Abelian integrals}, which
+are integrals whose integrands are formed from polynomials and roots
+of polynomials.  In other words, integrands in an algebraic extension
+of ${\bf C}(x)$.
+
+How might we handle an algebraic extension of ${\bf C}(x)$?  A crucial
+property of {\it algebraic functions}, as elements of an algebraic
+extension are called, is that they admit series expansions everywhere,
+including infinity, so long as we allow a finite number of negative
+exponents.  Such functions are called {\it meromorphic}.  The
+logarithm function fails to be meromorphic at the origin, and the
+exponential function fails to be meromorphic at infinity, but
+algebraic functions are meromorphic everywhere, including infinity.
 
 This means that around any specific point, we can construct a series
 expansion of the integrand and integrate termwise to obtain a series
@@ -108,9 +113,9 @@ though higher powers do.  What powers should we use?  We could go on
 raising to higher and higher powers, hoping that something will work,
 but the only known algorithm to limit this search requires reducing
 modulo a prime, and that requires techniques that weren't developed
-until the 1960s.  Before heading into {\it modern algebraic geometry},
-let's see how far we can get with the classical algebraic geometry of
-the nineteenth century.
+until the 1960s.  Before heading into such {\it modern algebraic
+geometry}, however, let's see how far we can get with the classical
+algebraic geometry of the nineteenth century.
 
 \mysection{Classical Algebraic Geometry}
 
@@ -235,6 +240,7 @@ Every holomorphic function $M \to C$ on a compact, connected, complex manifold $
 \endtheorem
 
 \theorem
+\label{algebraic functions are characterized by their principle parts}
 
 An algebraic function on an algebraic curve is completely characterized, up to an additive
 constant, by its principle parts.
@@ -251,6 +257,8 @@ $f-g$ must be constant.
 
 Given the importance of an algebraic function's principle parts, we will
 now develop tools to calculate them.
+
+\vfill\eject
 
 \mysection{Puiseux Expansions}
 
@@ -296,7 +304,7 @@ neighborhood of $t=0$.  $x$ is analytic as a function of $t$ because
 of the I.F.T. applied to $x=t^r+\alpha$.  $y$ is analytic as a
 function of $x$ because of the I.F.T. applied to the defining equation
 of the curve.  Composition of analytic functions are analytic,
-showing that $y$ is analytic as function of $x$.
+showing that $y$ is analytic as function of $t$.
 
 These arguments hold in an open neighborhood of $t=0$.  Continuity of
 the roots shows that $y$ is continuous at $t=0$.  Then use existence
@@ -313,22 +321,42 @@ polygons} to determine ramification, then setup a trial series with
 the correct ramification and substitute it into the curve's defining
 equation.
 
-Consider factoring the defining polynomial of an algebraic curve.
+Let's assume that we're expanding around the point $(0,0)$, as this
+simplifies the analysis with no loss of generality.  Consider
+factoring the defining polynomial of the algebraic curve:
 
 $$p_n y^n + p_{n-1}y^{n-1} + \cdots + p_0 = (y-r_1)(y-r_2)\cdots(y-r_n)$$
 
-$p_i$ is a sum of terms, each term with $y^i$ and $n-i$ of the $r$'s
-multiplied together.  The term with the lowest order will be formed by
-multiplying the $n-i$ lowest order roots, but there may be
-cancellation between multiple sets of $n-i$ such roots.
+How might we do this, if the polynomial is irreducible?  We need to
+extend to a larger field where the polynomial's roots exist.  The
+analysis above shows that Puiseux series form a suitable extension.
 
+For each root $r_i$, define its {\it order} as the lowest power of $t$
+that appears in its Puiseux expansion, divided by its ramification
+index.  Multiplying factors together adds their orders, so
 $p_0$'s order will be the sum of all of the $r_i$'s orders.
 
-Increasing $i$ by one will lower $p_1$'s order by the largest
-of $r_i$'s orders, unless there are multiple $r_i$'s with
-the same order.  If there are $j$ $r_i$'s with the same
-largest order, increasing $i$ by $j$ will lower $p_i$'s
-order by $j$ times that largest order.
+% $p_i$ is a sum of terms, each term with $y^i$ and $n-i$ of the $r$'s
+% multiplied together.  The term with the lowest order will be formed by
+% multiplying the $n-i$ lowest order roots, but there may be
+% cancellation between multiple sets of $n-i$ such roots.
+
+
+Now let's consider increasing $i$ by one.  How does $p_0$'s order
+change?  $p_1$ is formed by adding together all products of $n-1$
+roots, so $p_1$'s order will be lower than $p_0$'s order by the
+largest of $r_i$'s orders, unless there are multiple $r_i$'s with the
+same order.  In this case, cancellation between these multiple terms
+could result in $p_1$ having a larger order than otherwise expected.
+
+If there are $j$ $r_i$'s with the same largest order, increasing $i$
+by $j$ will lower $p_i$'s order by $j$ times that largest order.
+
+The Newton polygon is formed by plotting the orders of the $p_i$
+coefficients, with $i$ varying along the horizonal axis and the order
+plotted vertically.  The easiest way to do this is to plot the powers
+of the monomials that appear in the equation, and construct the
+polygon's lower convex hull.
 
 Thus, a segment on the lower convex hull of the Newton polygon will
 correspond to as many solutions as the width of the line segment, each
@@ -1029,7 +1057,8 @@ a single cycle of two sheets at $(\infty,\infty)$.
 $y^2 = 1 - x^2$
 
 The {\it principal part} of an algebraic function is the part
-of its series expansion with negative exponents.  Theorem ?
+of its series expansion with negative exponents.  Theorem
+\ref{algebraic functions are characterized by their principle parts}
 states that an algebraic function is completely determined,
 up to adding a constant, by its principal parts.
 
@@ -1219,6 +1248,27 @@ analyze_multiple_points(y^3 - 3*y + x^6)$
 
 \vfill\eject
 \mysection{Riemann-Roch spaces}
+
+Once we've calculated the principle parts of an integrand, we can
+integrate the resulting series to obtain the principle parts of the
+integral.  This is possible due to the simple but crucial observation
+that poles in the integral can only appear where there are poles in
+the integrand.  Once we've determined the principle parts of the
+integral, we need to solve a Mittag-Leffler problem to find an
+algebraic function that matches the given principle parts.  This can
+be done by finding a basis for a suitable Riemann-Roch space.
+
+A {\it Riemann-Roch space} is a subspace of an algebraic curve's
+function field characterized by specifying a minimum order that the
+function must obtain at all of the curve's points.  Aside from having
+great theoretical significance, Riemann-Roch spaces are practically
+useful because they are finite dimensional, and algorithms exist for
+constructing Riemann-Roch bases.  Thus, having identified the
+locations and orders of the integral's principle parts, we can compute
+a Riemann-Roch basis for all functions with suitable poles at those
+locations.  Having done so, it then becomes a straightforward exercise
+in linear algebra to find a combination of those basis functions
+that match a specified set of principle parts.
 
 \vfill\eject
 \mysection{Integration Examples}
