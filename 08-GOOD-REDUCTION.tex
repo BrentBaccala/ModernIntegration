@@ -1,20 +1,75 @@
 
 \mychapter{Good Reduction}
 
+{\bf THIS CHAPTER IS VERY VAGUE AND INCOMPLETE.}
+
+The techniques of the previous chapter suffice to compute the {\it
+rational} portion of an Abelian integral, which is to say, an
+algebraic function.  Liouville's theorem, however, tells us that there
+can also be logarithmic components in the integral.  The two can be
+easily separated, since the rational portion of the integral
+corresponds to poles of second order poles and higher in the integrand,
+while the logarithmic portion corresponds to first order poles
+in the integrand.
+
+
 At this point, there is only one major missing piece in our
-integration theory for simple radicals --- how do we limit the
+integration theory for Abelian integrals --- how do we limit the
 multiples of a divisor to a testable set?  We've seen how to
 repeatedly raise a divisor to higher and higher powers, but how do we
 know when to stop?  At what point can we declare that a divisor has no
 multiple that is principle?
 
-We'll attack this problem the same way we attacked polynomial
-factorization in Chapter ?, by mapping into a finite field, solving a
-corresponding problem there, then somehow lifting the result back to
-the original field.  The details differ, but the basic idea is the
-same.  Of course, divisors, like polynomials, behave somewhat
-different in finite fields, so our first task is to study
-some of their unique properties in this domain.
+We'll attack this problem the way Robert Risch discovered in 1970, by
+mapping into a finite field, solving the corresponding problem there,
+then lifting the result back to the original field.  The finite field
+will be the integers modulo a prime.  Reducing modulo some primes
+changes the genus of the algebraic curve, while other primes leave the
+genus unchanged.  Those primes at which the genus of the curve remains
+unchanged yield {\it good reduction}
+
+The key theorems as stated by [Tr73] on page 67:
+
+\theorem
+The homomorphism between divisor class groups under good reduction
+is an isomorphism when restricted to divisors whose orders are
+relatively prime to the characteristic of the reduced function field.
+\endtheorem
+
+Let $p$ be the characteristic of the reduced field,
+
+\theorem
+if the divisor $D$ has order $p^k n$ where $\gcd(n,p)=1$, then
+the reduction of $D$ must have order $p^j n$ for some $j\le k$.
+
+\proof
+Let the order of the reduction be $p^j m$.  Since reduction
+is a group homomorphism, we must have $m|n$ and $j \le k$.
+Since $D^{p^k}$ has order exactly $n$, its reduction
+must have order exactly $n$.  But the order of its
+reduction is a divisor of $m$ and thus $n|m$ and so
+finally we have $n=m$.
+
+\endtheorem
+
+
+Since good reduction preserves the part of the divisor's order
+relatively prime to the characteristic, by picking two different
+primes we can completely reconstruct the divisor's order in
+characteristic zero.
+
+A property of algebraic curves over finite fields is that {\it all}
+divisors of total degree zero have some multiple that is principal
+(PROOF).  Thus, to carry out this program, we need to compute bases
+for Riemann-Roch spaces in prime characteristic.  Then, we can keep
+raising a divisor to higher and higher powers until we find its order.
+Do this for two different primes, each exhibiting good reduction, and
+then we can find the order of the original divisor in characteristic
+zero.
+
+To proof the above claims, I want to construct the Jacobian variety in
+arbitrary characteristic, then show how Jacobians map under good
+reduction.
 
 \section{Simple Algebraic Extensions over Finite Fields}
 

@@ -2,6 +2,8 @@
 % \mychapter{Algebraic Curves}
 \mychapter{Abelian Integrals}
 
+{\bf THIS CHAPTER IS INCOMPLETE.}
+
 Having addressed logarithmic and exponential extensions, we now turn
 to the algebraic extension, which turns out to be completely different
 in character from the two transcendental cases.
@@ -1270,6 +1272,10 @@ locations.  Having done so, it then becomes a straightforward exercise
 in linear algebra to find a combination of those basis functions
 that match a specified set of principle parts.
 
+{\bf TODO}
+
+Implement one of the Riemann-Roch algorithms in Maxima.
+
 \vfill\eject
 \mysection{Integration Examples}
 
@@ -1428,3 +1434,12 @@ poles at $(\pm i,\sqrt{2})$ and no other finite poles.
 % or use Riemann-Roch theorem directly
 
 \endexample
+
+\vfill\eject
+\mysection{Hermite reduction}
+
+\cite{trager} shows how to extend Hermite reduction into the algebraic case.
+This offers a means of calculating the rational parts of the integrals
+without going through the calculations described in this chapter.  In
+particular, Puiseux expansions can be completely avoided, which offers
+savings in computational complexity.
