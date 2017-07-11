@@ -1,6 +1,7 @@
 
 \chapter*{Preface}
 
+\begin{comment}
 This book grew out of an abortive class in Risch Integration that I
 taught at University of Maryland at College Park in the spring of
 2006,\footnote{I am not a professor at UMCP, and am not affiliated
@@ -14,6 +15,18 @@ fill this perceived gap, the need for a senior level undergraduate
 text on differential algebra, developing the subject so far as the
 solution of the problem of integration in finite terms (the
 integration problem), the theory's most famous application to date.
+\end{comment}
+
+In 1970, Robert Risch published \cite{risch}, which sketched in four
+pages how to bound the torsion of a divisor on an algebraic curve, and
+thus provide the ``missing link'' in a comprehensive algorithm that
+would either find an elementary form for a given integral, or prove
+that no such elementary form can exist.
+
+The goal of this book is to present the Risch algorithm in a manner
+suitable to be understood by undergraduate mathematics students, the
+prerequisites being calculus and abstract algebra, and the expected
+context being a senior-level university class.
 
 Why, first of all, should math students study this subject, and why
 near the end of an undergraduate mathematics program?
@@ -21,19 +34,22 @@ near the end of an undergraduate mathematics program?
 First and foremost, for pedagogical reasons.  Almost all modern
 college math curricula include higher algebra, yet this subject seems
 to be taught in a very abstract context.  The integration problem puts
-this abstraction into concrete form.  We have a specific goal in
-mind --- the development of an algorithm that, given an integral
-constructed from elementary functions, either solves that integral by
-expressing it using elementary functions, or else proves that no such
-expression is possible.  One of the best ways to learn a subject, or
-at least to convince yourself that you understand it, is to apply it
-in a specific and concrete way.  The greatest difficulties I have
-encountered in math is when faced with abstract concepts lacking
-concrete examples.  Such, in my mind, is the primary goal of studying
-differential algebra near the end of an undergraduate program.  The
-student has no doubt been exposed to higher algebra, now we want to
-make sure we understand it by taking all those rings, fields, ideals,
-extensions and what not and applying them to this specific goal.
+this abstraction into concrete form.
+% We have a specific goal in
+% mind --- the development of an algorithm that, given an integral
+% constructed from elementary functions, either solves that integral by
+% expressing it using elementary functions, or else proves that no such
+% expression is possible.
+One of the best ways to learn a subject
+% , or at least to convince yourself that you understand it,
+is to apply it in a specific and concrete way.  The greatest
+difficulties I have encountered in math is when faced with abstract
+concepts lacking concrete examples.  Such, in my mind, is the primary
+benefit of studying Risch integration near the end of an undergraduate
+program.  The student has no doubt been exposed to higher algebra, now
+we want to make sure we understand it by taking all those rings,
+fields, ideals, extensions and what not and applying them to a
+specific goal.
 
 Secondly, there is a sense of both historical and educational
 completion to be obtained here.  Not only has the integration problem
@@ -42,7 +58,9 @@ there is a real danger of getting through an entire calculus sequence
 and be left thinking that if you really want to solve an integral, the
 best way is to use a computer!  Due to the intricacy of the
 calculations involved, the best way probably is to use a computer, but
-the student is left at a vague but quite definite disadvantage without
+without studying the Risch algorithm, the student is left with a vague
+sense that integration is nothing but a bag of tricks, and
+a definite disadvantage without
 the understanding that the integration problem has been solved and
 without some familiarity with the techniques used to solve it.
 
@@ -58,30 +76,49 @@ list.  The big question, in my mind, is whether this theory can be
 suitably extended to handle partial differential equations, as both
 integrals and ordinary differential equations can now be adequately
 handled using numerical techniques.  This question remains unanswered
-at this time.
+at this time, and that mystery has animated my own mathematical
+research for a number of years.
 
-Finally, I have a strong personal motivation in writing this book.
-I am not an expert in this field, really a student myself at this
-point.  Another very good way to learn a subject, or at least to
-convince two people that you understand it, is to explain it to
-somebody else.
+% Finally, I have a strong personal motivation in writing this book.
+% I am not an expert in this field, really a student myself at this
+% point.  Another very good way to learn a subject, or at least to
+% convince two people that you understand it, is to explain it to
+% somebody else.
 
-Since the available material on this subject is too sparsely spread
-around among a variety of texts and research papers, I decided for all
-of these reasons to compile, more so than write, a book targeted at an
-undergraduate audience with some exposure to higher algebra.  However,
-in keeping with my primarily pedagogical aims, I re-introduce all the
-key concepts of algebra as they are needed.  This serves both to
-refresh and reinforce concepts already learned and also to act a
-convenient reference without having to flip constantly back and forth
-between books.  This book should not be taken as a substitute for a
-broader theory text, as I introduce only the concepts needed for my
-particular application, and only at a level of detail that seems
-appropriate.
+Furthermore, the available material on this subject is spread around
+among some terse research papers, some sparse lecture notes, and a
+single graduate level textbook (\cite{bronstein book}), that while
+excellent, is unfortunately incomplete due to the untimely death of
+the author prior to completing an anticipated second volume.
+Having
+slowly assimilated this material over the course of years of study,
+and having given roughly a dozen lectures on Risch integration
+without the benefit of a textbook, the lack of a suitable text
+has become obvious.  Although I began work on this textbook
+in 2006, I set it aside after a while and moved on to other
+interests.
+In the winter of 2016-17, I was once again
+preparing to lecture on Risch integration, and once again
+scrambling to pull everything together without a textbook.
 
-Since the book is still a work in progress, I can't hope to
-properly conclude this preface at this time.  I would,
-however, like to specifically thank Dr. Denny Gulick, Undergradate
-Chair of the UMCP Mathematics Department, for giving me
-the opportunity to teach the class which lead directly
-to this book.
+Therefore, it seems appropriate to compile this knowledge together and
+offer it back to the mathematical community.
+Partly for the reasons I have listed above, and partly just to write
+something different from \cite{bronstein book}, I have decided to
+target this book at an undergraduate audience with some exposure to
+higher algebra.
+
+I have liberally used the computer algebra system
+{\it Maxima} in conjunction with the \LaTeX\ package {\tt pythontex}, which,
+suitable extended, allows {\it Maxima} code in the \LaTeX\ source to be
+automatically processed and typeset into the output.  In keeping with
+my religious principles (I am a Christian monk), the book is freely
+available on the Internet, both in PDF form, and as \LaTeX\ source
+in a {\tt github} repository.
+
+Since the book is still a work in progress, I can't hope to properly
+conclude this preface at this time.  I would, however, like to
+specifically thank my dear friend Bruce Caslow, whose support and
+encouragement has been invaluable in this, as well as many other
+pursuits.
+
