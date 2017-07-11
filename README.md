@@ -11,15 +11,15 @@ From the prefix:
 > thus provided the ``missing link'' in a comprehensive algorithm that
 > would either find an elementary form for a given integral, or prove
 > that no such elementary form can exist.
-
+>
 > The goal of this book is to present the Risch algorithm in a manner
 > suitable to be understood by undergraduate mathematics students, the
 > prerequisites being calculus and abstract algebra, and the expected
 > context being a senior-level university class.
-
+>
 > Why, first of all, should math students study this subject, and why
 > near the end of an undergraduate mathematics program?
-
+>
 > First and foremost, for pedagogical reasons.  Almost all modern
 > college math curricula include higher algebra, yet this subject seems
 > to be taught in a very abstract context.  The integration problem puts
@@ -33,7 +33,7 @@ From the prefix:
 > we want to make sure we understand it by taking all those rings,
 > fields, ideals, extensions and what not and applying them to a
 > specific goal.
-
+>
 > Secondly, there is a sense of both historical and educational
 > completion to be obtained.  Not only has the integration problem
 > challenged mathematicians since the development of the calculus, but
@@ -45,7 +45,7 @@ From the prefix:
 > sense that integration is nothing but a bag of tricks, and
 > a real deficiency without
 > the understanding that the integration problem has been solved.
-
+>
 > Third, an introduction to differential algebra may be quite
 > appropriate at a point where students are starting to think about
 > research interests.  Though this field has profitably engaged the
