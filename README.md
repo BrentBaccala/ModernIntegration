@@ -3,16 +3,18 @@ A differential algebra textbook
 
 From the preface:
 
-> In 1970, Robert Risch published [Ri70], which sketched in four
-> pages how to bound the torsion of a divisor on an algebraic curve, and
+> In 1970, Robert Risch published [Ri70], which sketched in four pages
+> how to bound the torsion of a divisor on an algebraic curve, and
 > thus provided the "missing link" in a comprehensive algorithm that
 > would either find an elementary form for a given integral, or prove
-> that no such elementary form can exist.
+> that no such elementary form can exist.  Risch's method, suitably
+> enhanced, is currently used in the symbolic integration routines of
+> the most sophisticated computer algebra systems.
 >
-> The goal of this book is to present the Risch algorithm in a manner
-> suitable to be understood by undergraduate mathematics students, the
-> prerequisites being calculus and abstract algebra, and the expected
-> context being a senior-level university class.
+> The goal of this book is to present the Risch integration algorithm
+> in a manner suitable to be understood by undergraduate mathematics
+> students, the prerequisites being calculus and abstract algebra, and
+> the expected context being a senior-level university class.
 >
 > Why, first of all, should math students study this subject, and why
 > near the end of an undergraduate mathematics program?
