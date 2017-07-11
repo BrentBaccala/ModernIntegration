@@ -1,14 +1,11 @@
 # ModernIntegration
 A differential algebra textbook
 
-*Modern Integration* aims to present the Risch integration algorithm
-in a manner suitable for use in an undergraduate university curriculum.
-
 From the preface:
 
 > In 1970, Robert Risch published [Ri70], which sketched in four
 > pages how to bound the torsion of a divisor on an algebraic curve, and
-> thus provided the ``missing link'' in a comprehensive algorithm that
+> thus provided the "missing link" in a comprehensive algorithm that
 > would either find an elementary form for a given integral, or prove
 > that no such elementary form can exist.
 >
