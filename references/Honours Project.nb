@@ -1,0 +1,1915 @@
+(************** Content-type: application/mathematica **************
+                     CreatedBy='Mathematica 5.0'
+
+                    Mathematica-Compatible Notebook
+
+This notebook can be used with any Mathematica-compatible
+application, such as Mathematica, MathReader or Publicon. The data
+for the notebook starts with the line containing stars above.
+
+To get the notebook into a Mathematica-compatible application, do
+one of the following:
+
+* Save the data starting with the line of stars above into a file
+  with a name ending in .nb, then open the file inside the
+  application;
+
+* Copy the data starting with the line of stars above to the
+  clipboard, then use the Paste menu command inside the application.
+
+Data for notebooks contains only printable 7-bit ASCII and can be
+sent directly in email or through ftp in text mode.  Newlines can be
+CR, LF or CRLF (Unix, Macintosh or MS-DOS style).
+
+NOTE: If you modify the data for this notebook not in a Mathematica-
+compatible application, you must delete the line below containing
+the word CacheID, otherwise Mathematica-compatible applications may
+try to use invalid cache data.
+
+For more information on notebooks and Mathematica-compatible 
+applications, contact Wolfram Research:
+  web: http://www.wolfram.com
+  email: info@wolfram.com
+  phone: +1-217-398-0700 (U.S.)
+
+Notebook reader applications are available free of charge from 
+Wolfram Research.
+*******************************************************************)
+
+(*CacheID: 232*)
+
+
+(*NotebookFileLineBreakTest
+NotebookFileLineBreakTest*)
+(*NotebookOptionsPosition[     46401,       1488]*)
+(*NotebookOutlinePosition[     47146,       1514]*)
+(*  CellTagsIndexPosition[     47102,       1510]*)
+(*WindowFrame->Normal*)
+
+
+
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Symbolic Integration", "Title"],
+
+Cell["\<\
+Honours Project
+School Of Mathematical Sciences
+Monash University\
+\>", "Subtitle"],
+
+Cell["Sam Blake, 2006 - 2007.", "Subsubtitle"],
+
+Cell[CellGroupData[{
+
+Cell["Notation", "Section"],
+
+Cell[TextData[{
+  "\[FilledSmallSquare]\t",
+  Cell[BoxData[
+      \(TraditionalForm\`lc(P(x))\)]],
+  " is the coefficient of the largest power of ",
+  StyleBox["x",
+    FontSlant->"Italic"],
+  " in the polynomial ",
+  StyleBox["P",
+    FontSlant->"Italic"],
+  ". We can find this in ",
+  StyleBox["Mathematica",
+    FontSlant->"Italic"],
+  " using"
+}], "Text"],
+
+Cell[BoxData[
+    \(lc[f_, x_] := 
+      If[\(! FreeQ[f, x]\), Coefficient[f, x\^Exponent[f, x]], f]\)], "Input",\
+
+  InitializationCell->True],
+
+Cell[TextData[{
+  "\[FilledSmallSquare]\t",
+  Cell[BoxData[
+      \(TraditionalForm\`deg(P(x))\)]],
+  " is the degree of the polynomail ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(P(x)\)\(.\)\)\)]],
+  " We can find the degree of a polynomial in ",
+  StyleBox["Mathematica",
+    FontSlant->"Italic"],
+  " using"
+}], "Text"],
+
+Cell[BoxData[
+    \(Exponent[P, x]\)], "Input"],
+
+Cell[TextData[{
+  "\[FilledSmallSquare]\t",
+  Cell[BoxData[
+      \(TraditionalForm\`content \((P \((x)\))\)\)]],
+  " is the content of ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(P(x)\)\(,\)\)\)]],
+  " where ",
+  Cell[BoxData[
+      \(TraditionalForm\`P(
+          x) = \[Sum]\+\(i = 0\)\%n\( a\_i\) x\^i\ \  \[Element] 
+          D[x]\\\(\({0}\)\(.\)\)\)]],
+  " We can find the content in ",
+  StyleBox["Mathematica",
+    FontSlant->"Italic"],
+  " using"
+}], "Text"],
+
+Cell[BoxData[
+    \(\(Content[P_, x_] := 
+        If[GCD @@ CoefficientList[P, x] \[Equal] 0, 1, 
+          GCD @@ CoefficientList[P, x]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell[TextData[{
+  "\[FilledSmallSquare]\t",
+  Cell[BoxData[
+      \(TraditionalForm\`pp(P(x))\)]],
+  " is the primitive part of the polynomial ",
+  StyleBox["P",
+    FontSlant->"Italic"],
+  ". This primitive part is found by ",
+  Cell[BoxData[
+      \(TraditionalForm\`pp(
+          P(x)) = \(\(\(P(x)\)\/\(Content(P(x))\)\)\(.\)\)\)]],
+  " So we find this in ",
+  StyleBox["Mathematica",
+    FontSlant->"Italic"],
+  " using"
+}], "Text"],
+
+Cell[BoxData[
+    \(pp[P_, x_] := P\/Content[P, x]\)], "Input",
+  InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Algebraic Preliminaries", "Section"],
+
+Cell[CellGroupData[{
+
+Cell["Euclidean Division", "Subsection"],
+
+Cell["p. 8, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a field ",
+  Cell[BoxData[
+      \(TraditionalForm\`K\)]],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`A, B\  \[Element] \ K\ [x]\)]],
+  " woth ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(B \[NotEqual] 0\)\(,\)\)\)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`Q, R\  \[Element] \ K\ [x]\)]],
+  " such that ",
+  Cell[BoxData[
+      \(TraditionalForm\`A = B\ Q + R\)]],
+  " and either ",
+  Cell[BoxData[
+      \(TraditionalForm\`R = 0\)]],
+  " or ",
+  Cell[BoxData[
+      \(TraditionalForm\`deg(R)\  < \ \(\(deg(B)\)\(.\)\)\)]]
+}], "Text"],
+
+Cell[BoxData[
+    \(PolyDivide[a_, b_, var_] := 
+      Module[{A = a, B = b, x = var, Q, R, deg, T}, \[IndentingNewLine]Q = 
+          0; \[IndentingNewLine]R = A; \[IndentingNewLine]deg = 
+          Exponent[R, x] - Exponent[B, x]; \[IndentingNewLine]While[
+          R =!= 0 && 
+            deg \[GreaterEqual] 
+              0, \[IndentingNewLine]T = \(lc[R, x]\/lc[B, x]\) 
+              x\^deg; \[IndentingNewLine]Q = 
+            Expand[Q + T]; \[IndentingNewLine]R = 
+            Expand[R - B\ T]; \[IndentingNewLine]deg = 
+            Exponent[R, x] - 
+              Exponent[B, 
+                x];\[IndentingNewLine]]; \[IndentingNewLine] \
+(*\(Print["\<Quotient = \>", 
+              Q];\)*) \[IndentingNewLine] (*\(Print["\<Remainder = \>", 
+              R];\)*) \[IndentingNewLine]Return[{Q, 
+            R}];\[IndentingNewLine]]\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(PolyDivide[3\ x\^3 + x\^2 + x + 5, 5\ x\^2 - 3\ x + 1, x]\)], "Input"],
+
+Cell[BoxData[
+    \({14\/25 + \(3\ x\)\/5, 111\/25 + \(52\ x\)\/25}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(PolynomialQuotient[3\ x\^3 + x\^2 + x + 5, 5\ x\^2 - 3\ x + 1, 
+      x]\)], "Input"],
+
+Cell[BoxData[
+    \(14\/25 + \(3\ x\)\/5\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(PolynomialRemainder[3\ x\^3 + x\^2 + x + 5, 5\ x\^2 - 3\ x + 1, 
+      x]\)], "Input"],
+
+Cell[BoxData[
+    \(111\/25 + \(52\ x\)\/25\)], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Pseudo-Division", "Subsection"],
+
+Cell["p. 9, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given an integral domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`A, B\  \[Element] \ D\ [x]\)]],
+  " with ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(B \[NotEqual] 0\)\(,\)\)\)]],
+  " return the pseudo quotient and pseudo remainder of ",
+  StyleBox["A ",
+    FontSlant->"Italic"],
+  "and ",
+  StyleBox["B",
+    FontSlant->"Italic"],
+  "."
+}], "Text"],
+
+Cell[BoxData[
+    \(PolyPseudoDivide[a_, b_, var_] := 
+      Module[{A = a, B = b, x = var, w, n, Q, R, deg, 
+          T}, \[IndentingNewLine]w = lc[B, x]; \[IndentingNewLine]n = 
+          Exponent[A, x] - Exponent[B, x] + 1; \[IndentingNewLine]Q = 
+          0; \[IndentingNewLine]R = A; \[IndentingNewLine]deg = 
+          Exponent[R, x] - Exponent[B, x]; \[IndentingNewLine]While[
+          R =!= 0 && deg \[GreaterEqual] 0, \[IndentingNewLine]T = 
+            lc[R, x] x\^deg; \[IndentingNewLine]n = 
+            n - 1; \[IndentingNewLine]Q = 
+            Expand[w\ Q + T]; \[IndentingNewLine]R = 
+            Expand[w\ R - T\ B]; \[IndentingNewLine]deg = 
+            Exponent[R, x] - 
+              Exponent[B, 
+                x];\[IndentingNewLine]]; \[IndentingNewLine] \
+(*\(Print["\<Pseudo Quotient = \>", 
+              w\^n\ Q];\)*) \[IndentingNewLine] (*\(Print["\<Pseudo Remainder \
+= \>", w\^n\ R];\)*) \[IndentingNewLine]Return[{w\^n\ Q, 
+            w\^n\ R}];\[IndentingNewLine]]\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(PolyPseudoDivide[3\ x\^3 + x\^2 + x + 5, 5\ x\^2 - 3\ x + 1, 
+      x]\)], "Input"],
+
+Cell[BoxData[
+    \({14 + 15\ x, 111 + 52\ x}\)], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Euclidean Algorithm", "Subsection"],
+
+Cell["p. 10, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a Euclidean domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`a, b\  \[Element] \ D, \)]],
+  " return the greatest common divisor of ",
+  StyleBox["a ",
+    FontSlant->"Italic"],
+  "and ",
+  StyleBox["b",
+    FontSlant->"Italic"],
+  "."
+}], "Text"],
+
+Cell[BoxData[
+    \(\(Euclidean[a_, b_, var_] := 
+        Module[{A = a, B = b, x = var, q, r}, \[IndentingNewLine]While[
+            B =!= 0, \[IndentingNewLine]q = \(PolyDivide[A, B, 
+                  x]\)[\([1]\)]; \[IndentingNewLine]r = \(PolyDivide[A, B, 
+                  x]\)[\([2]\)]; \[IndentingNewLine]A = 
+              B; \[IndentingNewLine]B = 
+              r;\[IndentingNewLine]]; \[IndentingNewLine]Return[
+            A];\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Euclidean[x\^4 - 2\ x\^3 - 6\ x\^2 + 12\ x + 15, 
+      x\^3 + x\^2 - 4\ x - 4, x]\)], "Input"],
+
+Cell[BoxData[
+    \(5 + 5\ x\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(PolynomialGCD[x\^4 - 2\ x\^3 - 6\ x\^2 + 12\ x + 15, 
+      x\^3 + x\^2 - 4\ x - 4]\)], "Input"],
+
+Cell[BoxData[
+    \(1 + x\)], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Greatest Common Divisor", "Subsection"],
+
+Cell[TextData[{
+  "Tests on the Euclidean algorithm show that is does not agree with ",
+  StyleBox["Mathematica",
+    FontSlant->"Italic"],
+  "'s results. Noting that dividing the polynomial remainder by its primitive \
+every time the algorithm cycles results in the correct outcome."
+}], "Text"],
+
+Cell["\<\
+For an efficient GCD computation see p. 20, Symbolic Integration in Java. \
+\>", "Text"],
+
+Cell[BoxData[
+    \(\(GreatestCommonDivisor[a_, b_, var_] := 
+        Module[{A = a, B = b, x = var, q, r, rtemp}, \[IndentingNewLine]While[
+            B =!= 0, \[IndentingNewLine]q = \(PolyDivide[A, B, 
+                  x]\)[\([1]\)]; \[IndentingNewLine]r = 
+              Simplify[
+                pp[\(PolyDivide[A, B, x]\)[\([2]\)], 
+                  x]]; \[IndentingNewLine] (*\(Print["\<r = \>", 
+                  r];\)*) \[IndentingNewLine]A = B; \[IndentingNewLine]B = 
+              r;\[IndentingNewLine]]; \[IndentingNewLine]Return[
+            A];\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(GreatestCommonDivisor[x\^4 - 2\ x\^3 - 6\ x\^2 + 12\ x + 15, 
+      x\^3 + x\^2 - 4\ x - 4, x]\)], "Input"],
+
+Cell[BoxData[
+    \(1 + x\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(GreatestCommonDivisor[x\^12 + 7\ x + 1, 5\ x\^11 + 11  x + 1, 
+      x]\)], "Input"],
+
+Cell[BoxData[
+    \(1\)], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Extended Euclidean", "Subsection"],
+
+Cell["p. 11, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a Euclidean domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`a, b\  \[Element] \ D, \)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`s, t\  \[Element] \ D\)]],
+  " such that ",
+  Cell[BoxData[
+      \(TraditionalForm\`g = gcd(a, b)\)]],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`s\ a + t\ b = \(\(g\)\(.\)\)\)]]
+}], "Text"],
+
+Cell[BoxData[
+    \(\(ExtendedEuclidean[A_, B_, var_] := 
+        Module[{a = A, b = B, x = var, a1, a2, b1, b2, q, r, r1, 
+            r2}, \[IndentingNewLine]a1 = 1; a2 = 0; b1 = 0; 
+          b2 = 1; \[IndentingNewLine]While[
+            b =!= 0, \[IndentingNewLine]q = \(PolyDivide[a, b, 
+                  x]\)[\([1]\)]; \[IndentingNewLine]r = \(PolyDivide[a, b, 
+                  x]\)[\([2]\)]; \[IndentingNewLine]a = 
+              Expand[b]; \[IndentingNewLine]b = r; \[IndentingNewLine]r1 = 
+              a1 - q\ b1; \[IndentingNewLine]r2 = 
+              a2 - q\ b2; \[IndentingNewLine]a1 = 
+              Expand[b1]; \[IndentingNewLine]a2 = 
+              Expand[b2]; \[IndentingNewLine]b1 = r1; \[IndentingNewLine]b2 = 
+              r2;\[IndentingNewLine]]; \[IndentingNewLine]Return[{a1, a2, 
+              a}];\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(ExtendedEuclidean[x\^4 - 2\ x\^3 - 6\ x\^2 + 12\ x + 15, 
+      x\^3 + x\^2 - 4\ x - 4, x]\)], "Input"],
+
+Cell[BoxData[
+    \({3 - x, 10 - 6\ x + x\^2, 5 + 5\ x}\)], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Half Extended Euclidean Algorithm", "Subsection"],
+
+Cell["p. 11, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a Euclidean domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`a, b\  \[Element] \ D, \)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`s, g\  \[Element] \ D\)]],
+  " such that ",
+  Cell[BoxData[
+      \(TraditionalForm\`g = gcd(a, b)\)]],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`s\ a \[Congruent] g\ \(\((mod\ b)\)\(.\)\)\)]]
+}], "Text"],
+
+Cell[BoxData[
+    \(\(HalfExtendedEuclidean[A_, B_, var_] := 
+        Module[{a = A, b = B, x = var, a1, b1, q, r}, \[IndentingNewLine]a1 = 
+            1; b1 = 0; \[IndentingNewLine]While[
+            b =!= 0, \[IndentingNewLine]q = \(PolyDivide[a, b, 
+                  x]\)[\([1]\)]; \[IndentingNewLine]r = \(PolyDivide[a, b, 
+                  x]\)[\([2]\)]; \[IndentingNewLine]a = 
+              Expand[b]; \[IndentingNewLine]b = r; \[IndentingNewLine]r1 = 
+              a1 - q\ b1; \[IndentingNewLine]a1 = 
+              Expand[b1]; \[IndentingNewLine]b1 = 
+              r1;\[IndentingNewLine]]; \[IndentingNewLine]Return[{a1, 
+              a}];\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell["This code is tested as a part of the next program.", "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Extended Euclidean Algorithm \"Half / Full\" Version", "Subsection"],
+
+Cell["p. 12, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a Euclidean domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`a, b\  \[Element] \ D\)]],
+  Cell[BoxData[
+      \(TraditionalForm\`, \)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`s, t, g\  \[Element] \ D\)]],
+  " such that ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(g = gcd(a, b)\)\(,\)\)\)]],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`s\ a + t\ b = \(\(g\)\(.\)\)\)]]
+}], "Text"],
+
+Cell[BoxData[
+    \(\(ExtendedEuclideanHalfFull[A_, B_, var_] := 
+        Module[{a = A, b = B, x = var, s, g, t, r}, \[IndentingNewLine]s = 
+            Expand[\(HalfExtendedEuclidean[a, b, 
+                  x]\)[\([1]\)]]; \[IndentingNewLine]g = 
+            Expand[\(HalfExtendedEuclidean[a, b, 
+                  x]\)[\([2]\)]]; \[IndentingNewLine]t = 
+            Expand[\(PolyDivide[g - s\ a, b, 
+                  x]\)[\([1]\)]]; \[IndentingNewLine]r = \(PolyDivide[
+                g - s\ a, b, x]\)[\([2]\)]; \[IndentingNewLine]If[
+            r \[NotEqual] 0, Print["\<Error @ ExtendedEuclideanalfFull\>"]; 
+            Return[];]; \[IndentingNewLine]Return[{s, t, 
+              g}];\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(ExtendedEuclideanHalfFull[x\^4 - 2\ x\^3 - 6\ x\^2 + 12\ x + 15, 
+      x\^3 + x\^2 - 4\ x - 4, x]\)], "Input"],
+
+Cell[BoxData[
+    \({3 - x, 10 - 6\ x + x\^2, 5 + 5\ x}\)], "Output"]
+}, Open  ]],
+
+Cell["This agrees with Bronstein p. 13.", "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Extended Euclidean Algorithm Diophantine Version", "Subsection"],
+
+Cell["p. 13, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a Euclidean domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`a, b, c\  \[Element] \ D\)]],
+  " with ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(c\  \[Element] \ \((a, b)\)\)\(,\)\)\)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`s, t\  \[Element] \ D\)]],
+  " such that ",
+  Cell[BoxData[
+      \(TraditionalForm\`s\ a + t\ b = c\)]],
+  " and either ",
+  Cell[BoxData[
+      \(TraditionalForm\`s = 0\)]],
+  " or ",
+  Cell[BoxData[
+      \(TraditionalForm\`v(s) < \(\(v(b)\)\(.\)\)\)]]
+}], "Text"],
+
+Cell[BoxData[
+    \(\(ExtendedEuclideanDiophantine[A_, B_, C_, var_] := 
+        Module[{a = A, b = B, c = C, x = var, s, t, g, q, 
+            r}, \[IndentingNewLine]s = 
+            Expand[\(ExtendedEuclideanHalfFull[a, b, 
+                  x]\)[\([1]\)]]; \[IndentingNewLine]t = 
+            Expand[\(ExtendedEuclideanHalfFull[a, b, 
+                  x]\)[\([2]\)]]; \[IndentingNewLine]g = \
+\(ExtendedEuclideanHalfFull[a, b, 
+                x]\)[\([3]\)]; \[IndentingNewLine]q = \(PolyDivide[c, g, 
+                x]\)[\([1]\)]; \[IndentingNewLine]r = \(PolyDivide[c, g, 
+                x]\)[\([2]\)]; \[IndentingNewLine]If[
+            r =!= 0, \[IndentingNewLine]Print["\<Error @ \
+ExtendedEuclideanDiophantine\>"]; \[IndentingNewLine]Return[];\
+\[IndentingNewLine]]; \[IndentingNewLine]s = q\ s; \[IndentingNewLine]t = 
+            q\ t; \[IndentingNewLine]If[
+            s =!= 0 && 
+              Exponent[s, x] \[GreaterEqual] 
+                Exponent[b, x], \[IndentingNewLine]q = \(PolyDivide[s, b, 
+                  x]\)[\([1]\)]; \[IndentingNewLine]r = \(PolyDivide[s, b, 
+                  x]\)[\([2]\)]; \[IndentingNewLine]s = 
+              r; \[IndentingNewLine]t = 
+              Expand[t + 
+                  q\ a];\[IndentingNewLine]]; \[IndentingNewLine]Return[{s, 
+              t}]\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(ExtendedEuclideanDiophantine[x\^2 - 2\ x + 1, x + 1, x\^2 + 3\ x, 
+      x]\)], "Input"],
+
+Cell[BoxData[
+    \({\(-\(1\/2\)\), 1\/2 + \(3\ x\)\/2}\)], "Output"]
+}, Open  ]],
+
+Cell["This agrees with Bronstein p. 15.", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(ExtendedEuclideanDiophantine[\(-5\)\ x\^2 - 2, x\^3 + 2\ x, 
+      x\^7 - 24\ x\^4 - 4\ x\^2 + 8\ x - 8, x]\)], "Input"],
+
+Cell[BoxData[
+    \({4 + 8\ x\^2, 4 + 16\ x - 2\ x\^2 + x\^4}\)], "Output"]
+}, Open  ]],
+
+Cell["This agrees with Bronstein p. 44.", "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Half Extended Euclidean Diophantine Version", "Subsection"],
+
+Cell["p. 13, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a Euclidean domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`a, b, c, \ \(\(\[Element]\)\(\ \)\(D\)\)\)]],
+  " with ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(c\  \[Element] \ \((a, b)\)\)\(,\)\)\)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`s\  \[Element] \ D\)]],
+  " such that ",
+  Cell[BoxData[
+      \(TraditionalForm\`s\ a\  \[Congruent] c\ \((mod\ b)\)\)]],
+  " and either ",
+  Cell[BoxData[
+      \(TraditionalForm\`s = 0\)]],
+  " or ",
+  Cell[BoxData[
+      \(TraditionalForm\`v(s) < \(\(v(b)\)\(.\)\)\)]]
+}], "Text"],
+
+Cell[BoxData[
+    \(\(HalfExtendedEuclideanDiophantine[A_, B_, C_, var_] := 
+        Module[{a = A, b = B, c = C, x = var, s, g, q, 
+            r}, \[IndentingNewLine]s = \(HalfExtendedEuclidean[a, b, 
+                x]\)[\([1]\)]; \[IndentingNewLine]g = \(HalfExtendedEuclidean[
+                a, b, c]\)[\([2]\)]; \[IndentingNewLine]q = \(PolyDivide[c, 
+                g, c]\)[\([1]\)]; \[IndentingNewLine]r = \(PolyDivide[c, g, 
+                x]\)[\([2]\)]; \[IndentingNewLine]If[
+            r =!= 0, \[IndentingNewLine]Print["\<Error @ \
+HalfExtendedEuclideanDiophantine\>"]; \[IndentingNewLine]Return[];\
+\[IndentingNewLine]]; \[IndentingNewLine]s = q\ s; \[IndentingNewLine]If[
+            s =!= 0 && 
+              Exponent[s, x] \[GreaterEqual] 
+                Exponent[b, x], \[IndentingNewLine]q = \(PolyDivide[s, b, 
+                  x]\)[\([1]\)]; \[IndentingNewLine]r = \(PolyDivide[s, b, 
+                  x]\)[\([2]\)]; \[IndentingNewLine]s = 
+              r;\[IndentingNewLine]]; \[IndentingNewLine]Return[
+            s];\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Partial Fraction Decomposition", "Subsection"],
+
+Cell["p. 15, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a Euclidean Domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  ", a positive integer ",
+  StyleBox["n",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`a, d\_1, \[CenterEllipsis], 
+      d\_n\  \[Element] \ D\\{0}\)]],
+  " with ",
+  Cell[BoxData[
+      \(TraditionalForm\`gcd(d\_i, d\_j) = 1\)]],
+  " for ",
+  Cell[BoxData[
+      \(TraditionalForm\`i \[NotEqual] j\)]],
+  ", return ",
+  Cell[BoxData[
+      \(TraditionalForm\`a\_0, a\_1, \[CenterEllipsis], 
+      a\_n\  \[Element] \ D\)]],
+  " such that ",
+  Cell[BoxData[
+      FormBox[
+        RowBox[{
+          FractionBox["a", 
+            
+            RowBox[{\(d\_1\), \(d\_2\), \(\[CenterEllipsis]d\_n\), Cell[
+              ""]}]], "=", \(a\_0 + \[Sum]\+\(i = 1\)\%n a\_i\/d\_i\)}], 
+        TraditionalForm]]],
+  " and either ",
+  Cell[BoxData[
+      \(TraditionalForm\`a\_i = 0\)]],
+  " or ",
+  Cell[BoxData[
+      \(TraditionalForm\`v(a\_i) < v(d\_i)\)]],
+  " for ",
+  Cell[BoxData[
+      \(TraditionalForm\`i \[GreaterEqual] 1\)]],
+  "."
+}], "Text"],
+
+Cell[BoxData[
+    \(\(PartialFraction[A_, B_, var_] := 
+        Module[{a = A, d = B, x = var, dprod, a0, r, n, temp, a1, t, bo, 
+            aall}, \[IndentingNewLine]dprod = 
+            Times @@ d; \[IndentingNewLine]a0 = \(PolyDivide[a, dprod, 
+                x]\)[\([1]\)]; \[IndentingNewLine]r = \(PolyDivide[a, dprod, 
+                x]\)[\([2]\)]; \[IndentingNewLine]n = 
+            Length[d]; \[IndentingNewLine]If[
+            n == 1, \[IndentingNewLine]\(Return[{a0, 
+                  r}];\), \[IndentingNewLine]temp = 
+              ExtendedEuclideanDiophantine[Times @@ \((Delete[d, 1])\), 
+                d[\([1]\)], r, x]; \[IndentingNewLine]a1 = 
+              temp[\([1]\)]; \[IndentingNewLine]t = 
+              temp[\([2]\)]; \[IndentingNewLine]b0 = \(PartialFraction[t, 
+                  Delete[d, 1], 
+                  x]\)[\([1]\)]; \[IndentingNewLine]aall = \(PartialFraction[
+                  t, Delete[d, 1], 
+                  x]\)[\([2]\)];\[IndentingNewLine]]; \
+\[IndentingNewLine]Return[{a0 + b0, a1, 
+              aall}];\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(PartialFraction[x\^2 + 3\ x, {x + 1, x\^2 - 2\ x + 1}, x]\)], "Input"],
+
+Cell[BoxData[
+    \({0, \(-\(1\/2\)\), 1\/2 + \(3\ x\)\/2}\)], "Output"]
+}, Open  ]],
+
+Cell["This agrees with Bronstein p. 15-16.", "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Squarefree Factorisation", "Subsection"],
+
+Cell["p. 29, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a uniqure factorization domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " of characteristic 0 and ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(A\  \[Element] \ D[x]\)\(,\)\)\)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`A\_1, A\_2, \[CenterEllipsis], 
+      A\_m\  \[Element] \ D[x]\)]],
+  " such that ",
+  Cell[BoxData[
+      \(TraditionalForm\`A = \[Product]\+\(k = 1\)\%m A\_k\^k\)]],
+  " is a squarefree factorization of ",
+  StyleBox["A",
+    FontSlant->"Italic"],
+  ". ",
+  Cell[BoxData[
+      FormBox[Cell[""], TraditionalForm]]]
+}], "Text"],
+
+Cell[BoxData[
+    \(Squarefree[a_, var_] := 
+      Module[{A = a, x = var, c, S, Sstar, Sneg, k, 
+          Y}, \[IndentingNewLine]c = 
+          PolynomialGCD @@ CoefficientList[A, x]; \[IndentingNewLine]S = 
+          A\/c; \[IndentingNewLine]Sneg = 
+          PolynomialGCD[S, Dt[S, x]]; \[IndentingNewLine]Sstar = 
+          Simplify[S\/Sneg]; \[IndentingNewLine]If[
+          Exponent[Sneg, x] \[Equal] 
+            0, \(Return[A];\)]; \[IndentingNewLine]k = 
+          1; \[IndentingNewLine]A = {}; \[IndentingNewLine]While[
+          Exponent[Sneg, x] > 0, \[IndentingNewLine]Y = 
+            Simplify[PolynomialGCD[Sstar, Sneg]]; \[IndentingNewLine]A = 
+            Flatten[Append[A, 
+                Simplify[\((Sstar\/Y)\)\^k]]]; \[IndentingNewLine]Sstar = 
+            Y; \[IndentingNewLine]Sneg = 
+            Simplify[
+              Sneg\/Y]; \[IndentingNewLine]\(k++\);\[IndentingNewLine]]; \
+\[IndentingNewLine]A[\([1]\)] = c\ Sneg\ A[\([1]\)]; \[IndentingNewLine]A = 
+          If[k > 1, Flatten[Append[{A}, Sstar\^k]], 
+            A]; \[IndentingNewLine]Return[A];\[IndentingNewLine]]\)], "Input",\
+
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Squarefree[x\^8 + 6\ x\^6 + 12\ x\^4 + 8\ x\^2, x]\)], "Input"],
+
+Cell[BoxData[
+    \({1, x\^2, \((2 + x\^2)\)\^3}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(FactorSquareFree[x\^8 + 6\ x\^6 + 12\ x\^4 + 8\ x\^2]\)], "Input"],
+
+Cell[BoxData[
+    \(x\^2\ \((2 + x\^2)\)\^3\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Squarefree[
+      432 + 1944\ x + 3708\ x\^2 + 3922\ x\^3 + 2522\ x\^4 + 1012\ x\^5 + 
+        248\ x\^6 + 34\ x\^7 + 2\ x\^8, x]\)], "Input"],
+
+Cell[BoxData[
+    \({2, \((1 + x)\)\^2, \((6 + 5\ x + x\^2)\)\^3}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(FactorSquareFree[
+      432 + 1944\ x + 3708\ x\^2 + 3922\ x\^3 + 2522\ x\^4 + 1012\ x\^5 + 
+        248\ x\^6 + 34\ x\^7 + 2\ x\^8]\)], "Input"],
+
+Cell[BoxData[
+    \(2\ \((1 + x)\)\^2\ \((6 + 5\ x + x\^2)\)\^3\)], "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["SubResultant", "Subsection"],
+
+Cell["p. 24, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given an integral domain ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`A, B\  \[Element] \ D[x]\)]],
+  " with ",
+  Cell[BoxData[
+      \(TraditionalForm\`B \[NotEqual] 0\)]],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(deg(A) \[GreaterEqual] deg(B)\)\(,\)\)\)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`resultant(A, B)\)]],
+  " and the subresultant PRS ",
+  Cell[BoxData[
+      \(TraditionalForm\`\((R\_0, R\_0, \[CenterEllipsis], R\_k, 0)\)\)]],
+  " of ",
+  StyleBox["A",
+    FontSlant->"Italic"],
+  " and ",
+  StyleBox["B",
+    FontSlant->"Italic"],
+  "."
+}], "Text"],
+
+Cell[BoxData[
+    \(\(SubResultant[a_, b_, var_] := 
+        Module[{A = a, B = b, x = var, R, i, \[Gamma], \[Delta], \[Beta], 
+            rnew, r, Q, c, s, ply}, \[IndentingNewLine]R = 
+            Append[{A}, B]; \[IndentingNewLine]i = 
+            2; \[IndentingNewLine]\[Gamma] = {\(-1\)}; \[IndentingNewLine]\
+\[Delta] = {Exponent[A, x] - 
+                Exponent[B, 
+                  x]}; \[IndentingNewLine]\[Beta] = {\((\(-1\))\)\^\(\[Delta] \
++ 1\)}; \[IndentingNewLine]r = {lc[R[\([i]\)], x]}; \[IndentingNewLine]While[
+            R[\([i]\)] =!= 0, \[IndentingNewLine]r = 
+              Flatten[Append[{r}, 
+                  lc[R[\([i]\)], 
+                    x]]]; \[IndentingNewLine]Rem = \(PolyPseudoDivide[
+                  R[\([i - 1]\)], R[\([i]\)], 
+                  x]\)[\([2]\)]; \[IndentingNewLine]R = 
+              Flatten[Append[{R}, 
+                  Expand[Simplify[
+                      Rem/\[Beta][\([i - 1]\)]]]]]; \[IndentingNewLine]If[
+              R[\([i + 1]\)] \[Equal] 
+                0, \(Goto[10];\)]; \[IndentingNewLine]i = 
+              i + 1; \[IndentingNewLine]\[Gamma] = 
+              Flatten@Append[{\[Gamma]}, \((\(-r[\([i - 1]\)]\))\)\^\[Delta][\
+\([i - 2]\)]\ \[Gamma][\([i - 2]\)]\^\(1 - \[Delta][\([i - 2]\)]\)]; \
+\[IndentingNewLine]\[Delta] = 
+              Flatten@Append[{\[Delta]}, 
+                  Exponent[R[\([i - 1]\)], x] - 
+                    Exponent[R[\([i]\)], x]]; \[IndentingNewLine]\[Beta] = 
+              Flatten@Append[{\[Beta]}, \(-r[\([i - 
+                            1]\)]\)\ \[Gamma][\([i - 1]\)]\^\[Delta][\([i - \
+1]\)]];\[IndentingNewLine]]; \[IndentingNewLine]Label[
+            10]; \[IndentingNewLine]k = i - 1; \[IndentingNewLine]If[
+            Exponent[R[\([k + 1]\)], x] > 0, 
+            Return[Flatten[{0, R}]]]; \[IndentingNewLine]If[
+            Exponent[R[\([k]\)], x] == 1, 
+            Return[Flatten[{R[\([k]\)], R}]]]; \[IndentingNewLine]s = 
+            1; \[IndentingNewLine]c = 
+            1; \[IndentingNewLine]Do[\[IndentingNewLine]If[
+              Mod[Exponent[R[\([j]\)], x], 2] \[Equal] 1 && 
+                Mod[Exponent[R[\([j + 1]\)], x], 2] \[Equal] 
+                  1, \[IndentingNewLine]\(s = \(-s\);\)\[IndentingNewLine]]; \
+\[IndentingNewLine]c = 
+              c \((\[Beta][\([j]\)]/r[\([j]\)]\^\(1 + \
+\[Delta][\([j]\)]\))\)\^Exponent[R[\([j + 1]\)], x]\ \
+r[\([j]\)]\^\(Exponent[R[\([j]\)], x] - Exponent[R[\([j + 2]\)], x]\);\
+\[IndentingNewLine], {j, 1, k - 1}]; \[IndentingNewLine]Return[
+            Flatten[{s\ c\ R[\([k + 1]\)]\^Exponent[R[\([k - 1]\)], x], 
+                R}]]\[IndentingNewLine]];\)\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(SubResultant[x\^2 + 1, x\^2 - 1, x]\)], "Input"],
+
+Cell[BoxData[
+    \({4, 1 + x\^2, \(-1\) + x\^2, \(-2\), 0}\)], "Output"]
+}, Open  ]],
+
+Cell["4 hours of programming to get this result!!", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(SubResultant[3\ t\ x\^2 - t\^3 - 4, x\^2 + t\^3\ x - 9, x]\)], "Input"],
+
+Cell[BoxData[
+    \({4 - 27\ t + t\^3 + 3\ t\^4\ x, \(-4\) - t\^3 + 3\ t\ x\^2, \(-9\) + 
+        t\^3\ x + x\^2, 4 - 27\ t + t\^3 + 3\ t\^4\ x, 
+      16 - 216\ t + 729\ t\^2 + 8\ t\^3 - 54\ t\^4 + t\^6 - 12\ t\^7 - 
+        3\ t\^10, 0}\)], "Output"]
+}, Open  ]],
+
+Cell["Both these results agree with Bronstein p. 25.", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Subresultants[x\^6 - 5\ x\^4 + 5\ x\^2 + 4, 
+      6 - 10\ t\ x - 3\ x\^2 + 20\ t\ x\^3 + x\^4 - 6\ t\ x\^5, x]\)], "Input"],
+
+Cell[BoxData[
+    \({45796 + 549552\ t\^2 + 2198208\ t\^4 + 2930944\ t\^6, \(-7490\)\ t - 
+        59920\ t\^3 - 119840\ t\^5, 
+      49 - 2604\ t\^2 - 11200\ t\^4, \(-14\)\ t + 800\ t\^3, 
+      1 - 60\ t\^2, \(-6\)\ t}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(SubResultant[x\^6 - 5\ x\^4 + 5\ x\^2 + 4, 
+      6 - 10\ t\ x - 3\ x\^2 + 20\ t\ x\^3 + x\^4 - 6\ t\ x\^5, x]\)], "Input"],
+
+Cell[BoxData[
+    \({\(-1498\) - 11984\ t\^2 - 23968\ t\^4 - 7490\ t\ x - 59920\ t\^3\ x - 
+        119840\ t\^5\ x, 4 + 5\ x\^2 - 5\ x\^4 + x\^6, 
+      6 - 10\ t\ x - 3\ x\^2 + 20\ t\ x\^3 + x\^4 - 6\ t\ x\^5, 
+      6 + 144\ t\^2 + 26\ t\ x - 3\ x\^2 + 120\ t\^2\ x\^2 + 2\ t\ x\^3 + 
+        x\^4 - 60\ t\^2\ x\^4, \(-16\) + 792\ t\^2 + 32\ t\ x - 
+        2440\ t\^3\ x + 7\ x\^2 - 400\ t\^2\ x\^2 - 14\ t\ x\^3 + 
+        800\ t\^3\ x\^3, \(-112\) + 5952\ t\^2 + 25600\ t\^4 + 49\ x\^2 - 
+        2604\ t\^2\ x\^2 - 11200\ t\^4\ x\^2, \(-1498\) - 11984\ t\^2 - 
+        23968\ t\^4 - 7490\ t\ x - 59920\ t\^3\ x - 119840\ t\^5\ x, 
+      45796 + 549552\ t\^2 + 2198208\ t\^4 + 2930944\ t\^6, 0}\)], "Output"]
+}, Open  ]],
+
+Cell["Yee Ha!!!!!!", "Text"]
+}, Closed]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Integration of Rational Functions", "Section"],
+
+Cell[TextData[{
+  "We need to include one rule, ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(\[Integral]\(x\^n\) dx = \(1\/\(n + 1\)\) 
+          x\^\(n + 1\)\)\(,\)\)\)]],
+  " for ",
+  Cell[BoxData[
+      \(TraditionalForm\`n\  \[Element] \ \
+\[DoubleStruckCapitalZ]\\\(\({0}\)\(.\)\)\)]]
+}], "Text"],
+
+Cell[BoxData[{
+    \(\(Int[f_ + g_, x] := 
+        Int[f, x] + Int[g, x];\)\), "\[IndentingNewLine]", 
+    \(\(Int[0, x_] := 0;\)\), "\[IndentingNewLine]", 
+    \(Int[a_, x_] := a\ x /; FreeQ[a, x]\), "\[IndentingNewLine]", 
+    \(\(Int[\((a_:  1)\) x_\^\(n_:  1\), 
+          x_] := \(a\/\(n + 1\)\) x\^\(n + 1\) /; 
+          FreeQ[n, x] && n \[NotEqual] \(-1\);\)\)}], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell["Hermite Reduction - Mack's Version", "Subsection"],
+
+Cell["p. 44, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a field ",
+  StyleBox["K",
+    FontSlant->"Italic"],
+  " and ",
+  Cell[BoxData[
+      \(TraditionalForm\`A, D\  \[Element] \ K[x]\)]],
+  " with ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " nonzero and coprime with ",
+  StyleBox["A",
+    FontSlant->"Italic"],
+  ", return ",
+  Cell[BoxData[
+      \(TraditionalForm\`g, h\  \[Element] \ K(x)\)]],
+  " such that ",
+  Cell[BoxData[
+      \(TraditionalForm\`A\/D = \(d\ g\)\/\(d\ x\) + h\)]],
+  " and ",
+  StyleBox["h",
+    FontSlant->"Italic"],
+  " has a squarefree denominator."
+}], "Text"],
+
+Cell[BoxData[
+    \(HermiteReduceMack[a_, d_, var_] := 
+      Module[{A = a, S = d, x = var, temp, g, Sneg, Sstar, Sneg2, Snegstar, 
+          B, c}, \[IndentingNewLine]g = 0; \[IndentingNewLine]Sneg = 
+          PolynomialGCD[S, Dt[S, x]]; \[IndentingNewLine]Sstar = 
+          Simplify[S\/Sneg]; \[IndentingNewLine]While[
+          Exponent[Sneg, x] > 0, \[IndentingNewLine]Sneg2 = 
+            PolynomialGCD[Sneg, Dt[Sneg, x]]; \[IndentingNewLine]Snegstar = 
+            Simplify[Sneg\/Sneg2]; \[IndentingNewLine]temp = 
+            ExtendedEuclideanDiophantine[
+              Simplify[\(-\(\(Sstar\ Dt[Sneg, x]\)\/Sneg\)\)], 
+              Simplify[Snegstar], A, x]; \[IndentingNewLine]B = 
+            temp[\([1]\)]; \[IndentingNewLine]c = 
+            temp[\([2]\)]; \[IndentingNewLine]A = 
+            Simplify[
+              c - \(Dt[B, x]\ Sstar\)\/Snegstar]; \[IndentingNewLine]g = 
+            g + B\/Sneg; \[IndentingNewLine]Sneg = 
+            Sneg2;\[IndentingNewLine]]; \[IndentingNewLine]Return[{g, 
+            Simplify[A\/Sstar]}];\[IndentingNewLine]]\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(HermiteReduceMack[x\^7 - 24\ x\^4 - 4\ x\^2 + 8\ x - 8, 
+      x\^8 + 6\ x\^6 + 12\ x\^4 + 8\ x\^2, x]\)], "Input"],
+
+Cell[BoxData[
+    \({3\/\(2 + x\^2\) + \(4 + 8\ x\^2\)\/\(4\ x + 4\ x\^3 + x\^5\), 
+      1\/x}\)], "Output"]
+}, Open  ]],
+
+Cell["\<\
+This agrees with Bronstein p.44. So after two Hermite reduction steps we have\
+\
+\>", "Text"],
+
+Cell[BoxData[
+    \(\[Integral]\(\(x\^7 - 24\ x\^4 - 4\ x\^2 + 8\ x - 8\)\/\(x\^8 + 
+                6\ x\^6 + 12\ x\^4 + 8\ x\^2\)\) \[DifferentialD]x = 
+      3\/\(2 + x\^2\) + \(4 + 8\ x\^2\)\/\(4\ x + 4\ x\^3 + x\^5\) + \
+\[Integral]\[DifferentialD]x\/x\)], "DisplayFormula"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Integrate[\(x\^7 - 24\ x\^4 - 4\ x\^2 + 8\ x - 8\)\/\(x\^8 + 6\ x\^6 + \
+12\ x\^4 + 8\ x\^2\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(1\/x + \(6\ x\)\/\((2 + x\^2)\)\^2 + \(3 - x\)\/\(2 + x\^2\) + 
+      Log[x]\)], "Output"]
+}, Open  ]],
+
+Cell[TextData[{
+  "From this we can see that ",
+  StyleBox["Mathematica",
+    FontSlant->"Italic"],
+  "'s integrator uses the original Hermite method."
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(HermiteReduceMack[x\^5 - x\^4 + 4\ x\^3 + x\^2 - x + 5, 
+      x\^4 - 2\ x\^3 + 5\ x\^2 - 4\ x + 4, x]\)], "Input"],
+
+Cell[BoxData[
+    \({\(9\/7 - \(4\ x\)\/7\)\/\(2 - x + x\^2\), \(17\/7 + 2\ x + x\^3\)\/\(2 \
+- x + x\^2\)}\)], "Output"]
+}, Open  ]],
+
+Cell["So using Hermite reduction we transform the integral to", "Text"],
+
+Cell[BoxData[
+    \(\[Integral]\(\(x\^5 - x\^4 + 4\ x\^3 + x\^2 - x + 5\)\/\(x\^4 - 
+                2\ x\^3 + 5\ x\^2 - 4\ x + 
+                4\)\) \[DifferentialD]x = \(9\/7 - \(4\ x\)\/7\)\/\(2 - x + x\
+\^2\) + \[Integral]\(\(17\/7 + 2\ x + x\^3\)\/\(2 - x + 
+                  x\^2\)\) \[DifferentialD]x\)], "DisplayFormula"],
+
+Cell["and the resulting integral requires long division.", "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Lazard - Rothstein - Trager Algorithm", "Subsection"],
+
+Cell["p. 51, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a field ",
+  StyleBox["K",
+    FontSlant->"Italic"],
+  " of characteristic 0 and ",
+  Cell[BoxData[
+      \(TraditionalForm\`A, D\  \[Element] \ K[x]\)]],
+  " with ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(deg(A) < deg(D)\)\(,\)\)\)]],
+  " ",
+  StyleBox["D",
+    FontSlant->"Italic"],
+  " nonzero, squarefree and coprime with ",
+  StyleBox["A",
+    FontSlant->"Italic"],
+  ", return ",
+  Cell[BoxData[
+      \(TraditionalForm\`\[Integral]A/D\ \ d\ \(\(x\)\(.\)\)\)]]
+}], "Text"],
+
+Cell[BoxData[
+    \(IntRationalLogPart[a_, d_, var_] := 
+      Module[{A = a, DD = d, x = var, temp, RR, R, Q, S, 
+          SS}, \[IndentingNewLine]R = 
+          SubResultant[DD, Expand[A - t\ Dt[DD, x]], 
+            x]; \[IndentingNewLine]RR = Delete[R, 1]; \[IndentingNewLine]Q = 
+          Flatten[{Squarefree[Expand[RR[\([Length[RR] - 1]\)]], 
+                t]}]; \[IndentingNewLine]S = {}; \[IndentingNewLine]Do[\
+\[IndentingNewLine]\(If[
+              Exponent[Q\[LeftDoubleBracket]i\[RightDoubleBracket], t] > 
+                0, \[IndentingNewLine]\(If[
+                  Exponent[DD, x] \[Equal] 
+                    i,  (*then*) \[IndentingNewLine]\t\(S = 
+                      Flatten@
+                        Append[S, 
+                          DD];\), \[IndentingNewLine]\t (*else\
+*) \[IndentingNewLine]\t
+                  Do[If[Exponent[R\[LeftDoubleBracket]m\[RightDoubleBracket], 
+                          x] \[Equal] 
+                        i, \(SS = 
+                          R\[LeftDoubleBracket]
+                            m\[RightDoubleBracket];\)], {m, 1, 
+                      Length[R]}]; \[IndentingNewLine]\t
+                  A = Squarefree[lc[SS, x], t]; \[IndentingNewLine]\t
+                  Do[SS = 
+                      SS\/PolynomialGCD[A[\([j]\)], Q[\([i]\)]\^\(1/i\)]\^j, \
+{j, 1, Length[A]}]; \[IndentingNewLine]\t
+                  S = Flatten@
+                      Append[S, 
+                        SS];\[IndentingNewLine]\ \ \ ];\) (*endif\
+*) \[IndentingNewLine],  (*else*) \[IndentingNewLine]\(S = 
+                  Flatten@
+                    Append[S, 
+                      1];\)\[IndentingNewLine]\ ];\) (*endif\
+*) \[IndentingNewLine], {i, 1, 
+            Length[Q]}\[IndentingNewLine]];  \
+(*enddo*) \[IndentingNewLine]Return[
+          Sum[\(RootSum[Function[t, #1], Function[t, t\ Log[#2]]] &\)[
+              PowerExpand[Q[\([i]\)]\^\(1/i\)], S[\([i]\)]], {i, 1, 
+              Length[Q]}]];\[IndentingNewLine]]\)], "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntRationalLogPart[x\^4 - 3\ x\^2 + 6, x\^6 - 5\ x\^4 + 5\ x\^2 + 4, 
+      x]\)], "Input"],
+
+Cell[BoxData[
+    \(1\/2\ \[ImaginaryI]\ Log[\(-214\) + 321\ \[ImaginaryI]\ x + 107\ x\^2 - 
+            107\ \[ImaginaryI]\ x\^3] - 
+      1\/2\ \[ImaginaryI]\ Log[\(-214\) - 321\ \[ImaginaryI]\ x + 107\ x\^2 + 
+            107\ \[ImaginaryI]\ x\^3]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x] // Simplify\)], "Input"],
+
+Cell[BoxData[
+    \(\(6 - 3\ x\^2 + x\^4\)\/\(4 + 5\ x\^2 - 5\ x\^4 + x\^6\)\)], "Output"]
+}, Open  ]],
+
+Cell["Yee Ha!!!!!!!!!!!!", "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Rational Function Integration", "Subsection"],
+
+Cell["p. 52, Bronstein, Symbolic Integration 1", "Text"],
+
+Cell[TextData[{
+  "Given a field ",
+  StyleBox["K",
+    FontSlant->"Italic"],
+  " of characteristic 0 and ",
+  Cell[BoxData[
+      \(TraditionalForm\`\(\(f\  \[Element] \ K(x)\)\(,\)\)\)]],
+  " return ",
+  Cell[BoxData[
+      \(TraditionalForm\`\[Integral]f\ dx\)]],
+  "."
+}], "Text"],
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[ff_, var_] := 
+      Module[{f = ff, x = var, plydvd, g, h, Q, R, TT, 
+          q}, \[IndentingNewLine]herm = 
+          HermiteReduceMack[Numerator[f], Denominator[f], 
+            x]; \[IndentingNewLine]g = 
+          Simplify[herm[\([1]\)]]; \[IndentingNewLine]h = 
+          herm[\([2]\)]; \[IndentingNewLine]plydvd = 
+          PolyDivide[Numerator[h], Denominator[h], x]; \[IndentingNewLine]Q = 
+          plydvd[\([1]\)]; \[IndentingNewLine]R = 
+          plydvd[\([2]\)]; \[IndentingNewLine]q = 
+          Int[Q, x]; \[IndentingNewLine]If[
+          R \[Equal] 
+            0, \(Return[
+              g + q];\)\[IndentingNewLine]]; \[IndentingNewLine]TT = 
+          IntRationalLogPart[R, Denominator[h], x]; \[IndentingNewLine]Return[
+          g + TT + q];\[IndentingNewLine]]\)], "Input"],
+
+Cell[CellGroupData[{
+
+Cell["Examples", "Subsubsection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[\(x\^4 - 3\ x\^2 + 6\)\/\(x\^6 - 5\ x\^4 + 5\ \
+x\^2 + 4\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(1\/2\ \[ImaginaryI]\ Log[\(-214\) + 321\ \[ImaginaryI]\ x + 107\ x\^2 - 
+            107\ \[ImaginaryI]\ x\^3] - 
+      1\/2\ \[ImaginaryI]\ Log[\(-214\) - 321\ \[ImaginaryI]\ x + 107\ x\^2 + 
+            107\ \[ImaginaryI]\ x\^3]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[
+      36\/\(x\^5 - 2\ x\^4 - 2\ x\^3 + 4\ x\^2 + x - 2\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(\(6 + 12\ x\)\/\(\(-1\) + x\^2\) + 4\ Log[16 - 8\ x] - 
+      4\ Log[8 + 8\ x]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x] // Together\)], "Input"],
+
+Cell[BoxData[
+    \(36\/\(\((\(-2\) + x)\)\ \((\(-1\) + x)\)\^2\ \((1 + x)\)\^2\)\)], \
+"Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[\(x\^5 - x\^4 + 4\ x\^3 + x\^2 - x + 5\)\/\(x\
+\^4 - 2\ x\^3 + 5\ x\^2 - 4\ x + 4\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(x + x\^2\/2 + \(9 - 4\ x\)\/\(14 - 7\ x + 7\ x\^2\) + 
+      1\/98\ \((49 - 13\ \[ImaginaryI]\ \@7)\)\ Log[
+          2401\ \((3\/7 + 1\/98\ \((49 - 13\ \[ImaginaryI]\ \@7)\) + x - 
+                1\/49\ \((49 - 13\ \[ImaginaryI]\ \@7)\)\ x)\)] + 
+      1\/98\ \((49 + 13\ \[ImaginaryI]\ \@7)\)\ Log[
+          2401\ \((3\/7 + 1\/98\ \((49 + 13\ \[ImaginaryI]\ \@7)\) + x - 
+                1\/49\ \((49 + 13\ \[ImaginaryI]\ \@7)\)\ x)\)]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x] // Simplify\)], "Input"],
+
+Cell[BoxData[
+    \(\(5 - x + x\^2 + 4\ x\^3 - x\^4 + x\^5\)\/\((2 - x + x\^2)\)\^2\)], \
+"Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[1\/\(x\^3 + 1\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(RootSum[\(-1\) + 27\ #1\^3 &, 
+      Log[3\ x\ #1 + 9\ #1\^2]\ #1 &]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x]\)], "Input"],
+
+Cell[BoxData[
+    \(1\/\(1 + x\^3\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[\(x\^5 + 2  x\^2 + 1\)\/\(x + 1\), 
+      x]\)], "Input"],
+
+Cell[BoxData[
+    \(\(-x\) + x\^2\/2 + x\^3\/3 - x\^4\/4 + x\^5\/5 + 
+      2\ Log[1 + x]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x] // Simplify\)], "Input"],
+
+Cell[BoxData[
+    \(\(1 + 2\ x\^2 + x\^5\)\/\(1 + x\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[1\/\(1 + x\^4\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(RootSum[1 + 256\ #1\^4 &, Log[4\ x\ #1 + 16\ #1\^2]\ #1 &]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x]\)], "Input"],
+
+Cell[BoxData[
+    \(1\/\(1 + x\^4\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[\(8\ x\^9 + x\^8 - 12  x\^7 - 4  x\^6 - 26  x\
+\^5 - 6  x\^4 + 30  x\^3 + 23  x\^2 - 2\ x - 7\)\/\(x\^10 - 2\ x\^8 - 2\ x\^7 \
+- 4  x\^6 + 7  x\^4 + 10  x\^3 + 3  x\^2 - 4  x - 2\), x] // 
+      Simplify\)], "Input"],
+
+Cell[BoxData[
+    \(1\/4\ \((Log[
+            65536] + \@2\ Log[
+              5579634 - 3945304\ \@2 + 3945304\ x - 
+                2789817\ \@2\ x] - \@2\ Log[
+              5579634 + 3945304\ \@2 + 3945304\ x + 2789817\ \@2\ x] + 
+          4\ Log[\(-7737169\) + 
+                5478212\ \@2 + \((\(-18693593\) + 
+                      13215381\ \@2)\)\ x + \((\(-10956424\) + 
+                      7737169\ \@2)\)\ x\^2 + \((7737169 - 
+                      5478212\ \@2)\)\ x\^4] - 
+          2\ \@2\ Log[\(-7737169\) + 
+                5478212\ \@2 + \((\(-18693593\) + 
+                      13215381\ \@2)\)\ x + \((\(-10956424\) + 
+                      7737169\ \@2)\)\ x\^2 + \((7737169 - 
+                      5478212\ \@2)\)\ x\^4] + 
+          4\ Log[\(-7737169\) - 
+                5478212\ \@2 - \((18693593 + 
+                      13215381\ \@2)\)\ x - \((10956424 + 
+                      7737169\ \@2)\)\ x\^2 + \((7737169 + 
+                      5478212\ \@2)\)\ x\^4] + 
+          2\ \@2\ Log[\(-7737169\) - 
+                5478212\ \@2 - \((18693593 + 
+                      13215381\ \@2)\)\ x - \((10956424 + 
+                      7737169\ \@2)\)\ x\^2 + \((7737169 + 
+                      5478212\ \@2)\)\ x\^4])\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x] // Simplify\)], "Input"],
+
+Cell[BoxData[
+    \(\(\(-7\) - 2\ x + 23\ x\^2 + 30\ x\^3 - 6\ x\^4 - 26\ x\^5 - 4\ x\^6 - \
+12\ x\^7 + x\^8 + 8\ x\^9\)\/\(\(-2\) - 4\ x + 3\ x\^2 + 10\ x\^3 + 7\ x\^4 - \
+4\ x\^6 - 2\ x\^7 - 2\ x\^8 + x\^10\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[\(x\^5 + 1\)\/\(x\^7 + x\^5\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(\(\(-1\) + 2\ x\^2\)\/\(4\ x\^4\) + 
+      RootSum[\(-1\) - #1 + 2\ #1\^3 &, 
+        Log[1\/8\ \((1 + x - #1 + 3\ x\ #1 + 
+                    6\ x\ #1\^2)\)]\ #1 &]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x] // Together\)], "Input"],
+
+Cell[BoxData[
+    \(\(1 + x\^5\)\/\(x\^5\ \((1 + x\^2)\)\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[1\/\(x\^7 + 1\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(RootSum[\(-1\) + 823543\ #1\^7 &, 
+      Log[7\ x\ #1 + 49\ #1\^2]\ #1 &]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Dt[%, x]\)], "Input"],
+
+Cell[BoxData[
+    \(1\/\(1 + x\^7\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(IntegrateRationalFunction[x\/\(x\^2 + 1\), x]\)], "Input"],
+
+Cell[BoxData[
+    \(1\/2\ Log[1 + x\^2]\)], "Output"]
+}, Open  ]]
+}, Closed]]
+}, Closed]]
+}, Open  ]]
+}, Open  ]]
+},
+FrontEndVersion->"5.0 for Microsoft Windows",
+ScreenRectangle->{{0, 1024}, {0, 685}},
+AutoGeneratedPackage->None,
+WindowSize->{1016, 651},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+ShowSelection->True,
+Magnification->1,
+StyleDefinitions -> "Classic.nb"
+]
+
+(*******************************************************************
+Cached data follows.  If you edit this Notebook file directly, not
+using Mathematica, you must remove the line containing CacheID at
+the top of  the file.  The cache data will then be recreated when
+you save this file from within Mathematica.
+*******************************************************************)
+
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+
+(*NotebookFileOutline
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[1776, 53, 37, 0, 79, "Title"],
+Cell[1816, 55, 93, 4, 119, "Subtitle"],
+Cell[1912, 61, 46, 0, 58, "Subsubtitle"],
+
+Cell[CellGroupData[{
+Cell[1983, 65, 27, 0, 61, "Section"],
+Cell[2013, 67, 360, 14, 31, "Text"],
+Cell[2376, 83, 143, 4, 39, "Input",
+  InitializationCell->True],
+Cell[2522, 89, 326, 11, 31, "Text"],
+Cell[2851, 102, 47, 1, 38, "Input"],
+Cell[2901, 105, 472, 16, 32, "Text"],
+Cell[3376, 123, 181, 4, 38, "Input",
+  InitializationCell->True],
+Cell[3560, 129, 437, 15, 36, "Text"],
+Cell[4000, 146, 91, 2, 52, "Input",
+  InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[4128, 153, 42, 0, 61, "Section"],
+
+Cell[CellGroupData[{
+Cell[4195, 157, 40, 0, 31, "Subsection"],
+Cell[4238, 159, 55, 0, 31, "Text"],
+Cell[4296, 161, 587, 22, 31, "Text"],
+Cell[4886, 185, 884, 18, 318, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[5795, 207, 90, 1, 39, "Input"],
+Cell[5888, 210, 81, 1, 46, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[6006, 216, 105, 2, 39, "Input"],
+Cell[6114, 220, 54, 1, 46, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[6205, 226, 106, 2, 39, "Input"],
+Cell[6314, 230, 57, 1, 46, "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[6420, 237, 37, 0, 23, "Subsection"],
+Cell[6460, 239, 55, 0, 31, "Text"],
+Cell[6518, 241, 430, 17, 31, "Text"],
+Cell[6951, 260, 1041, 19, 362, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[8017, 283, 103, 2, 39, "Input"],
+Cell[8123, 287, 59, 1, 33, "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[8231, 294, 41, 0, 23, "Subsection"],
+Cell[8275, 296, 56, 0, 31, "Text"],
+Cell[8334, 298, 327, 14, 31, "Text"],
+Cell[8664, 314, 504, 9, 198, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[9193, 327, 115, 2, 39, "Input"],
+Cell[9311, 331, 42, 1, 33, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[9390, 337, 116, 2, 39, "Input"],
+Cell[9509, 341, 39, 1, 33, "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[9597, 348, 45, 0, 23, "Subsection"],
+Cell[9645, 350, 296, 6, 50, "Text"],
+Cell[9944, 358, 98, 2, 31, "Text"],
+Cell[10045, 362, 626, 11, 218, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[10696, 377, 127, 2, 39, "Input"],
+Cell[10826, 381, 39, 1, 33, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[10902, 387, 104, 2, 39, "Input"],
+Cell[11009, 391, 35, 1, 33, "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[11093, 398, 40, 0, 23, "Subsection"],
+Cell[11136, 400, 56, 0, 31, "Text"],
+Cell[11195, 402, 425, 16, 31, "Text"],
+Cell[11623, 420, 891, 15, 338, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[12539, 439, 123, 2, 39, "Input"],
+Cell[12665, 443, 69, 1, 33, "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[12783, 450, 55, 0, 23, "Subsection"],
+Cell[12841, 452, 56, 0, 31, "Text"],
+Cell[12900, 454, 439, 16, 31, "Text"],
+Cell[13342, 472, 718, 12, 278, "Input",
+  InitializationCell->True],
+Cell[14063, 486, 66, 0, 31, "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[14166, 491, 74, 0, 23, "Subsection"],
+Cell[14243, 493, 56, 0, 31, "Text"],
+Cell[14302, 495, 488, 18, 31, "Text"],
+Cell[14793, 515, 759, 13, 178, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[15577, 532, 131, 2, 39, "Input"],
+Cell[15711, 536, 69, 1, 33, "Output"]
+}, Open  ]],
+Cell[15795, 540, 49, 0, 31, "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[15881, 545, 70, 0, 23, "Subsection"],
+Cell[15954, 547, 56, 0, 31, "Text"],
+Cell[16013, 549, 592, 22, 31, "Text"],
+Cell[16608, 573, 1376, 25, 418, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[18009, 602, 108, 2, 39, "Input"],
+Cell[18120, 606, 69, 1, 46, "Output"]
+}, Open  ]],
+Cell[18204, 610, 49, 0, 31, "Text"],
+
+Cell[CellGroupData[{
+Cell[18278, 614, 140, 2, 39, "Input"],
+Cell[18421, 618, 75, 1, 33, "Output"]
+}, Open  ]],
+Cell[18511, 622, 49, 0, 31, "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[18597, 627, 65, 0, 23, "Subsection"],
+Cell[18665, 629, 56, 0, 31, "Text"],
+Cell[18724, 631, 625, 22, 31, "Text"],
+Cell[19352, 655, 1113, 18, 358, "Input",
+  InitializationCell->True]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[20502, 678, 52, 0, 23, "Subsection"],
+Cell[20557, 680, 56, 0, 31, "Text"],
+Cell[20616, 682, 1071, 40, 63, "Text"],
+Cell[21690, 724, 1125, 20, 318, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[22840, 748, 90, 1, 39, "Input"],
+Cell[22933, 751, 72, 1, 46, "Output"]
+}, Open  ]],
+Cell[23020, 755, 52, 0, 31, "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[23109, 760, 46, 0, 23, "Subsection"],
+Cell[23158, 762, 56, 0, 31, "Text"],
+Cell[23217, 764, 596, 20, 32, "Text"],
+Cell[23816, 786, 1145, 22, 462, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[24986, 812, 83, 1, 39, "Input"],
+Cell[25072, 815, 62, 1, 36, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[25171, 821, 86, 1, 39, "Input"],
+Cell[25260, 824, 57, 1, 34, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[25354, 830, 162, 3, 39, "Input"],
+Cell[25519, 835, 79, 1, 36, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[25635, 841, 165, 3, 39, "Input"],
+Cell[25803, 846, 77, 1, 34, "Output"]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[25929, 853, 34, 0, 23, "Subsection"],
+Cell[25966, 855, 56, 0, 31, "Text"],
+Cell[26025, 857, 666, 26, 31, "Text"],
+Cell[26694, 885, 2680, 48, 650, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[29399, 937, 68, 1, 39, "Input"],
+Cell[29470, 940, 73, 1, 33, "Output"]
+}, Open  ]],
+Cell[29558, 944, 59, 0, 31, "Text"],
+
+Cell[CellGroupData[{
+Cell[29642, 948, 91, 1, 39, "Input"],
+Cell[29736, 951, 252, 4, 33, "Output"]
+}, Open  ]],
+Cell[30003, 958, 62, 0, 31, "Text"],
+
+Cell[CellGroupData[{
+Cell[30090, 962, 144, 2, 39, "Input"],
+Cell[30237, 966, 234, 4, 33, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[30508, 975, 143, 2, 39, "Input"],
+Cell[30654, 979, 714, 10, 90, "Output"]
+}, Open  ]],
+Cell[31383, 992, 28, 0, 31, "Text"]
+}, Closed]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[31460, 998, 52, 0, 61, "Section"],
+Cell[31515, 1000, 304, 9, 34, "Text"],
+Cell[31822, 1011, 408, 8, 109, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[32255, 1023, 56, 0, 31, "Subsection"],
+Cell[32314, 1025, 56, 0, 31, "Text"],
+Cell[32373, 1027, 566, 23, 35, "Text"],
+Cell[32942, 1052, 1110, 19, 436, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[34077, 1075, 135, 2, 39, "Input"],
+Cell[34215, 1079, 109, 2, 50, "Output"]
+}, Open  ]],
+Cell[34339, 1084, 103, 3, 31, "Text"],
+Cell[34445, 1089, 279, 4, 46, "DisplayFormula"],
+
+Cell[CellGroupData[{
+Cell[34749, 1097, 130, 2, 54, "Input"],
+Cell[34882, 1101, 110, 2, 49, "Output"]
+}, Open  ]],
+Cell[35007, 1106, 163, 5, 31, "Text"],
+
+Cell[CellGroupData[{
+Cell[35195, 1115, 135, 2, 39, "Input"],
+Cell[35333, 1119, 121, 2, 54, "Output"]
+}, Open  ]],
+Cell[35469, 1124, 71, 0, 31, "Text"],
+Cell[35543, 1126, 331, 5, 57, "DisplayFormula"],
+Cell[35877, 1133, 66, 0, 31, "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[35980, 1138, 59, 0, 23, "Subsection"],
+Cell[36042, 1140, 56, 0, 31, "Text"],
+Cell[36101, 1142, 509, 19, 31, "Text"],
+Cell[36613, 1163, 2022, 40, 484, "Input",
+  InitializationCell->True],
+
+Cell[CellGroupData[{
+Cell[38660, 1207, 111, 2, 39, "Input"],
+Cell[38774, 1211, 264, 4, 46, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[39075, 1220, 53, 1, 38, "Input"],
+Cell[39131, 1223, 90, 1, 50, "Output"]
+}, Open  ]],
+Cell[39236, 1227, 34, 0, 31, "Text"]
+}, Closed]],
+
+Cell[CellGroupData[{
+Cell[39307, 1232, 51, 0, 23, "Subsection"],
+Cell[39361, 1234, 56, 0, 31, "Text"],
+Cell[39420, 1236, 284, 11, 31, "Text"],
+Cell[39707, 1249, 846, 16, 278, "Input"],
+
+Cell[CellGroupData[{
+Cell[40578, 1269, 33, 0, 31, "Subsubsection"],
+
+Cell[CellGroupData[{
+Cell[40636, 1273, 121, 2, 54, "Input"],
+Cell[40760, 1277, 264, 4, 46, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[41061, 1286, 120, 2, 51, "Input"],
+Cell[41184, 1290, 112, 2, 46, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[41333, 1297, 53, 1, 38, "Input"],
+Cell[41389, 1300, 97, 2, 48, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[41523, 1307, 146, 2, 54, "Input"],
+Cell[41672, 1311, 473, 7, 84, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[42182, 1323, 53, 1, 38, "Input"],
+Cell[42238, 1326, 99, 2, 52, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[42374, 1333, 78, 1, 50, "Input"],
+Cell[42455, 1336, 102, 2, 33, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[42594, 1343, 41, 1, 38, "Input"],
+Cell[42638, 1346, 49, 1, 46, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[42724, 1352, 103, 2, 53, "Input"],
+Cell[42830, 1356, 103, 2, 49, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[42970, 1363, 53, 1, 38, "Input"],
+Cell[43026, 1366, 67, 1, 49, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[43130, 1372, 78, 1, 50, "Input"],
+Cell[43211, 1375, 92, 1, 33, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[43340, 1381, 41, 1, 38, "Input"],
+Cell[43384, 1384, 49, 1, 46, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[43470, 1390, 262, 4, 54, "Input"],
+Cell[43735, 1396, 1262, 25, 157, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[45034, 1426, 53, 1, 38, "Input"],
+Cell[45090, 1429, 224, 3, 50, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[45351, 1437, 92, 1, 53, "Input"],
+Cell[45446, 1440, 200, 4, 50, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[45683, 1449, 53, 1, 38, "Input"],
+Cell[45739, 1452, 72, 1, 51, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[45848, 1458, 78, 1, 50, "Input"],
+Cell[45929, 1461, 107, 2, 33, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[46073, 1468, 41, 1, 38, "Input"],
+Cell[46117, 1471, 49, 1, 46, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[46203, 1477, 78, 1, 48, "Input"],
+Cell[46284, 1480, 53, 1, 46, "Output"]
+}, Open  ]]
+}, Closed]]
+}, Closed]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+
+
+(*******************************************************************
+End of Mathematica Notebook file.
+*******************************************************************)
+
