@@ -1080,6 +1080,358 @@ residue of $rt^{r-1}fg$, which is the value of $rt^rfg = r(x-x_0)f$.
 
 \endtheorem
 
+\mysection{Examples}
+
+\example Compute $\int \sqrt{4-x^2} \,dx$
+
+A solution method from first year calculus might be to note that
+this integrand forms one leg of a right triangle:
+
+\begin{center}
+\setlength{\unitlength}{1cm}
+\begin{picture}(6,5)
+\put(5,1){\line(0,1){3}}
+\put(5,1){\line(-1,0){4}}
+\put(1,1){\line(4,3){4}}
+\put(2.5,0.5){$\sqrt{4-x^2}$}
+\put(3,2.8){2}
+\put(5.2,2.5){$x$}
+\put(1.7,1.15){$\theta$}
+\end{picture}
+\end{center}
+
+$$x=2\sin\theta \qquad \sqrt{4-x^2}=2\cos\theta \qquad dx=2\cos\theta\,d\theta$$
+
+
+\begin{eqnarray*}
+\int \sqrt{4-x^2} \, dx & = & \int 4 \cos^2\theta \, d\theta \\
+& = & \int \left( 2 + 2\cos 2\theta \right) \, d\theta \\
+& = & 2\theta + \sin 2\theta \\
+& = & 2\theta + 2\sin\theta\cos\theta \\
+& = & 2\arcsin\frac{x}{2} + \frac{x \sqrt{4-x^2}}{2} \\
+\end{eqnarray*}
+
+Now let's attack this integral using the methods of this chapter.
+First, transform the problem into an algebraic curve:
+
+$$\int y\,dx \qquad y^2 = 4-x^2$$
+
+Since $\lim_{x\to\infty} y = \infty$, the integrand has poles at
+infinity.  We want infinity to be an ordinary point of the curve (no
+ramification; no singularities) with no poles in the integrand.  The
+simplest transformation is to exchange zero with infinity, and in this
+case zero is an ordinary point with places $(0,2)$ and $(0,-2)$,
+neither of which is a pole of the integrand.  So we'll invert
+$x$ and $y$ into $u$ and $v$:
+
+$$x=\frac{1}{u} \qquad y=\frac{1}{v}$$
+$$\left(\frac{1}{v}\right)^2 = 4 - \left(\frac{1}{u}\right)^2 \Longrightarrow 4u^2v^2 - v^2 - u^2=0$$
+$$\int\frac{1}{v} \, d\left(\frac{1}{u}\right) \Longrightarrow -\int\frac{1}{vu^2}\,du$$
+
+The only poles in this integrand occur when either $u=0$ or $v=0$.
+Substituting these values into $4u^2v^2 - v^2 -u^2=0$, we see that
+these condiutions only occur at $(u,v)=(0,0)$, so let's analyze our
+curve at that point, starting with the Newton polygon:
+
+\begin{center}
+$4 u^2 v^2 - v^2 - u^2 = 0$ \\
+\setlength{\unitlength}{1cm}
+\begin{picture}(3,3)
+\put(0,0){\line(0,1){2.5}}
+\put(0,0){\line(1,0){3}}
+\put(1.9,-0.1){x}
+\put(1.9,1.9){x}
+\put(-0.1,1.9){x}
+\thicklines
+\put(0,2){\line(1,-1){2}}
+\end{picture}
+\end{center}
+
+The Newton polygon has a single line segment of span 2 and slope -1, so
+we have two cycles, each with ramification index one: a singularity.
+Since there is no ramification, $u$ is a uniformizing parameter
+and we expect to expand $v$ as follows:
+
+$$v = c_1 u + c_2 u^2 + c_3 u^3 + \cdots$$
+$$v^2 = c_1^2 u^2 + 2 c_1 c_2 u^3 + (2 c_1 c_3 + c_2^2) u^4 + \cdots$$
+
+Substituting these expansions into $4u^2v^2 - v^2 - u^2 = 0$, we obtain:
+
+$$ 4 c_1^2 u^4 + 8 c_1 c_2 u^5 + (8 c_1 c_3 + 4 c_2^2) u^6 + \cdots $$
+$$ - c_1^2 u^2 - 2 c_1 c_2 u^3 - (2 c_1 c_3 + c_2^2) u^4 + \cdots - u^2 = 0$$
+
+Equating terms in $u^2$, we see that $c_1 = \pm i$.  Each of these
+two values corresponds to one branch of the singularity.  There
+is only a single term in $u^3$, which forces $c_2$ to be zero,
+and equating terms in $u^4$ produces $c_3 = 2 c_1$, so
+
+$$v = \pm (iu + 2iu^3 + \cdots) \qquad @(0,0)$$
+
+Inverting $v$ and substituting into our 1-form, we obtain
+
+$$\frac{1}{v} = \pm (-i \frac{1}{u} + 2i u + \cdots) \qquad @(0,0)$$
+
+$$\frac{1}{vu^2}\, du = \pm \left[ -i \frac{1}{u^3} + 2i \frac{1}{u} + \cdots \right] \, du \qquad @(0,0)$$
+
+The $u^{-1}$ terms will integrate into logarithms, so let's ignore
+them for the moment and concentrate on the $u^{-3}$ terms, which will
+integrate into $u^{-2}$ terms, so we're looking for a function with
+second order poles at both places at the $(0,0)$ singularity.
+
+Starting with our standard basis for all rational functions,
+$\{1,\,v\}$, we seek to modify it into a basis for
+${\rm P}^2(0,0)_a{\rm P}^2(0,0)_b$.  Note first that $v$ has
+poles at $u=\pm\frac{1}{2}$.  Using $y=1/u$, we analyze
+at $(\pm\frac{1}{2}, \infty)$ as follows:
+
+\begin{center}
+$y^2\left[(u-\frac12)^2+(u-\frac12)+\frac14\right]-4(u-\frac12)^2-4(u-\frac12)$
+\\
+\setlength{\unitlength}{1cm}
+\begin{picture}(3,3)
+\put(0,0){\line(0,1){2.5}}
+\put(0,0){\line(1,0){3}}
+\put(0.9,-0.1){x}
+\put(1.9,-0.1){x}
+\put(-0.1,1.9){x}
+\put(0.9,1.9){x}
+\put(1.9,1.9){x}
+\thicklines
+\put(0,2){\line(1,-2){1}}
+\end{picture}
+\end{center}
+
+Our line segment has span 1 and slope -2, indicating a single place
+with ramification 2, and $y$ as a uniformizing parameter.  Setting
+
+$$(u-\frac12) = c_1 y + c_2 y^2 + \cdots$$
+$$(u-\frac12)^2 = c_1^2 y^2 + \cdots$$
+
+Substituting, we find that $c_1 = 0$ and $c_2 = \frac{1}{16}$, so
+
+$$(u-\frac12) = \frac{1}{16} y^2 + \cdots \qquad v=y^{-1} \qquad @(\frac12, \infty)$$
+
+$$(u+\frac12) = \frac{1}{16} y^2 + \cdots \qquad v=y^{-1} \qquad @(-\frac12, \infty)$$
+
+In short, $v$ has first order poles at $(\pm\frac12,\infty)$ and
+$(u\pm\frac12)$ has second order zeros, so we can adjust our basis
+accordingly and obtain $\{1,\,(4u^2-1)v\}$ for a basis with no finite
+poles.  We can also use a theorem of Trager to shortcut this calculation.
+
+Returning to our analysis at $(0,0)$, we see that 1 has zero order
+(obviously) and $(4u^2-1)v$ has a first order zero at both sheets
+there, since $4u^2-1=-1$ is finite and $v$ has first order zeros.
+We also know that $u$ is a uniformizing parameter, so it's easy
+to modify our basis and obtain
+
+$$\left\{\frac{1}{u^2},\,\frac{4u^2-1}{u^3}v\right\} {\rm is\, a\,} {\bf C}[x]{\rm -basis\, for\, P^2(0,0)_aP^2(0,0)_b}$$
+
+Is this basis normal at infinity?  Well, the representation order of
+$\frac{1}{u^2}$ is 2 and its $u^-2$ coefficients at $(\infty, \pm
+\frac12)$ are both 1, while the representation order of $\frac{4u^2-1}{u^3}v$
+is 1, and its $u^-1$ coefficients are 2 and -2.  Since
+
+$$\det C = \begin{array}{|cc|} 1 & 2 \\ 1 & -2 \end{array} = -4$$
+
+is non-zero, the basis is normal at infinity.
+
+The Riemann-Roch theorem says that the dimension of ${\mathfrak l}(D)$ is 5,
+$\frac{1}{u^2}$ can be multiplied by any polynomial up to second
+degree without introducing poles at infinity, and $\frac{4u^2-1}{u^3}v$
+can be multiplied by any polynomial up to first degree, so
+
+$$\left\{\frac{1}{u^2},\, \frac{1}{u},\, 1,\, \frac{4u^2-1}{u^3}v,\, \frac{4u^2-1}{u^2}v\right\}$$
+
+is a ${\cal C}$-module basis for ${\mathfrak l}(D)$.
+
+Any linear combination of these functions is a multiple of the
+divisor, but not all of them produce the correct residues.  Looking at
+the residues, we see that only $\frac{4u^2-1}{u^3}v = \frac{1}{uv}$
+has residues of $\pm i$ on the two sheets at the $(0,0)$ singularity.
+Dividing by 2 to correct for the 2 that will be introduced by the
+integration, we conclude that $\frac{1}{2uv} = \frac{xy}{2} =
+\frac{x\sqrt{4-x^2}}{2}$ is the desired function.
+
+Next, we have to deal with the logarithms.  Going back to the
+series expansions of our 1-form, we see that we have residues
+of $\pm 2i$ on our two sheets at $(0,0)$.  The objective
+now is a bit different; we want a function with exactly
+the divisor $Z(0,0)_a P(0,0)_b$.  Starting with an integral basis:
+
+$$\{1, (4u^2-1)v\}$$
+
+we want to modify these functions to make them multiples
+of $Z(0,0)_a P(0,0)_b$.  The pole isn't a problem for
+an integral basis, and looking at the series expansion
+for $v$ at $(0,0)$ we see that it (and therefore $(4u^2-1)v$)
+has a simple zero there, but $1$ needs to be replaced with $u$:
+
+$$\{u, (4u^2-1)v\}$$
+
+Now we construct a matrix with the coefficients in the series expansions:
+
+$$\left[ \begin{array}{cc} 1 & -i \\ 0 & 0 \end{array} \right] \begin{array}{ll} \leftarrow (0,0)_a \\ \leftarrow (0,0)_b \end{array} $$
+
+$$\left[ \begin{array}{cc} 1 & -i \\ 0 & 0 \end{array} \right] \left[ \begin{array}{c} i \\ 1 \end{array} \right] = 0$$
+
+The solution shows us how to modify the basis:
+
+$$\{u, \frac{iu + (4u^2-1)v}{u}\} = \{u, i + \frac{(4u^2-1)v}{u}\}$$
+
+$$\left[ \begin{array}{cc} 1 & 0 \\ 0 & 0 \end{array} \right] \begin{array}{ll} \leftarrow (0,0)_a \\ \leftarrow (0,0)_b \end{array} $$
+
+$$\left[ \begin{array}{cc} 1 & 0 \\ 0 & 0 \end{array} \right] \left[ \begin{array}{c} 0 \\ 1 \end{array} \right] = 0$$
+
+$$\{u, i\frac{1}{u} + \frac{(4u^2-1)v}{u^2}\}$$
+
+$$\left| \begin{array}{cc} 1 & -2i \\ 0 & 2i \end{array} \right| = 2i$$
+
+At the last step, the determinant is non-zero, which shows that we
+now have a basis for multiples of the divisor except at infinity.
+Is it normal at infinity?  $u$'s expansion at both places at infinity
+is $\left(\frac{1}{u}\right)^{-1}$, so its representation order is -1,
+and the second element's expansion at infinity starts $\pm 2 + \cdots$,
+so its representation order is 0 and:
+
+$$\det C = \begin{array}{|cc|} 1 & 2 \\ 1 & -2 \end{array} = -4$$
+
+So the basis is normal at infinity.  If an exact multiple of
+the divisor exists, it is one of the basis elements.  It's not $u$,
+since $u$ has a pole at infinity, but the second element is exact:
+
+$$i\frac{1}{u} + \frac{(4u^2-1)v}{u^2} = i\frac{1}{u} - \frac{1}{v} = ix-y$$
+
+The desired residues are $\pm 2i$, so the function we want is
+
+$$2i \ln(ix-y) = 2i \ln(\frac{y}{2}-i\frac{x}{2}) + 2i \ln(-2) $$
+$$= 2i \ln\left(\sqrt{1-\left(\frac{x}{2}\right)^2} - i\frac{x}{2}\right) = 2i (-i \arcsin \frac{x}{2}) = 2 \arcsin \frac{x}{2}$$
+
+(the constant disappears into the constant of integration) and the final answer is:
+
+$$ \int \sqrt{4-x^2} \, dx  = 2\arcsin\frac{x}{2} + \frac{x \sqrt{4-x^2}}{2}$$
+
+\endexample
+
+
+\vfill\eject
+\mysection{arcsin}
+
+\example Compute $\int {1\over{\sqrt{1-x^2}}} \,dx$
+
+The obvious attempt is to use the algebraic extension $y^2=1-x^2$ and
+integrate ${1\over y}\,dx$.
+
+But we first need to determine if this differential has any poles at
+infinity, by inverting the field and looking for poles at zero.
+Setting $u={1\over x}$, we convert our minimal polynomial into
+$u^2y^2=u^2-1$ (after multiplying through by $u^2$), and using
+$v=uy$ we obtain our inverse field ${\bf C}(u,v); v^2=u^2-1$.
+
+Since $x={1\over u}$ and $y={v\over u}$, we convert our differential as follows:
+
+ $${1\over y}\,dx ={u\over v} (-{1\over{u^2}} \, du) = -{1\over{uv}} \, du$$
+
+Now, $\{1, v\}$ is an integral basis for the inverse field, so we
+multiply through by $v\over v$ to obtain:
+
+ $$= -{v\over{uv^2}} du = -{1\over{u(u^2-1)}}v \, du $$
+
+which is now in normal form and clearly has a pole at $u=0$, or $x=\infty$.  Note that
+
+ $${1\over y} = {u\over v} = {{uv}\over{v^2}}
+ = {u\over{u^2-1}} v$$
+
+has no pole at $u=0$, a clear example of a differential having a pole
+at a place where its constituent function has none.
+
+In any event, we clearly can not use the original field to conduct the
+integration, since it would require constructing a function with a
+pole at infinity, and our algorithm can't handle this.  So we need to
+transform into a field where the differential has no pole at infinity.
+
+Actually, we've already done this!  Note that the integrand had no pole
+at zero in the original field:
+
+ $${1\over y}\,dx = {y\over y^2}\,dx = {1\over{1-x^2}}y \,dx $$
+
+Since the inverse field swapped zero with infinity, it follows that
+there is no pole at infinity in the inverse field, so we can proceed
+to integrate $-{1\over{u(u^2-1)}}v \,du$ in ${\bf C}(u,v)$;
+$v^2=u^2-1$.
+
+Simple inspection of the integrand (already in normal form) shows that
+its poles are at $(0, i)$, $(0, -i)$, $(1, 0)$, and $(-1, 0)$.
+Remember that we're now working on the Riemann surface of an algebraic
+extension, so we need to specify $\it both$ $u$ and $v$ to
+specify a place.
+
+The next step is to compute the residues at each of these places,
+using Theorem \ref{Trager's residue theorem}:
+
+\begin{center}
+\begin{supertabular}{l l l}
+  $(0, i)$  &  $\displaystyle -{1\over{(u^2-1)}}v$ @ $(0, i)$     & = $i$    \cr
+  $(0, -i)$  &  $\displaystyle -{1\over{(u^2-1)}}v$ @ $(0, -i)$   & = $-i$    \cr
+  $(1, 0)$  &  $\displaystyle -2{1\over{u(u+1)}}v$ @ $(1, 0)$      & = $0$    \cr
+  $(-1, 0)$  &  $\displaystyle -2{1\over{u(u-1)}}v$ @ $(-1, 0)$    & = $0$    \cr
+\end{supertabular}
+\end{center}
+
+The poles with zero residues can be ignored.  We're interested in the
+other two, which exist in ${\bf Q}[i]$, which can be regarded as a
+vector field over ${\bf Q}$ with basis $\{1, i\}$, and we want to
+construct a function whose poles and zeros match the $i$-component of
+the residues (the 1-component is uniformly zero).
+
+We start by constructing an ${\cal I}$-module generator set for the divisor
+with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.  Theorem
+\ref{simple pole construction} shows that:
+
+$$f = {{v^2+1}\over{u(v+i)}} = {{v-i}\over{u}} $$
+
+has a simple pole at $(0,-i)$.  At $(0,i)$, L'H\^opital's rule gives:
+
+$$ \lim_{(u,v)\to (0,i)} {{v-i}\over{u}}
+   = {{(v-i)'}\over{u'}} {{dv}\over{du}} = {{dv}\over{du}} = {u\over v} = 0 $$
+
+where the last transformation was accomplished by differentiating the
+mimimal polynomial.  So $f$ has a zero at $(0,i)$, and I'll note that
+we've just stumbled into the solution.  Theorem \ref{simple pole
+construction} already assures us that $f$ has only a single finite
+simple pole, and we can see that its only zeros occur when
+$v-i=0$, which, according to the minimum polynomial, can only
+occur at $u=0$, thus $(0,i)$ is its only finite zero, and it is
+simple, as we can verify by showing that the corresponding pole in its
+inverse is simple:
+
+$$ {1\over f} = {u\over{v-i}} = {{u(v+i)}\over{v^2+1}}
+  = {{u(v+i)}\over{u^2}} = {1\over u}v + {i\over u} $$
+
+
+So we've found the function we're looking for by accident.  Let's save the
+general case for the next example, and convert back to
+our original field:
+
+$${{v-i}\over{u}} = x({y\over x}-i) = y - ix $$
+
+Remembering that our residues came multiplied by a factor of $i$, we
+conclude that our solution is $i\,\ln(y-ix)$, or:
+
+\begin{eqnarray*}
+\int {1\over{\sqrt{1-x^2}}} \,dx &=& i\,\ln(\sqrt{1-x^2}-ix) \\
+                                 &=& -i\,\ln({1\over{\sqrt{1-x^2}-ix}}) \\
+                                 &=& -i\,\ln({{\sqrt{1-x^2}+ix}\over{1-x^2+x^2}}) \\
+                                 &=& -i\,\ln({\sqrt{1-x^2}+ix}) \\
+                                 &=& \arcsin x \\
+\end{eqnarray*}
+
+where I used the negative of a logarithm being the logarithm of the
+inverse, and the last transformation came from section
+\ref{sec:Liouvillian Forms}.
+
+
+\endexample
+
 \vfill\eject
 \mysection{Se\~nor Gonzalez, otra vez}
 

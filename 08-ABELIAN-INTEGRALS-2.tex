@@ -13,263 +13,114 @@ while the logarithmic portion corresponds to first order poles
 in the integrand.
 
 
-At this point, there is only one major missing piece in our
-integration theory for Abelian integrals --- how do we limit the
-multiples of a divisor to a testable set?  We've seen how to
-repeatedly raise a divisor to higher and higher powers, but how do we
-know when to stop?  At what point can we declare that a divisor has no
-multiple that is principle?
+\vfill\eject
+\mysection{Examples}
 
-We'll attack this problem the way Robert Risch discovered in 1970, by
-mapping into a finite field, solving the corresponding problem there,
-then lifting the result back to the original field.  The finite field
-will be the integers modulo a prime.  Reducing modulo some primes
-changes the genus of the algebraic curve, while other primes leave the
-genus unchanged.  Those primes at which the genus of the curve remains
-unchanged yield {\it good reduction}
+\example Compute $\int {1\over{\sqrt{1-x^2}}} \,dx$
 
-The key theorems as stated by [Tr73] on page 67:
+This is a familiar example from first year calculus, but let's
+approach it using the techniques of this book.  The obvious attempt is
+to use the algebraic extension $y^2=1-x^2$ and integrate ${1\over
+y}\,dx$.
 
-\theorem
-The homomorphism between divisor class groups under good reduction
-is an isomorphism when restricted to divisors whose orders are
-relatively prime to the characteristic of the reduced function field.
-\endtheorem
+But we first need to determine if this differential has any poles at
+infinity.  Calling {\tt puiseux} with {\tt deg=-1} computes just
+the principle part of the differential:
 
-Let $p$ be the characteristic of the reduced field,
+\begin{maximablock}
+puiseux(y^2 - (1 - x^2), x, y, inf, false,
+        -1, 1/y * del(x));
+\end{maximablock}
 
-\theorem
-if the divisor $D$ has order $p^k n$ where $\gcd(n,p)=1$, then
-the reduction of $D$ must have order $p^j n$ for some $j\le k$.
+Since these expansions are not zero, we have poles at infinity,
+and can not use the original field to conduct the
+integration, since our algorithm can't handle poles at infinity.
+So we need to transform into a field where the differential has no pole at infinity.
+It's fairly obvious that the original differential has no poles at zero,
+since differentials can only have poles at {\it finite} places if their
+functions also have poles there, but just to check this:
 
-\proof
-Let the order of the reduction be $p^j m$.  Since reduction
-is a group homomorphism, we must have $m|n$ and $j \le k$.
-Since $D^{p^k}$ has order exactly $n$, its reduction
-must have order exactly $n$.  But the order of its
-reduction is a divisor of $m$ and thus $n|m$ and so
-finally we have $n=m$.
+\begin{maximablock}
+puiseux(y^2 - (1 - x^2), x, y, 0, false,
+        -1, 1/y * del(x));
+\end{maximablock}
 
-\endtheorem
+See, no poles at zero!  We'll use the change of variable $z=\frac{1}{x}$
+to swap zero with infinity to get our differential into a form
+that our algorithm can handle:
 
+ $${1\over y}\,dx = {1\over y}\,d(\frac{1}{z}) = - \frac{1}{yz^2}\,dz$$
 
-Since good reduction preserves the part of the divisor's order
-relatively prime to the characteristic, by picking two different
-primes we can completely reconstruct the divisor's order in
-characteristic zero.
+$$y^2=1-x^2 = 1-\frac{1}{z^2} \qquad \Longrightarrow \qquad y^2 z^2 = z^2 -1$$
 
-A property of algebraic curves over finite fields is that {\it all}
-divisors of total degree zero have some multiple that is principal
-(PROOF).  Thus, to carry out this program, we need to compute bases
-for Riemann-Roch spaces in prime characteristic.  Then, we can keep
-raising a divisor to higher and higher powers until we find its order.
-Do this for two different primes, each exhibiting good reduction, and
-then we can find the order of the original divisor in characteristic
-zero.
+So, we're going to integrate $-\frac{1}{yz^2}$ on the algebraic curve
+$y^2 z^2=z^2 - 1$, which has no poles at infinity.
 
-To proof the above claims, I want to construct the Jacobian variety in
-arbitrary characteristic, then show how Jacobians map under good
-reduction.
+Our next step
+is to identify all of the points where we can have poles, which is
+simply all of the points where the denominator $yz^2=0$.  One
+of those points is $z=0$, and plugging $y=0$ into $y^2 z^2=z^2-1$,
+we see that this condition is met when $z=\pm i$.
 
-\section{Simple Algebraic Extensions over Finite Fields}
+Now let's compute the principle parts at each of these places:
 
-Let's start with a simple but crucial observation:
+\begin{maximablock}
+puiseux(y^2 * z^2 - (z^2 - 1), z, y, 0, false,
+        -1, -1/(y*z^2) * del(z));
+puiseux(y^2 * z^2 - (z^2 - 1), z, y, %i, false,
+        -1, -1/(y*z^2) * del(z));
+puiseux(y^2 * z^2 - (z^2 - 1), z, y, -%i, false,
+        -1, -1/(y*z^2) * del(z));
+\end{maximablock}
 
-\theorem
+The places with zero principle parts can be ignored; what happened
+there is that the function had a pole but the differential did not.
+We're interested in the other two, with residues $-i$ and $i$.  These
+exist in the field ${\bf Q}[i]$, which can be regarded as a vector
+field over ${\bf Q}$ with basis $\{1, i\}$, and we want to construct a
+function whose poles and zeros match the $i$-component of the residues
+(the 1-component is uniformly zero).
 
-In an algebraic extension over a finite field, the evaluation field is
-also finite.
+So, we want a function
+with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.
 
-\proof
+We can proceed using the algorithm of the previous chapter to
+construct a basis for the Riemman-Roch field $L(D)$, where $D$ is the
+divisor with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.
+The basis will have either one element or no elements, depending
+on whether an algebraic function exists with the desired properties.
 
-Consider a finite field of constants ${\cal F}$, over which we'll
-extend first into a rational function field ${\cal F}(x)$ and then add
-an algebraic extension ${\cal F}(x,y)$, where $y$ satisfies some
-minimial polynomial $f(x,y)=0$.  Start with the constant field, which
-gives us a finite number of values for $x$.  Plugging each of these
-values into the minimal polynomial gives a finite set of polynomials
-$f(y_i)=0$.  By Theorem ?, we can extend ${\cal F}$ into a finite
-extension field ${\cal F}[\gamma]$ where all the roots of the
-polynomial exist.  Since there a only a finite number of polynomials,
-we need at worst a finite set of extensions ${\cal
-F}[\gamma_1,...,\gamma_k]$ to construct a field in which all the roots
-of all the polynomials exist.  Using the Theorem of the Primitive
-Element, we can collapse all of these into a single finite extension
-field ${\cal F}[\phi]$.  Since all values of $x$ exist in ${\cal F}$,
-and all values of $y$ exist in ${\cal F}[\phi]$, an evaluation
-homomorphism carries any rational function in $x$ and $y$ into
-${\cal F}[\phi]$.
+Yes, it does exist, and it's ${{v-i}\over{u}}$.
 
-\endtheorem
+Now we convert back to our original field:
 
-This theorem leads directly to the single more important difference
-(to us) between divisors in an infinite field versus those in a finite
-field.  {\it In a finite field, some multiple of every divisor is
-principle.}  The reason is that the multiplicative group of the
-evaluation field has finite order.  The simplest way to demonstrate
-this is to construct theorems analogous to Theorems ? and ?:
+$${{v-i}\over{u}} = x({y\over x}-i) = y - ix $$
 
-\theorem
-
-In an algebraic extension of a finite field with characteristic
-greater than 2, a function can always be constructed with an $m^{\rm
-th}$-order zero at a specified place $(\alpha, \beta)$ and zero order
-at all other finite places, where $m$ is the multiplicative order of
-the evaluation field.
-
-\proof
-
-The desired function is
-
-$$(x-\alpha)^m + (y-\beta)^m$$.
-
-Clearly, this function is zero at $(\alpha, \beta)$ and of $m^{\rm
-th}$ order there (PROOF THIS).  At all other places one of the two
-terms will be non-zero, and both exist in the evaluation field.  By
-Theorem ?, any non-zero number raised to the multiplicative order of
-its field is one.  Thus the value of this function will be either
-$1+0$, $0+1$, or $1+1=2$, all finite and non-zero, and thus of zero
-order.
-
-\endtheorem
-
-\theorem
-
-In an algebraic extension of a finite field with characteristic
-greater than 2, a function can always be constructed with an $m^{\rm
-th}$-order pole at a specified place $(\alpha, \beta)$ and zero order
-at all other finite places, where $m$ is the multiplicative order of
-the evaluation field.
-
-\proof
-
-The desired function is
-
-$${f(\alpha,y)^m\over(x-\alpha)^m(y-\beta)^m} + 1$$
-
-where the division by $(y-\beta)^m$ is exact.
-Clearly, this function has a pole at $(\alpha, \beta)$ and of $m^{\rm
-th}$ order there (PROOF THIS).  CONSIDER OTHER PLACES OVER $\alpha$.
-At all other places the denominator
-term will be non-zero, and thus one, and the numerator will be
-either zero or one (by Theorem ?)
-Thus the value of this function at these places will be either
-$0+1$ or $1+1=2$, both finite and non-zero, and thus of zero
-order.
-
-\endtheorem
-
-
-\example
-
-Show that some multiple of ${\mathrm Z}(1,1)$ is principle in
-${\bf Z}_5(x,y); y^2=x$.
-
-Let's first construct a multiplication table for ${\bf Z}_5$:
-
-\begin{center}
-\begin{tabular}{c|c c c c c}
-  & 0 & 1 & 2 & 3 & 4 \cr
-\hline
-0 & 0 & 0 & 0 & 0 & 0 \cr
-1 & 0 & 1 & 2 & 3 & 4 \cr
-2 & 0 & 2 & 4 & 1 & 3 \cr
-3 & 0 & 3 & 1 & 4 & 2 \cr
-4 & 0 & 4 & 3 & 2 & 1 \cr
-\end{tabular}
-\end{center}
-
-Now, let's list out the places on the Riemann surface for
-${\bf Z}_5(x,y); y^2=x$.
-
-\begin{center}
-\begin{tabular}{c l}
-$x$ & $(x,y)$ \cr
-\hline
-0 & (0,0) \cr
-1 & (1,1) \quad (1,4) \cr
-2 & $(2,\gamma) \quad (2,-\gamma); \quad \gamma^2 - 2 =0$ \cr
-3 & $(3,\theta) \quad (3,-\theta); \quad \theta^2 - 3 =0$ \cr
-4 & (4,2) \quad (4,3) \cr
-\end{tabular}
-\end{center}
-
-It looks like we need ${\bf Z}_5[\gamma,\theta]$ to express these places.
-It's simplest to collapse $\gamma$ and $\theta$ into a single algebraic
-extension.  We could use the Theorem of the Primitive Element to
-do this, but in this case just looking at the multiplication table
-and noting that $3 = 2^3 = \gamma^6$ shows that $\theta = \pm \gamma^3$.
-So, in fact, we only need ${\bf Z}_5[\gamma]$:
-
-\begin{center}
-\begin{tabular}{c l}
-$x$ & $(x,y)$ \cr
-\hline
-0 & (0,0) \cr
-1 & (1,1) \quad (1,4) \cr
-2 & $(2,\gamma) \quad (2,-\gamma); \quad \gamma^2 - 2 =0$ \cr
-3 & $(3,\gamma^3) \quad (3,-\gamma^3)$ \cr
-4 & (4,2) \quad (4,3) \cr
-\end{tabular}
-\end{center}
-
-Since ${\bf Z}_5[\gamma]$ has $5^2=25$ elements, its multiplicative
-group has order one less than this.  We conclude that 24 is our
-``magic'' multiple, and that ${\mathrm Z}^{24}(1,1)$ must be
-principle in this field.  Its generator should be simply
-$(x-1)^{24} + (y-1)^{24}$.  Clearly this function is zero for
-$(x,y)=(1,1)$.  Let's verify that it's non-zero for some other
-places on the Riemann surface:
+Remembering that our residues came multiplied by a factor of $i$, we
+conclude that our solution is $i\,\ln(y-ix)$, or:
 
 \begin{eqnarray*}
-(0,0) &:& (-1)^{24} + (-1)^{24} = 4^{24} + 4^{24} = 1+1 = 2 \cr
-(1,4) &:& 3^{24} + 0^{24} = 1 + 0 = 1 \cr
-(2,\gamma) &:& (\gamma-1)^{24} + (2-1)^{24} = 1+1 = 2 {\rm ,\quad since:} \cr
-&&\cr
-&& (\gamma-1)^2 = (\gamma^2-2\gamma+1) = 3-2\gamma \cr
-&& (\gamma-1)^4 = (3-2\gamma)^2 = (9-12\gamma+4\gamma^2) = 2-2\gamma \cr
-&& (\gamma-1)^8 = (2-2\gamma)^2 = (4-8\gamma+4\gamma^2) = 2-3\gamma \cr
-&& (\gamma-1)^{12} = (2-2\gamma)(2-3\gamma) = (4-10\gamma+6\gamma^2) = 1 \cr
+\int {1\over{\sqrt{1-x^2}}} \,dx &=& i\,\ln(\sqrt{1-x^2}-ix) \\
+                                 &=& -i\,\ln({1\over{\sqrt{1-x^2}-ix}}) \\
+                                 &=& -i\,\ln({{\sqrt{1-x^2}+ix}\over{1-x^2+x^2}}) \\
+                                 &=& -i\,\ln({\sqrt{1-x^2}+ix}) \\
+                                 &=& \arcsin x \\
 \end{eqnarray*}
 
-In the final series of calculations, I used $\gamma^2=2$ and reduced
-mod 5 repeatedly.  I think the pattern should be clear, and leave
-further verification as an exercise.
+where I used the negative of a logarithm being the logarithm of the
+inverse, and the last transformation came from section
+\ref{sec:Liouvillian Forms}.
+
 
 \endexample
 
-\mysection{Examples}
-
 \example Compute $\int \sqrt{4-x^2} \,dx$
 
-A solution method from first year calculus might be to note that
-this integrand forms one leg of a right triangle:
+A solution method from first year calculus might be to note that this
+integrand forms one leg of a right triangle with its other sides $2$
+and $x$, but we'll attack this integral using the methods of this
+chapter.
 
-\begin{center}
-\setlength{\unitlength}{1cm}
-\begin{picture}(6,5)
-\put(5,1){\line(0,1){3}}
-\put(5,1){\line(-1,0){4}}
-\put(1,1){\line(4,3){4}}
-\put(2.5,0.5){$\sqrt{4-x^2}$}
-\put(3,2.8){2}
-\put(5.2,2.5){$x$}
-\put(1.7,1.15){$\theta$}
-\end{picture}
-\end{center}
-
-$$x=2\sin\theta \qquad \sqrt{4-x^2}=2\cos\theta \qquad dx=2\cos\theta\,d\theta$$
-
-
-\begin{eqnarray*}
-\int \sqrt{4-x^2} \, dx & = & \int 4 \cos^2\theta \, d\theta \\
-& = & \int \left( 2 + 2\cos 2\theta \right) \, d\theta \\
-& = & 2\theta + \sin 2\theta \\
-& = & 2\theta + 2\sin\theta\cos\theta \\
-& = & 2\arcsin\frac{x}{2} + \frac{x \sqrt{4-x^2}}{2} \\
-\end{eqnarray*}
-
-Now let's attack this integral using the methods of this chapter.
 First, transform the problem into an algebraic curve:
 
 $$\int y\,dx \qquad y^2 = 4-x^2$$
@@ -277,7 +128,7 @@ $$\int y\,dx \qquad y^2 = 4-x^2$$
 Since $\lim_{x\to\infty} y = \infty$, the integrand has poles at
 infinity.  We want infinity to be an ordinary point of the curve (no
 ramification; no singularities) with no poles in the integrand.  The
-simplest transformation is to exchange zero with infinity, and in this
+simplest transformation is again to exchange zero with infinity, and in this
 case zero is an ordinary point with places $(0,2)$ and $(0,-2)$,
 neither of which is a pole of the integrand.  So we'll invert
 $x$ and $y$ into $u$ and $v$:
@@ -467,126 +318,6 @@ $$= 2i \ln\left(\sqrt{1-\left(\frac{x}{2}\right)^2} - i\frac{x}{2}\right) = 2i (
 (the constant disappears into the constant of integration) and the final answer is:
 
 $$ \int \sqrt{4-x^2} \, dx  = 2\arcsin\frac{x}{2} + \frac{x \sqrt{4-x^2}}{2}$$
-
-\endexample
-
-
-\vfill\eject
-\mysection{arcsin}
-
-\example Compute $\int {1\over{\sqrt{1-x^2}}} \,dx$
-
-The obvious attempt is to use the algebraic extension $y^2=1-x^2$ and
-integrate ${1\over y}\,dx$.
-
-But we first need to determine if this differential has any poles at
-infinity, by inverting the field and looking for poles at zero.
-Setting $u={1\over x}$, we convert our minimal polynomial into
-$u^2y^2=u^2-1$ (after multiplying through by $u^2$), and using
-$v=uy$ we obtain our inverse field ${\bf C}(u,v); v^2=u^2-1$.
-
-Since $x={1\over u}$ and $y={v\over u}$, we convert our differential as follows:
-
- $${1\over y}\,dx ={u\over v} (-{1\over{u^2}} \, du) = -{1\over{uv}} \, du$$
-
-Now, $\{1, v\}$ is an integral basis for the inverse field, so we
-multiply through by $v\over v$ to obtain:
-
- $$= -{v\over{uv^2}} du = -{1\over{u(u^2-1)}}v \, du $$
-
-which is now in normal form and clearly has a pole at $u=0$, or $x=\infty$.  Note that
-
- $${1\over y} = {u\over v} = {{uv}\over{v^2}}
- = {u\over{u^2-1}} v$$
-
-has no pole at $u=0$, a clear example of a differential having a pole
-at a place where its constituent function has none.
-
-In any event, we clearly can not use the original field to conduct the
-integration, since it would require constructing a function with a
-pole at infinity, and our algorithm can't handle this.  So we need to
-transform into a field where the differential has no pole at infinity.
-
-Actually, we've already done this!  Note that the integrand had no pole
-at zero in the original field:
-
- $${1\over y}\,dx = {y\over y^2}\,dx = {1\over{1-x^2}}y \,dx $$
-
-Since the inverse field swapped zero with infinity, it follows that
-there is no pole at infinity in the inverse field, so we can proceed
-to integrate $-{1\over{u(u^2-1)}}v \,du$ in ${\bf C}(u,v)$;
-$v^2=u^2-1$.
-
-Simple inspection of the integrand (already in normal form) shows that
-its poles are at $(0, i)$, $(0, -i)$, $(1, 0)$, and $(-1, 0)$.
-Remember that we're now working on the Riemann surface of an algebraic
-extension, so we need to specify $\it both$ $u$ and $v$ to
-specify a place.
-
-The next step is to compute the residues at each of these places,
-using Theorem \ref{Trager's residue theorem}:
-
-\begin{center}
-\begin{supertabular}{l l l}
-  $(0, i)$  &  $\displaystyle -{1\over{(u^2-1)}}v$ @ $(0, i)$     & = $i$    \cr
-  $(0, -i)$  &  $\displaystyle -{1\over{(u^2-1)}}v$ @ $(0, -i)$   & = $-i$    \cr
-  $(1, 0)$  &  $\displaystyle -2{1\over{u(u+1)}}v$ @ $(1, 0)$      & = $0$    \cr
-  $(-1, 0)$  &  $\displaystyle -2{1\over{u(u-1)}}v$ @ $(-1, 0)$    & = $0$    \cr
-\end{supertabular}
-\end{center}
-
-The poles with zero residues can be ignored.  We're interested in the
-other two, which exist in ${\bf Q}[i]$, which can be regarded as a
-vector field over ${\bf Q}$ with basis $\{1, i\}$, and we want to
-construct a function whose poles and zeros match the $i$-component of
-the residues (the 1-component is uniformly zero).
-
-We start by constructing an ${\cal I}$-module generator set for the divisor
-with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.  Theorem
-\ref{simple pole construction} shows that:
-
-$$f = {{v^2+1}\over{u(v+i)}} = {{v-i}\over{u}} $$
-
-has a simple pole at $(0,-i)$.  At $(0,i)$, L'H\^opital's rule gives:
-
-$$ \lim_{(u,v)\to (0,i)} {{v-i}\over{u}}
-   = {{(v-i)'}\over{u'}} {{dv}\over{du}} = {{dv}\over{du}} = {u\over v} = 0 $$
-
-where the last transformation was accomplished by differentiating the
-mimimal polynomial.  So $f$ has a zero at $(0,i)$, and I'll note that
-we've just stumbled into the solution.  Theorem \ref{simple pole
-construction} already assures us that $f$ has only a single finite
-simple pole, and we can see that its only zeros occur when
-$v-i=0$, which, according to the minimum polynomial, can only
-occur at $u=0$, thus $(0,i)$ is its only finite zero, and it is
-simple, as we can verify by showing that the corresponding pole in its
-inverse is simple:
-
-$$ {1\over f} = {u\over{v-i}} = {{u(v+i)}\over{v^2+1}}
-  = {{u(v+i)}\over{u^2}} = {1\over u}v + {i\over u} $$
-
-
-So we've found the function we're looking for by accident.  Let's save the
-general case for the next example, and convert back to
-our original field:
-
-$${{v-i}\over{u}} = x({y\over x}-i) = y - ix $$
-
-Remembering that our residues came multiplied by a factor of $i$, we
-conclude that our solution is $i\,\ln(y-ix)$, or:
-
-\begin{eqnarray*}
-\int {1\over{\sqrt{1-x^2}}} \,dx &=& i\,\ln(\sqrt{1-x^2}-ix) \\
-                                 &=& -i\,\ln({1\over{\sqrt{1-x^2}-ix}}) \\
-                                 &=& -i\,\ln({{\sqrt{1-x^2}+ix}\over{1-x^2+x^2}}) \\
-                                 &=& -i\,\ln({\sqrt{1-x^2}+ix}) \\
-                                 &=& \arcsin x \\
-\end{eqnarray*}
-
-where I used the negative of a logarithm being the logarithm of the
-inverse, and the last transformation came from section
-\ref{sec:Root/Logarithm/Exponential Form}.
-
 
 \endexample
 
@@ -883,4 +614,233 @@ $$
 
 
 \endexample
+
+\vfill\eject
+\mysection{The Risch Theorem: A First Look}
+
+At this point, there is only one major missing piece in our
+integration theory for Abelian integrals --- how do we limit the
+multiples of a divisor to a testable set?  We've seen how to
+repeatedly raise a divisor to higher and higher powers, but how do we
+know when to stop?  At what point can we declare that a divisor has no
+multiple that is principle?
+
+We'll attack this problem the way Robert Risch discovered in 1970, by
+mapping into a finite field, solving the corresponding problem there,
+then lifting the result back to the original field.  The finite field
+will be the integers modulo a prime.  Reducing modulo some primes
+changes the genus of the algebraic curve, while other primes leave the
+genus unchanged.  Those primes at which the genus of the curve remains
+unchanged yield {\it good reduction}
+
+The key theorems as stated by [Tr73] on page 67:
+
+\theorem
+The homomorphism between divisor class groups under good reduction
+is an isomorphism when restricted to divisors whose orders are
+relatively prime to the characteristic of the reduced function field.
+\endtheorem
+
+Let $p$ be the characteristic of the reduced field,
+
+\theorem
+if the divisor $D$ has order $p^k n$ where $\gcd(n,p)=1$, then
+the reduction of $D$ must have order $p^j n$ for some $j\le k$.
+
+\proof
+Let the order of the reduction be $p^j m$.  Since reduction
+is a group homomorphism, we must have $m|n$ and $j \le k$.
+Since $D^{p^k}$ has order exactly $n$, its reduction
+must have order exactly $n$.  But the order of its
+reduction is a divisor of $m$ and thus $n|m$ and so
+finally we have $n=m$.
+
+\endtheorem
+
+
+Since good reduction preserves the part of the divisor's order
+relatively prime to the characteristic, by picking two different
+primes we can completely reconstruct the divisor's order in
+characteristic zero.
+
+A property of algebraic curves over finite fields is that {\it all}
+divisors of total degree zero have some multiple that is principal
+(PROOF).  Thus, to carry out this program, we need to compute bases
+for Riemann-Roch spaces in prime characteristic.  Then, we can keep
+raising a divisor to higher and higher powers until we find its order.
+Do this for two different primes, each exhibiting good reduction, and
+then we can find the order of the original divisor in characteristic
+zero.
+
+To proof the above claims, I want to construct the Jacobian variety in
+arbitrary characteristic, then show how Jacobians map under good
+reduction.
+
+\section{Simple Algebraic Extensions over Finite Fields}
+
+Let's start with a simple but crucial observation:
+
+\theorem
+
+In an algebraic extension over a finite field, the evaluation field is
+also finite.
+
+\proof
+
+Consider a finite field of constants ${\cal F}$, over which we'll
+extend first into a rational function field ${\cal F}(x)$ and then add
+an algebraic extension ${\cal F}(x,y)$, where $y$ satisfies some
+minimial polynomial $f(x,y)=0$.  Start with the constant field, which
+gives us a finite number of values for $x$.  Plugging each of these
+values into the minimal polynomial gives a finite set of polynomials
+$f(y_i)=0$.  By Theorem ?, we can extend ${\cal F}$ into a finite
+extension field ${\cal F}[\gamma]$ where all the roots of the
+polynomial exist.  Since there a only a finite number of polynomials,
+we need at worst a finite set of extensions ${\cal
+F}[\gamma_1,...,\gamma_k]$ to construct a field in which all the roots
+of all the polynomials exist.  Using the Theorem of the Primitive
+Element, we can collapse all of these into a single finite extension
+field ${\cal F}[\phi]$.  Since all values of $x$ exist in ${\cal F}$,
+and all values of $y$ exist in ${\cal F}[\phi]$, an evaluation
+homomorphism carries any rational function in $x$ and $y$ into
+${\cal F}[\phi]$.
+
+\endtheorem
+
+This theorem leads directly to the single more important difference
+(to us) between divisors in an infinite field versus those in a finite
+field.  {\it In a finite field, some multiple of every divisor is
+principle.}  The reason is that the multiplicative group of the
+evaluation field has finite order.  The simplest way to demonstrate
+this is to construct theorems analogous to Theorems ? and ?:
+
+\theorem
+
+In an algebraic extension of a finite field with characteristic
+greater than 2, a function can always be constructed with an $m^{\rm
+th}$-order zero at a specified place $(\alpha, \beta)$ and zero order
+at all other finite places, where $m$ is the multiplicative order of
+the evaluation field.
+
+\proof
+
+The desired function is
+
+$$(x-\alpha)^m + (y-\beta)^m$$.
+
+Clearly, this function is zero at $(\alpha, \beta)$ and of $m^{\rm
+th}$ order there (PROOF THIS).  At all other places one of the two
+terms will be non-zero, and both exist in the evaluation field.  By
+Theorem ?, any non-zero number raised to the multiplicative order of
+its field is one.  Thus the value of this function will be either
+$1+0$, $0+1$, or $1+1=2$, all finite and non-zero, and thus of zero
+order.
+
+\endtheorem
+
+\theorem
+
+In an algebraic extension of a finite field with characteristic
+greater than 2, a function can always be constructed with an $m^{\rm
+th}$-order pole at a specified place $(\alpha, \beta)$ and zero order
+at all other finite places, where $m$ is the multiplicative order of
+the evaluation field.
+
+\proof
+
+The desired function is
+
+$${f(\alpha,y)^m\over(x-\alpha)^m(y-\beta)^m} + 1$$
+
+where the division by $(y-\beta)^m$ is exact.
+Clearly, this function has a pole at $(\alpha, \beta)$ and of $m^{\rm
+th}$ order there (PROOF THIS).  CONSIDER OTHER PLACES OVER $\alpha$.
+At all other places the denominator
+term will be non-zero, and thus one, and the numerator will be
+either zero or one (by Theorem ?)
+Thus the value of this function at these places will be either
+$0+1$ or $1+1=2$, both finite and non-zero, and thus of zero
+order.
+
+\endtheorem
+
+
+\example
+
+Show that some multiple of ${\mathrm Z}(1,1)$ is principle in
+${\bf Z}_5(x,y); y^2=x$.
+
+Let's first construct a multiplication table for ${\bf Z}_5$:
+
+\begin{center}
+\begin{tabular}{c|c c c c c}
+  & 0 & 1 & 2 & 3 & 4 \cr
+\hline
+0 & 0 & 0 & 0 & 0 & 0 \cr
+1 & 0 & 1 & 2 & 3 & 4 \cr
+2 & 0 & 2 & 4 & 1 & 3 \cr
+3 & 0 & 3 & 1 & 4 & 2 \cr
+4 & 0 & 4 & 3 & 2 & 1 \cr
+\end{tabular}
+\end{center}
+
+Now, let's list out the places on the Riemann surface for
+${\bf Z}_5(x,y); y^2=x$.
+
+\begin{center}
+\begin{tabular}{c l}
+$x$ & $(x,y)$ \cr
+\hline
+0 & (0,0) \cr
+1 & (1,1) \quad (1,4) \cr
+2 & $(2,\gamma) \quad (2,-\gamma); \quad \gamma^2 - 2 =0$ \cr
+3 & $(3,\theta) \quad (3,-\theta); \quad \theta^2 - 3 =0$ \cr
+4 & (4,2) \quad (4,3) \cr
+\end{tabular}
+\end{center}
+
+It looks like we need ${\bf Z}_5[\gamma,\theta]$ to express these places.
+It's simplest to collapse $\gamma$ and $\theta$ into a single algebraic
+extension.  We could use the Theorem of the Primitive Element to
+do this, but in this case just looking at the multiplication table
+and noting that $3 = 2^3 = \gamma^6$ shows that $\theta = \pm \gamma^3$.
+So, in fact, we only need ${\bf Z}_5[\gamma]$:
+
+\begin{center}
+\begin{tabular}{c l}
+$x$ & $(x,y)$ \cr
+\hline
+0 & (0,0) \cr
+1 & (1,1) \quad (1,4) \cr
+2 & $(2,\gamma) \quad (2,-\gamma); \quad \gamma^2 - 2 =0$ \cr
+3 & $(3,\gamma^3) \quad (3,-\gamma^3)$ \cr
+4 & (4,2) \quad (4,3) \cr
+\end{tabular}
+\end{center}
+
+Since ${\bf Z}_5[\gamma]$ has $5^2=25$ elements, its multiplicative
+group has order one less than this.  We conclude that 24 is our
+``magic'' multiple, and that ${\mathrm Z}^{24}(1,1)$ must be
+principle in this field.  Its generator should be simply
+$(x-1)^{24} + (y-1)^{24}$.  Clearly this function is zero for
+$(x,y)=(1,1)$.  Let's verify that it's non-zero for some other
+places on the Riemann surface:
+
+\begin{eqnarray*}
+(0,0) &:& (-1)^{24} + (-1)^{24} = 4^{24} + 4^{24} = 1+1 = 2 \cr
+(1,4) &:& 3^{24} + 0^{24} = 1 + 0 = 1 \cr
+(2,\gamma) &:& (\gamma-1)^{24} + (2-1)^{24} = 1+1 = 2 {\rm ,\quad since:} \cr
+&&\cr
+&& (\gamma-1)^2 = (\gamma^2-2\gamma+1) = 3-2\gamma \cr
+&& (\gamma-1)^4 = (3-2\gamma)^2 = (9-12\gamma+4\gamma^2) = 2-2\gamma \cr
+&& (\gamma-1)^8 = (2-2\gamma)^2 = (4-8\gamma+4\gamma^2) = 2-3\gamma \cr
+&& (\gamma-1)^{12} = (2-2\gamma)(2-3\gamma) = (4-10\gamma+6\gamma^2) = 1 \cr
+\end{eqnarray*}
+
+In the final series of calculations, I used $\gamma^2=2$ and reduced
+mod 5 repeatedly.  I think the pattern should be clear, and leave
+further verification as an exercise.
+
+\endexample
+
 

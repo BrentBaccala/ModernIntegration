@@ -3,42 +3,62 @@
 
 {\bf THIS CHAPTER IS VERY VAGUE AND INCOMPLETE.}
 
-\section{Jacobian Varieties}
+We now turn to the task of proving the Risch theorem.
 
-An algebraic extension is a simple example of what algebraic geometers
-term a {\it variety}, which is the zero locus of a set of polynomials
-defined over some field.  Thus, for example, the unit circle is a
-variety (defined over the real numbers), because it is the zero locus
-of $x^2+y^2=1$.  But the points $(1,0)$ and $(-1,0)$ are also a
-variety, because they are the zero locus of the {\it set} of
-polynomials $\{x^2=1; y=0\}$.
+There are three key steps in this proof.
 
-An {\it abelian variety} is a variety accompanied by a commutative
-group structure on its elements, which typically includes picking an
-arbitrary zero point as the identity element.  The circle is an
-abelian variety, if we identify its points with their angles from the
-x-axis and make $(1,0)$ our identity element.  Now any two points can
-be ``added'' or ``subtracted'' (by adding or subtracting their
-respective angles) to obtain a third point, and each point has an
-inverse associated with it (its mirror image across the x-axis).  It
-should be obvious that the choice of a zero point was totally
-arbitrary.  Likewise, the points ${(1,0), (-1,0)}$ also form an
-abelian variety; their group structure is isomorphic to ${\bf Z}_2$ and
-the choice of one of them as the identity is, again, arbitrary.
+\begin{enumerate}
 
-Is every variety abelian?  No, but any complete, non-singular variety
-can be homomorphicly mapped into an associated abelian variety
-(typically of higher dimension), called its {\it Jacobian variety}.
-This fact, combined with the extensive body of literature on abelian
-varieties ([Mumford], [Birkenhake and Lange], [Lang], to mention a
-few), makes the Jacobian variety an important object of study (though
-David Mumford, in the preface to [Mumford], described it as a
-``crutch'').
+\item Establish the existence of the Jacobian variety.
 
-We will be needing only a tiny bit of this theory here, so my goal in
-this section is only to demonstrate how the Riemann-Roch Theorem
-allows us to set up an abelian group structures on an algebraic
-extension.
+It's not that hard to see that divisor classes on an algebraic curve
+can be composed and inverted, forming the {\it divisor class group}.
+It's not nearly so obvious that these divisor classes can be
+identified with the points on an algebraic variety.  The resulting
+{\it Jacobian variety} is thus both a group and an algebraic variety,
+and the group operations can be represented by rational functions on
+the algebraic variety, thus forming an {\it Abelian variety},
+which is an algebraic variety equipped with a group structure.
+
+\item Prove that the following diagram commutes:
+
+\begin{center}
+\Large
+\begin{tikzpicture}
+\matrix [column sep=10mm,row sep=10mm]
+{
+\node (C) {$C$}; & \node (JC) {J($C$)}; \\
+\node (Cp) {$C_p$}; & \node (JCp) {J($C_p$)}; \\
+};
+\draw [thick, ->] (C) -- (JC);
+\draw [thick, ->] (Cp) -- (JCp);
+\draw [thick, ->] (C) -- (Cp);
+\draw [thick, ->] (JC) -- (JCp);
+\end{tikzpicture}
+\end{center}
+
+The objects on the left are algebraic curves; the objects on the right
+are Abelian varieties.  The horizontal arrows correspond to constructing
+a curve's associated Jacobian variety; the vertical arrows correspond
+to reduction modulo a prime.
+
+At the end of the previous chapter, we were working on the lower-left
+half of this diagram.  We reduced a curve modulo a prime, then computed
+the order of various divisors on the reduced curve, which essentially
+computes orders of points on the reduced curve's Jacobian variety.
+We now wish to show that those group orders are the same as if we
+had constructed the Jacobian of the original curve and then reduced
+the Jacobian modulo the prime.
+
+\item Study the effects of reduction modulo a prime on an Abelian variety.
+
+At this point, we no longer need any special properties of the
+Jacobian variety; it suffices to study how reduction modulo a prime
+affects the group structure on an Abelian variety.  In particular, we
+will find that the factor of an element's order coprime to the
+reduction prime is preserved.
+
+\end{enumerate}
 
 \section{The Riemann-Roch Theorem}
 
@@ -229,6 +249,43 @@ Abel's theorem.
 
 \end{quote}
 
+
+\section{Jacobian Varieties}
+
+An algebraic extension is a simple example of what algebraic geometers
+term a {\it variety}, which is the zero locus of a set of polynomials
+defined over some field.  Thus, for example, the unit circle is a
+variety (defined over the real numbers), because it is the zero locus
+of $x^2+y^2=1$.  But the points $(1,0)$ and $(-1,0)$ are also a
+variety, because they are the zero locus of the {\it set} of
+polynomials $\{x^2=1; y=0\}$.
+
+An {\it abelian variety} is a variety accompanied by a commutative
+group structure on its elements, which typically includes picking an
+arbitrary zero point as the identity element.  The circle is an
+abelian variety, if we identify its points with their angles from the
+x-axis and make $(1,0)$ our identity element.  Now any two points can
+be ``added'' or ``subtracted'' (by adding or subtracting their
+respective angles) to obtain a third point, and each point has an
+inverse associated with it (its mirror image across the x-axis).  It
+should be obvious that the choice of a zero point was totally
+arbitrary.  Likewise, the points ${(1,0), (-1,0)}$ also form an
+abelian variety; their group structure is isomorphic to ${\bf Z}_2$ and
+the choice of one of them as the identity is, again, arbitrary.
+
+Is every variety abelian?  No, but any complete, non-singular variety
+can be homomorphicly mapped into an associated abelian variety
+(typically of higher dimension), called its {\it Jacobian variety}.
+This fact, combined with the extensive body of literature on abelian
+varieties ([Mumford], [Birkenhake and Lange], [Lang], to mention a
+few), makes the Jacobian variety an important object of study (though
+David Mumford, in the preface to [Mumford], described it as a
+``crutch'').
+
+We will be needing only a tiny bit of this theory here, so my goal in
+this section is only to demonstrate how the Riemann-Roch Theorem
+allows us to set up an abelian group structures on an algebraic
+extension.
 
 \section{Endomorphism Rings}
 
