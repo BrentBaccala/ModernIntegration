@@ -1584,9 +1584,9 @@ Since $x^4+2x^2+1=(x^2+1)^2$, our finite poles are at $x=\pm i$,
 as well as the eight roots of $x^8+1=0$.
 
 \begin{maximablock}
-puiseux(f, x, y, %i, sqrt(2), -1,
+puiseux(f, x, y, %i, false, -1,
         integrand * del(x));
-puiseux(f, x, y, -%i, sqrt(2), -1,
+puiseux(f, x, y, -%i, false, -1,
         integrand * del(x));
 \end{maximablock}
 \begin{maximablocksmall}
@@ -1602,7 +1602,7 @@ puiseux(f, x, y, inf, inf, -1,
         integrand * del(x));
 \end{maximablock}
 
-We've found two second order poles at the ordinary points $(\pm i, \sqrt{2})$,
+We've found four second order poles at the ordinary points $(\pm i, \pm\sqrt{2})$,
 as well as two third order poles at a singular point with two sheets at infinity.
 
 Our next goal is to construct a basis for a suitable Riemann-Roch space.
@@ -1611,13 +1611,14 @@ since the convention for Riemann Roch spaces is their functions must
 have order greater than the {\it negative} of a divisor, and conclude
 that the Riemann-Roch space that we're interested in is:
 
-$${\cal L}(Z^2(i, \sqrt{2}) Z^2(-i, \sqrt{2}))$$
+$${\cal L}(Z(i, \sqrt{2}) Z(-i, \sqrt{2}), Z(i, -\sqrt{2}) Z(-i, -\sqrt{2}))$$
 
-i.e, all the functions on our algebraic curve with at most second order
-poles at $(\pm i,\sqrt{2})$ and no other finite poles.
+i.e, all the functions on our algebraic curve with at most first order
+poles at $(\pm i,\pm\sqrt{2})$ and no other finite poles.
 
 \begin{maximablock}
-div : [[[%i, sqrt(2)], -2], [[-%i, sqrt(2)], -2]];
+div : [[[%i,  sqrt(2)], -1], [[-%i,  sqrt(2)], -1],
+       [[%i, -sqrt(2)], -1], [[-%i, -sqrt(2)], -1]];
 riemannroch(f, x, y, div);
 \end{maximablock}
 
