@@ -1276,20 +1276,37 @@ of Riemann-Roch spaces.  I've implemented one of the oldest,
 from \cite{bliss}, in Maxima.
 
 \begin{maximablocksmall}
+/* in_namespace(riemannroch)$ */
 
 matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
- block([ys, A, required_degrees], local(A),
+ block([ys, cycles, A, required_degrees, pairs], local(A),
     /* First, compute the y-coordinates of places over x0 */
     ys : map(rhs, solve(subst(x=x0, f), y)),
-    /* assert: length(ys) == length(basis) */
-    /* XXX handle multiple points */
+
+    /* Now we handle multiple points */
+    /* compute sheets in cycle at each point */
+    /* XXX: surely we should have a better way than calling puiseux */
+
+    cycles: map(lambda([y0], block([expansion: puiseux(f,x,y,x0,y0,0,1)],
+       if length(expansion) # 1 then
+          error("riemannroch can't handle divisors at singularities"),
+       hipow(lhs(expansion[1][2]), t))), ys),
+
+    if apply("+", cycles) # length(basis) then
+       error("wrong basis length in riemannroch"),
 
     /* Next, what degrees does our divisor require for each of these places? */
     required_degrees : map(lambda([y0], assoc([x0,y0], divisor, 0)), ys),
 
+    /* Construct pairs of y-coordinate and required degree */
+    pairs : apply(append, map(lambda([i], makelist([ys[i],j], j, required_degrees[i], required_degrees[i] + cycles[i] - 1)),
+        makelist(i, i, 1, length(ys)))),
+
+    /* display(pairs), */
     /* Now compute a matrix of the coefficients in the Puiseux expansion */
-    A[j,i] := coeff(puiseux(f,x,y,x0,ys[j],required_degrees[j],basis[i])[1][1], t, required_degrees[j]),
-    ev(genmatrix(A,length(ys),length(ys)), puiseux_fracexp: false)
+    /* A[i,j] := coeff(puiseux(f,x,y,x0,ys[i],required_degrees[i],basis[j])[1][1], t, required_degrees[i]), */
+    A[i,j] := coeff(puiseux(f,x,y,x0,pairs[i][1], pairs[i][2],basis[j])[1][1], t, pairs[i][2]),
+    ev(genmatrix(A,length(pairs),length(basis)), puiseux_fracexp: false)
 )$
 
 expansions_at_x0(f,x,y,divisor,basis,x0) :=
@@ -1300,18 +1317,21 @@ expansions_at_x0(f,x,y,divisor,basis,x0) :=
     /* XXX handle multiple points */
 
     /* Now compute a matrix of the coefficients in the Puiseux expansion */
-    A[j,i] := puiseux(f,x,y,x0,ys[j],5,basis[i]),
+    A[i,j] := puiseux(f,x,y,x0,ys[i],5,basis[j]),
     ev(genmatrix(A,length(ys),length(ys)), puiseux_fracexp: false)
 )$
 
 basis_of_multiples_except_at_inf(f,x,y,divisor) :=
  block([basis,xs,x0,unstable],
-    /* First, construct a basis for all rational functions */
-    /* basis : [1,y], */
+    /* First, construct a C(x)-basis for all rational functions */
     basis : makelist(y^i, i, 0, hipow(f, y)-1),
-    /* Next, adjust the basis to put its elements in the Riemann-Roch space */
 
+    /* Next, adjust the basis to put its elements in the Riemann-Roch space */
+    /* XXX */
+
+    /* Find the x's that lie under our divisor */
     xs : unique(map(first, map(first, divisor))),
+
     /* Finally, reduce until the determinant for the basis is non-zero */
     unstable : true,
     while unstable do block(
@@ -1339,26 +1359,50 @@ column_orders(f,x,y,func) :=
   lmin(map(lambda([pe], lopow(pe[1], t)), puiseux(f,x,y,inf,false,5,func)))
 $
 
-normal_matrix_at_inf(f,x,y,basis) := block([colord, A], local(A),
+column_orders2(f,x,y,func) :=
+  /* XXX 5 is a guess */
+  /* Could use a function to return the degree of an Puiseux expansion */
+  /* This version divides each column order by the number of sheets in the cycle */
+  lmin(map(lambda([pe], floor(lopow(pe[1], t) / hipow(lhs(pe[2]), t))), puiseux(f,x,y,inf,false,5,func)))
+$
+
+normal_matrix_at_inf(f,x,y,basis) := block([expansions, cycles, indices, signs, colord, A], local(A),
+
+  expansions: puiseux(f,x,y,inf,false,0,1),
+  cycles: map(lambda([expansion], hipow(lhs(expansion[2]), t)), expansions),
+
+  if apply("+", cycles) # length(basis) then
+     error("wrong basis length in riemannroch"),
+
+  indices : apply(append, map(lambda([i], makelist(i,cycles[i])),
+                              makelist(i, i, 1, length(cycles)))),
+  signs : apply(append, map(lambda([i], makelist((-1)^i,i,0,cycles[i]-1)),
+                            makelist(i, i, 1, length(cycles)))),
+
   colord : map(lambda([i], column_orders(f,x,y,i)), basis),
-  A[j,i] := coeff(  puiseux(f,x,y,inf,false,5,basis[i])  [j][1], t, colord[i]),
+  A[j,i] := coeff(  puiseux(f,x,y,inf,false,5,basis[i])  [indices[j]][1], t, colord[i])
+            * (if oddp(colord[i]) then signs[j] else 1),
   genmatrix(A,length(basis),length(basis))
 )$
 
 riemannroch(f,x,y,divisor) := block([basis, expansions, colord, nb, d],
   basis : basis_of_multiples_except_at_inf(f,x,y,divisor),
-  /* display(basis), */
-  /* expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis), */
-  /* display(expansions), */
+  disp("normalizing at infinity"),
+  display(basis),
+  expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis),
+  display(expansions),
   /* map(lambda([i], column_orders(f,x,y,i)), basis) */
 
   /* XXX this determinant has to be non-zero for the basis to be normal at inf */
   nb : normal_matrix_at_inf(f,x,y,basis),
   display(nb),
-  d : determinant(normal_matrix_at_inf(f,x,y,basis)),
+  /* d : determinant(normal_matrix_at_inf(f,x,y,basis)), */
+  d : ratsimp(determinant(nb)),
   display(d),
 
-  for i:1 thru 2 do block([v, vt, sli],
+  /* for i:1 thru 2 do block([v, vt, sli], */
+  while d = 0 do block([v, vt, sli],
+    /* v : nullspace(nb), display(v), */
     v : args(nullspace(nb))[1],
     vt : args(transpose(v))[1],
 
@@ -1384,18 +1428,26 @@ riemannroch(f,x,y,divisor) := block([basis, expansions, colord, nb, d],
     display(d)
   ),
 
-  colord : map(lambda([i], column_orders(f,x,y,i)), basis),
+  disp("normal at infinity"),
+
+  colord : map(lambda([i], column_orders2(f,x,y,i)), basis),
   display(colord),
   flatten(basis * map(lambda([i], makelist(x^j, j, 0, i)), colord))
 )$
+
+/* export(riemannroch)$ */
+/* in_namespace(maxima)$ */
+/* import(riemannroch)$ */
 \end{maximablocksmall}
 
 \begin{maximablock}
-f : y^3 - (x^3 - x);
-div : [[[0, 0], -4]];
 f : y^2 - (x^3 - x);
-div : [[[sqrt(6), 2], -4]];
-/* riemannroch(f, x, y, div); */
+div : [[[0, 0], -4]];
+/* f : y^2 - (x^3 - x); */
+/* div : [[[sqrt(6), 2], -4]]; */
+
+puiseux(f,x,y,inf,false,5,1);
+riemannroch(f, x, y, div);
 \end{maximablock}
 
 \vfill\eject
