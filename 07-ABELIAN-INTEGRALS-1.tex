@@ -1277,6 +1277,9 @@ from \cite{bliss}, in Maxima.
 
 \begin{maximablocksmall}
 /* in_namespace(riemannroch)$ */
+/* import(puiseux)$ */
+
+riemannroch_trace: false$
 
 matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
  block([ys, cycles, A, required_degrees, pairs], local(A),
@@ -1302,7 +1305,6 @@ matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
     pairs : apply(append, map(lambda([i], makelist([ys[i],j], j, required_degrees[i], required_degrees[i] + cycles[i] - 1)),
         makelist(i, i, 1, length(ys)))),
 
-    /* display(pairs), */
     /* Now compute a matrix of the coefficients in the Puiseux expansion */
     /* A[i,j] := coeff(puiseux(f,x,y,x0,ys[i],required_degrees[i],basis[j])[1][1], t, required_degrees[i]), */
     A[i,j] := coeff(puiseux(f,x,y,x0,pairs[i][1], pairs[i][2],basis[j])[1][1], t, pairs[i][2]),
@@ -1339,13 +1341,15 @@ basis_of_multiples_except_at_inf(f,x,y,divisor) :=
       for x0 in xs do block([m],
         m : matrix_for_basis_at_x0(f,x,y,divisor,basis,x0),
         if determinant(m) = 0 then block([v, expansions],
-          display(basis), display(x0),
-          expansions : expansions_at_x0(f,x,y,divisor,basis,x0),
-          display(expansions),
           v : args(nullspace(m))[1],
-          display([m, v]),
+          if riemannroch_trace then block(
+             display(basis),
+             display(x0),
+             expansions : expansions_at_x0(f,x,y,divisor,basis,x0),
+             display(expansions),
+             display([m, v])
+          ),
           basis[sublist_indices (args(transpose(v))[1], lambda ([x], x # 0))[1]] : ratsimp((basis.v) / (x-x0)),
-          display(basis),
           unstable : true
         )
       )
@@ -1387,51 +1391,61 @@ normal_matrix_at_inf(f,x,y,basis) := block([expansions, cycles, indices, signs, 
 
 riemannroch(f,x,y,divisor) := block([basis, expansions, colord, nb, d],
   basis : basis_of_multiples_except_at_inf(f,x,y,divisor),
-  disp("normalizing at infinity"),
-  display(basis),
-  expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis),
-  display(expansions),
-  /* map(lambda([i], column_orders(f,x,y,i)), basis) */
 
-  /* XXX this determinant has to be non-zero for the basis to be normal at inf */
+  /* this determinant has to be non-zero for the basis to be normal at inf */
   nb : normal_matrix_at_inf(f,x,y,basis),
-  display(nb),
-  /* d : determinant(normal_matrix_at_inf(f,x,y,basis)), */
   d : ratsimp(determinant(nb)),
-  display(d),
+
+  if riemannroch_trace then block(
+    display(basis),
+    disp("normalizing at infinity"),
+    expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis),
+    display(expansions),
+  /* map(lambda([i], column_orders(f,x,y,i)), basis) */
+    display(nb),
+    display(d)
+  ),
 
   /* for i:1 thru 2 do block([v, vt, sli], */
   while d = 0 do block([v, vt, sli],
     /* v : nullspace(nb), display(v), */
     v : args(nullspace(nb))[1],
     vt : args(transpose(v))[1],
-
-    display(v),
-
-    expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis),
-    display(expansions),
-
     colord : map(lambda([i], column_orders(f,x,y,i)), basis),
-    display(colord),
+
+    if riemannroch_trace then block(
+      display(v),
+      expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis),
+      display(expansions),
+      display(colord)
+    ),
+
     /* sli : sublist_indices(args(transpose(v))[1], lambda([x], x # 0)), */
     /* sli : join(makelist(i,i,1,length(basis)), args(transpose(v))[1]), */
     sli : makelist([i,vt[i],colord[i]],i,1,length(basis)),
     sli : sublist(sli, lambda([i], i[2] # 0)),
     sli : sort(sli, lambda([i,j], orderlessp(i[3],j[3]))),
     v : v * makelist(x^(colord[i]-sli[1][3]),i,1,length(basis)),
-    display(v),
     basis[sli[1][1]] : ratsimp(basis.v),
-    display(basis),
+
     nb : normal_matrix_at_inf(f,x,y,basis),
-    display(nb),
     d : determinant(normal_matrix_at_inf(f,x,y,basis)),
-    display(d)
+
+    if riemannroch_trace then block(
+      display(v),
+      display(basis),
+      display(nb),
+      display(d)
+    )
   ),
 
-  disp("normal at infinity"),
-
   colord : map(lambda([i], column_orders2(f,x,y,i)), basis),
-  display(colord),
+
+  if riemannroch_trace then block(
+    disp("normal at infinity"),
+    display(colord)
+  ),
+
   flatten(basis * map(lambda([i], makelist(x^j, j, 0, i)), colord))
 )$
 
