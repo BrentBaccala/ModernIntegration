@@ -1271,9 +1271,132 @@ locations.  Having done so, it then becomes a straightforward exercise
 in linear algebra to find a combination of those basis functions
 that match a specified set of principle parts.
 
-{\bf TODO}
+Numerous algorithms have been developed for computing bases
+of Riemann-Roch spaces.  I've implemented one of the oldest,
+from \cite{bliss}, in Maxima.
 
-Implement one of the Riemann-Roch algorithms in Maxima.
+\begin{maximablocksmall}
+
+matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
+ block([ys, A, required_degrees], local(A),
+    /* First, compute the y-coordinates of places over x0 */
+    ys : map(rhs, solve(subst(x=x0, f), y)),
+    /* assert: length(ys) == length(basis) */
+    /* XXX handle multiple points */
+
+    /* Next, what degrees does our divisor require for each of these places? */
+    required_degrees : map(lambda([y0], assoc([x0,y0], divisor, 0)), ys),
+
+    /* Now compute a matrix of the coefficients in the Puiseux expansion */
+    A[j,i] := coeff(puiseux(f,x,y,x0,ys[j],required_degrees[j],basis[i])[1][1], t, required_degrees[j]),
+    ev(genmatrix(A,length(ys),length(ys)), puiseux_fracexp: false)
+)$
+
+expansions_at_x0(f,x,y,divisor,basis,x0) :=
+ block([ys, A, required_degrees], local(A),
+    /* First, compute the y-coordinates of places over x0 */
+    ys : map(rhs, solve(subst(x=x0, f), y)),
+    /* assert: length(ys) == length(basis) */
+    /* XXX handle multiple points */
+
+    /* Now compute a matrix of the coefficients in the Puiseux expansion */
+    A[j,i] := puiseux(f,x,y,x0,ys[j],5,basis[i]),
+    ev(genmatrix(A,length(ys),length(ys)), puiseux_fracexp: false)
+)$
+
+basis_of_multiples_except_at_inf(f,x,y,divisor) :=
+ block([basis,xs,x0,unstable],
+    /* First, construct a basis for all rational functions */
+    /* basis : [1,y], */
+    basis : makelist(y^i, i, 0, hipow(f, y)-1),
+    /* Next, adjust the basis to put its elements in the Riemann-Roch space */
+
+    xs : unique(map(first, map(first, divisor))),
+    /* Finally, reduce until the determinant for the basis is non-zero */
+    unstable : true,
+    while unstable do block(
+      unstable : false,
+      for x0 in xs do block([m],
+        m : matrix_for_basis_at_x0(f,x,y,divisor,basis,x0),
+        if determinant(m) = 0 then block([v, expansions],
+          display(basis), display(x0),
+          expansions : expansions_at_x0(f,x,y,divisor,basis,x0),
+          display(expansions),
+          v : args(nullspace(m))[1],
+          display([m, v]),
+          basis[sublist_indices (args(transpose(v))[1], lambda ([x], x # 0))[1]] : ratsimp((basis.v) / (x-x0)),
+          display(basis),
+          unstable : true
+        )
+      )
+    ),
+    basis
+)$
+
+column_orders(f,x,y,func) :=
+  /* XXX 5 is a guess */
+  /* Could use a function to return the degree of an Puiseux expansion */
+  lmin(map(lambda([pe], lopow(pe[1], t)), puiseux(f,x,y,inf,false,5,func)))
+$
+
+normal_matrix_at_inf(f,x,y,basis) := block([colord, A], local(A),
+  colord : map(lambda([i], column_orders(f,x,y,i)), basis),
+  A[j,i] := coeff(  puiseux(f,x,y,inf,false,5,basis[i])  [j][1], t, colord[i]),
+  genmatrix(A,length(basis),length(basis))
+)$
+
+riemannroch(f,x,y,divisor) := block([basis, expansions, colord, nb, d],
+  basis : basis_of_multiples_except_at_inf(f,x,y,divisor),
+  /* display(basis), */
+  /* expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis), */
+  /* display(expansions), */
+  /* map(lambda([i], column_orders(f,x,y,i)), basis) */
+
+  /* XXX this determinant has to be non-zero for the basis to be normal at inf */
+  nb : normal_matrix_at_inf(f,x,y,basis),
+  display(nb),
+  d : determinant(normal_matrix_at_inf(f,x,y,basis)),
+  display(d),
+
+  for i:1 thru 2 do block([v, vt, sli],
+    v : args(nullspace(nb))[1],
+    vt : args(transpose(v))[1],
+
+    display(v),
+
+    expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis),
+    display(expansions),
+
+    colord : map(lambda([i], column_orders(f,x,y,i)), basis),
+    display(colord),
+    /* sli : sublist_indices(args(transpose(v))[1], lambda([x], x # 0)), */
+    /* sli : join(makelist(i,i,1,length(basis)), args(transpose(v))[1]), */
+    sli : makelist([i,vt[i],colord[i]],i,1,length(basis)),
+    sli : sublist(sli, lambda([i], i[2] # 0)),
+    sli : sort(sli, lambda([i,j], orderlessp(i[3],j[3]))),
+    v : v * makelist(x^(colord[i]-sli[1][3]),i,1,length(basis)),
+    display(v),
+    basis[sli[1][1]] : ratsimp(basis.v),
+    display(basis),
+    nb : normal_matrix_at_inf(f,x,y,basis),
+    display(nb),
+    d : determinant(normal_matrix_at_inf(f,x,y,basis)),
+    display(d)
+  ),
+
+  colord : map(lambda([i], column_orders(f,x,y,i)), basis),
+  display(colord),
+  flatten(basis * map(lambda([i], makelist(x^j, j, 0, i)), colord))
+)$
+\end{maximablocksmall}
+
+\begin{maximablock}
+f : y^3 - (x^3 - x);
+div : [[[0, 0], -4]];
+f : y^2 - (x^3 - x);
+div : [[[sqrt(6), 2], -4]];
+/* riemannroch(f, x, y, div); */
+\end{maximablock}
 
 \vfill\eject
 \mysection{Integration Examples}
@@ -1426,6 +1549,11 @@ $${\cal L}(Z^2(i, \sqrt{2}) Z^2(-i, \sqrt{2}))$$
 
 i.e, all the functions on our algebraic curve with at most second order
 poles at $(\pm i,\sqrt{2})$ and no other finite poles.
+
+\begin{maximablock}
+div : [[[%i, sqrt(2)], -2], [[-%i, sqrt(2)], -2]];
+riemannroch(f, x, y, div);
+\end{maximablock}
 
 % https://ocw.mit.edu/courses/mathematics/18-782-introduction-to-arithmetic-geometry-fall-2013/lecture-notes/MIT18_782F13_lec21.pdf
 % Theorem 21.9. For any divisor D we have dim L(D) ≤ deg D0 + 1.
