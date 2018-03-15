@@ -1325,10 +1325,12 @@ matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
         makelist(i, i, 1, length(ys)))),
 
     /* Now compute a matrix of the coefficients in the Puiseux expansion */
-    /* XXX should only need to call puiseux once */
 
-    A[i,j] := coeff(puiseux(f,x,y,x0,pairs[i][1], pairs[i][2],basis[j])[1][1], t, pairs[i][2]),
-    ev(genmatrix(A,length(pairs),length(basis)), puiseux_fracexp: false)
+    transpose(apply(matrix, map(lambda([basis_func],
+               apply(append, map(lambda([pair],
+                  append(map(lambda([exp], coeff(exp[1], t, pair[2])), puiseux(f,x,y,x0,pair[1], pair[2],basis_func)))),
+               pairs))),
+        basis)))
 )$
 
 expansions_at_x0(f,x,y,divisor,basis,x0) :=
