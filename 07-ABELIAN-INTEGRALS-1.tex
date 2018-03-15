@@ -1389,34 +1389,35 @@ basis_of_divisor_except_at_inf(f,x,y,divisor) :=
     /* First, construct a C(x)-basis for all rational functions */
     basis : makelist(y^i, i, 0, hipow(f, y)-1),
 
+    /* Next, adjust the basis to put its elements in the Riemann-Roch space */
     /* Remove poles at xs */
-    for x0 in xs do block(
+    for x0 in xs do block([target],
+      /* What degree does our divisor require for this x0? */
+      target: lmax(cons(0, map(lambda([d], d[2]), sublist(divisor, lambda([d], d[1][1] = x0))))),
+      /* if riemannroch_trace then display(basis), */
       for i: 1 thru length(basis) do
-        basis[i] : basis[i] * x^(-lopow(puiseux(f,x,y,x0,false,0,basis[i])[1][1], t))
+        /* XXX doesn't take ramification into account */
+        basis[i] : basis[i] * (x-x0)^max(0, target-lopow(puiseux(f,x,y,x0,false,0,basis[i])[1][1], t))
     ),
 
-    /* Next, adjust the basis to put its elements in the Riemann-Roch space */
-    /* XXX */
+    if riemannroch_trace then display(basis),
 
     /* Finally, reduce until the determinant for the basis is non-zero */
     for x0 in xs do block(
       [unstable: true],
       while unstable do block(
         [m : matrix_for_basis_at_x0(f,x,y,divisor,basis,x0)],
-        if riemannroch_trace then block(
+        if riemannroch_trace then block([expansions],
            display(x0),
+           expansions : expansions_at_x0(f,x,y,divisor,basis,x0),
+           display(expansions),
            display(m)
         ),
         if determinant(m) = 0 then block(
           [v : args(nullspace(m))[1]],
-          if riemannroch_trace then block([expansions],
-             display(basis),
-             display(x0),
-             expansions : expansions_at_x0(f,x,y,divisor,basis,x0),
-             display(expansions),
-             display([m, v])
-          ),
-          basis[sublist_indices (args(transpose(v))[1], lambda ([x], x # 0))[1]] : ratsimp((basis.v) / (x-x0))
+          if riemannroch_trace then display(v),
+          basis[sublist_indices (args(transpose(v))[1], lambda ([x], x # 0))[1]] : ratsimp((basis.v) / (x-x0)),
+          if riemannroch_trace then display(basis)
         ) else block(
           unstable: false
         )
@@ -1585,7 +1586,7 @@ riemannroch(f,x,y,divisor) := block([finite_divisor, infinite_divisor, basis, co
 
      f : recenter_curve2(f,x,y,a),
      finite_divisor : map(lambda([d], [[1/(d[1][1]-a), d[1][2]], d[2]]), finite_divisor),
-     infinite_divisor : map(lambda([d], [[a, d[1][2]], d[2]]), infinite_divisor),
+     infinite_divisor : map(lambda([d], [[0, d[1][2]], d[2]]), infinite_divisor),
 
      divisor : append(finite_divisor, infinite_divisor),
 
@@ -1633,16 +1634,15 @@ puiseux(f,x,y,2,3,5,y);
 
 normal_matrix_at_inf(f,x,y,[(y+3)/(x-2), y]);
 
+/* riemannroch_trace : true; */
 riemannroch(f, x, y, [[Pinf, -1], [P1, 1]]);
 riemannroch(f, x, y, [[Pinf, 1], [P1, -1]]);
-/*
 riemannroch(f, x, y, [[Pinf, -2], [P1, 1]]);
 riemannroch(f, x, y, [[Pinf, -3], [P1, 1]]);
 riemannroch(f, x, y, [[Pinf, -4], [P1, 1]]);
 riemannroch(f, x, y, [[Pinf, -1]]);
 riemannroch(f, x, y, [[Pinf, -2]]);
 riemannroch(f, x, y, [[Pinf, -3]]);
-*/
 \end{maximablock}
 
 \vfill\eject
