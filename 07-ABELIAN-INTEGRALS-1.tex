@@ -663,7 +663,7 @@ distribute_denominator(frac, var, lim) := block(
 \end{maximablocksmall}
 
 \begin{maximablocktiny}
-puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
+puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,b) :=
  block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, maxypow, rf:0, yserieslist, result],
 
    if x0 # inf then (
@@ -726,14 +726,14 @@ puiseux3(f,x,y,x0,y0,deg,r,s,p,b) :=
       if puiseux_fracexp then
          subst(t=(x-x0)^(1/r), result * differential)
       else
-         [result * differential, tsubst]
+         [result * differential, tsubst, y=orig_y0]
    ), yserieslist)
  )$
 \end{maximablocktiny}
 
 \begin{maximablocksmall}
 puiseux4(f,x,y,x0,y0,deg,rf) :=
- block([result: [], lastslope : 0, sign, mp, pairs],
+ block([result: [], lastslope : 0, orig_y0 : y0, sign, mp, pairs],
 
    if y0 # inf then (
       sign: -1
@@ -765,7 +765,7 @@ puiseux4(f,x,y,x0,y0,deg,rf) :=
        p: pair[1][2]*r + pair[1][1]*s,
 
        if s/r # lastslope then
-          result: append(result, puiseux3(f,x,y,x0,y0,deg,r,s,p,rf)),
+          result: append(result, puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,rf)),
 
        lastslope : s/r
      )
