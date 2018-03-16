@@ -233,21 +233,10 @@ basis : riemannroch(f, x, y, div);
 
 We now wish to see if a linear combination of these basis functions will
 match the poles in the differential.  This problem is a bit more complicated
-than the last one, so let's construct a Maxima function to extract the
-principle parts of the basis functions and form them into a matrix:
+than the last one, so let's use the tools we developed in the
+last chapter for solving Mittag-Leffler problems:
 
 \begin{maximablock}
-principle_parts(f,x,y, func, divisor) :=
-  flatten(
-  map(lambda([d], map(lambda([e], map(lambda([order], coeff(e[1], t, order)), makelist(order, order, d[2], -1))),
-                      puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
-  )
-$
-
-principle_parts_matrix(f,x,y, basis, divisor) :=
-  transpose(apply(matrix, map(lambda([func], principle_parts(f,x,y,func,divisor)), basis)))
-$
-
 m : principle_parts_matrix(f,x,y, basis, div);
 \end{maximablock}
 
@@ -257,9 +246,11 @@ integration:
 
 \begin{maximablock}
 principle_parts2(f,x,y, func, divisor) :=
-  flatten(
-  map(lambda([d], map(lambda([e], map(lambda([order], coeff(e[1]/del(t), t, order-1)/order), makelist(order, order, d[2], -1))),
-                      puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
+  flatten(map(lambda([d],
+    map(lambda([e],
+      map(lambda([order], coeff(e[1]/del(t), t, order-1)/order),
+          makelist(order, order, d[2], -1))),
+       puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
   )
 $
 
@@ -272,32 +263,11 @@ Now we have a matrix equation that we want to solve:
 m . v = b;
 \end{maximablock}
 
-This is an overspecified system -- a 6x8 matrix that may or may not
-have a solution.  That's fine; since some integrals have no elementary
-form, this doesn't represent a limitation in our theory, but a failure
-to solve this matrix equation would prove the impossibility of
-simplifying this integral into a Liouvillian form.
-
 The equation has a non-trivial null space, which we expect because
 of the presence of the constant of integration.
 
 \begin{maximablock}
 nullspace(m);
-\end{maximablock}
-
-To proceed, we'll use the {\it Moore-Penrose pseudoinverse},
-which has the property that if a solution exists, it can
-be found by multiplying the $b$ vector by the pseudoinverse:
-
-\begin{maximablock}
-pseudoinverse(m) := block([mm, z : ?gensym(), scalarmatrixp : false],
-  require_unblockedmatrix(m, "first", "pseudoinverse"),
-  mm : m . ctranspose(m),       
-  subst(z=0, ratsimp(ctranspose(m) . ratsimp((mm - z * identfor(mm))^^-1)))
-)$
-
-
-pi : pseudoinverse(m);
 \end{maximablock}
 
 To find out if there actually is a solution, we simply have to check:

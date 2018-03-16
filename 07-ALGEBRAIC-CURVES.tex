@@ -1574,10 +1574,90 @@ A {\it Mittag-Leffler problem} is the practical application of this
 theorem -- given a set of principle parts, find a function that
 matches them all, or prove that no such function exists.
 
-Thus, having identified the
-locations and orders of the integral's principle parts, we can compute
-a Riemann-Roch basis for all functions with suitable poles at those
-locations.  Having done so, it then becomes a straightforward exercise
-in linear algebra to find a combination of those basis functions
-that match a specified set of principle parts.
+The first step in solving a Mittag-Leffler problem is to identify the
+maximum strengths of the poles, and construct a basis for a
+Riemann-Roch space that includes all functions with poles of such
+strength.  We now have a finite basis for a vector space that must
+include the function we are looking for.  We construct Puiseux
+expansions for the basis functions, and use them to construct
+a matrix equation that, when solved, gives the coefficients
+needed to form the function we seek from the basis functions.
 
+The input data is a set of principle parts or, alternately, a divisor
+combined with a vector of coefficients.
+
+Let's assume that we've got our data in the latter form, so we can run
+{\tt riemannroch} on the divisor and obtain a set of basis functions.
+Now let's construct a Maxima function to extract the principle parts
+of the basis functions and form them into a matrix:
+
+\begin{maximablock}
+principle_parts(f,x,y, func, divisor) :=
+  flatten(
+  map(lambda([d], map(lambda([e], map(lambda([order], coeff(e[1], t, order)), makelist(order, order, d[2], -1))),
+                      puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
+  )
+$
+
+principle_parts_matrix(f,x,y, basis, divisor) :=
+  transpose(apply(matrix, map(lambda([func], principle_parts(f,x,y,func,divisor)), basis)))
+$
+\end{maximablock}
+
+Given a vector {\tt b} of coefficients, we now want to
+solve a matrix equation:
+
+\begin{maximablock}
+m . v = b;
+\end{maximablock}
+
+This will typically be an overspecified system -- a non-square matrix
+that may or may not have a solution.  That's fine; since some
+integrals have no elementary form, this doesn't represent a limitation
+in our theory.  Failure to solve this matrix equation would only show
+that no function exists on this curve with the coefficients {\tt b}.
+
+To proceed, we'll use the
+{\it Moore-Penrose pseudoinverse}\footnote{\tt https://en.wikipedia.org/wiki/System_of_linear_equations\#Matrix_solution},
+which has the property that if a solution exists, it can
+be found by multiplying the $b$ vector by the pseudoinverse:
+
+\begin{maximablock}
+pseudoinverse(m) := block([mm, z : ?gensym(), scalarmatrixp : false],
+  require_unblockedmatrix(m, "first", "pseudoinverse"),
+  mm : m . ctranspose(m),       
+  subst(z=0, ratsimp(ctranspose(m) . ratsimp((mm - z * identfor(mm))^^-1)))
+)$
+\end{maximablock}
+
+To find out if there actually is a solution, we first compute a trial
+solution by multiplying the pseudoinverse by {\tt b}, then checking
+to see if the trial solution actual solves the original equation.
+
+\example
+Let's say that we've identified a divisor on an algebraic
+curve (example \ref{an integral Maxima can't solve}):
+
+\begin{maximablock}
+f: y^2 - x^8 - 1$
+div : [[[%i,  sqrt(2)], -1],
+       [[-%i,  sqrt(2)], -1],
+       [[%i, -sqrt(2)], -1],
+       [[-%i, -sqrt(2)], -1],
+       [[inf, inf], -2]]$
+basis : riemannroch(f, x, y, div);
+\end{maximablock}
+
+We now compute its principle parts matrix:
+
+\begin{maximablock}
+m : principle_parts_matrix(f,x,y, basis, div);
+
+pi : pseudoinverse(m);
+\end{maximablock}
+
+{\bf TODO}
+
+Introduce a sample vector {\tt b} and show how to proceed.
+
+\endexample
