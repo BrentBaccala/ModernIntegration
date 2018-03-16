@@ -1250,26 +1250,13 @@ analyze_multiple_points(y^3 - 3*y + x^6)$
 \vfill\eject
 \mysection{Riemann-Roch spaces}
 
-Once we've calculated the principle parts of an integrand, we can
-integrate the resulting series to obtain the principle parts of the
-integral.  This is possible due to the simple but crucial observation
-that poles in the integral can only appear where there are poles in
-the integrand.  Once we've determined the principle parts of the
-integral, we need to solve a Mittag-Leffler problem to find an
-algebraic function that matches the given principle parts.  This can
-be done by finding a basis for a suitable Riemann-Roch space.
-
 A {\it Riemann-Roch space} is a subspace of an algebraic curve's
 function field characterized by specifying a minimum order that the
 function must obtain at all of the curve's points.  Aside from having
 great theoretical significance, Riemann-Roch spaces are practically
 useful because they are finite dimensional, and algorithms exist for
-constructing Riemann-Roch bases.  Thus, having identified the
-locations and orders of the integral's principle parts, we can compute
-a Riemann-Roch basis for all functions with suitable poles at those
-locations.  Having done so, it then becomes a straightforward exercise
-in linear algebra to find a combination of those basis functions
-that match a specified set of principle parts.
+constructing Riemann-Roch bases.  Finding a basis for a Riemman-Roch
+space in a crucial first step in solving a Mittag-Leffler problem.
 
 Numerous algorithms have been developed for computing bases
 of Riemann-Roch spaces.  I've implemented one of the oldest,
@@ -1575,4 +1562,22 @@ riemannroch(f, x, y, [[Pinf, -1]]);
 riemannroch(f, x, y, [[Pinf, -2]]);
 riemannroch(f, x, y, [[Pinf, -3]]);
 \end{maximablock}
+
+\vfill\eject
+\mysection{Mittag-Leffler Problems}
+
+Theorem ? tells us that a rational function on an algebraic
+curve is completely characterized, up to an additive constant,
+by the principle parts of the Puiseux expansions at its poles.
+
+A {\it Mittag-Leffler problem} is the practical application of this
+theorem -- given a set of principle parts, find a function that
+matches them all, or prove that no such function exists.
+
+Thus, having identified the
+locations and orders of the integral's principle parts, we can compute
+a Riemann-Roch basis for all functions with suitable poles at those
+locations.  Having done so, it then becomes a straightforward exercise
+in linear algebra to find a combination of those basis functions
+that match a specified set of principle parts.
 
