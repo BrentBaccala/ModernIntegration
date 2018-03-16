@@ -1280,11 +1280,31 @@ determinant a constant not equal to zero. (Bliss Th. 21.1)
 If we have a cycle at infinity, multiplying by x will multiply
 the expansions by (1/t^r).
 
+{\tt riemannroch(f,x,y,divisor)} computes a basis for the Riemann-Roch
+space $L(D)$.  {\tt divisor} is a list of elements, each in the form
+{\tt [[$x_i$, $y_i$], $\nu_i$]}, where $(x_i, y_i)$ is a point on the
+curve, and $\nu_i$ is the order of the divisor at that point.  For
+singular points, either the standard syntax can be used, indicating
+that the order of the divisor is the same at all points of the
+singularity, or $\nu_i$ can be replaced with a list of values, one for
+each sheet at the singularity.  The order of sheets is the same
+returned by {\tt puiseux}.  Specifying multiple orders at
+singularities with cycles is currently not supported.
+
 \begin{maximablocksmall}
 /* in_namespace(riemannroch)$ */
 /* import(puiseux)$ */
 
 riemannroch_trace: false$
+
+extract_one_point(f,x,y,x0,y0,orders,func) :=
+  if listp(orders) then block(
+    [p: puiseux(f,x,y,x0,y0,apply(max, orders),func)],
+    makelist(coeff(p[i][1], t, orders[i]), i, 1, length(orders))
+  )
+  else
+    map(lambda([exp], coeff(exp[1], t, orders)), puiseux(f,x,y,x0,y0,orders,func))
+$
 
 matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
  block([ys, cycles, A, required_degrees, pairs, expansions], local(A),
@@ -1305,17 +1325,22 @@ matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
        error("wrong basis length in riemannroch"),
 
     /* Next, what degrees does our divisor require for each of these places? */
+    /* required_degrees is a list of degrees, the same length as ys */
+
     required_degrees : map(lambda([y0], assoc([x0,y0], divisor, 0)), ys),
 
     /* Construct pairs of y-coordinate and required degree */
-    pairs : apply(append, map(lambda([i], makelist([ys[i],j], j, required_degrees[i], required_degrees[i] + cycles[i] - 1)),
+    /* pairs can contain multiple duplicate y-values (at cycles), */
+    /*   but might not be the same length as basis (at singularities) */
+
+    pairs : apply(append, map(lambda([i], if cycles[i] = 1 then [[ys[i], required_degrees[i]]]
+                                          else makelist([ys[i],j], j, required_degrees[i], required_degrees[i] + cycles[i] - 1)),
         makelist(i, i, 1, length(ys)))),
 
     /* Now compute a matrix of the coefficients in the Puiseux expansion */
 
     transpose(apply(matrix, map(lambda([basis_func],
-               apply(append, map(lambda([pair],
-                  append(map(lambda([exp], coeff(exp[1], t, pair[2])), puiseux(f,x,y,x0,pair[1], pair[2],basis_func)))),
+               apply(append, map(lambda([pair], extract_one_point(f,x,y,x0,pair[1],pair[2],basis_func)),
                pairs))),
         basis)))
 )$
@@ -1340,7 +1365,6 @@ basis_of_divisor_except_at_inf(f,x,y,divisor) :=
     xs : map(rhs, solve(discriminant(f, y), x)),
     xs : append(xs, map(first, map(first, divisor))),
     xs : unique(xs),
-    /* xs : unique(map(first, map(first, divisor))), */
 
     if riemannroch_trace then display(xs),
 
@@ -1351,7 +1375,7 @@ basis_of_divisor_except_at_inf(f,x,y,divisor) :=
     /* Remove poles at xs */
     for x0 in xs do block([target],
       /* What degree does our divisor require for this x0? */
-      target: lmax(cons(0, map(lambda([d], d[2]), sublist(divisor, lambda([d], d[1][1] = x0))))),
+      target: lmax(flatten(cons(0, map(lambda([d], d[2]), sublist(divisor, lambda([d], d[1][1] = x0)))))),
       /* if riemannroch_trace then display(basis), */
       for i: 1 thru length(basis) do
         /* XXX doesn't take ramification into account */

@@ -350,25 +350,14 @@ function whose poles and zeros match the $i$-component of the residues
 
 So, we have a singular point at infinity, and we want a function with
 a simple zero on one cycle and a simple pole on the other.
-
-\begin{maximablock}
-basis : riemannroch(f, x, y, [[[inf, inf], -1]]);
-\end{maximablock}
-
-at $(0,i)$ and a simple pole at $(0,-i)$.
-
-We can proceed using the algorithm of the previous chapter to
-construct a basis for the Riemman-Roch field $L(D)$, where $D$ is the
-divisor with a simple zero at $(0,i)$ and a simple pole at $(0,-i)$.
 The basis will have either one element or no elements, depending
 on whether an algebraic function exists with the desired properties.
 
-Yes, it does exist, and it's ${{v-i}\over{u}}$.
+\begin{maximablock}
+basis : riemannroch(f, x, y, [[[inf, inf], [-1,1]]]);
+\end{maximablock}
 
-Now we convert back to our original field:
-
-$${{v-i}\over{u}} = x({y\over x}-i) = y - ix $$
-
+Yes, it does exist.
 Remembering that our residues came multiplied by a factor of $i$, we
 conclude that our solution is $i\,\ln(y-ix)$, or:
 
