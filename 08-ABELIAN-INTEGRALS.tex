@@ -1,8 +1,29 @@
 
-\mychapter{Abelian Integrals: The Logarithmic Components}
+\mychapter{Abelian Integrals}
 
 {\bf THIS CHAPTER IS VERY VAGUE AND INCOMPLETE.}
 
+We can now use the machinery developed in the previous chapter to
+solve Abelian integrals in general.
+
+\theorem
+Differentials of rational functions on an algebraic curve have no
+simple (i.e, first order) poles.
+\endtheorem
+
+\theorem
+Logarithmic differentials on an algebraic curve have only simple
+poles.
+\endtheorem
+
+These two theorems, taken together with Liouville's Theorem, provide
+our method of attack for integration of Abelian integrals.  We find
+all of the poles of the differential, and split them easily into two
+sets.  The first order poles arise from logarithm components in the
+solution; all the higher order poles must come from the rational
+function.
+
+\begin{comment}
 The techniques of the previous chapter suffice to compute the {\it
 algebraic} portion of an Abelian integral, which is to say, an
 algebraic function.  Liouville's theorem, however, tells us that there
@@ -11,6 +32,323 @@ easily separated, since the rational portion of the integral
 corresponds to poles of second order poles and higher in the integrand,
 while the logarithmic portion corresponds to first order poles
 in the integrand.
+\end{comment}
+
+\vfill\eject
+\mysection{Integration Examples}
+
+\example Evaluate $\int \frac{x}{\sqrt{x^2+1}}\,dx$
+
+This is a simple integral that can be easily solved using first year
+calculus techniques, but let's see how to attack it using the more
+sophisticated techniques of this chapter.
+
+First, we normalize the integrand (CLARIFY) and convert it into
+a rational function on an algebraic curve:
+
+$$\int \frac{x}{x^2+1}y\,dx\qquad y^2=x^2+1$$
+
+Next, we identify the poles of the integrand.  They are located
+where $x^2+1=0$, over the points $x=\pm i$.  These are also
+ramification points of the algebraic curve.  Its Riemann surface
+looks something like this:
+
+\begin{figure}[H]
+\begin{center}
+\begin{maximacode}
+pdfplot3d ([sqrt((x**2-y**2+1)**2+(2*x*y)**2),
+   -sqrt((x**2-y**2+1)**2+(2*x*y)**2), [x, -2, 2], [y, -2, 2]],
+   [legend, false], [xlabel, "Re"], [ylabel, "Im"], [zlabel, false],
+   [xtics, -1,1,1], [ytics, -1,1,1], [ztics, false],
+   [azimuth, 70], [elevation, 80], [grid, 100, 100], [mesh_lines_color, false])$
+\end{maximacode}
+\end{center}
+\end{figure}
+
+Let's compute a Puiseux series expansion of $\frac{x}{x^2+1}y\,dx$
+at $(x,y)=(i,0)$.
+
+% We'll use the uniforming variable $t$, with
+% $x=t^2+i$.  $y^2 = x^2+1 = (t^2+i)^2+1 = t^4+2it^2$
+
+\begin{maximablock}
+puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
+        y*x/(x^2+1));
+ev(puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
+           y*x/(x^2+1)),
+   puiseux_fracexp=true);
+\end{maximablock}
+
+There appears to be a pole here, but appearances are deceptive.
+We can't integrate this series termwise with respect to $x$;
+we have to change variables in the differential:
+
+$$d \sqrt{x-i} = \frac{1}{2} \frac{1}{\sqrt{x-i}} dx$$
+$$dx = 2 \sqrt{x-i} d \sqrt{x-i}$$
+
+\begin{maximablock}
+ev(puiseux(y^2 - x^2 - 1, x, y, %i, 0, 3,
+           x/y*del(x)),
+   puiseux_fracexp=true);
+\end{maximablock}
+
+So, even though the {\it integrand} has a pole at $(i,0)$, the {\it
+differential} does not... and the differential is what matters!
+
+\begin{maximablock}
+puiseux(y^2 - x^2 - 1, x, y, %i, 0, 4,
+        y*x/(x^2+1) * del(x));
+\end{maximablock}
+
+The only other place we might have a pole is infinity.
+
+\begin{maximablock}
+puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, 1/y);
+puiseux(y^2 - x^2 - 1, x, y, inf, inf, 3, x/y);
+\end{maximablock}
+
+Now it appears that we have two sheets with no poles, the expansions indicating simply
+that $\lim_{x\to\infty}\frac{x}{\sqrt{x^2+1}} = \pm 1$, depending
+on whether we use the positive or negative square root,
+but again
+we have to take the differential into account.  Since $x=\frac{1}{t}$,
+$dx=-\frac{1}{t^2} dt$, and we actually have second order poles
+at infinity.
+
+\begin{maximablock}
+puiseux(y^2 - x^2 - 1, x, y, inf, inf, 0,
+        x/y * del(x));
+\end{maximablock}
+
+Integrating termwise, we see that since our differential has second
+order poles at infinity, our integral must have first order poles
+at infinity, and theorem ? states that this completely
+characterizes the integral.
+
+We already know of a rational function with first order poles
+at infinity -- $y$ itself!
+
+\begin{maximablock}
+basis : riemannroch(y^2 - x^2 - 1, x, y, [[[inf, inf], -1]]);
+\end{maximablock}
+
+Our solution, if it exists, is in the vector space spanned by these
+three basis elements.  $1$ is in the list, and we expect it to be
+there, because of the presence of the constant of integratio, so we
+can always add a multiple of $1$ to our solution and get another
+solution.
+
+What about the two remaining basis elements?  We want to
+combine them in such a way as to match the principle parts of
+our differential.
+
+Let's expand them:
+
+\begin{maximablock}
+puiseux(y^2 - x^2 - 1, x, y, inf, false, 0, 1);
+puiseux(y^2 - x^2 - 1, x, y, inf, false, 0, x);
+puiseux(y^2 - x^2 - 1, x, y, inf, false, 0, y);
+\end{maximablock}
+
+\begin{maximablock}
+b : matrix([1], [-1]);
+m : transpose(apply(matrix, map(lambda([b],
+           map(lambda([e], coeff(e[1], t, -1)), puiseux(y^2 - x^2 - 1, x, y, inf, false, 0, b))),
+    basis)));
+pi : moore_penrose_pseudoinverse(m);
+
+m.pi.b;
+
+pi.b;
+
+ident(3) - pi.m;
+
+nullspace(m);
+\end{maximablock}
+
+\endexample
+
+\vfill\eject
+\mysection{An integral Maxima can't solve}
+
+\example
+\label{an integral Maxima can't solve}
+Integrate $\int \frac{x^9+2x^7-x}{(x^4+2x^2+1)\sqrt{x^8+1}}\, dx$
+
+When I say that Maxima can't solve this integral, I mean that its
+built-in integration routine can't solve the integral:
+
+\begin{maximablock}
+integrand: (x^9+2*x^7-x)/((x^4+2*x^2+1)*sqrt(x^8+1));
+
+integrate(integrand, x);
+\end{maximablock}
+
+Now let's attack the problem using the techniques of this book.
+
+\begin{maximablock}
+f: y^2 - x^8 - 1$
+
+lintegrand: subst(sqrt(x^8+1)=y, integrand);
+\end{maximablock}
+
+Inspecting the denominator, we see that since $x^4+2x^2+1=(x^2+1)^2$,
+our finite poles can be at $x=\pm i$, as well as the eight roots of
+$x^8+1=0$.
+
+\begin{maximablock}
+
+puiseux(f, x, y, %i, false, -1,
+        lintegrand * del(x));
+puiseux(f, x, y, -%i, false, -1,
+        lintegrand * del(x));
+\end{maximablock}
+\begin{maximablocksmall}
+for i:1 thru 15 step 2 do
+   disp(puiseux(f, x, y, cis(i*%pi/8), 0, -1,
+                lintegrand * del(x)));
+\end{maximablocksmall}
+
+We also need to check for poles at infinity.
+
+\begin{maximablock}
+puiseux(f, x, y, inf, inf, -1,
+        lintegrand * del(x));
+\end{maximablock}
+
+We've found four second order poles at the ordinary points $(\pm i, \pm\sqrt{2})$,
+as well as two third order poles at a singular point with two sheets at infinity.
+
+Our next goal is to construct a basis for a suitable Riemann-Roch space.
+We invert the signs of the finite poles,
+since the convention for Riemann Roch spaces is their functions must
+have order greater than the {\it negative} of a divisor, remember
+that poles decrease in order by $1$ when they are integrated,
+and conclude that the Riemann-Roch space that we're interested in is:
+
+$${\cal L}(Z(i, \sqrt{2}) Z(-i, \sqrt{2}), Z(i, -\sqrt{2}) Z(-i, -\sqrt{2}) Z^2(\infty,\infty))$$
+
+i.e, all the functions on our algebraic curve with at most first order
+poles at $(\pm i,\pm\sqrt{2})$, no other finite poles, and at most
+second order poles at infinity.
+
+\begin{maximablock}
+div : [[[%i,  sqrt(2)], -1],
+       [[-%i,  sqrt(2)], -1],
+       [[%i, -sqrt(2)], -1],
+       [[-%i, -sqrt(2)], -1],
+       [[inf, inf], -2]]$
+basis : riemannroch(f, x, y, div);
+\end{maximablock}
+
+We now wish to see if a linear combination of these basis functions will
+match the poles in the differential.  This problem is a bit more complicated
+than the last one, so let's construct a Maxima function to extract the
+principle parts of the basis functions and form them into a matrix:
+
+\begin{maximablock}
+principle_parts(f,x,y, func, divisor) :=
+  flatten(
+  map(lambda([d], map(lambda([e], map(lambda([order], coeff(e[1], t, order)), makelist(order, order, d[2], -1))),
+                      puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
+  )
+$
+
+principle_parts_matrix(f,x,y, basis, divisor) :=
+  transpose(apply(matrix, map(lambda([func], principle_parts(f,x,y,func,divisor)), basis)))
+$
+
+m : principle_parts_matrix(f,x,y, basis, div);
+\end{maximablock}
+
+Another Maxima function will extract the principle parts of the
+differential, and divide them by the powers needed for term-wise
+integration:
+
+\begin{maximablock}
+principle_parts2(f,x,y, func, divisor) :=
+  flatten(
+  map(lambda([d], map(lambda([e], map(lambda([order], coeff(e[1]/del(t), t, order-1)/order), makelist(order, order, d[2], -1))),
+                      puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
+  )
+$
+
+b : transpose(matrix(principle_parts2(f,x,y, lintegrand * del(x), div)));
+\end{maximablock}
+
+Now we have a matrix equation that we want to solve:
+
+\begin{maximablock}
+m . v = b;
+\end{maximablock}
+
+This is an overspecified system -- a 6x8 matrix that may or may not
+have a solution.  That's fine; since some integrals have no elementary
+form, this doesn't represent a limitation in our theory, but a failure
+to solve this matrix equation would prove the impossibility of
+simplifying this integral into a Liouvillian form.
+
+The equation has a non-trivial null space, which we expect because
+of the presence of the constant of integration.
+
+\begin{maximablock}
+nullspace(m);
+\end{maximablock}
+
+To proceed, we'll use the {\it Moore-Penrose pseudoinverse},
+which has the property that if a solution exists, it can
+be found by multiplying the $b$ vector by the pseudoinverse:
+
+\begin{maximablock}
+pseudoinverse(m) := block([mm, z : ?gensym(), scalarmatrixp : false],
+  require_unblockedmatrix(m, "first", "pseudoinverse"),
+  mm : m . ctranspose(m),       
+  subst(z=0, ratsimp(ctranspose(m) . ratsimp((mm - z * identfor(mm))^^-1)))
+)$
+
+
+pi : pseudoinverse(m);
+\end{maximablock}
+
+To find out if there actually is a solution, we simply have to check:
+
+\begin{maximablock}
+v : pi.b;
+
+is(m.v = b);
+\end{maximablock}
+
+So, yes, this system does have a solution.  Now let's multiply our
+solution vector by the original basis:
+
+\begin{maximablock}
+basis.v;
+\end{maximablock}
+
+...and convert back to our original form:
+
+\begin{maximablock}
+solution : subst([y=sqrt(x^8+1)], %);
+\end{maximablock}
+
+Now we can verify the solution:
+
+\begin{maximablock}
+diff(solution,x) === integrand;
+\end{maximablock}
+
+...and confirm that:
+
+\begin{maximablock}
+'integrate(integrand, x) = solution;
+\end{maximablock}
+
+% https://ocw.mit.edu/courses/mathematics/18-782-introduction-to-arithmetic-geometry-fall-2013/lecture-notes/MIT18_782F13_lec21.pdf
+% Theorem 21.9. For any divisor D we have dim L(D) ≤ deg D0 + 1.
+
+% or use Riemann-Roch theorem directly
+
+\endexample
 
 
 \vfill\eject
@@ -844,3 +1182,11 @@ further verification as an exercise.
 \endexample
 
 
+\vfill\eject
+\mysection{Hermite reduction}
+
+\cite{trager} shows how to extend Hermite reduction into the algebraic case.
+This offers a means of calculating the rational parts of the integrals
+without going through the calculations described in this chapter.  In
+particular, Puiseux expansions can be completely avoided, which offers
+savings in computational complexity.
