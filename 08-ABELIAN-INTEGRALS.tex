@@ -270,6 +270,12 @@ of the presence of the constant of integration.
 nullspace(m);
 \end{maximablock}
 
+Now let's compute the pseudoinverse:
+
+\begin{maximablock}
+pi : pseudoinverse(m);
+\end{maximablock}
+
 To find out if there actually is a solution, we simply have to check:
 
 \begin{maximablock}
@@ -385,199 +391,78 @@ chapter.
 
 First, transform the problem into an algebraic curve:
 
-$$\int y\,dx \qquad y^2 = 4-x^2$$
+\begin{maximablock}
+f: y^2 - (4 - x^2)$
 
-Since $\lim_{x\to\infty} y = \infty$, the integrand has poles at
-infinity.  We want infinity to be an ordinary point of the curve (no
-ramification; no singularities) with no poles in the integrand.  The
-simplest transformation is again to exchange zero with infinity, and in this
-case zero is an ordinary point with places $(0,2)$ and $(0,-2)$,
-neither of which is a pole of the integrand.  So we'll invert
-$x$ and $y$ into $u$ and $v$:
+lintegrand: y * del(x)$
+\end{maximablock}
 
-$$x=\frac{1}{u} \qquad y=\frac{1}{v}$$
-$$\left(\frac{1}{v}\right)^2 = 4 - \left(\frac{1}{u}\right)^2 \Longrightarrow 4u^2v^2 - v^2 - u^2=0$$
-$$\int\frac{1}{v} \, d\left(\frac{1}{u}\right) \Longrightarrow -\int\frac{1}{vu^2}\,du$$
+With no denominator, there can be no poles at finite points, so we
+just need to check infinity:
 
-The only poles in this integrand occur when either $u=0$ or $v=0$.
-Substituting these values into $4u^2v^2 - v^2 -u^2=0$, we see that
-these condiutions only occur at $(u,v)=(0,0)$, so let's analyze our
-curve at that point, starting with the Newton polygon:
+\begin{maximablock}
+puiseux(f,x,y,inf,false,0,lintegrand);
+\end{maximablock}
 
-\begin{center}
-$4 u^2 v^2 - v^2 - u^2 = 0$ \\
-\setlength{\unitlength}{1cm}
-\begin{picture}(3,3)
-\put(0,0){\line(0,1){2.5}}
-\put(0,0){\line(1,0){3}}
-\put(1.9,-0.1){x}
-\put(1.9,1.9){x}
-\put(-0.1,1.9){x}
-\thicklines
-\put(0,2){\line(1,-1){2}}
-\end{picture}
-\end{center}
+Since these polar expansions have components at both $t^{-3}$ and
+$t^{-1}$, we'll get a result with both algebraic and logarithmic
+components.
 
-The Newton polygon has a single line segment of span 2 and slope -1, so
-we have two cycles, each with ramification index one: a singularity.
-Since there is no ramification, $u$ is a uniformizing parameter
-and we expect to expand $v$ as follows:
+Let's start with the algebraic part.  We need a Riemann-Roch
+space with at most second order poles at infinity:
 
-$$v = c_1 u + c_2 u^2 + c_3 u^3 + \cdots$$
-$$v^2 = c_1^2 u^2 + 2 c_1 c_2 u^3 + (2 c_1 c_3 + c_2^2) u^4 + \cdots$$
+\begin{maximablock}
+div : [[[inf, inf], -2]]$
+basis : riemannroch(f,x,y,div);
+\end{maximablock}
 
-Substituting these expansions into $4u^2v^2 - v^2 - u^2 = 0$, we obtain:
+Now let's construct a matrix of principle parts
+and its pseudoinverse:
 
-$$ 4 c_1^2 u^4 + 8 c_1 c_2 u^5 + (8 c_1 c_3 + 4 c_2^2) u^6 + \cdots $$
-$$ - c_1^2 u^2 - 2 c_1 c_2 u^3 - (2 c_1 c_3 + c_2^2) u^4 + \cdots - u^2 = 0$$
+\begin{maximablock}
+m : principle_parts_matrix(f,x,y, basis, div);
 
-Equating terms in $u^2$, we see that $c_1 = \pm i$.  Each of these
-two values corresponds to one branch of the singularity.  There
-is only a single term in $u^3$, which forces $c_2$ to be zero,
-and equating terms in $u^4$ produces $c_3 = 2 c_1$, so
+pi : pseudoinverse(m);
+\end{maximablock}
 
-$$v = \pm (iu + 2iu^3 + \cdots) \qquad @(0,0)$$
+\begin{maximablock}
+b : transpose(matrix(principle_parts2(f,x,y, lintegrand, div)));
+\end{maximablock}
 
-Inverting $v$ and substituting into our 1-form, we obtain
+\begin{maximablock}
+m.(pi.b);
+\end{maximablock}
 
-$$\frac{1}{v} = \pm (-i \frac{1}{u} + 2i u + \cdots) \qquad @(0,0)$$
+\begin{maximablock}
+part1: ratsimp(basis . (pi.b));
+\end{maximablock}
 
-$$\frac{1}{vu^2}\, du = \pm \left[ -i \frac{1}{u^3} + 2i \frac{1}{u} + \cdots \right] \, du \qquad @(0,0)$$
+This is the rational part of our answer.  To find the logarithmic
+part, let's return to the series expansion of the differential,
+note that the residues are $-2i$ and $2i$, which can be placed
+in the $Z$-module $\{2i\}$, and search for:
 
-The $u^{-1}$ terms will integrate into logarithms, so let's ignore
-them for the moment and concentrate on the $u^{-3}$ terms, which will
-integrate into $u^{-2}$ terms, so we're looking for a function with
-second order poles at both places at the $(0,0)$ singularity.
+\begin{maximablock}
+basis : riemannroch(f,x,y,
+         [[[inf, inf], [-1, 1]]]);
+\end{maximablock}
 
-Starting with our standard basis for all rational functions,
-$\{1,\,v\}$, we seek to modify it into a basis for
-${\rm P}^2(0,0)_a{\rm P}^2(0,0)_b$.  Note first that $v$ has
-poles at $u=\pm\frac{1}{2}$.  Using $y=1/u$, we analyze
-at $(\pm\frac{1}{2}, \infty)$ as follows:
+The logarithmic component of our solution is thus:
 
-\begin{center}
-$y^2\left[(u-\frac12)^2+(u-\frac12)+\frac14\right]-4(u-\frac12)^2-4(u-\frac12)$
-\\
-\setlength{\unitlength}{1cm}
-\begin{picture}(3,3)
-\put(0,0){\line(0,1){2.5}}
-\put(0,0){\line(1,0){3}}
-\put(0.9,-0.1){x}
-\put(1.9,-0.1){x}
-\put(-0.1,1.9){x}
-\put(0.9,1.9){x}
-\put(1.9,1.9){x}
-\thicklines
-\put(0,2){\line(1,-2){1}}
-\end{picture}
-\end{center}
+\begin{maximablock}
+solution : subst(y=sqrt(4-x^2),
+             2*%i*log(basis[1]));
+\end{maximablock}
 
-Our line segment has span 1 and slope -2, indicating a single place
-with ramification 2, and $y$ as a uniformizing parameter.  Setting
+Remembering from the previous example that $i \ln(ix-\sqrt{1-x^2}) = \arcsin x$,
+and that logarithmic components are only specified up
+to a multiplicative constant (it disappears into the constant
+of integration), we can rewrite this:
 
-$$(u-\frac12) = c_1 y + c_2 y^2 + \cdots$$
-$$(u-\frac12)^2 = c_1^2 y^2 + \cdots$$
+$$2i \ln\left(\sqrt{4-x^2} - ix\right) = 2i \ln\left(\sqrt{4-4\left(\frac{x}{2}\right)^2} - 2i\left(\frac{x}{2}\right)\right)$$
+$$= 2i \ln\left(i\frac{x}{2} - \sqrt{1-\left(\frac{x}{2}\right)^2}\right) = 2 \arcsin \frac{x}{2}$$
 
-Substituting, we find that $c_1 = 0$ and $c_2 = \frac{1}{16}$, so
-
-$$(u-\frac12) = \frac{1}{16} y^2 + \cdots \qquad v=y^{-1} \qquad @(\frac12, \infty)$$
-
-$$(u+\frac12) = \frac{1}{16} y^2 + \cdots \qquad v=y^{-1} \qquad @(-\frac12, \infty)$$
-
-In short, $v$ has first order poles at $(\pm\frac12,\infty)$ and
-$(u\pm\frac12)$ has second order zeros, so we can adjust our basis
-accordingly and obtain $\{1,\,(4u^2-1)v\}$ for a basis with no finite
-poles.  We can also use a theorem of Trager to shortcut this calculation.
-
-Returning to our analysis at $(0,0)$, we see that 1 has zero order
-(obviously) and $(4u^2-1)v$ has a first order zero at both sheets
-there, since $4u^2-1=-1$ is finite and $v$ has first order zeros.
-We also know that $u$ is a uniformizing parameter, so it's easy
-to modify our basis and obtain
-
-$$\left\{\frac{1}{u^2},\,\frac{4u^2-1}{u^3}v\right\} {\rm is\, a\,} {\bf C}[x]{\rm -basis\, for\, P^2(0,0)_aP^2(0,0)_b}$$
-
-Is this basis normal at infinity?  Well, the representation order of
-$\frac{1}{u^2}$ is 2 and its $u^-2$ coefficients at $(\infty, \pm
-\frac12)$ are both 1, while the representation order of $\frac{4u^2-1}{u^3}v$
-is 1, and its $u^-1$ coefficients are 2 and -2.  Since
-
-$$\det C = \begin{array}{|cc|} 1 & 2 \\ 1 & -2 \end{array} = -4$$
-
-is non-zero, the basis is normal at infinity.
-
-The Riemann-Roch theorem says that the dimension of ${\mathfrak l}(D)$ is 5,
-$\frac{1}{u^2}$ can be multiplied by any polynomial up to second
-degree without introducing poles at infinity, and $\frac{4u^2-1}{u^3}v$
-can be multiplied by any polynomial up to first degree, so
-
-$$\left\{\frac{1}{u^2},\, \frac{1}{u},\, 1,\, \frac{4u^2-1}{u^3}v,\, \frac{4u^2-1}{u^2}v\right\}$$
-
-is a ${\cal C}$-module basis for ${\mathfrak l}(D)$.
-
-Any linear combination of these functions is a multiple of the
-divisor, but not all of them produce the correct residues.  Looking at
-the residues, we see that only $\frac{4u^2-1}{u^3}v = \frac{1}{uv}$
-has residues of $\pm i$ on the two sheets at the $(0,0)$ singularity.
-Dividing by 2 to correct for the 2 that will be introduced by the
-integration, we conclude that $\frac{1}{2uv} = \frac{xy}{2} =
-\frac{x\sqrt{4-x^2}}{2}$ is the desired function.
-
-Next, we have to deal with the logarithms.  Going back to the
-series expansions of our 1-form, we see that we have residues
-of $\pm 2i$ on our two sheets at $(0,0)$.  The objective
-now is a bit different; we want a function with exactly
-the divisor $Z(0,0)_a P(0,0)_b$.  Starting with an integral basis:
-
-$$\{1, (4u^2-1)v\}$$
-
-we want to modify these functions to make them multiples
-of $Z(0,0)_a P(0,0)_b$.  The pole isn't a problem for
-an integral basis, and looking at the series expansion
-for $v$ at $(0,0)$ we see that it (and therefore $(4u^2-1)v$)
-has a simple zero there, but $1$ needs to be replaced with $u$:
-
-$$\{u, (4u^2-1)v\}$$
-
-Now we construct a matrix with the coefficients in the series expansions:
-
-$$\left[ \begin{array}{cc} 1 & -i \\ 0 & 0 \end{array} \right] \begin{array}{ll} \leftarrow (0,0)_a \\ \leftarrow (0,0)_b \end{array} $$
-
-$$\left[ \begin{array}{cc} 1 & -i \\ 0 & 0 \end{array} \right] \left[ \begin{array}{c} i \\ 1 \end{array} \right] = 0$$
-
-The solution shows us how to modify the basis:
-
-$$\{u, \frac{iu + (4u^2-1)v}{u}\} = \{u, i + \frac{(4u^2-1)v}{u}\}$$
-
-$$\left[ \begin{array}{cc} 1 & 0 \\ 0 & 0 \end{array} \right] \begin{array}{ll} \leftarrow (0,0)_a \\ \leftarrow (0,0)_b \end{array} $$
-
-$$\left[ \begin{array}{cc} 1 & 0 \\ 0 & 0 \end{array} \right] \left[ \begin{array}{c} 0 \\ 1 \end{array} \right] = 0$$
-
-$$\{u, i\frac{1}{u} + \frac{(4u^2-1)v}{u^2}\}$$
-
-$$\left| \begin{array}{cc} 1 & -2i \\ 0 & 2i \end{array} \right| = 2i$$
-
-At the last step, the determinant is non-zero, which shows that we
-now have a basis for multiples of the divisor except at infinity.
-Is it normal at infinity?  $u$'s expansion at both places at infinity
-is $\left(\frac{1}{u}\right)^{-1}$, so its representation order is -1,
-and the second element's expansion at infinity starts $\pm 2 + \cdots$,
-so its representation order is 0 and:
-
-$$\det C = \begin{array}{|cc|} 1 & 2 \\ 1 & -2 \end{array} = -4$$
-
-So the basis is normal at infinity.  If an exact multiple of
-the divisor exists, it is one of the basis elements.  It's not $u$,
-since $u$ has a pole at infinity, but the second element is exact:
-
-$$i\frac{1}{u} + \frac{(4u^2-1)v}{u^2} = i\frac{1}{u} - \frac{1}{v} = ix-y$$
-
-The desired residues are $\pm 2i$, so the function we want is
-
-$$2i \ln(ix-y) = 2i \ln(\frac{y}{2}-i\frac{x}{2}) + 2i \ln(-2) $$
-$$= 2i \ln\left(\sqrt{1-\left(\frac{x}{2}\right)^2} - i\frac{x}{2}\right) = 2i (-i \arcsin \frac{x}{2}) = 2 \arcsin \frac{x}{2}$$
-
-(the constant disappears into the constant of integration) and the final answer is:
+Adding in the rational component we computed earlier, the final answer is:
 
 $$ \int \sqrt{4-x^2} \, dx  = 2\arcsin\frac{x}{2} + \frac{x \sqrt{4-x^2}}{2}$$
 
@@ -588,9 +473,24 @@ $$ \int \sqrt{4-x^2} \, dx  = 2\arcsin\frac{x}{2} + \frac{x \sqrt{4-x^2}}{2}$$
 
 \example Compute $\int {1\over{x\sqrt{x^4+1}}} \, dx$
 
-We'll use ${\bf C}(x,y); y^2=x^4+1$ and integrate ${1\over{xy}} =
-{y\over{x^5+x}}$.  Inverting this field ($z={1\over x}$) shows that
-this integrand has no poles at infinity, so we can proceed directly:
+Two traditional solution techniques are either the substitution $x^2 = \tan u$,
+followed by the half angle formula for $\tan$, or $x^4+1=u^2$, which
+leads to a rational function and a partial fractions expansion.
+
+We'll use ${\bf C}(x,y); y^2=x^4+1$ and integrate ${1\over{xy}}$.
+
+\begin{maximablock}
+f : y^2 - (x^4 + 1)$
+integrand : 1/(x*y) * del(x)$
+\end{maximablock}
+
+\begin{maximablock}
+puiseux(f,x,y,inf,false,0,integrand);
+puiseux(f,x,y,0,false,0,integrand);
+for i:1 thru 7 step 2 do
+   disp(puiseux(f, x, y, cis(i*%pi/4), false, 0,
+                integrand));
+\end{maximablock}
 
 $$ {y\over{x^5+x}} = {y\over{x(x+\omega)(x-\omega)(x+i\omega)(x-i\omega)}} \qquad \omega = \sqrt{i} = {\sqrt{2}\over2} + {\sqrt{2}\over2} i $$
 
@@ -604,195 +504,57 @@ $$ {y\over{x^5+x}} = {y\over{x(x+\omega)(x-\omega)(x+i\omega)(x-i\omega)}} \qqua
 \end{supertabular}
 \end{center}
 
-We now use theorem \ref{simple pole construction} to construct a
-function with a simple pole at $(0,-1)$:
+Our only poles are a pair of first order poles at $x=0$.  This will give rise to
+a logarithmic term; can we find a function that matches?
 
-$${{f(0,y)}\over{x(y+1)}} = {{y^2-1}\over{x(y+1)}} = {{y-1}\over{x}} $$
+\begin{maximablock}
+riemannroch(f,x,y,
+    [[[0, -1], -1], [[0, 1], 1]]);
+\end{maximablock}
 
-This function has a zero at $(0,1)$, but, unfortunately, it is third order,
-as can be seen from either L'H\^opital's rule:
+Since we can't find a function that matches that divisor; let's try
+doubling the strength of the poles.
 
-$$y^2=x^4+1$$
-$$2y\,dy=4x^3\,dx$$
-$${{dy}\over{dx}} = 2{x^3\over y}$$
+\begin{maximablock}
+riemannroch(f,x,y,
+    [[[0, -1], -2], [[0, 1], 2]]);
+\end{maximablock}
 
-$${{y-1}\over{x}} @ (0,1) = \lim {{dy}\over{dx}} = 2 {{x^3}\over y} = 0$$
-$${{y-1}\over{x^2}} @ (0,1) = \lim {1\over{2x}}{{dy}\over{dx}} = {{x^2}\over y} = 0$$
-$${{y-1}\over{x^3}} @ (0,1) = \lim {1\over{3x^2}}{{dy}\over{dx}} = {2\over3}{{x}\over y} = 0$$
-$${{y-1}\over{x^4}} @ (0,1) = \lim {1\over{4x^3}}{{dy}\over{dx}} = {1\over2}{1\over y} = {1\over2}$$
+This is the function we are looking for inside our logarithm.
 
-\vfil\eject
+\begin{maximablock}
+ans : 1/2 * log(subst(y=sqrt(x^4+1), %[1]));
 
-\ldots or from a series expansion of $y$ at (0,1):
+diff(ans,x) === 1/(x*sqrt(x^4+1));
+\end{maximablock}
 
-$$y^2 = x^4 + 1 $$
-$$(y-1)^2 = x^4 - 2(y-1)$$
-$$(y-1) = {1\over2}x^4 - {1\over2}(y-1)^2$$
-$$(y-1) = c_0 + c_1 x + c_2 x^2 + c_3 x^3 + \cdots$$
-$$(y-1)^2 = c_0^2 + (2 c_0 c_1) x + (2 c_0 c_2 + c_1^2) x^2 + (2 c_0 c_3 + 2 c_1 c_2) x^3 + \cdots$$
-
-$$ c_0, c_1, c_2, c_3 = 0 $$
-$$ c_4 = {1\over2}$$
-$$ c_5, c_6, c_7 = 0 $$
-$$ c_8 = -{1\over8} $$
-
-$$ (y-1) = {1\over2} x^4 - {1\over8} x^8 + \cdots$$
-
-$$ {(y-1)\over x} = {1\over2} x^3 - {1\over8} x^7 + \cdots$$
-
-\ldots or from the norm:
-
-$$N({{y-1}\over{x}}) = {{y-1}\over{x}} \cdot {{-y-1}\over{x}} = - {{y^2-1}\over{x^2}} = - {{x^4}\over{x^2}} = - x^2$$
-
-Since we know that the function has a simple pole at $(0,-1)$, so it
-must have a third order zero at $(0,1)$ to form a norm with a second
-order zero.
-
-We can eliminate the inconvenient zero by adding a constant to the
-function, say 1: ${{x+y-1}\over x}$.  We can now use theorem
-\ref{simple zero construction} to create a simple zero at
-(0,1) by multiplying by $x+y-1$:
-
-$${{x+y-1}\over x} (x+y-1) = {{2x-2}\over x} y + {{x^4+x^2-2x+2}\over x} $$
-
-This function has a simple pole at (0,-1) and a simple zero at (0,1),
-but does it have other poles and zeros?  If so, can it be modified to
-eliminate them?  To find out, we form the generators of an ${\cal I}$-module:
-
-$$\{ {{2x-2}\over x} y + {{x^4+x^2-2x+2}\over x}, x \}$$
-
-Noting that ${{x^4+x^2}\over{x}} = x(x^2+1)$ and $x^2+1 \in {\cal I}$,
-we can simplify this:
-
-$$\{ {{2x-2}\over x} y - {{2x-2}\over x}, x \}$$
-
-\vfill\eject
-
-Using the integral basis $\{1, y \}$, we convert this to a
-${\bf C}[x]$-module:
-
-$$\{ {{2x-2}\over x} y - {{2x-2}\over x}, {{2x-2}\over x} (x^4+1) - {{2x-2}\over x} y, x, xy \}$$
-
-and since $(2x-2){{x^4}\over{x}} = x(2x^3-2x^2)$ and
-$2x^3-2x^2 \in {\bf C}[x]$, we simplify:
-
-$$\{ {{2x-2}\over x} y - {{2x-2}\over x}, {{2x-2}\over x} - {{2x-2}\over x} y, x, xy \}$$
-
-and write it in matrix form:
-
-% $$\pmatrix{-{{2x-2}\over{x}} & {{2x-2}\over{x}} \cr {{2x-2}\over{x}} & -{{2x-2}\over{x}} \cr x & 0 \cr 0 & x} \pmatrix{1 \cr y}$$
-
-$${1\over x}\begin{pmatrix}-(2x-2) & 2x-2 \cr 2x-2 & -(2x-2) \cr x^2 & 0 \cr 0 & x^2\end{pmatrix} \begin{pmatrix}1 \cr y\end{pmatrix}$$
-
-Elementary row operations\footnote{Read right to left; $R_{i,j,\lambda}$ adds $\lambda$ times row $j$ to row $i$; $R_{i,\alpha}$ multiplies row $i$ by $\alpha$ (a unit)} $R_{4,3,x^2} R_{1,3,(2x-2)} R_{3,4,-1} R_{3,1,{1\over2}(x+1)} R_{2,1,1} $ yield:
-
-$${1\over x}\begin{pmatrix}1 & -1 \cr x^2 & 0\end{pmatrix} \begin{pmatrix}1 \cr y\end{pmatrix} = \begin{pmatrix}{{1-y}\over{x}} \cr x\end{pmatrix} $$
-
-so $\{ {{1-y}\over{x}}, x \} $ forms a generator set for
-the ${\bf C}[x]$-module of the finite multiples of $Z(0,1)P(0,-1)$.
-We convert to a basis normal at infinity: $\{1, v\} = \{1, {y\over x^2}\}$:
-
-$$\begin{pmatrix}{{1-y}\over{x}} \cr x\end{pmatrix} = \begin{pmatrix}{1\over x} & -x \cr x & 0\end{pmatrix} \begin{pmatrix}1 \cr {y\over x^2}\end{pmatrix}
-= \begin{pmatrix}x & \cr & x\end{pmatrix} \begin{pmatrix}{1\over x^2} & -1 \cr 1 & 0\end{pmatrix} \begin{pmatrix}1 \cr {y\over x^2}\end{pmatrix}$$
-
-$$\det_{@ \infty} \begin{pmatrix}{1\over x^2} & -1 \cr 1 & 0\end{pmatrix} = 1$$
-
-so $\{ {{1-y}\over{x}}, x \} $ is normal at infinity.  $x$ clearly has
-a pole at infinity, so it can't be the function we're looking for, but
-what about ${{1-y}\over{x}}$?  Switching back to $\{u,v\}$
-coordinates, we obtain ${{1-y}\over{x}} = {{u^2-v}\over u}$, which has
-$\{u,v\}$ poles at both $\{0,1\}$ and $\{0,-1\}$, which translate into
-poles at $x=\infty$.  Therefore, no rational function on this
-algebraic curve has a simple pole at (0, -1), a simple zero at (0,1),
-and no other poles or zeros.
-
-\vfill\eject
-
-So, let's try a double pole at (0,-1) and a double zero at (0,1).  We
-can just square our previous generators:
-$\{ {{1-y}\over{x}}, x \} $
-to obtain: 
-$\{ {(1-y)^2\over{x^2}}, x^2 \} = \{ {{1-2y+x^4+1}\over{x^2}}, x^2 \}$
-which simplifies to
-$\{ {{1-y}\over{x^2}}, x^2 \}$.  We again check for normalcy
-at infinity:
-
-$$\begin{pmatrix}
-{1\over{x^2}} & -1 \cr
-x^2 & 0\end{pmatrix} \begin{pmatrix}1 \cr {y\over{x^2}}\end{pmatrix} = \begin{pmatrix}1 & \cr & x^2\end{pmatrix}\begin{pmatrix}
-{1\over{x^2}} & -1 \cr
-1 & 0\end{pmatrix}
-\begin{pmatrix}1 \cr {y\over{x^2}}\end{pmatrix} $$
-
-$$\det_{@\infty}\begin{pmatrix}
-{1\over{x^2}} & -1 \cr
-1 & 0\end{pmatrix} = 1$$
-
-So, $\{{{1-y}\over{x^2}}, x^2\}$ is a ${\bf C}[x]$-module, normal at
-infinity, containing the finite multiples of $Z^2(0,1)P^2(0,-1)$.
-$x^2$ has a pole at infinity, but does ${1-y}\over{x^2}$?
-Switching to $x={1\over z}; y={u\over{z^2}}; u^2 = z^4 + 1$ and
-Writing it as $z^2(1-{u\over{z^2}}) = z^2 - u$ shows that it has no
-zero at $(z,u) = (0, \pm 1)$, and thus no pole at $x = \infty$.  It
-is, therefore, the function we are looking for:
-
+\begin{comment}
 $$\int {1\over{x\sqrt{x^4+1}}} \, dx
-   = {1\over2} \ln{{1-\sqrt{x^4+1}}\over{x^2}}$$
+   = {1\over2} \ln{{\sqrt{x^4+1}-1}\over{x^2}}$$
+\end{comment}
 
-I'll now point out to you what's been pointed out to me, and that is a
-traditional solution technique for this integral:
+Maxima's built-in integrator produces the result in a different form:
 
-$$\int {1\over{x\sqrt{x^4+1}}} \, dx$$
-$$x^2 = u \qquad 2 x\, dx = du$$
-$$\int {1\over{2u\sqrt{u^2+1}}} \, du$$
-$$u = \tan z \qquad du = \sec^2 z dz$$
-$${1 \over 2} \int \csc z \, dz = {1\over 2} \ln \tan {z\over2}$$
-$$={1\over2} \ln {{\sec z - 1}\over{\tan z}}$$
-$$={1\over2} \ln {{\sqrt{u^2+1}-1}\over{u}}$$
-$$={1\over2} \ln {{\sqrt{x^4+1}-1}\over{x^2}}$$
+\begin{maximablock}
+integrate(1/(x*sqrt(x^4+1)), x);
+\end{maximablock}
 
-\vskip 0.5in
+We can obtain this result from our algorithm by factoring $\frac{1}{4}$ out
+of the residues and using fourth-order poles:
 
-$${{1 - \cos z}\over{\sin z}} = {{1 - \cos^2 {z\over2} + \sin^2 {z\over2}}\over{2\sin{z\over2}\cos{z\over2}}} = {{2\sin^2 {z\over2}}\over{2\sin{z\over2}\cos{z\over2}}} = {{\sin {z\over2}}\over{\cos{z\over2}}} $$
+\begin{maximablock}
+riemannroch(f,x,y,
+    [[[0, -1], -4], [[0, 1], 4]]);
+\end{maximablock}
 
-\vfill\eject
+which is another way of writing $\frac{y-1}{y+1}$ (remember
+that $y^2 = x^4+1$).
 
-We can also proceed like this:
-
-$$\int {1\over{x\sqrt{x^4+1}}} \, dx$$
-$$x^4 = u \qquad 4 x^3\, dx = du$$
-$$\int {1\over{4u\sqrt{u+1}}} \, du$$
-$$v = u + 1 \qquad dv = du$$
-$$\int {1\over{4(v-1)\sqrt{v}}} \, dv$$
-$$z^2 = v \qquad 2 z dz = dv$$
-$$\int {1\over{4(z^2-1)z}} \, 2z\, dz$$
-$$\int {1\over{2(z^2-1)}} \, dz$$
-$${1\over{z^2-1}} = {1\over2}{1\over{z-1}} - {1\over2}{1\over{z+1}}$$
-$${1\over4} \int {1\over{z-1}} - {1\over{z+1}} \, dz$$
-$${1\over4} \ln (z-1) - \ln (z+1)$$
-$${1\over4} \ln {{z-1}\over{z+1}}$$
-$${1\over4} \ln {{\sqrt{v}-1}\over{\sqrt{v}+1}}$$
-$${1\over4} \ln {{\sqrt{u+1}-1}\over{\sqrt{u+1}+1}}$$
-$${1\over4} \ln {{\sqrt{x^4+1}-1}\over{\sqrt{x^4+1}+1}}$$
-
-so from the previous page and this one, we conclude
+We conclude that:
 
 $$\int {1\over{x\sqrt{x^4+1}}} \, dx
 ={1\over2} \ln {{\sqrt{x^4+1}-1}\over{x^2}}
 ={1\over4} \ln {{\sqrt{x^4+1}-1}\over{\sqrt{x^4+1}+1}}$$
-
-Is this last equality true?  Well, $\ln f^2 = 2\ln f$, so
-${1\over4}\ln f^2 = {1\over2}\ln f$, and\ldots
-
-$$\Big({{\sqrt{x^4+1}-1}\over{x^2}}\Big)^2
-= {{(\sqrt{x^4+1}-1)^2}\over{x^4}}$$
-
-$${{\sqrt{x^4+1}-1}\over{\sqrt{x^4+1}+1}} \cdot
-{{\sqrt{x^4+1}-1}\over{\sqrt{x^4+1}-1}}
-= {{(\sqrt{x^4+1}-1)^2}\over{x^4+1-1}}$$
-
-
-
 
 \endexample
 
