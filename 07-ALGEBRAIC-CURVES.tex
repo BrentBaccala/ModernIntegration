@@ -1310,6 +1310,7 @@ matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
  block([ys, cycles, A, required_degrees, pairs, expansions], local(A),
     /* First, compute the y-coordinates of places over x0 */
     ys : map(rhs, solve(subst(x=x0, f), y)),
+    ys : unique(ratsimp(ys)),
 
     if hipow(ratsimp(subst(x=x0,f)),y) < length(basis) then
       ys : append(ys, [inf]),
@@ -1353,8 +1354,8 @@ expansions_at_x0(f,x,y,divisor,basis,x0) :=
     /* XXX handle multiple points */
     if length(ys) # length(basis) then return(0),
 
-    /* Now compute a matrix of the coefficients in the Puiseux expansion */
-    A[i,j] := puiseux(f,x,y,x0,ys[i],5,basis[j]),
+    /* Now compute a matrix of the principal parts in the Puiseux expansion */
+    A[i,j] := puiseux(f,x,y,x0,ys[i],-1,basis[j]),
     ev(genmatrix(A,length(ys),length(ys)), puiseux_fracexp: false)
 )$
 
@@ -1364,7 +1365,7 @@ basis_of_divisor_except_at_inf(f,x,y,divisor) :=
     /* Find the x's that lie under our divisor or the curve's discriminant */
     xs : map(rhs, solve(discriminant(f, y), x)),
     xs : append(xs, map(first, map(first, divisor))),
-    xs : unique(xs),
+    xs : unique(ratsimp(xs)),
 
     if riemannroch_trace then display(xs),
 

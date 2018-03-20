@@ -558,6 +558,8 @@ $$\int {1\over{x\sqrt{x^4+1}}} \, dx
 
 \endexample
 
+%%% THIS EXAMPLE IS TOO COMPLICATED FOR THE CURRENT SIMPLE ALGORITHM
+\begin{comment}
 \vfill\eject
 \mysection{Chebyshev's Integral}
 
@@ -568,46 +570,134 @@ $$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}}
 The polynomial under the square root is square-free:
 
 \begin{maximablock}
-num : 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8;
-den: 2*x^2-1;
-root : x^4+4*x^3+2*x^2+1;
-factor(root);
+num : 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8$
+den : (2*x^2-1)^2$
+root : x^4+4*x^3+2*x^2+1$
+
+f : y^2 - root$
+integral : num/(den*y) * del(x)$
 \end{maximablock}
 
-\ldots so $y^2 = x^4+4 x^3+2 x^2+1$; $\{1, y\}$ is an integral basis;
-and our normal form for this integral is:
-
-$$\int {{(2x^6+4x^5+7x^4-3x^3-x^2-8x-8)y}\over{(2x^2-1)^2(x^4+4 x^3+2 x^2+1)}} \,{\rm d}x$$
-
-Applying now Bronstein's Hermite reduction from
-section 2.1 of his ``Symbolic Integration Tutorial'' with $v=2x^2-1$
-to eliminate this square in the denominator:
-
 \begin{maximablock}
-gradef(y,x,ratsimp(D(root)/2*y/root));
-D(y);
-U: root;
-V: den;
-S2: ratsimp(U*V^2*D(y/V));
+solve(root);
+solve(den);
 \end{maximablock}
 
-Now we want to solve $f_2 S_2 = A_2 y$ where $A_2 y$ is our numerator.
+\begin{maximablock}
+for r in append(solve(root), solve(den), [x=inf]) do
+  disp(puiseux(f,x,y,rhs(r),false,-1,integral))$
+\end{maximablock}
+
+We have second order poles at $x=\pm\frac{1}{\sqrt{2}}$ and infinity.
+There are also first order components, which indicates that we
+will have both algebraic and logarithmic components.
+
+Let's extract the disivors at which there are poles:
 
 \begin{maximablock}
-kill(f);
-f[2] ::: num*y/S2;
-T[2] ::: num(f[2]);
+extract_divisor(x0) :=
+  apply(append,
+    map(lambda([exp], if is(exp[1] # 0) then [[[if rhs(exp[2]) # 1/x then x-rhs(exp[2]) else inf, rhs(exp[3])], -2]] else []),
+        puiseux(f,x,y,rhs(x0),false,-1,integral)))
+$
+div : unique(apply(append, map(extract_divisor, append(solve(root), solve(den), [x=inf]))));
+\end{maximablock}
+
+Our basis, principal parts matrix and its pseudoinverse:
+
+\begin{maximablock}
+/* This runs forever */
+basis : riemannroch(f,x,y,div);
+
+m : principal_parts_matrix(f,x,y, basis, div);
+
+pi : pseudoinverse(m);
+\end{maximablock}
+
+\endexample
+\end{comment}
+
+\vfill\eject
+\mysection{Chebyshev's Integral}
+
+
+\example
+\label{Chebyshev's Integral I}
+
+\begin{maximacode}
+num : 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8$
+den: 2*x^2-1$
+root : x^4+4*x^3+2*x^2+1$
+factor(root)$
+
+gradef(y,x,ratsimp(D(root)/2*y/root))$
+D(y)$
+U: root$
+V: den$
+S2: ratsimp(U*V^2*D(y/V))$
+
+kill(f2, T2, Q)$
+f2 ::: num*y/S2$
+T2 ::: num(f2)$
 /* Q::: S2/y; */
-Q ::: denom(f[2]);
+Q ::: denom(f2)$
 
-[A,R,g] : gcdex(V,Q,x);
+[A,R,g] : gcdex(V,Q,x)$
 /* T2: num; */
-[Q2, B2]: divide(T[2]*R, V, x);
-h ::: A*num*y/(V*U) - (D(V)*Q2+D(B2))*y/V + Q2*D(y);
+[Q2, B2]: divide(T2*R, V, x)$
+h ::: A*num*y/(V*U) - (D(V)*Q2+D(B2))*y/V + Q2*D(y)$
+\end{maximacode}
 
-simp: false$
-'integrate(num*y/den,x) = ratsimp(B2*y/V) + 'integrate(h,x);
-simp: true$
+Compute: $$ \maxima{'integrate(subst(y=sqrt(root), h), x);} $$
+
+\begin{maximablock}
+f: y^2 - root;
+solve(denom(h));
+for r in solve(denom(h)) do
+  disp(puiseux(f,x,y,rhs(r),false,-1,h*del(x)))$
+puiseux(f,x,y,inf,false,-1,h*del(x));
+\end{maximablock}
+
+We have poles at $x=\pm \frac{1}{\sqrt{2}}$
+and nowhere else.
+
+\begin{maximablock}
+extract_simple_poles(x0) :=
+  apply(append,
+    map(lambda([exp], if is(exp[1] # 0) then [[if rhs(exp[2]) # 1/x then x-rhs(exp[2]) else inf, rhs(exp[3]), coeff(exp[1]/del(t), t, -1)]] else []),
+        puiseux(f,x,y,rhs(x0),false,-1,h*del(x))))
+$
+poles : unique(apply(append, map(extract_simple_poles, solve(denom(h)))));
+\end{maximablock}
+
+Maxima has difficulty simplifying this expression.  I found a way to coax it, though...
+
+\begin{maximablock}
+mysimp(x) := signum(x)*sqrt(ratsimp(x*x))$
+poles : map(mysimp, poles);
+\end{maximablock}
+
+Now we can see that all of our residues are $\pm\frac{5}{2}$, so we need only
+a single logarithmic term.  Let's compute its residue:
+
+\begin{maximablock}
+/* div : map(lambda([x], [[x[1], x[2]], signum(x[3])]), poles); */
+div(p) := map(lambda([x], [[x[1], x[2]], p*signum(x[3])]), poles)$
+\end{maximablock}
+
+\begin{maximablock}
+div(1);
+riemannroch(f,x,y,div(1));
+div(2);
+riemannroch(f,x,y,div(2));
+div(3);
+riemannroch(f,x,y,div(3));
+/*
+div(4);
+riemannroch(f,x,y,div(4));
+div(5);
+riemannroch(f,x,y,div(5));
+*/
 \end{maximablock}
 
 \vfill\eject
@@ -636,8 +726,8 @@ $$\int {{(2x^6+4x^5+7x^4-3x^3-x^2-8x-8)}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}
 = {{(x+{1\over2})y}\over{2x^2-1}} + {1\over2}\ln{{A(x)y - B(x)}\over{C(x)}}
 $$
 
-
 \endexample
+
 
 \vfill\eject
 \mysection{The Risch Theorem: A First Look}
@@ -689,16 +779,32 @@ characteristic zero.
 
 A property of algebraic curves over finite fields is that {\it all}
 divisors of total degree zero have some multiple that is principal
-(PROOF).  Thus, to carry out this program, we need to compute bases
-for Riemann-Roch spaces in prime characteristic.  Then, we can keep
-raising a divisor to higher and higher powers until we find its order.
-Do this for two different primes, each exhibiting good reduction, and
-then we can find the order of the original divisor in characteristic
-zero.
+(proof in Chapter 9 when we construct Jacobian variety).  Thus, to
+carry out this program, we need to compute bases for Riemann-Roch
+spaces in prime characteristic.  Then, we can keep raising a divisor
+to higher and higher powers until we find its order.  Do this for two
+different primes, each exhibiting good reduction, and then we can find
+the order of the original divisor in characteristic zero.
 
 To proof the above claims, I want to construct the Jacobian variety in
 arbitrary characteristic, then show how Jacobians map under good
 reduction.
+
+\begin{comment}
+x,y,z = PolynomialRing(QQ,3,'xyz').gens()
+f = y^2*z^2 - (x^4+z^4)
+X = Curve(f)
+X.genus()
+
+x,y,z = PolynomialRing(GF(5),3,'xyz').gens()
+f = y^2*z^2 - (x^4+z^4)
+X = Curve(f)
+X.genus()
+\end{comment}
+
+%\begin{mdframed}[backgroundcolor=yellow!20]
+%\printpythontex
+%\end{mdframed}
 
 \section{Simple Algebraic Extensions over Finite Fields}
 
@@ -871,8 +977,81 @@ further verification as an exercise.
 \vfill\eject
 \mysection{Hermite reduction}
 
+The previous sections in this chapter have laid out the theoretical
+framework for the solution of Abelian integrals and presented the
+simplest computational algorithm that I could formulate to acheive
+that goal.  It is by no means the most efficient algorithm, and should
+not be used as a basis for a professional implementation.  The
+remaining sections of this chapter showcase optimization techniques,
+and can be skipped without loss of continuity in the text.  In
+particular, Puiseux expansions can be completely avoided, which offers
+significant savings in computational complexity.
+
 \cite{trager} shows how to extend Hermite reduction into the algebraic case.
 This offers a means of calculating the rational parts of the integrals
-without going through the calculations described in this chapter.  In
-particular, Puiseux expansions can be completely avoided, which offers
-savings in computational complexity.
+without going through the calculations described in this chapter.
+
+\example Compute:
+\label{Chebyshev's Integral}
+$$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}} \,{\rm d}x$$
+
+The polynomial under the square root is square-free:
+
+\begin{maximablock}
+num : 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8;
+den: 2*x^2-1;
+root : x^4+4*x^3+2*x^2+1;
+factor(root);
+\end{maximablock}
+
+\ldots so $y^2 = x^4+4 x^3+2 x^2+1$; $\{1, y\}$ is an integral basis;
+and our normal form for this integral is:
+
+$$\int {{(2x^6+4x^5+7x^4-3x^3-x^2-8x-8)y}\over{(2x^2-1)^2(x^4+4 x^3+2 x^2+1)}} \,{\rm d}x$$
+
+Applying now Bronstein's Hermite reduction from
+section 2.1 of his ``Symbolic Integration Tutorial'' with $v=2x^2-1$
+to eliminate this square in the denominator:
+
+\begin{maximablock}
+gradef(y,x,ratsimp(D(root)/2*y/root));
+D(y);
+U: root;
+V: den;
+S2: ratsimp(U*V^2*D(y/V));
+\end{maximablock}
+
+Now we want to solve $f_2 S_2 = A_2 y$ where $A_2 y$ is our numerator.
+
+\begin{maximablock}
+kill(f,T,Q,h);
+f[2] ::: num*y/S2;
+T[2] ::: num(f[2]);
+/* Q::: S2/y; */
+Q ::: denom(f[2]);
+
+[A,R,g] : gcdex(V,Q,x);
+/* T2: num; */
+[Q2, B2]: divide(T[2]*R, V, x);
+h ::: A*num*y/(V*U) - (D(V)*Q2+D(B2))*y/V + Q2*D(y);
+
+simp: false$
+'integrate(num*y/den,x) = ratsimp(B2*y/V)
+   + 'integrate(h,x);
+simp: true$
+\end{maximablock}
+
+We solved this new integral in example \ref{Chebyshev's Integral I}.
+The final answer is:
+
+$$A(x) = 1023x^8+4104x^7+5048x^6+2182x^5+805x^4+624x^3+10x^2+28x$$
+$$B(x) = 1025x^{10} + 6138x^9 + 12307x^8 + 10188x^7 + 4503x^6 + 3134x^5 + 1598x^4 + 140x^3 + 176x^2 +2$$
+$$C(x) = 32x^{10}-80x^8+80x^6-40x^4+10x^2-1$$
+
+$$y = \sqrt{x^4+4 x^3+2 x^2+1}$$
+
+$$\int {{(2x^6+4x^5+7x^4-3x^3-x^2-8x-8)}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}} \,{\rm d}x
+= {{(x+{1\over2})y}\over{2x^2-1}} + {1\over2}\ln{{A(x)y - B(x)}\over{C(x)}}
+$$
+
+\endexample
