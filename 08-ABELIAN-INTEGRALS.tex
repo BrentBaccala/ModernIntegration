@@ -19,29 +19,29 @@ poles.
 These two theorems, taken together with Liouville's Theorem, provide
 our method of attack for integration of Abelian integrals.  We find
 all of the poles of the differential, construct Puiseux expansions of
-the differential there, and split the principle parts easily into two
+the differential there, and split the principal parts easily into two
 sets.  The first order poles arise from logarithm components in the
 solution; all the higher order poles must come from the rational
 function.  To find the rational function, we integrate term-wise to
-obtain its principle parts, and then solve a Mittag-Leffler problem to
+obtain its principal parts, and then solve a Mittag-Leffler problem to
 see if such a function exists.  For the logarithmic components,
 it's a little more complicated.
 
-Once we've calculated the principle parts of an integrand, we can
-integrate the resulting series to obtain the principle parts of the
+Once we've calculated the principal parts of an integrand, we can
+integrate the resulting series to obtain the principal parts of the
 integral.  This is possible due to the simple but crucial observation
 that poles in the integral can only appear where there are poles in
-the integrand.  Once we've determined the principle parts of the
+the integrand.  Once we've determined the principal parts of the
 integral, we need to solve a Mittag-Leffler problem to find an
-algebraic function that matches the given principle parts.  This can
+algebraic function that matches the given principal parts.  This can
 be done by finding a basis for a suitable Riemann-Roch space.
 
 Thus, having identified the
-locations and orders of the integral's principle parts, we can compute
+locations and orders of the integral's principal parts, we can compute
 a Riemann-Roch basis for all functions with suitable poles at those
 locations.  Having done so, it then becomes a straightforward exercise
 in linear algebra to find a combination of those basis functions
-that match a specified set of principle parts.
+that match a specified set of principal parts.
 
 \theorem
 Finite poles are always located over a zero of the denominator.
@@ -80,9 +80,9 @@ Next, we identify the poles of the integrand.  The finite
 poles can only be located where the denominator is zero,
 which is where $x^2+1=0$, over the points $x=\pm i$.
 
-Let's compute the principle parts of $\frac{x}{y}$
+Let's compute the principal parts of $\frac{x}{y}$
 at $x=i$.  Calling {\tt puiseux} with {\tt deg=-1} computes just
-the principle part of the differential:
+the principal part of the differential:
 
 \begin{maximablock}
 puiseux(f, x, y, %i, false, -1, x/y);
@@ -137,7 +137,7 @@ can always add a multiple of $1$ to our solution and get another
 solution.
 
 What about $x$ and $y$?  We want to
-combine them in such a way as to match the principle parts of
+combine them in such a way as to match the principal parts of
 our differential.
 
 Let's expand them:
@@ -148,7 +148,7 @@ puiseux(f, x, y, inf, false, 0, y);
 \end{maximablock}
 
 No linear algebra games are required to see that $y$ will match the
-principle parts of the differential if it is itself differentiated.
+principal parts of the differential if it is itself differentiated.
 Therefore, $y=\sqrt{x^2+1}$ is our solution.
 
 \begin{maximablock}
@@ -237,15 +237,15 @@ than the last one, so let's use the tools we developed in the
 last chapter for solving Mittag-Leffler problems:
 
 \begin{maximablock}
-m : principle_parts_matrix(f,x,y, basis, div);
+m : principal_parts_matrix(f,x,y, basis, div);
 \end{maximablock}
 
-Another Maxima function will extract the principle parts of the
+Another Maxima function will extract the principal parts of the
 differential, and divide them by the powers needed for term-wise
 integration:
 
 \begin{maximablock}
-principle_parts2(f,x,y, func, divisor) :=
+principal_parts2(f,x,y, func, divisor) :=
   flatten(map(lambda([d],
     map(lambda([e],
       map(lambda([order], coeff(e[1]/del(t), t, order-1)/order),
@@ -254,7 +254,7 @@ principle_parts2(f,x,y, func, divisor) :=
   )
 $
 
-b : transpose(matrix(principle_parts2(f,x,y, lintegrand * del(x), div)));
+b : transpose(matrix(principal_parts2(f,x,y, lintegrand * del(x), div)));
 \end{maximablock}
 
 Now we have a matrix equation that we want to solve:
@@ -416,17 +416,17 @@ div : [[[inf, inf], -2]]$
 basis : riemannroch(f,x,y,div);
 \end{maximablock}
 
-Now let's construct a matrix of principle parts
+Now let's construct a matrix of principal parts
 and its pseudoinverse:
 
 \begin{maximablock}
-m : principle_parts_matrix(f,x,y, basis, div);
+m : principal_parts_matrix(f,x,y, basis, div);
 
 pi : pseudoinverse(m);
 \end{maximablock}
 
 \begin{maximablock}
-b : transpose(matrix(principle_parts2(f,x,y, lintegrand, div)));
+b : transpose(matrix(principal_parts2(f,x,y, lintegrand, div)));
 \end{maximablock}
 
 \begin{maximablock}
@@ -647,7 +647,7 @@ integration theory for Abelian integrals --- how do we limit the
 multiples of a divisor to a testable set?  We've seen how to
 repeatedly raise a divisor to higher and higher powers, but how do we
 know when to stop?  At what point can we declare that a divisor has no
-multiple that is principle?
+multiple that is principal?
 
 We'll attack this problem the way Robert Risch discovered in 1970, by
 mapping into a finite field, solving the corresponding problem there,
@@ -734,7 +734,7 @@ ${\cal F}[\phi]$.
 This theorem leads directly to the single more important difference
 (to us) between divisors in an infinite field versus those in a finite
 field.  {\it In a finite field, some multiple of every divisor is
-principle.}  The reason is that the multiplicative group of the
+principal.}  The reason is that the multiplicative group of the
 evaluation field has finite order.  The simplest way to demonstrate
 this is to construct theorems analogous to Theorems ? and ?:
 
@@ -791,7 +791,7 @@ order.
 
 \example
 
-Show that some multiple of ${\mathrm Z}(1,1)$ is principle in
+Show that some multiple of ${\mathrm Z}(1,1)$ is principal in
 ${\bf Z}_5(x,y); y^2=x$.
 
 Let's first construct a multiplication table for ${\bf Z}_5$:
@@ -845,7 +845,7 @@ $x$ & $(x,y)$ \cr
 Since ${\bf Z}_5[\gamma]$ has $5^2=25$ elements, its multiplicative
 group has order one less than this.  We conclude that 24 is our
 ``magic'' multiple, and that ${\mathrm Z}^{24}(1,1)$ must be
-principle in this field.  Its generator should be simply
+principal in this field.  Its generator should be simply
 $(x-1)^{24} + (y-1)^{24}$.  Clearly this function is zero for
 $(x,y)=(1,1)$.  Let's verify that it's non-zero for some other
 places on the Riemann surface:

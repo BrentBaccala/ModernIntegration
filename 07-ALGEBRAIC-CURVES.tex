@@ -241,22 +241,22 @@ Every holomorphic function $M \to C$ on a compact, connected, complex manifold $
 \endtheorem
 
 \theorem
-\label{algebraic functions are characterized by their principle parts}
+\label{algebraic functions are characterized by their principal parts}
 
 An algebraic function on an algebraic curve is completely characterized, up to an additive
-constant, by its principle parts.
+constant, by its principal parts.
 
 \proof
 
-Consider two algebraic functions $f$ and $g$ with identical principle
+Consider two algebraic functions $f$ and $g$ with identical principal
 parts.  Taking the difference between them, we obtain a function $f-g$
-with no principle parts, i.e, a holomorphic function.  By
+with no principal parts, i.e, a holomorphic function.  By
 Theorem \ref{holomorphic functions on compact manifolds are constant},
 $f-g$ must be constant.
 
 \endtheorem
 
-Given the importance of an algebraic function's principle parts, we will
+Given the importance of an algebraic function's principal parts, we will
 now develop tools to calculate them.
 
 \vfill\eject
@@ -264,7 +264,7 @@ now develop tools to calculate them.
 \mysection{Puiseux Expansions}
 
 Given an algebraic function on an algebraic curve, we wish to compute
-its principle parts by locating its poles and computing series
+its principal parts by locating its poles and computing series
 expansions there.  Since the powers of $y$ form a ${\cal C}(x)$ basis
 for the curve's function field (PROOF), our primary goal is to compute
 series expansions for $y$ at arbitrary points on the curve.  With such
@@ -1042,11 +1042,11 @@ a single cycle of two sheets at $(\infty,\infty)$.
 %constant.
 %
 %Proof: We can do a Taylor series expansion at the origin, whose
-%non-zero terms will correspond to the principle part of the expansion
+%non-zero terms will correspond to the principal part of the expansion
 %at infinity, which must therefore be zero.
 %
 %Next: A entire function with only a pole at infinity is a polynomial.
-%The principle part at infinity will be a polynomial.  Subtract it out
+%The principal part at infinity will be a polynomial.  Subtract it out
 %to get a function with no singularities, which must be constant.
 %
 %Next: Given a function with only a finite number of finite poles,
@@ -1059,7 +1059,7 @@ $y^2 = 1 - x^2$
 
 The {\it principal part} of an algebraic function is the part
 of its series expansion with negative exponents.  Theorem
-\ref{algebraic functions are characterized by their principle parts}
+\ref{algebraic functions are characterized by their principal parts}
 states that an algebraic function is completely determined,
 up to adding a constant, by its principal parts.
 
@@ -1592,10 +1592,10 @@ riemannroch(f, x, y, [[Pinf, -3]]);
 
 Theorem ? tells us that a rational function on an algebraic
 curve is completely characterized, up to an additive constant,
-by the principle parts of the Puiseux expansions at its poles.
+by the principal parts of the Puiseux expansions at its poles.
 
 A {\it Mittag-Leffler problem} is the practical application of this
-theorem -- given a set of principle parts, find a function that
+theorem -- given a set of principal parts, find a function that
 matches them all, or prove that no such function exists.
 
 The first step in solving a Mittag-Leffler problem is to identify the
@@ -1607,24 +1607,24 @@ expansions for the basis functions, and use them to construct
 a matrix equation that, when solved, gives the coefficients
 needed to form the function we seek from the basis functions.
 
-The input data is a set of principle parts or, alternately, a divisor
+The input data is a set of principal parts or, alternately, a divisor
 combined with a vector of coefficients.
 
 Let's assume that we've got our data in the latter form, so we can run
 {\tt riemannroch} on the divisor and obtain a set of basis functions.
-Now let's construct a Maxima function to extract the principle parts
+Now let's construct a Maxima function to extract the principal parts
 of the basis functions and form them into a matrix:
 
 \begin{maximablock}
-principle_parts(f,x,y, func, divisor) :=
+principal_parts(f,x,y, func, divisor) :=
   flatten(
   map(lambda([d], map(lambda([e], map(lambda([order], coeff(e[1], t, order)), makelist(order, order, d[2], -1))),
                       puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
   )
 $
 
-principle_parts_matrix(f,x,y, basis, divisor) :=
-  transpose(apply(matrix, map(lambda([func], principle_parts(f,x,y,func,divisor)), basis)))
+principal_parts_matrix(f,x,y, basis, divisor) :=
+  transpose(apply(matrix, map(lambda([func], principal_parts(f,x,y,func,divisor)), basis)))
 $
 \end{maximablock}
 
@@ -1672,10 +1672,10 @@ div : [[[%i,  sqrt(2)], -1],
 basis : riemannroch(f, x, y, div);
 \end{maximablock}
 
-We now compute its principle parts matrix:
+We now compute its principal parts matrix:
 
 \begin{maximablock}
-m : principle_parts_matrix(f,x,y, basis, div);
+m : principal_parts_matrix(f,x,y, basis, div);
 
 pi : pseudoinverse(m);
 \end{maximablock}
