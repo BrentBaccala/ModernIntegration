@@ -14,8 +14,9 @@ clean:
 .DELETE_ON_ERROR:
 
 ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
-	rm -f pythontex-files-ModernIntegration/*
+	#rm -f pythontex-files-ModernIntegration/*
 	pdflatex ModernIntegration
+	ls -v common*.tex | xargs cat > common.mac
 	./pythontex/pythontex/pythontex.py --interpreter maxima:/home/baccala/src/maxima-code/maxima-local --verbose ModernIntegration.tex
 	# ./pythontex/pythontex/pythontex.py --verbose ModernIntegration.tex
 	pdflatex ModernIntegration

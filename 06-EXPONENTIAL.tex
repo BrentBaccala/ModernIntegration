@@ -1040,7 +1040,7 @@ isn't a fraction, or if its denominator doesn't involve the variable
 {\it var}, we want an empty list returned, otherwise return a list of
 the fractions in the expansion.
 
-\begin{maximablock}
+\begin{maximacommon}
 factors(u,v) := block(
    [f],
    f: factor(u),
@@ -1048,13 +1048,13 @@ factors(u,v) := block(
    elseif atom(f) then []
    elseif op(f) = "*" then partlist(f)
    else [f]
-)$
+);
 
 partlist1(L) :=
    if atom(L) then [L]
    elseif op(L) = "+" then partlist(L)
    else [L]
-$
+;
 
 partfrac1(expr,v) := block(
    [expr1],
@@ -1063,8 +1063,8 @@ partfrac1(expr,v) := block(
    elseif op(expr1) = "/" then
       partlist1(partfrac(expr1,v))
    else []
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 Next, given a Risch equation in the form
 
@@ -1083,7 +1083,7 @@ numerator, in the following format:
 \end{verbatim}
 \end{center}
 
-\begin{maximablock}
+\begin{maximacommon}
 normal_risch_factors(S, T, var) := block(
    [n, sf, tf],
    n: map(base,
@@ -1099,13 +1099,13 @@ normal_risch_factors(S, T, var) := block(
    tf: sort(tf, lambda([u,v], u[2][2] > v[2][2])),
    map(lambda([u], [u, assoc(u, sf, [0,0]),
                        assoc(u, tf, [0,0])]), n)
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 {\tt normal_risch_denominator} uses {\tt normal_risch_factors}
 to compute the solutions's denominator.
 
-\begin{maximablock}
+\begin{maximacommon}
 normal_risch_denominator1(L) := block(
    [factor, Snum, k, Tnum, l],
    [factor, [Snum, k], [Tnum, l]] : L,
@@ -1117,14 +1117,14 @@ normal_risch_denominator1(L) := block(
                      else max(l-1, 0)
    )
    else factor^max(0,l-k)
-)$
+);
 
 normal_risch_denominator(S, T, var) := block(
    apply("*",
       map(normal_risch_denominator1,
          normal_risch_factors(S, T, var)))
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 The next function, {\tt normal_risch_polynomial}, given $S$, $T$, and
 the denominator computed by {\tt normal_risch_denominator},
@@ -1135,7 +1135,7 @@ $$A n' + B n = C$$
 
 in the form {\tt [A, B, C]}.
 
-\begin{maximablock}
+\begin{maximacommon}
 normal_risch_polynomial(S, T, var, D1) := block(
    [D2, A, B, C],
    D2 : denom(S*D1)*denom(T*D1),
@@ -1143,14 +1143,14 @@ normal_risch_polynomial(S, T, var, D1) := block(
    B : S*D1*D2 - D(D1)*D2,
    C : T*D1^2*D2,
    [A, B, C]
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 Next, given $A$, $B$, and $C$, we wish to compute the
 maximum degree of the numerator, or -1 if we can
 determine at this point that there is no solution.
 
-\begin{maximablock}
+\begin{maximacommon}
 normal_risch_degree(A, B, C, var) := block(
    [k, p],
 
@@ -1170,14 +1170,14 @@ normal_risch_degree(A, B, C, var) := block(
       if integerp(p) then k : max(k, p),
 
    k
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 Finally, we combine all these pieces together into a function that
 either returns a solution to a normal Risch equation, or {\bf false}
 if no such solution exists.
 
-\begin{maximablock}
+\begin{maximacommon}
 normal_risch_equation(S, T, var) := block(
    [D, A, B, C],
    D : normal_risch_denominator(S, T, var),
@@ -1189,8 +1189,8 @@ normal_risch_equation(S, T, var) := block(
    else product(c[i] * var^i, i, 0,
                 normal_risch_degree(A,B,C,var))
         / D
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 Let's demonstrate the use of this code by using it to solve the Risch
 equations that we've already seen in this chapter's examples so far.
@@ -1203,15 +1203,15 @@ normal_risch_equation(log(2), 1, x);
 normal_risch_equation(theta+1, 1, theta);
 \end{maximablock}
 
-\begin{maximablock}
+\begin{maximacommon}
 normal_risch_solver(eq,var) := block(
    [A, B, AB, C],
    [C, AB] : partition(eq, var),
    [B, A] : ratsimp(partition(AB, D(var))
           / [var, D(var)]),
    normal_risch_equation(B/A, - C/A, var)
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 \vfill\eject
 \section{Risch Equations over Special Polynomials}

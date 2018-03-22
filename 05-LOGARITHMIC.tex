@@ -572,14 +572,14 @@ helper functions:
 % expansion to a list, and to extract base factors
 % from powers of factors:
 
-\begin{maximablock}
+\begin{maximacommon}
 is_power(expr) :=
-   not atom(expr) and part(expr, 0) = "^"$
+   not atom(expr) and part(expr, 0) = "^";
 base(e) :=
-   if is_power(e) then part(e,1) else e$
+   if is_power(e) then part(e,1) else e;
 power(e) :=
-   if is_power(e) then part(e,2) else 1$
-\end{maximablock}
+   if is_power(e) then part(e,2) else 1;
+\end{maximacommon}
 
 Now we can extract the portions of the
 denominators that involve the variable $\theta$:

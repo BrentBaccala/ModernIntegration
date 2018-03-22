@@ -184,10 +184,10 @@ with respect to one of its variables.  The discriminant will be zero
 at special points, so these points can be located by computing the
 zeros of a univariate polynomial.
 
-\begin{maximablock}
+\begin{maximacommon}
 discriminant(f,y) :=
-  factor(resultant(diff(f,y), f, y))$
-\end{maximablock}
+  factor(resultant(diff(f,y), f, y));
+\end{maximacommon}
 
 These points are further classified according to whether or not the
 curve is locally Euclidean in their neighborhood.  Geometrically, this
@@ -468,8 +468,8 @@ to graph the lower convex hull.
 
 \vfill\eject
 
-\begin{maximablock}
-in_namespace(puiseux)$
+\begin{maximacommon}
+/* in_namespace(puiseux)$ */
 
 recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
    if x0 = inf then (f:subst(x=1/x, f), x0:0),
@@ -482,15 +482,15 @@ recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
          newf : newf + radcan(ratsimp(coeff(xcoeff, y, ypow)))*x^xpow*y^ypow
    ),
    newf
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 \begin{maximablock}
 /* why doesn't this produce cdots? */
 taylor(sin(x),x,0,3);
 \end{maximablock}
 
-\begin{maximablock}
+\begin{maximacommon}
 monomial_powers(f,x,y,x0,y0) := block(
   [result: [], xcoeff],
   f : recenter_curve(f,x,y,x0,y0),
@@ -503,10 +503,10 @@ monomial_powers(f,x,y,x0,y0) := block(
        )
   ),
   result
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
-\begin{maximablocksmall}
+\begin{maximacommonsmall}
 /* list is a list of pairs, like [[0,1], [0,2], [2,0]] */
 /* this function returns the points on the lower convex hull */
 
@@ -542,7 +542,7 @@ lower_convex_points(list) := block(
          (pop(slopes), result:endcons(pop(list), result))
    ),
    result
-)$
+);
 
 /* this function graphs a line around the lower convex hull */
 
@@ -555,7 +555,7 @@ lower_convex_hull(inlist, x) := block([list],
                   / (list[2][1] - list[1][1])
   else
      %nan
-)$
+);
 
 newton_polygon(f, x, y, x0, y0) := block(
    [newton_points, convex_hull_points, maxx, maxy, maxxy, filename],
@@ -579,11 +579,11 @@ newton_polygon(f, x, y, x0, y0) := block(
        [ylabel, false],
        [pdf_file, filename]),
    embed_latex_graphic(filename)
-)$
+);
 
-\end{maximablocksmall}
+\end{maximacommonsmall}
 
-\begin{maximablocksmall}
+\begin{maximacommonsmall}
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  block([n:max(deg,s), xexpansion, yexpansion, res,
         allans, ans, eqns, deqn],
@@ -641,28 +641,28 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
       oneans: endcons(s[1], oneans),
       eqns2: subst(oneans, eqns2)),
     subst(oneans, yexpansion))), ans)
-  )$
-\end{maximablocksmall}
+  );
+\end{maximacommonsmall}
 
-\begin{maximablocksmall}
+\begin{maximacommonsmall}
 /* puiseux_fracexp controls whether series are returned with
  * fractional exponents, or using an auxilary variable (t).
  */
 
-puiseux_fracexp : false $
+puiseux_fracexp : false ;
 
-\end{maximablocksmall}
+\end{maximacommonsmall}
 
-\begin{maximablocksmall}
+\begin{maximacommonsmall}
 distribute_denominator(frac, var, lim) := block(
   [result: 0, n: num(expand(frac)), d: denom(expand(frac))],
   for i: lopow(n, var) thru min(hipow(n, var), lim + hipow(d, var)) do
     result : result + radcan(rectform(ratsimp(coeff(n, var, i)/d)))*var^i,
   result
-)$
-\end{maximablocksmall}
+);
+\end{maximacommonsmall}
 
-\begin{maximablocktiny}
+\begin{maximacommontiny}
 puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,b) :=
  block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, maxypow, rf:0, yserieslist, result],
 
@@ -728,10 +728,10 @@ puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,b) :=
       else
          [result * differential, tsubst, y=orig_y0]
    ), yserieslist)
- )$
-\end{maximablocktiny}
+ );
+\end{maximacommontiny}
 
-\begin{maximablocksmall}
+\begin{maximacommonsmall}
 puiseux4(f,x,y,x0,y0,deg,rf) :=
  block([result: [], lastslope : 0, orig_y0 : y0, sign, mp, pairs],
 
@@ -771,11 +771,11 @@ puiseux4(f,x,y,x0,y0,deg,rf) :=
      )
    ),
    result
- )$
+ );
 
-\end{maximablocksmall}
+\end{maximacommonsmall}
 
-\begin{maximablocksmall}
+\begin{maximacommonsmall}
 puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
  block([result: [], rf],
 
@@ -783,7 +783,7 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
    /* be expaned, use modulo to normalize it.  Default is y. */
 
    if length(ratfunc) > 0 then
-      rf: maxima|modulo(ratfunc[1], f, y)
+      rf: modulo(ratfunc[1], f, y)
    else
       rf: y,
 
@@ -810,12 +810,12 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
       result: puiseux4(f,x,y,x0,y0,deg,rf),
 
    result
- )$
+ );
 
-export(puiseux, puiseux_fracexp, newton_polygon)$
-in_namespace(maxima)$
-import(puiseux)$
-\end{maximablocksmall}
+/* export(puiseux, puiseux_fracexp, newton_polygon)$ */
+/* in_namespace(maxima)$ */
+/* import(puiseux)$ */
+\end{maximacommonsmall}
 
 \begin{maximacode}
 
@@ -1127,7 +1127,7 @@ the exercises in \cite{bliss} \S 68.
 To facilitate this example, let's define an
 auxiliary function to perform the analysis:
 
-\begin{maximablock}
+\begin{maximacommon}
 analyze_multiple_points(f, [args]) := block(
   [discriminant: discriminant(f, y), deg],
   display(discriminant),
@@ -1135,8 +1135,8 @@ analyze_multiple_points(f, [args]) := block(
   for r in solve(discriminant, x) do
     disp(puiseux(f, x, y, rhs(r), false, deg)),
   disp(puiseux(f, x, y, inf, false, 5))
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 %% \begin{comment}
 
@@ -1291,11 +1291,11 @@ each sheet at the singularity.  The order of sheets is the same
 returned by {\tt puiseux}.  Specifying multiple orders at
 singularities with cycles is currently not supported.
 
-\begin{maximablocksmall}
+\begin{maximacommonsmall}
 /* in_namespace(riemannroch)$ */
 /* import(puiseux)$ */
 
-riemannroch_trace: false$
+riemannroch_trace: false;
 
 extract_one_point(f,x,y,x0,y0,orders,func) :=
   if listp(orders) then block(
@@ -1304,7 +1304,7 @@ extract_one_point(f,x,y,x0,y0,orders,func) :=
   )
   else
     map(lambda([exp], coeff(exp[1], t, orders)), puiseux(f,x,y,x0,y0,orders,func))
-$
+;
 
 matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
  block([ys, cycles, A, required_degrees, pairs, expansions], local(A),
@@ -1344,7 +1344,7 @@ matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
                apply(append, map(lambda([pair], extract_one_point(f,x,y,x0,pair[1],pair[2],basis_func)),
                pairs))),
         basis)))
-)$
+);
 
 expansions_at_x0(f,x,y,divisor,basis,x0) :=
  block([ys, A, required_degrees], local(A),
@@ -1357,7 +1357,7 @@ expansions_at_x0(f,x,y,divisor,basis,x0) :=
     /* Now compute a matrix of the principal parts in the Puiseux expansion */
     A[i,j] := puiseux(f,x,y,x0,ys[i],-1,basis[j]),
     ev(genmatrix(A,length(ys),length(ys)), puiseux_fracexp: false)
-)$
+);
 
 basis_of_divisor_except_at_inf(f,x,y,divisor) :=
  block([basis,xs],
@@ -1407,13 +1407,13 @@ basis_of_divisor_except_at_inf(f,x,y,divisor) :=
       )
     ),
     basis
-)$
+);
 
 column_orders(f,x,y,func) :=
   /* XXX 5 is a guess */
   /* Could use a function to return the degree of an Puiseux expansion */
   lmin(map(lambda([pe], lopow(pe[1], t)), puiseux(f,x,y,inf,false,5,func)))
-$
+;
 
 normal_matrix_at_inf(f,x,y,basis) := block([expansions, cycles, colord], local(A),
 
@@ -1426,7 +1426,7 @@ normal_matrix_at_inf(f,x,y,basis) := block([expansions, cycles, colord], local(A
   colord : map(lambda([i], column_orders(f,x,y,i)), basis),
   A[j,i] := coeff(  puiseux(f,x,y,inf,false,5,basis[i])  [j][1], t, colord[i]),
   genmatrix(A,length(basis),length(basis))
-)$
+);
 
 basis_of_divisor_normal_at_inf(f,x,y,divisor) := block([basis, nb, d, colord],
   basis : basis_of_divisor_except_at_inf(f,x,y,divisor),
@@ -1485,7 +1485,7 @@ basis_of_divisor_normal_at_inf(f,x,y,divisor) := block([basis, nb, d, colord],
   if riemannroch_trace then disp("normal at infinity"),
 
   basis
-)$
+);
 
 riemannroch2(f,x,y,divisor) := block([basis, colord, a],
 
@@ -1499,7 +1499,7 @@ riemannroch2(f,x,y,divisor) := block([basis, colord, a],
   ),
 
   flatten(basis * map(lambda([i], makelist(x^j, j, 0, i)), colord))
-)$
+);
 
 recenter_curve2(f,x,y,a) := block([xcoeff, newf:0],
    f : expand(subst([x=1/x+a], f)),
@@ -1510,13 +1510,13 @@ recenter_curve2(f,x,y,a) := block([xcoeff, newf:0],
          newf : newf + radcan(ratsimp(coeff(xcoeff, y, ypow)))*x^xpow*y^ypow
    ),
    newf
-)$
+);
 
 load('grobner)$   /* For poly_content() */
 
 simplify_basis(basis,x,y) :=
   map(lambda([e], ratsimp(e/poly_content(e,[x,y]))), basis)
-$
+;
 
 riemannroch(f,x,y,divisor) := block([finite_divisor, infinite_divisor, basis, colord],
 
@@ -1552,12 +1552,12 @@ riemannroch(f,x,y,divisor) := block([finite_divisor, infinite_divisor, basis, co
      simplify_basis(map(lambda([f], ratsimp(subst([x=1/(x-a)], f))), basis), x, y)
 
   ) else simplify_basis(riemannroch2(f,x,y,divisor), x, y)
-)$
+);
 
 /* export(riemannroch)$ */
 /* in_namespace(maxima)$ */
 /* import(riemannroch)$ */
-\end{maximablocksmall}
+\end{maximacommonsmall}
 
 Here's a simple example\footnote{From
 {\tt https://math.stackexchange.com/questions/294644}}
@@ -1616,18 +1616,18 @@ Let's assume that we've got our data in the latter form, so we can run
 Now let's construct a Maxima function to extract the principal parts
 of the basis functions and form them into a matrix:
 
-\begin{maximablock}
+\begin{maximacommon}
 principal_parts(f,x,y, func, divisor) :=
   flatten(
   map(lambda([d], map(lambda([e], map(lambda([order], coeff(e[1], t, order)), makelist(order, order, d[2], -1))),
                       puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
   )
-$
+;
 
 principal_parts_matrix(f,x,y, basis, divisor) :=
   transpose(apply(matrix, map(lambda([func], principal_parts(f,x,y,func,divisor)), basis)))
-$
-\end{maximablock}
+;
+\end{maximacommon}
 
 Given a vector {\tt b} of coefficients, we now want to
 solve a matrix equation:
@@ -1647,13 +1647,13 @@ To proceed, we'll use the
 which has the property that if a solution exists, it can
 be found by multiplying the $b$ vector by the pseudoinverse:
 
-\begin{maximablock}
+\begin{maximacommon}
 pseudoinverse(m) := block([mm, z : ?gensym(), scalarmatrixp : false],
   require_unblockedmatrix(m, "first", "pseudoinverse"),
   mm : m . ctranspose(m),       
   subst(z=0, ratsimp(ctranspose(m) . ratsimp((mm - z * identfor(mm))^^-1)))
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 To find out if there actually is a solution, we first compute a trial
 solution by multiplying the pseudoinverse by {\tt b}, then checking

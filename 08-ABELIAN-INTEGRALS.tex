@@ -244,7 +244,7 @@ Another Maxima function will extract the principal parts of the
 differential, and divide them by the powers needed for term-wise
 integration:
 
-\begin{maximablock}
+\begin{maximacommon}
 principal_parts2(f,x,y, func, divisor) :=
   flatten(map(lambda([d],
     map(lambda([e],
@@ -252,8 +252,10 @@ principal_parts2(f,x,y, func, divisor) :=
           makelist(order, order, d[2], -1))),
        puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
   )
-$
+;
+\end{maximacommon}
 
+\begin{maximablock}
 b : transpose(matrix(principal_parts2(f,x,y, lintegrand * del(x), div)));
 \end{maximablock}
 

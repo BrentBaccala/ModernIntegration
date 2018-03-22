@@ -1324,30 +1324,30 @@ original system to be solvable.
 
 Here's a Maxima function that constructs a Sylvester matrix:
 
-\begin{maximablock}
+\begin{maximacommon}
 syl_elem(a,b,t,i,j) :=
    if (i > hipow(b,t))
       then coeff(b,t,i-j)
-      else coeff(a,t,i-j+hipow(a,t))$
+      else coeff(a,t,i-j+hipow(a,t));
 sylvester(a,b,t) := block(
    [size: hipow(a,t) + hipow(b,t)],
    genmatrix(lambda([i,j], syl_elem(a,b,t,i,j)),
              size, size)
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 \begin{comment}
 ...alternate Maxima function to construct Sylvester matrix
-\begin{maximablock}
+\begin{maximacommon}
 syl1[a, x, rows, cols] :=
    genmatrix(lambda([i,j], coeff(a,x,hipow(a,x)-j+i)),
-             rows, cols)$
+             rows, cols);
 sylvester(a,b,x) :=
    addrow(syl1[expand(a), x,
                hipow(b,x),hipow(a,x)+hipow(b,x)],
           syl1[expand(b), x,
-               hipow(a,x),hipow(a,x)+hipow(b,x)])$
-\end{maximablock}
+               hipow(a,x),hipow(a,x)+hipow(b,x)]);
+\end{maximacommon}
 \end{comment}
 
 \example Compute the $t-$resultant of $t^2 - 1 -x$ and $t^3-t-y$.
@@ -1533,12 +1533,12 @@ the rational function into its numerator and denominator, it uses {\tt
 gcdex} to invert the denominator modulo $n(x)$, then multiplies it by
 the numerator and uses {\tt divide} to perform modulo reduction.
 
-\begin{maximablock}
+\begin{maximacommon}
 modulo(r,n,x) := block(
    [d_inverse : gcdex(denom(r),n,x)[1]],
    divide(num(r) * d_inverse,n,x)[2]
-)$
-\end{maximablock}
+);
+\end{maximacommon}
 
 We need to specify the variable in order to distinguish between
 operations in ${\cal C}(x)[y]$ mod $n(y)$ and ${\cal C}(y)[x]$

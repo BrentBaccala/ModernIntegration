@@ -507,17 +507,19 @@ First, TeX has two different ways of displaying the Greek letter
 $\theta$, and Maxima lets us select which we will use.
 I prefer $\theta$.
 
-\begin{maximablock}
-theta;
+\begin{maximacommon}
 :lisp-quiet (defprop $theta "\\theta" texword)
+\end{maximacommon}
+
+\begin{maximablock}
 theta;
 \end{maximablock}
 
 I often want to differentiate with respect to $x$, so I use a shorthand for this:
 
-\begin{maximablock}
-D(f) := diff(f,x)$
-\end{maximablock}
+\begin{maximacommon}
+D(f) := diff(f,x);
+\end{maximacommon}
 
 Maxima has some basic support for namespaces, which allows us to hide
 the definitions of auxiliary functions and only make the primary
@@ -531,10 +533,13 @@ I use lambda expressions with a single variable so much that I find it
 useful to create a version of {\tt map} that treats its first argument
 as a lambda expression in $u$.
 
-\begin{maximablock}
+\begin{maximacommon}
 mapu(func, expr) ::=
    map(buildq([func], lambda([u], func)),
-       ev(expr))$
+       ev(expr));
+\end{maximacommon}
+
+\begin{maximablock}
 mapu(u+4, [1,2,3]);
 mapu(denom(u), [x,1,1/x,1/x^2]);
 \end{maximablock}
@@ -542,47 +547,51 @@ mapu(denom(u), [x,1,1/x,1/x^2]);
 The $cis$ function is a useful shorthand for constructing
 roots of unity:
 
-\begin{maximablock}
-cis(theta) := %i*sin(theta) + cos(theta)$
-\end{maximablock}
+\begin{maximacommon}
+cis(theta) := %i*sin(theta) + cos(theta);
+\end{maximacommon}
 
 Example \ref{an integral Maxima can't solve} uses
 trigonometric functions of $\frac{\pi}{8}$, which
 Maxima does not expand by default.
 
-\begin{maximablock}
-matchdeclare(ii, integerp, xx, true)$
+\begin{maximacommon}
+matchdeclare(ii, integerp, xx, true);
 
 tellsimpafter(sin(ii*%pi/8),
-   subst(x=ii*%pi/4, ev(sin(x/2), halfangles=true)))$
+   subst(x=ii*%pi/4, ev(sin(x/2), halfangles=true)));
 tellsimpafter(cos(ii*%pi/8),
-   subst(x=ii*%pi/4, ev(cos(x/2), halfangles=true)))$
-\end{maximablock}
+   subst(x=ii*%pi/4, ev(cos(x/2), halfangles=true)));
+\end{maximacommon}
 
 \subsection{List Functions}
 
 Here's a function that finds the index of an
 element in a list:
 
-\begin{maximablock}
+\begin{maximacommon}
 which(n,u) :=
-   sublist_indices(n, lambda([x], x=u))[1]$
+   sublist_indices(n, lambda([x], x=u))[1];
+\end{maximacommon}
 
+\begin{maximablock}
 which([a,b,c,d,e], b);
 \end{maximablock}
 
 This function converts the parts of a mathematical expression into a
 list:
 
-\begin{maximablock}
+\begin{maximacommon}
 partlist(expr) := block(
    [partswitch: true, result:[]],
    for i:1 step 1 unless part(expr,i) = end
       do result:cons(part(expr,i), result),
-   result)$
+   result);
+\end{maximacommon}
+
+\begin{maximablock}
 partlist(a+b+c);
 \end{maximablock}
-
 
 \subsection{Array Functions}
 
@@ -593,7 +602,7 @@ Conceptionally, it's just
 displayarray(b) :=
    map(display,
       map(lambda([u], arraymake(b,u)),
-          rest(arrayinfo(b),2)))$
+          rest(arrayinfo(b),2)));
 \end{maximaverbatim}
 
 This doesn't work because {\tt arrayinfo} quotes its first argument
@@ -602,12 +611,12 @@ would always return the array info for array {\tt b}.  Something a
 little more complicated is required: a macro that evaluates its
 argument and then calls {\tt arrayinfo}.
 
-\begin{maximablock}
+\begin{maximacommon}
 displayarray(b) ::=
    map(display,
       map(lambda([u], arraymake(''b,u)),
-          rest(apply(arrayinfo, ''[b]),2)))$
-\end{maximablock}
+          rest(apply(arrayinfo, ''[b]),2)));
+\end{maximacommon}
 
 \subsection{Simplification}
 
@@ -615,9 +624,12 @@ The Maxima function {\tt ratsimp} simplifies a rational function to
 its simplest form, and I use it so much, let's define a shorthand
 notation to simplify an expression and assign it to a variable:
 
+\begin{maximacommon}
+infix(":::", 180, 20);
+(x ::: y) := x :: ratsimp(y);
+\end{maximacommon}
+
 \begin{maximablock}
-infix(":::", 180, 20)$
-(x ::: y) := x :: ratsimp(y)$
 (x+1)/(x^2-1) - 1/(x-1);
 a ::: (x+1)/(x^2-1) - 1/(x-1);
 \end{maximablock}
@@ -625,8 +637,11 @@ a ::: (x+1)/(x^2-1) - 1/(x-1);
 Since {\tt :::} now means ``simplify and assign'', let's make {\tt ===}
 mean ``simplify and test for equality''.
 
+\begin{maximacommon}
+infix("===", 20, 20);
+(x === y) := is(ratsimp(x - y) = 0);
+\end{maximacommon}
+
 \begin{maximablock}
-infix("===", 20, 20)$
-(x === y) := is(ratsimp(x - y) = 0)$
 (x+1)/(x^2-1) === 1/(x-1);
 \end{maximablock}
