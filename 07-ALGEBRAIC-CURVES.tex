@@ -584,9 +584,14 @@ newton_polygon(f, x, y, x0, y0) := block(
 \end{maximacommonsmall}
 
 \begin{maximacommonsmall}
+puiseux2_cache : [];
+
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
  block([n:max(deg,s), xexpansion, yexpansion, res,
-        allans, ans, eqns, deqn],
+        allans, ans, eqns, deqn, cache, result],
+
+  cache: assoc([f,x,y,x0,y0,r,s,p], puiseux2_cache),
+  if listp(cache) and cache[1] >= deg then return(cache[2]),
 
   if x0 # inf then
     xexpansion: x0 + t^r
@@ -634,13 +639,16 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   /* IFT guarantees unique solutions to all eqns. */
 
   ans: map(makelist, ans),
-  map(lambda([oneans], block([eqns2:subst(oneans, eqns)],
+  result: map(lambda([oneans], block([eqns2:subst(oneans, eqns)],
     for i:1 thru n-s do block([s:radcan(solve(eqns2[i+1],a[s+i]))],
       if not listp(s) or length(s) # 1 then
          error("puiseux2: internal error"),
       oneans: endcons(s[1], oneans),
       eqns2: subst(oneans, eqns2)),
-    subst(oneans, yexpansion))), ans)
+    subst(oneans, yexpansion))), ans),
+
+  puiseux2_cache: cons([[f,x,y,x0,y0,r,s,p], [deg, result]], puiseux2_cache),
+  result
   );
 \end{maximacommonsmall}
 
