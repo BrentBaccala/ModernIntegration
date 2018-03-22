@@ -626,33 +626,30 @@ pi : pseudoinverse(m);
 \example
 \label{Chebyshev's Integral I}
 
-\begin{maximacode}
+\begin{maximacode}[chebyshev]
 num : 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8$
 den: 2*x^2-1$
 root : x^4+4*x^3+2*x^2+1$
-factor(root)$
 
 gradef(y,x,ratsimp(D(root)/2*y/root))$
-D(y)$
+
 U: root$
 V: den$
 S2: ratsimp(U*V^2*D(y/V))$
 
-kill(f2, T2, Q)$
 f2 ::: num*y/S2$
 T2 ::: num(f2)$
-/* Q::: S2/y; */
 Q ::: denom(f2)$
 
 [A,R,g] : gcdex(V,Q,x)$
-/* T2: num; */
+
 [Q2, B2]: divide(T2*R, V, x)$
 h ::: A*num*y/(V*U) - (D(V)*Q2+D(B2))*y/V + Q2*D(y)$
 \end{maximacode}
 
-Compute: $$ \maxima{'integrate(subst(y=sqrt(root), h), x);} $$
+Compute: $$ \maxima[chebyshev]{'integrate(subst(y=sqrt(root), h), x);} $$
 
-\begin{maximablock}
+\begin{maximablock}[chebyshev]
 f: y^2 - root;
 solve(denom(h));
 for r in solve(denom(h)) do
@@ -663,7 +660,7 @@ puiseux(f,x,y,inf,false,-1,h*del(x));
 We have poles at $x=\pm \frac{1}{\sqrt{2}}$
 and nowhere else.
 
-\begin{maximablock}
+\begin{maximablock}[chebyshev]
 extract_simple_poles(x0) :=
   apply(append,
     map(lambda([exp], if is(exp[1] # 0) then [[if rhs(exp[2]) # 1/x then x-rhs(exp[2]) else inf, rhs(exp[3]), coeff(exp[1]/del(t), t, -1)]] else []),
@@ -674,7 +671,7 @@ poles : unique(apply(append, map(extract_simple_poles, solve(denom(h)))));
 
 Maxima has difficulty simplifying this expression.  I found a way to coax it, though...
 
-\begin{maximablock}
+\begin{maximablock}[chebyshev]
 mysimp(x) := signum(x)*sqrt(ratsimp(x*x))$
 poles : map(mysimp, poles);
 \end{maximablock}
@@ -682,12 +679,12 @@ poles : map(mysimp, poles);
 Now we can see that all of our residues are $\pm\frac{5}{2}$, so we need only
 a single logarithmic term.  Let's compute its residue:
 
-\begin{maximablock}
+\begin{maximablock}[chebyshev]
 /* div : map(lambda([x], [[x[1], x[2]], signum(x[3])]), poles); */
 div(p) := map(lambda([x], [[x[1], x[2]], p*signum(x[3])]), poles)$
 \end{maximablock}
 
-\begin{maximablock}
+\begin{maximablock}[chebyshev]
 div(1);
 riemannroch(f,x,y,div(1));
 div(2);
