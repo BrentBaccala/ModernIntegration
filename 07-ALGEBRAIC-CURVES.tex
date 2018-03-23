@@ -1417,13 +1417,18 @@ basis_of_divisor_except_at_inf(f,x,y,divisor) :=
     basis
 );
 
-column_orders(f,x,y,func) :=
-  /* XXX 5 is a guess */
-  /* Could use a function to return the degree of an Puiseux expansion */
-  lmin(map(lambda([pe], lopow(pe[1], t)), puiseux(f,x,y,inf,false,5,func)))
+/* XXX if divisor specifies a single number at a singularity, doesn't sum it up right */
+
+total_degree(divisor) :=
+  lsum(if listp(i) then lsum(j, j, i) else i, i, map(second, divisor))
 ;
 
-normal_matrix_at_inf(f,x,y,basis) := block([expansions, cycles, colord], local(A),
+column_orders(f,x,y,func,maxcolord) :=
+  /* Could use a function to return the degree of an Puiseux expansion */
+  lmin(map(lambda([pe], lopow(pe[1], t)), puiseux(f,x,y,inf,false,maxcolord,func)))
+;
+
+normal_matrix_at_inf(f,x,y,basis,colord) := block([expansions, cycles], local(A),
 
   expansions: puiseux(f,x,y,inf,false,0,1),
   cycles: map(lambda([expansion], hipow(lhs(expansion[2]), t)), expansions),
@@ -1431,16 +1436,19 @@ normal_matrix_at_inf(f,x,y,basis) := block([expansions, cycles, colord], local(A
   if apply("+", cycles) # length(basis) then
      error("wrong basis length in riemannroch"),
 
-  colord : map(lambda([i], column_orders(f,x,y,i)), basis),
-  A[j,i] := coeff(  puiseux(f,x,y,inf,false,5,basis[i])  [j][1], t, colord[i]),
+  A[j,i] := coeff(  puiseux(f,x,y,inf,false,colord[i],basis[i])  [j][1], t, colord[i]),
   genmatrix(A,length(basis),length(basis))
 );
 
 basis_of_divisor_normal_at_inf(f,x,y,divisor) := block([basis, nb, d, colord],
   basis : basis_of_divisor_except_at_inf(f,x,y,divisor),
 
+  /* maximum column order is negative of the divisor's total degree */
+  maxcolord : -total_degree(divisor),
+
   /* this determinant has to be non-zero for the basis to be normal at inf */
-  nb : normal_matrix_at_inf(f,x,y,basis),
+  colord : map(lambda([i], column_orders(f,x,y,i,maxcolord)), basis),
+  nb : normal_matrix_at_inf(f,x,y,basis,colord),
   d : ratsimp(determinant(nb)),
 
   if riemannroch_trace then block([expansions],
@@ -1455,7 +1463,6 @@ basis_of_divisor_normal_at_inf(f,x,y,divisor) := block([basis, nb, d, colord],
   while d = 0 do block([v, vt, sli],
     v : args(nullspace(nb))[1],
     vt : args(transpose(v))[1],
-    colord : map(lambda([i], column_orders(f,x,y,i)), basis),
 
     if riemannroch_trace then block([expansions],
       display(v),
@@ -1479,8 +1486,9 @@ basis_of_divisor_normal_at_inf(f,x,y,divisor) := block([basis, nb, d, colord],
     /* rewrite the basis element with lowest column order */
     basis[sli[1][1]] : ratsimp(basis.v),
 
-    nb : normal_matrix_at_inf(f,x,y,basis),
-    d : determinant(normal_matrix_at_inf(f,x,y,basis)),
+    colord : map(lambda([i], column_orders(f,x,y,i,maxcolord)), basis),
+    nb : normal_matrix_at_inf(f,x,y,basis,colord),
+    d : determinant(nb),
 
     if riemannroch_trace then block(
       display(v),
@@ -1495,11 +1503,14 @@ basis_of_divisor_normal_at_inf(f,x,y,divisor) := block([basis, nb, d, colord],
   basis
 );
 
-riemannroch2(f,x,y,divisor) := block([basis, colord, a],
+riemannroch2(f,x,y,divisor) := block([basis, maxcolord, colord, a],
 
   basis : basis_of_divisor_normal_at_inf(f,x,y,divisor),
 
-  colord : map(lambda([i], column_orders(f,x,y,i)), basis),
+  /* maximum column order is negative of the divisor's total degree */
+  maxcolord : -total_degree(divisor),
+
+  colord : map(lambda([i], column_orders(f,x,y,i,maxcolord)), basis),
 
   if riemannroch_trace then block(
     disp("normal at infinity"),
