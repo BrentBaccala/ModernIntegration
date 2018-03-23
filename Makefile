@@ -18,8 +18,7 @@ ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	pdflatex ModernIntegration
 	ls -v common*.tex | xargs cat > common.mac
 	rm common*.tex
-	./pythontex/pythontex/pythontex.py --interpreter maxima:/home/baccala/src/maxima-code/maxima-local --verbose ModernIntegration.tex --jobs 1
-	# ./pythontex/pythontex/pythontex.py --verbose ModernIntegration.tex
+	./pythontex/pythontex/pythontex.py --verbose ModernIntegration.tex
 	pdflatex ModernIntegration
 	rm common*.tex
 
