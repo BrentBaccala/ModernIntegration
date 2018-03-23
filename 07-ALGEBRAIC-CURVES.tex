@@ -715,7 +715,7 @@ puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,b) :=
       /* if y0 is non-zero, then use min(s,0) instead of s */
       /* therefore, maxpow-s*i is the highest t-degree required in rf's expansion */
       /* ceiling((maxpow-s*i)/r) is the highest x-degree required */
-      icomponent: ratsimp(subst(xsubst, taylor(ratsimp(coeff(b, y, i)),
+      icomponent: ratsimp(subst(xsubst, taylor(ratsimp(coeff(expand(b), y, i)),
                                             x, x0, ceiling((maxpow-min(s,0)*i)/r)))
                           * adjustment),
       /* maxpow(rf) = minpow(icomponent) + maxpow(y) * i */
