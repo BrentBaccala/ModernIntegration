@@ -82,14 +82,13 @@ Chapter 5 covers the logarithmic extension.
 
 Chapter 6 covers the exponential extension.
 
-Chapter 7, which begins the discussion of Abelian integrals, is somewhat readable but quite incomplete.
+Chapter 7 begins discussion of the algebraic extension by introducing classical algebraic curve theory
 
-Chapter 8, covering Good Reduction, which is the most technically challenging part of the theory,
-is only a sketch.
+Chapter 8 covers the integration of Abelian integrals, stating the Risch theorem without proof.
 
-Chapter 9, covering algebraic extensions in general, is also only a sketch.
+Chapter 9 proofs the Risch Theorem (currently only a sketch).
 
-The current draft PDF is available [here](http://www.freesoft.org/ModernIntegration/ModernIntegration.pdf)
+Chapter 10, covering algebraic extensions in general, is also only a sketch.
 
 ## Building from source
 
@@ -102,3 +101,5 @@ After cloning this repository (use --recursive to get its submodule), you'll nee
     texlive-latex-base
     texlive-latex-extra
     texlive-publishers
+
+The current draft PDF is available [here](http://www.freesoft.org/ModernIntegration/ModernIntegration.pdf)
