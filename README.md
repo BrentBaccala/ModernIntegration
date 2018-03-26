@@ -1,5 +1,5 @@
-# ModernIntegration
-A differential algebra textbook
+# Modern Integration
+## A differential algebra textbook
 
 From the preface:
 
@@ -91,7 +91,7 @@ Chapter 9, covering algebraic extensions in general, is also only a sketch.
 
 The current draft PDF is available [here](http://www.freesoft.org/ModernIntegration/ModernIntegration.pdf)
 
-# Building from source
+## Building from source
 
 After cloning this repository (use --recursive to get its submodule), you'll need the following packages (on Ubuntu):
 
