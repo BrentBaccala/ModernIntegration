@@ -684,6 +684,10 @@ a single logarithmic term.  Let's compute its residue:
 div(p) := map(lambda([x], [[x[1], x[2]], p*signum(x[3])]), poles)$
 \end{maximablock}
 
+This calculation is computationally infesible for the present
+Riemann-Roch basis space implementation.
+
+\begin{comment}
 \begin{maximablock}[chebyshev]
 div(1);
 riemannroch(f,x,y,div(1));
@@ -691,13 +695,12 @@ div(2);
 riemannroch(f,x,y,div(2));
 div(3);
 riemannroch(f,x,y,div(3));
-/*
 div(4);
 riemannroch(f,x,y,div(4));
 div(5);
 riemannroch(f,x,y,div(5));
-*/
 \end{maximablock}
+\end{comment}
 
 \vfill\eject
 \bigskip
