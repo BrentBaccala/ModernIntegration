@@ -706,12 +706,13 @@ $2\over35$, which both clears the denominators and divides out the
 common factor in the numerators to produce $x^2+2x+1$.  Both answers
 are acceptable.
 
-The Maxima function {\tt gcd} compute GCDs.
+The Sage function {\tt gcd} compute GCDs.
 
-\begin{maximablock}
+\begin{sageblock}
+# x=polygen(QQ,'x')
 gcd(4*x^4 + 13*x^3 + 15*x^2 + 7*x + 1,
-    2*x^3 + x^2 - 4*x - 3);
-\end{maximablock}
+    2*x^3 + x^2 - 4*x - 3)
+\end{sageblock}
 
 \endexample
 

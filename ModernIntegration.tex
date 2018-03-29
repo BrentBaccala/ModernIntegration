@@ -12,7 +12,7 @@
 \usepackage{framed}
 \usepackage{mdframed}
 \usepackage{float}
-\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
 
 \usepackage{ragged2e}
 
@@ -35,7 +35,7 @@
 % need TeX package fvextra (fetch from CTAN, put in a subdirectory, and symlink fvextra.sty)
 % need python package pygments (apt-get install python-pygments)
 
-\usepackage[usefamily=maxima,keeptemps=all,pygments=false]{pythontex}
+\usepackage[usefamily={maxima,sage},keeptemps=all,pygments=false]{pythontex}
 
 % These packages are used when embedding Maxima code
 
@@ -204,6 +204,44 @@ resetmargins=true}
 \printpythontex
 \end{mdframed}
 }
+
+% Do similar formatting with Sage
+
+\newcommand{\sageinputcode}{}
+\newcommand{\sageoutputmath}[1]{#1}
+
+\renewenvironment{sageblock}{\renewcommand{\sageoutputmath}[1]{}\sagecode}{\endsagecode
+
+% At end of sageblock, redefine Sage processing commands,
+% then call \printpythontex to include the Sage output,
+% which will call the Sage processing commands.
+
+% Command called by python code that processes maximacode input
+% Command number is in argument 1
+% Command text is saved in verbatim block MaximaCode
+
+\renewcommand{\sageinputcode}{
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{L{1cm} L{10cm}}
+\textcolor{blue}{\ttfamily sage:} &
+\textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
+\end{tabular}
+\egroup\break
+}
+
+\renewcommand{\sageoutputmath}[1]{
+\begin{dmath*}
+##1
+\end{dmath*}
+}
+
+% Wrap everything in a nice colored frame and print it
+\begin{mdframed}[backgroundcolor=yellow!20]
+\printpythontex
+\end{mdframed}
+}
+
 
 % pythontex allows us to use multiple sessions, which speeds up
 % processing since most code changes only affect one session.
