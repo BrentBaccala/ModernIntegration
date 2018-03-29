@@ -702,6 +702,43 @@ riemannroch(f,x,y,div(5));
 \end{maximablock}
 \end{comment}
 
+%% This attempt with Sage and Macaulay 2 came to naught because
+%% Macaulay 2 can't do fraction fields of polynomial rings over
+%% anything but Z, Q, or GF(p).  We need to extend Q into an
+%% algebraic number field, then form our coefficient ring over it,
+%% then form our function field.
+
+\begin{comment}
+\begin{sageblock}
+# (x,y) = polygen(QQ,('x', 'y'))
+y = var('y')
+num = 7 + 5*x + 6*x^2
+root = x^4 + 4*x^3 + 2*x^2 + 1
+den = 2*x^6 + 8*x^5 + 3*x^4 - 4*x^3 - 1
+f = y^2 - root
+den.roots()
+
+Const = macaulay2('Const = QQ[sqrt2, gamma] / (sqrt2^2 - 2, gamma^2 - 9 - sqrt2^5)')
+R = macaulay2('R = Const[x,y,z]')
+x = macaulay2('x')
+y = macaulay2('y')
+z = macaulay2('z')
+
+
+# I = macaulay2.ideal(fp)
+
+macaulay2('num = 7 + 5*x + 6*x^2')
+macaulay2('root = x^4 + 4*x^3 + 2*x^2 + 1')
+macaulay2('den = 2*x^6 + 8*x^5 + 3*x^4 - 4*x^3 - 1')
+macaulay2('f = y^2 - root')
+macaulay2('fp = y^2*z^2 - (x^4 + 4*x^3*z + 2*x^2*z^2 + z^4)')
+
+macaulay2('Coord = R / ideal(fp)')
+
+macaulay2('MI = ideal(x-z*1/sqrt2, y+z*gamma/2)')
+\end{sageblock}
+\end{comment}
+
 \vfill\eject
 \bigskip
 \begin{center}
