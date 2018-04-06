@@ -618,6 +618,32 @@ displayarray(b) ::=
           rest(apply(arrayinfo, ''[b]),2)));
 \end{maximacommon}
 
+Here's a Python trick\footnote{\tt https://stackoverflow.com/questions/2749796}
+to find out what variable name a caller uses:
+
+\begin{sageblock}
+import inspect
+
+def varName(var):
+    lcls = inspect.stack()[2][0].f_locals
+    for name in lcls:
+        if id(var) == id(lcls[name]):
+            return name
+    return None
+\end{sageblock}
+
+\begin{sageblock}
+def displayarray(b):
+   varname = varName(b)
+   for k in sorted(b.keys()):
+     print '$$', varname, '_{'
+     if isinstance(k, tuple):
+       print ','.join([latex(kk) for kk in k])
+     else:
+       print latex(k)
+     print '}=', latex(b[k]), '$$'
+\end{sageblock}
+
 \subsection{Simplification}
 
 The Maxima function {\tt ratsimp} simplifies a rational function to

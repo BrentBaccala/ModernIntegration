@@ -199,6 +199,80 @@ are algebraic and which are transcendental is easy, but in more
 complex expressions this may not be obvious.  We'll discuss in Chapter
 ?? how to test new elements for transcendence.
 
+\begin{sageblocksmall}
+from sage.rings.fraction_field_element import is_FractionFieldElement
+from sage.rings.polynomial.polynomial_element import is_Polynomial
+from sage.rings.polynomial.multi_polynomial import is_MPolynomial
+
+from sage.misc.latex import str_function
+
+class Derivation(SageObject) :
+
+    def __init__(self, parent, generator_map):
+        self.generator_map = generator_map
+        self.parent = parent
+
+    def _repr_defn(self):
+        gm = self.generator_map
+        return '\\n'.join(['%s |--> %s'%(i, gm[i]) for i in gm])
+
+    def _repr_(self):
+        return 'Derivation of %s\\n  Defn: %s'%(R, '\\n         '.join(self._repr_defn().split('\\n')))
+
+    def _latex_defn(self):
+        gm = self.generator_map
+        return '\\\\\\\\'.join(['%s & \\\\rightarrow & %s'%(latex(i), latex(gm[i])) for i in gm])
+
+    def _latex_(self):
+        return '\\\\begin{array}{rcl}\\\\multicolumn{3}{c}{' + str_function('Derivation of ') + latex(self.parent) + '}\\\\\\\\' + self._latex_defn() + '\\\\end{array}'
+
+    def __call__(self, x):
+        gm = self.generator_map
+        if is_FractionFieldElement(x):
+            n = x.numerator()
+            d = x.denominator()
+            return (self(n)*d - n*self(d))/(d^2)
+        elif is_Polynomial(x):
+            var = x.args()[0]
+            Dvar = gm[var]
+            result = 0
+            for power in range(0, x.degree()+1):
+                coeff = x[power]
+                result = result + power * coeff * var^(power-1) * Dvar
+                result = result + self(coeff) * var^power
+            return result
+        elif is_MPolynomial(x):
+            vars = x.args()
+            result = 0
+            for (monomial, coeff) in x.dict().items():
+                for i in range(len(monomial)):
+                    power = monomial[i]
+                    if power > 0:
+                        var = vars[i]
+                        Dvar = gm[var]
+                        result = result + power * coeff * x.parent().monomial(*monomial) / var * Dvar
+                        result = result + self(coeff) * x.parent().monomial(*monomial)
+            return result
+        elif x.parent() in [ZZ, QQ, AA, QQbar, RR, CC]:
+            return 0
+        else:
+            raise NotImplementedError
+\end{sageblocksmall}
+
+\begin{sageblock}
+R.<x> = QQ[]
+
+D = Derivation(R, {x: 1})
+
+D(x^2)
+
+R.<x,theta,psi> = QQ[]
+
+D = Derivation(R, {x: 1, theta: 1/x, psi: psi})
+
+D(x*theta*psi)
+\end{sageblock}
+
 \definition
 
 An {\bf elementary extension} of a differential field

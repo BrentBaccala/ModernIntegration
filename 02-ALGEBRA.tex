@@ -970,6 +970,13 @@ b: 2*x^3+x^2-4*x-3 $
 c: x^3+5*x^2+7*x+3 $
 \end{maximablock}
 
+\begin{sageblock}
+R.<x> = QQ['x']
+a = 4*x^4+13*x^3+15*x^2+7*x+1;
+b = 2*x^3+x^2-4*x-3;
+c = x^3+5*x^2+7*x+3;
+\end{sageblock}
+
 Maxima's {\tt gcdex(a,b)} function returns a list {\tt [s,t,gcd]} satisfying
 
 $$as + bt = \gcd(a,b)$$
@@ -977,6 +984,29 @@ $$as + bt = \gcd(a,b)$$
 \begin{maximablock}
 gcdex(a,b);
 \end{maximablock}
+
+\begin{sageblock}
+xgcd(a,b);
+\end{sageblock}
+
+\begin{sageblock}
+def diophantine(a,b,c):
+   (g,s,t) = xgcd(b,c)
+   if not g.divides(a):
+      raise ValueError("diophantine: a doesn't divide gcd(b,c)")
+   s = s * (a//g)
+   t = t * (a//g)
+   # g = sb + ct
+   # a = mg = (ms)b + (mc)t
+   (q,r) = s.quo_rem(c)
+   # s = r + qb, so r = s - qb
+   return (r, t + q*b)
+\end{sageblock}
+
+\begin{sageblock}
+(s,t) = diophantine(c,a,b)
+c == a*s + b*t
+\end{sageblock}
 
 \vfill\eject
 
@@ -1217,6 +1247,27 @@ Again, let's verify this result using Maxima:
 \begin{maximablock}
 partfrac((3*x^2 - 4*x + 2)/(x^3 - 3*x^2 + 4), x);
 \end{maximablock}
+
+Here's Sage code to do a partial fractions expansion
+and save the results in an array:
+
+\begin{sageblock}
+def partfrac(num, den):
+   b = {}
+   factorization = factor(den)
+   for f in factorization:
+     (t,s) = diophantine(num, f[0]^f[1], den//(f[0]^f[1]))
+     for i in range(f[1],1,-1):
+       (s, b[f[0],i]) = s.quo_rem(f[0])
+     b[f[0],1] = s
+   return(b)
+\end{sageblock}
+
+\begin{sageblock}
+b = partfrac(3*x^2 - 4*x + 2, x^3 - 3*x^2 + 4);
+displayarray(b);
+
+\end{sageblock}
 
 \endexample
 

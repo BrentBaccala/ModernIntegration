@@ -484,25 +484,42 @@ Compute
 
 $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
 
-Due to the complexity of this integral, I'll use Maxima for the entire calculation.
+Due to the complexity of this integral, I'll use Sage for the entire calculation.
 
-\begin{maximablocksmall}
+\begin{maximacode}
 integrand:
    x*((x^2*exp(2*x^2)-log(x+1)^2)^2
       +2*x*exp(3*x^2)*(x-(2*x^3+2*x^2+x+1)*log(x+1)))
    / ((x+1)*(log(x+1)^2 - x^2*exp(2*x^2))^2);
-\end{maximablocksmall}
+\end{maximacode}
+
+\begin{sageblocksmall}
+integrand = x                                           \\
+   *((x^2*exp(2*x^2)-log(x+1)^2)^2                      \\
+      +2*x*exp(3*x^2)*(x-(2*x^3+2*x^2+x+1)*log(x+1)))   \\
+   / ((x+1)*(log(x+1)^2 - x^2*exp(2*x^2))^2)
+\end{sageblocksmall}
 
 We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x^2)$ and $\theta = \ln (x+1)$.
 
-\begin{maximablock}
+\begin{maximacode}
 lintegrand:
    subst([log(x+1) = theta,
           exp(x^2) = psi,
           exp(2*x^2) = psi^2,
           exp(3*x^2) = psi^3],
       integrand);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+theta = var('theta');
+psi = var('psi');
+lintegrand = integrand.subs(
+   {log(x+1) : theta,
+    exp(x^2) : psi,
+    exp(2*x^2) : psi^2,
+    exp(3*x^2) : psi^3})
+\end{sageblock}
 
 Since $\psi$ and $\theta$ are both simple extensions of ${\mathbb C}(x)$, we can operate in either
 ${\mathbb C}(x,\psi,\theta)$ or ${\mathbb C}(x,\theta,\psi)$.  Since ${\mathbb C}(x,\theta,\psi)$
@@ -512,98 +529,118 @@ the next chapter.  Therefore, we'll work in ${\mathbb C}(x,\psi,\theta)$, a loga
 extension of ${\mathbb C}(x,\psi)$, and hope that we won't have to do anything
 too complicated in ${\mathbb C}(x,\psi)$!
 
-Now let's tell Maxima how our variables differentiate:
+%Instead, we need to create a univariant
+%ring in the desired variable with coefficients in a fraction field
+%formed from the other variables.
 
-\begin{maximablock}
+Let's declare this field to Sage and tell it how our variables differentiate:
+
+\begin{sageblock}
+F.<x,psi> = FractionField(ZZ['x', 'psi']);
+R.<theta> = F['theta']
+
+D = Derivation(R, {x: 1, theta: 1/(x+1), psi: 2*x*psi})
+
+num = R(lintegrand.numerator(False))
+den = R(lintegrand.denominator(False))
+\end{sageblock}
+
+\begin{maximacode}
 gradef(theta, x, 1/(x+1))$
 gradef(psi, x, 2*x*psi)$
-\end{maximablock}
+\end{maximacode}
 
 We need to put our integrand into partial fractions form, so let's begin by
-using Maxima's {\ttfamily divide} function, which performs polynomial long division
+using Sage's {\ttfamily quo_rem} function, which performs polynomial long division
 with respect to a specific variable, and obtain:
 
-\begin{maximablock}
+\begin{maximacode}
 [a, N]:
    divide(num(lintegrand),
           denom(lintegrand), theta);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+(a,N) = num.quo_rem(den)
+\end{sageblock}
+
+\begin{comment}
+This is what I'd like to do, but it triggers a Sage error (a bug?)
+
+\begin{sageblock}
+
+F = FractionField(QQ['x', 'psi']);
+R = F['theta'];
+F = FractionField(R)
+
+fintegrand = F(lintegrand)
+
+\end{sageblock}
+
+The problem seems to be related to taking numerators and denominators
+of a symbolic expression.
+
+Here's a simplified version:
+
+\begin{sageblock}
+p = var('p')
+b = x/((p*x - 1)^2)
+b.numerator()
+\end{sageblock}
+
+\end{comment}
+
 
 
 $$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over{(x+1)(\theta^2 - x^2\psi^2)^2}} dx$$
 
 The $a_0 = \frac{x}{x+1}$ term is easy.
 
-\begin{maximablock}
+\begin{maximacode}
 A : integrate(a, x);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+A = integrate(SR(a), x)
+\end{sageblock}
 
 Let's consider the fractional
 term.  Polynomial factorization can be difficult, but this denominator
 is easy -- it's just a difference of squares: $(\theta^2 - x^2\psi^2) = (\theta-x\psi)(\theta+x\psi)$.
-Maxima's {\tt partfrac} function performs partial fractions
-expansion with respect to a given variable, in this case $\theta$.
+We'll factor the denominator into its irreducible factors and then
+perform a partial fractions expansion:
 
-\begin{maximablock}
+\begin{maximacode}
 pf: partfrac(N/denom(lintegrand), theta);
-\end{maximablock}
+\end{maximacode}
 
-\begin{comment}
-\begin{multline*}
-\int {x\over{x+1}} + \frac{(2x^4+2x^3+x^2+x)\psi^2 + x \psi}{2(x+1)(\theta + x \psi)^2}
-       + \frac{1}{2(x+1)(\theta + x \psi)} \\
-       - \frac{(2x^4+2x^3+x^2+x)\psi^2 - x \psi}{2(x+1)(\theta - x \psi)^2}
-       - \frac{1}{2(x+1)(\theta - x \psi)} dx$$
-\end{multline*}
-\end{comment}
+\begin{sageblock}
+n = [f[0] for f in factor(den)]
 
-\begin{multline*}
-\int {x\over{x+1}} + \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi}{(\theta + x \psi)^2}
-       + \frac{\frac{1}{2(x+1)}}{(\theta + x \psi)} \\
-       - \frac{\frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 - \frac{x}{2(x+1)} \psi}{(\theta - x \psi)^2}
-       - \frac{\frac{1}{2(x+1)}}{(\theta - x \psi)} dx
-\end{multline*}
+b = partfrac(N, den);
+displayarray(b);
+\end{sageblock}
 
-Next, we want to extract the irreducible factors from
-the denominators of our partial fractions expansion.
-To facilitate this, let's start by defining some
-helper functions:
-% to convert the partial fractions
-% expansion to a list, and to extract base factors
-% from powers of factors:
-
-\begin{maximacommon}
+\begin{maximacode}
 is_power(expr) :=
    not atom(expr) and part(expr, 0) = "^";
 base(e) :=
    if is_power(e) then part(e,1) else e;
 power(e) :=
    if is_power(e) then part(e,2) else 1;
-\end{maximacommon}
+\end{maximacode}
 
-Now we can extract the portions of the
-denominators that involve the variable $\theta$:
-
-\begin{maximablock}
+\begin{maximacode}
 den(pl,v) := partition(denom(pl),v)[2]$
 denoms: map(lambda([u], den(u,theta)),
             partlist(pf));
-\end{maximablock}
+\end{maximacode}
 
-We extract the irreducible factors:
-
-\begin{maximablock}
+\begin{maximacode}
 n: unique(map(base, denoms));
-\end{maximablock}
+\end{maximacode}
 
-Now, for each fraction in the partial fractions
-expansion, we determine which irreducible
-factor is in its denominator, to what power
-it appears, and use this information to
-assign the rest of the fraction to the
-variable $b_{i,j}$:
-
-\begin{maximablock}
+\begin{maximacode}
 map(lambda([u], which(n, base(u))), denoms);
 map(power, denoms);
 map(lambda([u],
@@ -611,71 +648,97 @@ map(lambda([u],
          power(den(u,theta))]: u*den(u,theta)),
     partlist(pf))$
 displayarray(b)$
-\end{maximablock}
+\end{maximacode}
 
-
-We have two irreducible factors: $n_1(\theta) = \theta - x \psi$ and
-$n_2(\theta) = \theta + x \psi$.  Each has $\theta$-degree 1, so
-the numerators in our partial fractions expansions have
-$\theta$-degree 0, as expected.
 
 Now we're ready to apply
-Theorem \ref{logarithmic integration theorem}.  Let's start with
-$n_1(\theta)$.  $m_1=2$, so
+Theorem \ref{logarithmic integration theorem}.  We'll number
+our factors $0$ and $1$, since that's how Python like to do it,
+and start with
+$n_0(\theta)$.  $m_0=2$, so
 
-$$R_{1,1}(\theta) = b_{1,2}(\theta) = \frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi$$
+$$R_{0,1}(\theta) = b_{0,2}(\theta) = \frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi$$
 
-\begin{maximablock}
+\begin{maximacode}
 R[1,1] : b[1,2];
-\end{maximablock}
+\end{maximacode}
 
 and we wish to compute
 
-$$ B_{1,1}(\theta) \equiv - \frac{R_{1,1}(\theta)}{n_1'(\theta) } \mod n_1(\theta)$$
+$$ B_{0,1}(\theta) \equiv - \frac{R_{0,1}(\theta)}{n_0'(\theta) } \mod n_0(\theta)$$
 
 As modulo calculations go, this one is easy.
 
-\begin{maximablock}
+\begin{maximacode}
 B[1,1] ::: - R[1,1] / D(n[1]);
-\end{maximablock}
-% divide(%, n[1], t);
+\end{maximacode}
 
-Now we wish to compute $Q_{1,1}(\theta)$:
 
-$$ Q_{1,1}(\theta) = - \frac{R_{1,1}(\theta) + B_{1,1}(\theta) n_1'(\theta)}{n_1(\theta)}$$
+\begin{sageblock}
+R = {};
+B = {};
+R[0,1] = b[n[0],2]
+B[0,1] = - R[0,1] / D(n[0])
+\end{sageblock}
 
-\begin{maximablock}
+Now we wish to compute $Q_{0,1}(\theta)$:
+
+$$ Q_{0,1}(\theta) = - \frac{R_{0,1}(\theta) + B_{0,1}(\theta) n_0'(\theta)}{n_0(\theta)}$$
+
+\begin{maximacode}
 Q[1,1] :::
    - (R[1,1] + B[1,1] * D(n[1])) / n[1];
-\end{maximablock}
+\end{maximacode}
 
-This division to obtain $Q_{1,1}$ will always be exact.  What might not be exact is the following division
-to obtain $C_{1}$.  If the division isn't exact, or if $C_1$ isn't a constant, then the integral is not elementary.
+\begin{sageblock}
+Q = {};
+Q[0,1] = -(R[0,1] + B[0,1] * D(n[0])) / n[0]
+\end{sageblock}
 
-$$ C_1 = \frac{b_{1,1}(\theta) - B_{1,1}'(\theta) - Q_{1,1}(\theta)}{n_1'(\theta)} $$
+This division to obtain $Q_{0,1}$ will always be exact.  What might not be exact is the following division
+to obtain $C_{0}$.  If the division isn't exact, or if $C_0$ isn't a constant, then the integral is not elementary.
 
-\begin{maximablock}
+$$ C_0 = \frac{b_{0,1}(\theta) - B_{0,1}'(\theta) - Q_{0,1}(\theta)}{n_0'(\theta)} $$
+
+\begin{maximacode}
 C[1] :::
    (b[1,1] - D(B[1,1]) - Q[1,1]) / D(n[1]);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+C = {};
+C[0] = (b[n[0],1] - D(B[0,1]) - Q[0,1]) / D(n[0])
+\end{sageblock}
 
 A similar calculation handles the other irreducible factor:
 
-\begin{maximablock}
+\begin{maximacode}
 R[2,1] : b[2,2];
 B[2,1] ::: - R[2,1] / D(n[2]);
 Q[2,1] :::
    - (R[2,1] + B[2,1] * D(n[2])) / n[2];
 C[2] :::
    (b[2,1] - D(B[2,1]) - Q[2,1]) / D(n[2]);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+R[1,1] = b[n[1],2]
+B[1,1] = - R[1,1] / D(n[1])
+Q[1,1] = - (R[1,1] + B[1,1] * D(n[1])) / n[1]
+C[1] = (b[n[1],1] - D(B[1,1]) - Q[1,1]) / D(n[1])
+\end{sageblock}
 
 Plugging everything together, we conclude that our solution is:
 
-\begin{maximablock}
+\begin{maximacode}
 A + ratsimp(sum(B[i,1]/n[i],i,1,2))
    + logcontract(2*sum(C[i] * log(n[i]),i,1,2))/2;
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+lans = A + sum([B[i,1]/n[i] for i in range(2)]) \\
+  + sum([2 * C[i] * log(n[i]) for i in range(2)]).simplify_log()/2
+\end{sageblock}
 
 \begin{comment}
 \begin{multline*}
@@ -688,16 +751,24 @@ $$ = x - \theta -\frac{x \psi \theta}{\theta^2 - x^2 \psi^2} + \frac{1}{2}\ln\fr
 
 Converting back to our original form:
 
-\begin{maximablock}
+\begin{maximacode}
 subst([theta=log(x+1), psi=exp(x^2)], %);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+ans = lans.subs({theta : log(x+1), psi : exp(x^2)})
+\end{sageblock}
 
 Finally, we verify that this is, in fact,
 an anti-derivative of the original integrand:
 
-\begin{maximablock}
+\begin{maximacode}
 diff(%,x) === integrand;
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+bool(diff(ans,x) == integrand)
+\end{sageblock}
 
 $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
 $$= x - \ln(x+1) - {x e^{x^2}\ln(x+1)\over{\ln^2(x+1)-x^2 e^{2x^2}}}
