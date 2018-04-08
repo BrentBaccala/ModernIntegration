@@ -199,7 +199,7 @@ are algebraic and which are transcendental is easy, but in more
 complex expressions this may not be obvious.  We'll discuss in Chapter
 ?? how to test new elements for transcendence.
 
-\begin{sageblocksmall}
+\begin{sagecommonsmall}
 from sage.rings.fraction_field_element import is_FractionFieldElement
 from sage.rings.polynomial.polynomial_element import is_Polynomial
 from sage.rings.polynomial.multi_polynomial import is_MPolynomial
@@ -257,7 +257,7 @@ class Derivation(SageObject) :
             return 0
         else:
             raise NotImplementedError
-\end{sageblocksmall}
+\end{sagecommonsmall}
 
 \begin{sageblock}
 R.<x> = QQ[]

@@ -1251,7 +1251,7 @@ partfrac((3*x^2 - 4*x + 2)/(x^3 - 3*x^2 + 4), x);
 Here's Sage code to do a partial fractions expansion
 and save the results in an array:
 
-\begin{sageblock}
+\begin{sagecommon}
 def partfrac(num, den):
    b = {}
    factorization = factor(den)
@@ -1261,7 +1261,7 @@ def partfrac(num, den):
        (s, b[f[0],i]) = s.quo_rem(f[0])
      b[f[0],1] = s
    return(b)
-\end{sageblock}
+\end{sagecommon}
 
 \begin{sageblock}
 b = partfrac(3*x^2 - 4*x + 2, x^3 - 3*x^2 + 4);
