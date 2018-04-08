@@ -240,7 +240,7 @@ class Derivation(SageObject) :
                 coeff = x[power]
                 result = result + power * coeff * var^(power-1) * Dvar
                 result = result + self(coeff) * var^power
-            return result
+            return self.parent(result)
         elif is_MPolynomial(x):
             vars = x.args()
             result = 0
@@ -252,7 +252,7 @@ class Derivation(SageObject) :
                         Dvar = gm[var]
                         result = result + power * coeff * x.parent().monomial(*monomial) / var * Dvar
                         result = result + self(coeff) * x.parent().monomial(*monomial)
-            return result
+            return self.parent(result)
         elif x.parent() in [ZZ, QQ, AA, QQbar, RR, CC]:
             return 0
         else:

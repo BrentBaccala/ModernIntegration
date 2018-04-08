@@ -884,24 +884,21 @@ Our polynomial Diophantine equation is:
 $${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
   = sV + tV'$$
 
-\begin{maximablock}
-v: theta^2-x^2*psi^2;
-vtick: D(v);
-N/denom(lintegrand);
-r: gcdex(v,vtick,theta) * N/(x+1)$
-S::: r[1] - divide(r[1],vtick,theta)[1]*vtick;
-T::: r[2] + divide(r[1],vtick,theta)[1]*v;
-\end{maximablock}
+\begin{sageblock}
+v = theta^2-x^2*psi^2
+vtick = D(v)
+(s,t) = diophantine(N/(x+1), v, vtick)
+\end{sageblock}
 
 So, our solution is:
 
 $${{{-4x^5-4x^4-2x^3-2x^2}\over{x+1}}\psi^3\theta + {{2x^3}\over{x+1}}\psi^3}
   = {-2x\over{x+1}}\psi V + x\psi\theta V'$$
 
-\begin{maximablock}
-A: -T;
-B: S - D(A);
-\end{maximablock}
+\begin{sageblock}
+A = -t
+B = s - D(A)
+\end{sageblock}
 
 $$A = -x\psi\theta$$
 $$A' = -\psi\theta - x(2x)\psi\theta - x\psi{1\over{x+1}}$$
@@ -910,9 +907,9 @@ $$B = (2x^2+1)\psi\theta - {x\over{x+1}}\psi$$
 
 Which reduces our integral to:
 
-\begin{maximablock}
-A[0] + A/v + 'integrate(B/v, x);
-\end{maximablock}
+\begin{sageblock}
+integrate(SR(a),x) + A/v + integrate(SR(B/v), x, hold=True)
+\end{sageblock}
 
 %% {\LARGE$$\int {x\over{x+1}} - {x\psi\theta\over{\theta^2-x^2\psi^2}} +  \int{{(2x^2+1)\psi\theta - {x\over{x+1}}\psi}\over{\theta^2-x^2\psi^2}} dx$$}
 
@@ -924,30 +921,28 @@ A[0] + A/v + 'integrate(B/v, x);
 
 Now we can compute a Rothstein-Trager resultant:
 
-\begin{maximablock}
-resultant(B - z * D(v), v, theta);
-\end{maximablock}
+\begin{sageblock}
+R1 = FractionField(ZZ['x','psi'])['z']
+R = FractionField(R1)['theta']
+r = R(v).resultant(R(B - R('z') * D(v)))
+\end{sageblock}
 
 This result is in ${\mathbb C}(x,\psi)[z]$, so the first two factors are just
 {\it content} (EXPLAIN THIS TERM).
 
-\begin{maximablock}
-partition(%,z)[2];
-\end{maximablock}
+\begin{sageblock}
+R1(r) / R1(r).factor().unit()
+\end{sageblock}
 
 The result is really just $4z^2-1$,
 which has two solutions: $\pm\frac{1}{2}$.  Substituting in these two
 values for $z$, we obtain the corresponding logarithms:
 
-\begin{maximablock}
-gcd(B - (1/2)*D(v), v);
-gcd(B + (1/2)*D(v), v);
-\end{maximablock}
+\begin{sageblock}
+gcd(B - (1/2)*D(v), v)
+gcd(B + (1/2)*D(v), v)
+\end{sageblock}
 
-
-{\LARGE$$x - \theta - {x\psi\theta\over{\theta^2-x^2\psi^2}} + {1\over2}\ln({{\theta + x \psi}\over{x+1}}) - {1\over2}\ln({{\theta - x \psi}\over{x+1}})$$}
-
-% \vskip 2in
 
 $$\int{{x(x+1)\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{((x+1)\ln^2(x+1) - (x^3+x^2)e^{2x^2})^2}} dx$$
 
