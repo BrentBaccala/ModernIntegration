@@ -494,9 +494,9 @@ integrand:
 \end{maximacode}
 
 \begin{sageblocksmall}
-integrand = x                                           \\
-   *((x^2*exp(2*x^2)-log(x+1)^2)^2                      \\
-      +2*x*exp(3*x^2)*(x-(2*x^3+2*x^2+x+1)*log(x+1)))   \\
+integrand = x                                           \
+   *((x^2*exp(2*x^2)-log(x+1)^2)^2                      \
+      +2*x*exp(3*x^2)*(x-(2*x^3+2*x^2+x+1)*log(x+1)))   \
    / ((x+1)*(log(x+1)^2 - x^2*exp(2*x^2))^2)
 \end{sageblocksmall}
 
@@ -736,7 +736,7 @@ A + ratsimp(sum(B[i,1]/n[i],i,1,2))
 \end{maximacode}
 
 \begin{sageblock}
-lans = A + sum([B[i,1]/n[i] for i in range(2)]) \\
+lans = A + sum([B[i,1]/n[i] for i in range(2)]) \
   + sum([2 * C[i] * log(n[i]) for i in range(2)]).simplify_log()/2
 \end{sageblock}
 

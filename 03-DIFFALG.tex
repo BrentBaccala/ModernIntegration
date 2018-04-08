@@ -214,17 +214,17 @@ class Derivation(SageObject) :
 
     def _repr_defn(self):
         gm = self.generator_map
-        return '\\n'.join(['%s |--> %s'%(i, gm[i]) for i in gm])
+        return '\n'.join(['%s |--> %s'%(i, gm[i]) for i in gm])
 
     def _repr_(self):
-        return 'Derivation of %s\\n  Defn: %s'%(R, '\\n         '.join(self._repr_defn().split('\\n')))
+        return 'Derivation of %s\n  Defn: %s'%(R, '\n         '.join(self._repr_defn().split('\n')))
 
     def _latex_defn(self):
         gm = self.generator_map
-        return '\\\\\\\\'.join(['%s & \\\\rightarrow & %s'%(latex(i), latex(gm[i])) for i in gm])
+        return '\\\\'.join(['%s & \\rightarrow & %s'%(latex(i), latex(gm[i])) for i in gm])
 
     def _latex_(self):
-        return '\\\\begin{array}{rcl}\\\\multicolumn{3}{c}{' + str_function('Derivation of ') + latex(self.parent) + '}\\\\\\\\' + self._latex_defn() + '\\\\end{array}'
+        return '\\begin{array}{rcl}\\multicolumn{3}{c}{' + str_function('Derivation of ') + latex(self.parent) + '}\\\\' + self._latex_defn() + '\\end{array}'
 
     def __call__(self, x):
         gm = self.generator_map
