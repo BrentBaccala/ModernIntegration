@@ -263,6 +263,45 @@ resetmargins=true}
 \end{mdframed}
 }
 
+\newenvironment{sagespacedblock}{\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}{\setpythontexautoprint{true}\endsagecode
+
+% At end of sageblock, redefine Sage processing commands,
+% then call \printpythontex to include the Sage output,
+% which will call the Sage processing commands.
+
+% Command called by python code that processes maximacode input
+% Command number is in argument 1
+% Command text is saved in verbatim block MaximaCode
+%
+% We need a \break between two adjacent \sageinputcode's,
+% but we leave it out if there's an intervening \sageoutputmath.
+
+\def\sageinputcodebreak{}
+\renewcommand{\sageinputcode}{
+\sageinputcodebreak
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{L{1cm} L{10cm}}
+\textcolor{blue}{\ttfamily sage:} &
+\textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
+\end{tabular}
+\egroup
+\def\sageinputcodebreak{\break}
+}
+
+\renewcommand{\sageoutputmath}[1]{
+\def\sageinputcodebreak{}
+\begin{dmath*}
+##1
+\end{dmath*}
+}
+
+% Wrap everything in a nice colored frame and print it
+\begin{mdframed}[backgroundcolor=yellow!20]
+\printpythontex
+\end{mdframed}
+}
+
 \newenvironment{sagecommon}
   {\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}
   {\setpythontexautoprint{true}\endsagecode

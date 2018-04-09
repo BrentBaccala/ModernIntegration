@@ -217,7 +217,7 @@ class Derivation(SageObject) :
         return '\n'.join(['%s |--> %s'%(i, gm[i]) for i in gm])
 
     def _repr_(self):
-        return 'Derivation of %s\n  Defn: %s'%(R, '\n         '.join(self._repr_defn().split('\n')))
+        return 'Derivation of %s\n  Defn: %s'%(self.parent, '\n         '.join(self._repr_defn().split('\n')))
 
     def _latex_defn(self):
         gm = self.generator_map
