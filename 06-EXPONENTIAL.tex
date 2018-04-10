@@ -1091,18 +1091,31 @@ is not elementary.
 \endexample
 
 \vfill\eject
-\section{Normal Risch Equations in Maxima}
+\section{Normal Risch Equations in Sage}
 
-To facilitate use of Maxima, I've written a Risch equation
-solver in Maxima.
+To facilitate use of Sage, I've written a Risch equation
+solver in Sage.
 
 First, we want a partial fractions expansion that's a little bit
 different from the standard function {\tt partfrac}.  If {\it expr}
 isn't a fraction, or if its denominator doesn't involve the variable
 {\it var}, we want an empty list returned, otherwise return a list of
-the fractions in the expansion.
+the fractions in the expansion.  We just want the highest-powered
+term in the expansion.
 
-\begin{maximacommon}
+\begin{sagecommon}
+def partfrac1(num, den):
+   b = {}
+   if den != 1:
+     factorization = factor(den)
+     for f in factorization:
+       (t,s) = diophantine(num, f[0]^f[1], den//(f[0]^f[1]))
+       (q,r) = s.quo_rem(f[0])
+       b[f[0]] = [r, f[1]]
+   return(b)
+\end{sagecommon}
+
+\begin{maximacode}
 factors(u,v) := block(
    [f],
    f: factor(u),
@@ -1126,7 +1139,7 @@ partfrac1(expr,v) := block(
       partlist1(partfrac(expr1,v))
    else []
 );
-\end{maximacommon}
+\end{maximacode}
 
 Next, given a Risch equation in the form
 
@@ -1145,7 +1158,7 @@ numerator, in the following format:
 \end{verbatim}
 \end{center}
 
-\begin{maximacommon}
+\begin{maximacode}
 normal_risch_factors(S, T, var) := block(
    [n, sf, tf],
    n: map(base,
@@ -1162,12 +1175,22 @@ normal_risch_factors(S, T, var) := block(
    map(lambda([u], [u, assoc(u, sf, [0,0]),
                        assoc(u, tf, [0,0])]), n)
 );
-\end{maximacommon}
+\end{maximacode}
+
+\begin{sagecommon}
+def normal_risch_factors(S, T):
+   result = {}
+   Sb = partfrac1(S.numerator(), S.denominator())
+   Tb = partfrac1(T.numerator(), T.denominator())
+   for f in set(Sb.keys()).union(Tb.keys()):
+      result[f] = [Sb.get(f, [0,1]), Tb.get(f, [0,1])]
+   return result
+\end{sagecommon}
 
 {\tt normal_risch_denominator} uses {\tt normal_risch_factors}
 to compute the solutions's denominator.
 
-\begin{maximacommon}
+\begin{maximacode}
 normal_risch_denominator1(L) := block(
    [factor, Snum, k, Tnum, l],
    [factor, [Snum, k], [Tnum, l]] : L,
@@ -1186,7 +1209,33 @@ normal_risch_denominator(S, T, var) := block(
       map(normal_risch_denominator1,
          normal_risch_factors(S, T, var)))
 );
-\end{maximacommon}
+\end{maximacode}
+
+\begin{sagecommon}
+def is_integer(P):
+   try:
+      int(P)
+      return True
+   except (TypeError, ValueError):
+      return False
+
+def normal_risch_denominator1(L, D):
+   (f, [[Snum, k], [Tnum, l]]) = L
+   if k == 0:
+      return f^max(0,l-1)
+   elif k == 1:
+      R = f.parent().quo(f)
+      j = R(Snum)/R(D(f))
+      if is_integer(j):
+         return f^max(l-1, j, 0)
+      else:
+         return f^max(l-1, 0)
+   else:
+      return f^max(0,l-k)
+
+def normal_risch_denominator(S, T, D):
+  return prod(map(lambda L: normal_risch_denominator1(L, D), normal_risch_factors(S,T).items()))
+\end{sagecommon}
 
 The next function, {\tt normal_risch_polynomial}, given $S$, $T$, and
 the denominator computed by {\tt normal_risch_denominator},
@@ -1197,7 +1246,7 @@ $$A n' + B n = C$$
 
 in the form {\tt [A, B, C]}.
 
-\begin{maximacommon}
+\begin{maximacode}
 normal_risch_polynomial(S, T, var, D1) := block(
    [D2, A, B, C],
    D2 : denom(S*D1)*denom(T*D1),
@@ -1206,13 +1255,20 @@ normal_risch_polynomial(S, T, var, D1) := block(
    C : T*D1^2*D2,
    [A, B, C]
 );
-\end{maximacommon}
+\end{maximacode}
+
+\begin{sagecommon}
+def normal_risch_polynomial(S, T, D1, D):
+  D2 = (S*D1).denominator() * (T*D1).denominator()
+  # XXX check to make sure that denominator is 1
+  return [D1*D2, S*D1*D2 - D(D1)*D2, (T*D1^2*D2).numerator()]
+\end{sagecommon}
 
 Next, given $A$, $B$, and $C$, we wish to compute the
-maximum degree of the numerator, or -1 if we can
+maximum degree of the numerator, or {\tt None} if we can
 determine at this point that there is no solution.
 
-\begin{maximacommon}
+\begin{maximacode}
 normal_risch_degree(A, B, C, var) := block(
    [k, p],
 
@@ -1233,13 +1289,37 @@ normal_risch_degree(A, B, C, var) := block(
 
    k
 );
-\end{maximacommon}
+\end{maximacode}
+
+\begin{sagecommon}
+def is_constant(P, D):
+   return (D(P) == 0)
+
+def normal_risch_degree(A, B, C, D):
+
+   # XXX What if B is zero?
+
+   if C != 0:
+      k = C.degree() - max(A.degree() - 1, B.degree())
+   else:
+      k = -1
+
+   if is_constant(C/B, D):
+      k = max(k,0)
+
+   if A.degree() == B.degree() + 1:
+      p = - B.lc() / A.lc()
+      if is_integer(p):
+         k = max(k,p)
+
+   return k
+\end{sagecommon}
 
 Finally, we combine all these pieces together into a function that
-either returns a solution to a normal Risch equation, or {\bf false}
+either returns a solution to a normal Risch equation, or {\tt None}
 if no such solution exists.
 
-\begin{maximacommon}
+\begin{maximacode}
 normal_risch_equation(S, T, var) := block(
    [D, A, B, C],
    D : normal_risch_denominator(S, T, var),
@@ -1252,18 +1332,42 @@ normal_risch_equation(S, T, var) := block(
                 normal_risch_degree(A,B,C,var))
         / D
 );
-\end{maximacommon}
+\end{maximacode}
+
+\begin{sagecommon}
+def normal_risch_equation(S, T, D):
+  D1 = normal_risch_denominator(S, T, D)
+  [A, B, C] = normal_risch_polynomial(S, T, D1, D)
+
+  if is_constant(C/B, D):
+     return C/B/D1
+  elif normal_risch_degree(A,B,C,D) == -1:
+     return None
+  else:
+     raise NotImplementedError
+\end{sagecommon}
 
 Let's demonstrate the use of this code by using it to solve the Risch
 equations that we've already seen in this chapter's examples so far.
 
-\begin{maximablock}
-normal_risch_equation(%i, 1/(2*%i), x);
-normal_risch_equation(-2*x, 1, x);
-normal_risch_equation(%i, 1/x, x);
-normal_risch_equation(log(2), 1, x);
-normal_risch_equation(theta+1, 1, theta);
-\end{maximablock}
+\begin{sageblock}
+R.<x> = QQbar[]
+I = R(sqrt(R(-1)))
+D = Derivation(R, {x: 1})
+normal_risch_equation(I, 1/(2*I), D)
+normal_risch_equation(-2*x, R(1), D)
+normal_risch_equation(I, 1/x, D)
+
+C2.<log2> = QQbar[]
+C2._latex_names[0] = '{\ln 2}'
+R2.<x> = C2[]
+D = Derivation(R2, {x: 1, log2: 0})
+normal_risch_equation(R2(log2), R2(1), D)
+
+R2.<theta> = R[]
+D = Derivation(R2, {x: 1, theta: 1/x})
+normal_risch_equation(theta+1, R2(1), theta)
+\end{sageblock}
 
 \begin{maximacommon}
 normal_risch_solver(eq,var) := block(
@@ -1381,7 +1485,7 @@ $$n k + \ln p_n = - \int \frac{\lc B}{\lc A} dx$$
 
 \vfill\eject
 
-\example (Bronstein examples 6.2.1, 6.3.3, 6.4.2) Integrate
+\example (\cite{bronstein book} examples 6.2.1, 6.3.3, 6.4.2) Integrate
 $$\int \frac{e^x - x^2 + 2x}{(e^x + x)^2 x^2}e^{(x^2-1)/x+1/(e^x+x)} dx$$
 
 We'll use the differential field ${\mathbb C}(x, \theta, \psi)$ where

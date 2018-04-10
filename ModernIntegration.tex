@@ -213,7 +213,26 @@ resetmargins=true}
 \newcommand{\sageinputcode}{}
 \newcommand{\sageoutputmath}[1]{#1}
 
-\newcommand{\Bold}[1]{{\bf #1}}
+%% Sage preamble - should get this by calling latex_extra_preamble() in sage.misc.latex
+
+\newcommand{\ZZ}{\Bold{Z}}
+\newcommand{\NN}{\Bold{N}}
+\newcommand{\RR}{\Bold{R}}
+\newcommand{\CC}{\Bold{C}}
+\newcommand{\QQ}{\Bold{Q}}
+\newcommand{\QQbar}{\overline{\QQ}}
+\newcommand{\GF}[1]{\Bold{F}_{#1}}
+\newcommand{\Zp}[1]{\ZZ_{#1}}
+\newcommand{\Qp}[1]{\QQ_{#1}}
+\newcommand{\Zmod}[1]{\ZZ/#1\ZZ}
+\newcommand{\CDF}{\Bold{C}}
+\newcommand{\CIF}{\Bold{C}}
+\newcommand{\CLF}{\Bold{C}}
+\newcommand{\RDF}{\Bold{R}}
+\newcommand{\RIF}{\Bold{I} \Bold{R}}
+\newcommand{\RLF}{\Bold{R}}
+\newcommand{\CFF}{\Bold{CFF}}
+\newcommand{\Bold}[1]{\mathbf{#1}}
 
 \newenvironment{sageblocksmall}{\small\sageblock}{\endsageblock}
 \newenvironment{sageblocktiny}{\tiny\sageblock}{\endsageblock}
@@ -314,9 +333,11 @@ resetmargins=true}
 % Command number is in argument 1
 % Command text is saved in verbatim block MaximaCode
 
+\def\sageinputcodebreak{}
 \renewcommand{\sageinputcode}{
+\sageinputcodebreak
 \textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
-\break
+\def\sageinputcodebreak{\break}
 }
 
 % Wrap everything in a nice colored frame and print it
