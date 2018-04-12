@@ -234,11 +234,11 @@ class Derivation(SageObject) :
             return (self(n)*d - n*self(d))/(d^2)
         elif is_Polynomial(x):
             var = x.args()[0]
-            Dvar = gm[var]
             result = 0
             for power in range(0, x.degree()+1):
                 coeff = x[power]
-                result = result + power * coeff * var^(power-1) * Dvar
+                if power != 0:
+                    result = result + power * coeff * var^(power-1) * gm[var]
                 result = result + self(coeff) * var^power
             return self.parent(result)
         elif is_MPolynomial(x):

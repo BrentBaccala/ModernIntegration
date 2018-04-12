@@ -1460,7 +1460,10 @@ $$ jk' - \frac{a'}{a }  = \frac{B(0)}{A(0)}$$
 
 Integrating, we obtain:
 
-$$ jk - \ln a = \int \frac{B(0)}{A(0)} dx$$
+\begin{equation}
+\label{special risch equation - denominator bound}
+jk - \ln a = \int \frac{B(0)}{A(0)} dx
+\end{equation}
 
 We don't know $a$, but $A$, $B$, and $k$ are all known, so solving
 this equation amounts to an integration step that must result in a
@@ -1469,7 +1472,10 @@ constant multiple of $k$ plus a possible logarithm.
 This completes our determination of the denominator of $r$, and we
 are now reduced to a polynomial equation:
 
-$$A p' + B p = C \qquad A,B,C,p \in K[\theta]$$
+\begin{equation}
+\label{special risch polynomial equation}
+A p' + B p = C \qquad A,B,C,p \in K[\theta]
+\end{equation}
 
 $$p = p_n \theta^n + \cdots \qquad p' = (p_n' + n p_n k') \theta^n + \cdots$$
 
@@ -1479,9 +1485,24 @@ $$\lc A (p_n' + n p_n k') + \lc B p_n = 0$$
 
 $$n k' + \frac{p_n'}{p_n} = - \frac{\lc B}{\lc A}$$
 
-This equation has the same form as ?, so again, we integrate:
+This equation has the same form as \ref{special risch equation - denominator bound}, so again, we integrate:
 
-$$n k + \ln p_n = - \int \frac{\lc B}{\lc A} dx$$
+\begin{equation}
+\label{special risch equation - numerator bound}
+n k + \ln p_n = - \int \frac{\lc B}{\lc A} dx
+\end{equation}
+
+If this integral has this desired form, then cancellation
+is possible between the terms on the left hand side of
+\ref{special risch polynomial equation}, and
+$n$ is the $\theta$-degree
+of the solution polynomial.
+
+Otherwise, there is no cancellation and 
+$\deg_\theta p = \deg_\theta C - \max(\deg_\theta A, \deg_\theta B)$
+
+This degree can be negative, so long as it is no lower than
+the lower degree bound determined earlier.
 
 \vfill\eject
 
@@ -1499,7 +1520,7 @@ kill(pf, denoms, n, c, R, Q, D, C, a, A)$
 D(f) := diff(f,x)$
 \end{maximacode}
 
-\begin{maximablock}
+\begin{maximacode}
 integrand:
    (exp(x) - x^2 + 2*x)
       / ((exp(x) + x)^2 * x^2)
@@ -1512,18 +1533,51 @@ lintegrand:
           exp((x^2-1)/x + 1/(theta+x))
              = psi],
       integrand);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+# First, we switch back to using the Symbolic Ring,
+# instead of the ring variables from the last example.
+
+x = var('x');
+theta = var('theta');
+psi = var('psi');
+
+integrand =                         \
+   (exp(x) - x^2 + 2*x)             \
+      / ((exp(x) + x)^2 * x^2)      \
+   * exp((x^2-1)/x + 1/(exp(x)+x))
+
+exponent = (x^2-1)/x + 1/(theta+x)
+lintegrand = integrand.subs(
+   {exp(x)        : theta,
+    exp(exponent) : psi})
+
+# Now create a proper ring and convert to using its variables.
+
+F.<x,theta> = FractionField(ZZ['x', 'theta']);
+R.<psi> = F[]
+
+D1 = Derivation(R, {x: 1, theta: theta})
+D = Derivation(R, {x: 1, theta: theta, psi: D1(R(exponent))*psi})
+\end{sageblock}
 
 The integrand has the form $a_1 \psi$, where
 $a_1 \in {\mathbb C}(x, \theta)$, so we're ready to apply
 Theorem \ref{exponential integration theorem}.
 Equation \eqref{eq: exponential An} gives:
 
-\begin{maximablock}
+\begin{maximacode}
 depends(A1,x)$
 a1 : lintegrand/psi$
 eq: D(A1) + D(psi)/psi*A1 - a1;
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+a1 = lintegrand/psi
+A1 = function('A1', nargs=1)(x)
+eq = diff(A1,x) + D(psi)/psi * A1 - a1
+\end{sageblock}
 
 \begin{comment}
 (theta+x)^2*%;
@@ -1555,77 +1609,115 @@ Next we can move on to equation \ref{eq: special polynomial Risch}:
 A r' + B r = C \qquad A,B,C \in K[\theta] \quad r \in K(\theta)
 \end{equation*}
 
-I'll use Maxima's {\tt ratsimp} to collapse the entire equation into a
-single fraction, {\tt num} to discard the denominator, and {\tt
-expand} to expand the numerator out into a form that {\tt partition}
-can use to select the factors of $A_1$ and $A_1'$.
+Let's use {\tt numerator()} to collapse the entire equation into a
+single fraction and discard the denominator, and
+then extract the coefficients of $A_1$ and $A_1'$.
 
-\begin{maximablock}
+\begin{maximacode}
 expand(num(ratsimp(eq)));
 [C, AB] : partition(%, A1);
 [B, A] : ratsimp(partition(AB, D(A1))
           / [A1, D(A1)]);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+[BC, _], [A, _] = \
+   eq.numerator().coefficients(diff(A1,x));
+[C, _], [B, _] = \
+   BC.numerator().coefficients(A1);
+A
+B
+C
+\end{sageblock}
 
 Now we want to integrate $A(0)/B(0)$, to determine the highest power
 of $\theta$ that can appear in the denominator:
 
-\begin{maximablock}
+\begin{maximacode}
 subst(theta=0,A/B);
-\end{maximablock}
+\end{maximacode}
 
-Since $k=x$, this solves equation ? with $j=1$ and $a$ constant,
-which tells us that $\theta$ can appear in $r$'s denominator
-with multiplicity one.
+\begin{sageblock}
+(A/B).subs(theta=0)
+\end{sageblock}
+
+Since $\theta=e^x$, $k=x$, this solves equation \ref{special risch
+equation - denominator bound} with $j=1$ and $a$ constant, which tells
+us that $\theta$ can appear in $r$'s denominator with multiplicity
+one.
 
 What about the polynomial degree?
 
-\begin{maximablock}
+\begin{maximacode}
 A;
 B;
 lc(expand(A),theta);
 lc(B,theta);
 integrate(lc(B,theta) / lc(expand(A),theta), x);
 remvalue(A,B,C,AB);
-\end{maximablock}
+\end{maximacode}
 
-This does not have the desired form (?), so we lack cancellation.
-This means that $A_1$'s degree is upper bounded by
-$C$'s $\theta$-degree (1), which, combined with the denominator constant,
+\begin{sageblock}
+R2 = ZZ['x']['theta']
+R2(B).lc() / R2(A).lc()
+integrate(R2(B).lc() / R2(A).lc(), x)
+\end{sageblock}
+
+This does not have the desired form of \ref{special risch equation - numerator bound},
+specifically it is not an integer multiple of $x$ plus a logarithm, so we lack cancellation.
+This means that $A_1$'s $\theta$-degree is upper bounded by
+$\deg_\theta C - \max(\deg_\theta A, \deg_\theta B) = -1$.
+Since the lower bound is also $-1$, this
 gives us the following form for $A_1$:
 
-$$A_{1,-1} \theta^{-1} + A_{1,0} + A_{1,1} \theta$$
+$$A_1 = A_{1,-1} \theta^{-1} \qquad A_{1,-1} \in {\mathbb C}(x)$$
 
-\begin{maximablock}
+\begin{maximacode}
 depends(A,x)$
 A1: A[1,-1] * theta^-1 + A[1,0] + A[1,1] * theta;
-\end{maximablock}
+\end{maximacode}
 
-Returning to equation \eqref{eq: exponential An}, I'll collect all the
-terms over a common denominator using {\tt ratsimp}, then pull out the
-numerator, which is the expression we're setting equal to zero.
-A call to Maxima {\tt ev} function subsitutes in the value for
-$A_1$ that I just set, and specifying the {\tt diff} flag causes
-the derivatives to be expanded.
+Sage doesn't know how {\tt theta} differentiates\footnote{Maxima is
+somewhat better in this regard.  It's {\tt gradef} command lets the
+user declare how variables differentiate.}, so I expanded
+it out by hand:
 
-\begin{maximablock}
+\begin{sageblock}
+A1m1 = function('A1m1', latex_name='A_{1,-1}', nargs=1)(x);
+eq2 = eq.subs({A1 : A1m1/theta,
+   diff(A1,x) : (diff(A1m1,x)*theta - A1m1*D(theta))/theta^2})
+\end{sageblock}
+
+% Returning to equation \eqref{eq: exponential An}, I'll collect all the
+% terms over a common denominator using {\tt ratsimp}, then pull out the
+% numerator, which is the expression we're setting equal to zero.
+% A call to Maxima {\tt ev} function subsitutes in the value for
+% $A_1$ that I just set, and specifying the {\tt diff} flag causes
+% the derivatives to be expanded.
+
+\begin{maximacode}
 num(ratsimp(eq));
 ev(%,diff);
-\end{maximablock}
+\end{maximacode}
 
-$A_{1,-1}$, $A_{1,0}$, and $A_{1,1}$ are all rational functions in
-${\mathbb C}(x)$.  In particular, they do not involve $\theta$, so we
-can extract the leading $\theta$ coefficient and set it equal to zero.
+$A_{1,-1}$ is a rational functions in
+${\mathbb C}(x)$.  In particular, it does not involve $\theta$, so
+each power of $\theta$ in this equation must be zero.
+Let's extract the leading $\theta$ coefficient and set it equal to zero.
 
-\begin{maximablock}
+\begin{maximacode}
 lc(expand(%), theta);
-\end{maximablock}
+\end{maximacode}
 
-This Risch equation has an obvious solution.  Substituting $0$
-for $A_{1,1}$ and again looking at the highest power
-of $\theta$, we obtain a Risch equation for $A_{1,0}$.
+\begin{sageblock}
+eq2.numerator().coefficient(theta, 2)
+\end{sageblock}
 
-\begin{maximablock}
+This Risch equation has an obvious solution.  Now we're solving
+in ${\mathbb C}(x)$, so if it were difficult, we could use the theory
+of the previous section:
+
+\begin{maximacode}
 A[1,1]: normal_risch_solver(%, A[1,1]);
 
 num(ratsimp(eq));
@@ -1637,25 +1729,64 @@ num(ratsimp(eq));
 ev(%,eval,diff);
 lc(expand(%), theta);
 A[1,-1]: normal_risch_solver(%, A[1,-1]);
-\end{maximablock}
+\end{maximacode}
 
-We've now solved for all of the components of $A_1$:
+\begin{sageblock}
+R2.<x> = QQbar[];
+D = Derivation(R2, {x: 1});
+normal_risch_equation(1/x^2, 1/x^2, D)
+\end{sageblock}
 
-\begin{maximablock}
+Having solved for $A_{1,-1}$, we've now solved for $A_1$:
+
+\begin{maximacode}
 ev(A1);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+A1 = R(1/theta)
+\end{sageblock}
 
 Since our integrand was of the form $a_1 \psi$, our integral is of the
 form $A_1 \psi$, so we've completed our calculation.  Is it correct?
 
-\begin{maximablock}
+\begin{maximacode}
 ev(A1 * psi);
 subst([psi = exp((x^2-1)/x + 1/(theta+x)),
        theta = exp(x)],
       %);
 ratsimp(%);
 diff(%,x) === integrand;
-\end{maximablock}
+\end{maximacode}
+
+\begin{sagecode}
+
+# BUG FIX - the polynomial subs() routine doesn't call subs
+# recursively, so only the top level polynomial var gets
+# replaced.  The difference is the nested call to subs()
+
+def bwbsubs(self, *x, **kwds):
+    if len(x) == 1 and isinstance(x[0], dict):
+        g = self.parent().gen()
+        if g in x[0]:
+            return self(x[0][g]).subs(x[0])
+        elif len(x[0]) > 0:
+            raise TypeError("keys do not match self's parent")
+        return self
+    return self(*x, **kwds)
+
+# Python insanity!  This changes the class's method to use my patched
+# version.  (but don't leave off the semicolon)
+
+type(psi).subs = bwbsubs;
+
+\end{sagecode}
+
+\begin{sageblock}
+lans = psi/theta
+ans = lans.subs({psi : exp(exponent), theta : exp(x)})
+bool(diff(ans,x) == integrand)
+\end{sageblock}
 
 
 \endexample
