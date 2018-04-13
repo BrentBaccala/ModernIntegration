@@ -873,11 +873,12 @@ def recenter_curve(f, x0, y0):
     # XXX expect parent to be QQ[x,y] or something very similar
     (x,y) = f.parent().gens()
 
-    if y0 == oo:
-        raise NotImplementedError
     if x0 == oo:
         f = f.subs({x : 1/x}).numerator()
         x0 = 0
+    if y0 == oo:
+        f = f.subs({y : 1/y}).numerator()
+        y0 = 0
 
     return f.subs({x : x+x0, y : y+y0})
 
@@ -906,12 +907,42 @@ def puiseux(f, x0, y0, n):
     eds = ed[1].sage()
     p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
 
-    PSelem = y0 + PSring(p[0,0]).add_bigoh(n+1)
+    # XXX Can't handle a really complex HN expansion yet
+    assert(p.nrows() <= 2)
+
+    if x0 == oo:
+        x1 = 0
+    else:
+        x1 = x0
+
+    if y0 == oo:
+        y1 = 0
+    else:
+        y1 = y0
+
+    if p.nrows() == 1:
+        xexpansion = x1 + t
+        PSelem = y1 + PSring(p[0,0]).add_bigoh(n+1)
+    else:
+        xexpansion = x1 + PSring(p[1,0]).add_bigoh(n+1)
+        PSelem = y1 + (p[0,0].subs({x: xexpansion})/t).add_bigoh(n+1)
+
+    if x0 == oo:
+        xexpansion = 1/xexpansion
+    if y0 == oo:
+        PSelem = 1/PSelem
+
     if x0 == oo:
        xequality = (SR.var(str(x)) == SR(1/t))
     else:
        xequality = (SR.var(str(x)) == SR(x0 + t))
-    return (xequality, (SR.var(str(y)) == SR(PSelem)))
+
+    xequality = (SR.var(str(x)) == SR(xexpansion))
+
+    if ed[3] == 0:
+        return [xequality, (SR.var(str(y)) == SR(PSelem))]
+    else:
+        return [(SR.var(str(y)) == SR(PSelem)), xequality]
 
 
 \end{sageblock}
@@ -1133,6 +1164,7 @@ puiseux(y^3 + x^3*y +x, x, y, inf, false, 10);
 
 \begin{sageblock}
 puiseux(f, oo, 0, 10)
+puiseux(f, oo, oo, 10)
 \end{sageblock}
 
 Here we have an ordinary point at $(\infty,0)$ and
