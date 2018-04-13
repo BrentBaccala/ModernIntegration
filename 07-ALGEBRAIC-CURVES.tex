@@ -896,11 +896,24 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
     # Construct a Laurent power series ring in a new variable
 
-    PSring = Frac(f.parent().base_ring()[['t']])
+    numfield = f.parent().base_ring()
+    PSring = Frac(numfield[['t']])
     t = PSring.gens()[0]
 
+    def ringmap(x):
+        # First map x from the polynomial ring down to its coefficent ring (a NumberField)
+        x = x.parent().base_ring()(x)
+        # Then convert it to a polynomial and map to into numfield
+        return x.polynomial()(numfield.gens()[0])
+
     eds = ed[1].sage()
-    p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
+    #p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
+    try:
+        p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
+    except TypeError:
+        #p = eds.apply_map(f.parent().base_ring()) * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
+        p = eds.apply_map(ringmap) * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
+        #return (eds, matrix([t^i for i in range(1, eds.ncols()+1)]).transpose())
 
     # XXX Can't handle a really complex HN expansion yet
     assert(p.nrows() <= 2)
@@ -932,6 +945,13 @@ def puiseux_cycle(f, x0, y0, n, hne):
     else:
        xequality = (SR.var(str(x)) == SR(x0 + t))
 
+    if ed[3] == 0:
+        return [xexpansion, PSelem]
+    else:
+        return [PSelem, xexpansion]
+
+    # Symbolic Ring equation format (pretty to print, hard to work with)
+
     xequality = (SR.var(str(x)) == SR(xexpansion))
 
     if ed[3] == 0:
@@ -939,7 +959,46 @@ def puiseux_cycle(f, x0, y0, n, hne):
     else:
         return [(SR.var(str(y)) == SR(PSelem)), xequality]
 
+def apply_map_to_laurent_series(morphism, series):
+    R = series.parent().change_ring(morphism.codomain())
+    result = R(map(morphism, list(series)))
+    result.add_bigoh(series.prec())
+    return result
+
+# This version puts the coefficients in the Symbolic Ring
+# so that we can see them in radical form
+
+def apply_map_to_laurent_series(morphism, series):
+    R = series.parent().change_ring(SR)
+    result = R(map(lambda x: x.radical_expression(), map(morphism, list(series))))
+    result.add_bigoh(series.prec())
+    return result
+
 def puiseux(origf, x0, y0, n):
+
+    # Singular can't work directly with QQbar, so if that's our base
+    # ring, then we need to convert to a NumberField.
+
+    if origf.parent().base_ring() == QQbar:
+        orig_elems = origf.coefficients() + [x0, y0]
+        nfe = number_field_elements_from_algebraics(orig_elems)
+        numfield = nfe[0]  # The number field
+        new_elems = nfe[1] # The converted elements
+        morphism = nfe[2]  # A morphism to get back to QQbar
+
+        elem_dict = dict(zip(orig_elems, new_elems))
+        def elem_map(e): return elem_dict[e]
+
+        newf = origf.map_coefficients(elem_map, new_base_ring=numfield)
+        p = puiseux(newf, elem_dict[x0], elem_dict[y0], n)
+        #return (morphism, p)
+        try:
+            return [[apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[0])] for cycle in p]
+        except TypeError:
+            return (morphism, p)
+        #return (newf, newf.parent())
+
+
     f = recenter_curve(origf, x0, y0)
     hne = f._singular_().hnexpansion()
 
@@ -1146,6 +1205,17 @@ f = y^3 + x^3*y + x
 # puiseux(Q(f), a, 3/a^2, 10)
 \end{sageblock}
 \end{comment}
+
+\begin{sageblock}
+R.<x,y> = QQbar[]
+
+f = y^3 + x^3*y + x
+puiseux(f, 0, 0, 10)
+
+g = QQbar(-27/4)^(1/7)
+puiseux(f, g, -3/(2*g^2), 2)
+puiseux(f, g, 3/g^2, 1)
+\end{sageblock}
 
 \begin{sageblock}
 R1.<g> = QQ[]
