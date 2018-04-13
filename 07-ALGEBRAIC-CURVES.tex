@@ -882,14 +882,9 @@ def recenter_curve(f, x0, y0):
 
     return f.subs({x : x+x0, y : y+y0})
 
-def puiseux(f, x0, y0, n):
-    f = recenter_curve(f, x0, y0)
-    hne = f._singular_().hnexpansion()
+def puiseux_cycle(f, x0, y0, n, hne):
 
-    if len(hne) == 0:
-       raise ValueError("specified coordinates not on curve")
-
-    ed = singular.extdevelop(hne[1], n)
+    ed = singular.extdevelop(hne, n)
 
     # We get a flag indicating which variable was used as a
     # uniformizing parameter.
@@ -943,6 +938,23 @@ def puiseux(f, x0, y0, n):
         return [xequality, (SR.var(str(y)) == SR(PSelem))]
     else:
         return [(SR.var(str(y)) == SR(PSelem)), xequality]
+
+def puiseux(origf, x0, y0, n):
+    f = recenter_curve(origf, x0, y0)
+    hne = f._singular_().hnexpansion()
+
+    if len(hne) == 0:
+       raise ValueError("specified coordinates not on curve")
+
+    if hne[1].type() == 'ring':
+       extensionRing = hne[1].sage()
+       # XXX We've got hne computed and stored in the ring,
+       # but I'm not sure how to get to it from Sage,
+       # so just recurse
+
+       return puiseux(extensionRing(origf), x0, y0, n)
+
+    return [puiseux_cycle(f, x0, y0, n, cycle) for cycle in hne]
 
 
 \end{sageblock}
@@ -1278,6 +1290,12 @@ Its behavior at infinity also requires analysis.
 \begin{maximablock}
 puiseux(y^2 + x^2 - 1, x, y, inf, inf, 1, x/y);
 \end{maximablock}
+
+\begin{sageblock}
+R.<x,y> = QQ[];
+f = y^2 + x^2 - 1
+puiseux(f, oo, oo, 1)
+\end{sageblock}
 
 $\frac{x}{y}$ has no poles at infinity, and approaches
 the limiting values $\pm i$ as $x$ and $y$ approach
