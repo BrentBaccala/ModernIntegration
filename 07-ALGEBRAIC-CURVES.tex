@@ -1170,6 +1170,35 @@ puiseux(f, oo, oo, 10)
 Here we have an ordinary point at $(\infty,0)$ and
 a single cycle of two sheets at $(\infty,\infty)$.
 
+We have examined all of this curve's ramification points,
+including those at infinity (since we analyzed all of its
+points at infinity), and found that all of them admitted
+a single Puiseux expansion.
+
+Therefore, this curve is {\it non-singular}, and according to the
+genus-degree formula (MORE INFO), its geometric and arithmetic genus
+are the same.  Its arithmetic genus is $\frac{1}{2}(d-1)(d-2) = 3$,
+where $d=4$ is the degree of the defining polynomial.  Computing
+the geometric genus is more difficult\footnote{
+{\tt https://www.singular.uni-kl.de/Overview/Examples/Genus/genus1.html}
+
+{\tt https://en.wikipedia.org/wiki/Algebraic_curve\#Classification_of_singularities}
+
+{\tt https://math.stackexchange.com/questions/150840}
+
+{\tt http://mathforum.org/library/drmath/view/71229.html}
+}, but we can verify our
+information with Sage, being careful to work in {\it projective} space:
+
+\begin{sageblock}
+PP.<x,y,z> = ProjectiveSpace(QQ, 2)
+C = Curve(y^3*z + x^3*y + x*z^3)
+C.is_singular()
+C.arithmetic_genus()
+C.geometric_genus()
+\end{sageblock}
+
+
 \endexample
 
 %\mysection{meromorphic functions are analytic}
