@@ -869,31 +869,50 @@ puiseux_fracexp: false)$
 singular.lib('hnoether.lib')
 
 def recenter_curve(f, x0, y0):
-    if x0 == oo or y0 == oo:
-        raise NotImplementedError
+
     # XXX expect parent to be QQ[x,y] or something very similar
     (x,y) = f.parent().gens()
+
+    if y0 == oo:
+        raise NotImplementedError
+    if x0 == oo:
+        f = f.subs({x : 1/x}).numerator()
+        x0 = 0
 
     return f.subs({x : x+x0, y : y+y0})
 
 def puiseux(f, x0, y0, n):
     f = recenter_curve(f, x0, y0)
     hne = f._singular_().hnexpansion()
+
     if len(hne) == 0:
        raise ValueError("specified coordinates not on curve")
+
     ed = singular.extdevelop(hne[1], n)
+
+    # We get a flag indicating which variable was used as a
+    # uniformizing parameter.
+
     (x,y) = f.parent().gens()
     if ed[3] == 1:
         (x,y) = (y,x)
         (x0,y0) = (y0,x0)
+
+    # Construct a Laurent power series ring in a new variable
+
+    PSring = Frac(f.parent().base_ring()[['t']])
+    t = PSring.gens()[0]
+
     eds = ed[1].sage()
-    p = eds * matrix([(x-x0)^i for i in range(1, eds.ncols()+1)]).transpose()
-    #return (y, p[0,0])
-    #PSring = PowerSeriesRing(f.parent(), f.parent().gens())
-    PSring = Frac(f.parent().base_ring()[[x]])
+    p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
+
     PSelem = y0 + PSring(p[0,0]).add_bigoh(n+1)
-    return (SR.var('y') == SR(PSelem))
-    #return (y, PSelem)
+    if x0 == oo:
+       xequality = (SR.var(str(x)) == SR(1/t))
+    else:
+       xequality = (SR.var(str(x)) == SR(x0 + t))
+    return (xequality, (SR.var(str(y)) == SR(PSelem)))
+
 
 \end{sageblock}
 
@@ -1111,6 +1130,10 @@ Finally, let's look at what happens when $x$ goes to infinity:
 \begin{maximablock}
 puiseux(y^3 + x^3*y +x, x, y, inf, false, 10);
 \end{maximablock}
+
+\begin{sageblock}
+puiseux(f, oo, 0, 10)
+\end{sageblock}
 
 Here we have an ordinary point at $(\infty,0)$ and
 a single cycle of two sheets at $(\infty,\infty)$.
