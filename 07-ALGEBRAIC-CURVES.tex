@@ -864,6 +864,41 @@ puiseux_fracexp: false)$
 
 \vfill\eject
 
+\begin{sageblock}
+
+singular.lib('hnoether.lib')
+
+def recenter_curve(f, x0, y0):
+    if x0 == oo or y0 == oo:
+        raise NotImplementedError
+    # XXX expect parent to be QQ[x,y] or something very similar
+    (x,y) = f.parent().gens()
+
+    return f.subs({x : x+x0, y : y+y0})
+
+def puiseux(f, x0, y0, n):
+    f = recenter_curve(f, x0, y0)
+    hne = f._singular_().hnexpansion()
+    if len(hne) == 0:
+       raise ValueError("specified coordinates not on curve")
+    ed = singular.extdevelop(hne[1], n)
+    (x,y) = f.parent().gens()
+    if ed[3] == 1:
+        (x,y) = (y,x)
+        (x0,y0) = (y0,x0)
+    eds = ed[1].sage()
+    p = eds * matrix([(x-x0)^i for i in range(1, eds.ncols()+1)]).transpose()
+    #return (y, p[0,0])
+    #PSring = PowerSeriesRing(f.parent(), f.parent().gens())
+    PSring = Frac(f.parent().base_ring()[[x]])
+    PSelem = y0 + PSring(p[0,0]).add_bigoh(n+1)
+    return (SR.var('y') == SR(PSelem))
+    #return (y, PSelem)
+
+\end{sageblock}
+
+\vfill\eject
+
 \example Construct Puiseux expansions of $y$ at the multiple points of the
 curve $y^2 = 1 - x^2$
 
@@ -874,6 +909,11 @@ We compute the discriminant:
 \begin{maximablock}
 discriminant(y^2 + x^2 - 1, y);
 \end{maximablock}
+
+\begin{sageblock}
+R.<x,y> = QQ[];
+(y^2 + x^2 - 1).discriminant(y).factor()
+\end{sageblock}
 
 The multiple points of $y^2 = 1 - x^2$ lie at the roots of the
 discriminant, which are $x = \pm 1$.  In both cases, $y=0$ is the only
@@ -937,6 +977,10 @@ x-series unchanged.  Let's confirm this result with Maxima:
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
 \end{maximablock}
 
+\begin{sageblock}
+puiseux(y^2 + x^2 - 1, 1, 0, 3)
+\end{sageblock}
+
 Now, let's analyze the point at infinity.  We move infinity to a
 finite point (0) with the substitution $x=u^{-1}$, then combine all of
 our terms over a common denominator and discard the denominator.  Our
@@ -997,6 +1041,11 @@ equation, which gives us the locations of the multiple points.
 discriminant(y^3 + x^3*y + x, y);
 \end{maximablock}
 
+\begin{sageblock}
+f = y^3 + x^3*y + x
+f.discriminant(y).factor()
+\end{sageblock}
+
 The multiple points lie over the roots of this equation: $x=0$ and
 the seven roots of $4x^7+27=0$.  Infinity also needs to be
 examined.  We begin with $x=0$:
@@ -1004,6 +1053,10 @@ examined.  We begin with $x=0$:
 \begin{maximablock}
 puiseux(y^3 + x^3*y +x, x, y, 0, false, 10);
 \end{maximablock}
+
+\begin{sageblock}
+puiseux(f, 0, 0, 10)
+\end{sageblock}
 
 This result shows that we have a single cycle at $(x,y)=(0,0)$ with
 three sheets.  Now, let's look at a specimen root
@@ -1019,6 +1072,36 @@ puiseux(y^3 + x^3*y +x, x, y, g, -(3/8)^(1/7), 1);
 g: (-27/4)^(1/7);
 puiseux(y^3 + x^3*y +x, x, y, g, false, 1);
 \end{maximablock}
+
+\begin{comment}
+\begin{sageblock}
+# Not correct.  See below.
+R.<x,y,a> = QQ[];
+I = ideal(4*a^7+27)
+Q = R.quo(I)
+
+f = y^3 + x^3*y + x
+# puiseux(Q(f), a, 3/a^2, 10)
+\end{sageblock}
+\end{comment}
+
+\begin{sageblock}
+R1.<g> = QQ[]
+S.<g> = NumberField(4*g^7+27)
+R.<x,y> = S[]
+
+f = y^3 + x^3*y + x
+puiseux(f, g, -3/(2*g^2), 2)
+puiseux(f, g, 3/g^2, 1)
+
+# Why doesn't this work?
+#
+# try:
+#     puiseux(f, g, 0, 1)
+#     raise AssertionError()
+# except ValueError:
+#     pass
+\end{sageblock}
 
 We have one sheet of two cycles at $(g,-3/(2g^2))$
 and an ordinary point at $(g,3/g^2)$.
