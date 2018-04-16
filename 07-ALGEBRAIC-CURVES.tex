@@ -894,26 +894,35 @@ def puiseux_cycle(f, x0, y0, n, hne):
         (x,y) = (y,x)
         (x0,y0) = (y0,x0)
 
-    # Construct a Laurent power series ring in a new variable
-
     numfield = f.parent().base_ring()
-    PSring = Frac(numfield[['t']])
-    t = PSring.gens()[0]
-
-    def ringmap(x):
-        # First map x from the polynomial ring down to its coefficent ring (a NumberField)
-        x = x.parent().base_ring()(x)
-        # Then convert it to a polynomial and map to into numfield
-        return x.polynomial()(numfield.gens()[0])
 
     eds = ed[1].sage()
-    #p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
-    try:
-        p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
-    except TypeError:
-        #p = eds.apply_map(f.parent().base_ring()) * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
-        p = eds.apply_map(ringmap) * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
-        #return (eds, matrix([t^i for i in range(1, eds.ncols()+1)]).transpose())
+
+    # eds is a matrix over a bivariate polynomial ring over a number field,
+    # but it might not be the same number field use to define the polynomial
+    # Sage Trac #25176
+
+    # a homomorphism that maps its number field to our number field
+
+    h = eds.base_ring().base_ring().hom(numfield.gens())
+
+    # a homomorphism that maps its polynomial ring to ours
+
+    h2 = eds.base_ring().hom(h, f.parent())
+
+    # map the matrix back to the polynomial's original ring
+
+    eds = eds.apply_map(h2)
+
+    # Construct a Laurent power series ring in a new variable
+
+    PSring = Frac(numfield[['t']])
+    t = PSring.0
+
+    # convert the matrix into power series
+    # XXX the matrix might include 'x' (or 'y') in some of its slots, right?
+
+    p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
 
     # XXX Can't handle a really complex HN expansion yet
     assert(p.nrows() <= 2)
@@ -961,18 +970,16 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
 def apply_map_to_laurent_series(morphism, series):
     R = series.parent().change_ring(morphism.codomain())
-    result = R(map(morphism, list(series)))
-    result.add_bigoh(series.prec())
-    return result
+    result = R(map(morphism, list(series)), series.valuation())
+    return result.add_bigoh(series.prec())
 
 # This version puts the coefficients in the Symbolic Ring
 # so that we can see them in radical form
 
 def apply_map_to_laurent_series(morphism, series):
     R = series.parent().change_ring(SR)
-    result = R(map(lambda x: x.radical_expression(), map(morphism, list(series))))
-    result.add_bigoh(series.prec())
-    return result
+    result = R(map(lambda x: x.radical_expression(), map(morphism, list(series))), series.valuation())
+    return result.add_bigoh(series.prec())
 
 def puiseux(origf, x0, y0, n):
 
@@ -990,10 +997,11 @@ def puiseux(origf, x0, y0, n):
         def elem_map(e): return elem_dict[e]
 
         newf = origf.map_coefficients(elem_map, new_base_ring=numfield)
+        #return (newf, elem_dict[x0], elem_dict[y0], n)
         p = puiseux(newf, elem_dict[x0], elem_dict[y0], n)
         #return (morphism, p)
         try:
-            return [[apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[0])] for cycle in p]
+            return [[apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])] for cycle in p]
         except TypeError:
             return (morphism, p)
         #return (newf, newf.parent())
