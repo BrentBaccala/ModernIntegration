@@ -987,25 +987,35 @@ def puiseux(origf, x0, y0, n):
     # ring, then we need to convert to a NumberField.
 
     if origf.parent().base_ring() == QQbar:
-        orig_elems = origf.coefficients() + [x0, y0]
+        orig_elems = origf.coefficients()
+        if x0 != oo: orig_elems.append(x0)
+        if y0 != oo: orig_elems.append(y0)
+
         nfe = number_field_elements_from_algebraics(orig_elems)
         numfield = nfe[0]  # The number field
         new_elems = nfe[1] # The converted elements
         morphism = nfe[2]  # A morphism to get back to QQbar
 
-        elem_dict = dict(zip(orig_elems, new_elems))
+        elem_dict = dict(zip(orig_elems + [oo], new_elems + [oo]))
         def elem_map(e): return elem_dict[e]
 
         newf = origf.map_coefficients(elem_map, new_base_ring=numfield)
-        #return (newf, elem_dict[x0], elem_dict[y0], n)
-        p = puiseux(newf, elem_dict[x0], elem_dict[y0], n)
-        #return (morphism, p)
-        try:
-            return [[apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])] for cycle in p]
-        except TypeError:
-            return (morphism, p)
-        #return (newf, newf.parent())
 
+        p = puiseux(newf, elem_dict[x0], elem_dict[y0], n)
+
+        # We may have extended further to construct the results
+        # If so, 'morphism' will no longer work, so replace it
+        # with the first possible embedding into QQbar.
+
+        # XXX First, we shouldn't just pick an embedding at random
+        # Second, we should embed into the original NumberField, and
+        # then use 'morphism' (a particular pre-selected embedding)
+        # to get the rest of the way into QQbar
+
+        if p[0][0].base_ring() is not newf.parent().base_ring():
+            morphism = p[0][0].base_ring().embeddings(QQbar)[0]
+
+        return [[apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])] for cycle in p]
 
     f = recenter_curve(origf, x0, y0)
     hne = f._singular_().hnexpansion()
@@ -1370,7 +1380,7 @@ puiseux(y^2 + x^2 - 1, x, y, inf, inf, 1, x/y);
 \end{maximablock}
 
 \begin{sageblock}
-R.<x,y> = QQ[];
+R.<x,y> = QQbar[];
 f = y^2 + x^2 - 1
 puiseux(f, oo, oo, 1)
 \end{sageblock}
