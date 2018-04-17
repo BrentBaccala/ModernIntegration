@@ -18,7 +18,7 @@ ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	pdflatex ModernIntegration
 	ls -v common*.tex | xargs cat > common.mac
 	rm common*.tex
-	./pythontex/pythontex/pythontex.py --verbose ModernIntegration.tex --jobs 1
+	SAGE_ROOT=/home/baccala/src/sage ./pythontex/pythontex/pythontex.py --interpreter sage:/home/baccala/src/sage/local/bin/sage --verbose ModernIntegration.tex --jobs 1
 	pdflatex ModernIntegration
 	rm common*.tex
 

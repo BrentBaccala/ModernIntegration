@@ -864,7 +864,7 @@ puiseux_fracexp: false)$
 
 \vfill\eject
 
-\begin{sageblock}
+\begin{sagecommonsmall}
 
 singular.lib('hnoether.lib')
 
@@ -959,26 +959,14 @@ def puiseux_cycle(f, x0, y0, n, hne):
     else:
         return [PSelem, xexpansion]
 
-    # Symbolic Ring equation format (pretty to print, hard to work with)
-
-    xequality = (SR.var(str(x)) == SR(xexpansion))
-
-    if ed[3] == 0:
-        return [xequality, (SR.var(str(y)) == SR(PSelem))]
-    else:
-        return [(SR.var(str(y)) == SR(PSelem)), xequality]
-
 def apply_map_to_laurent_series(morphism, series):
     R = series.parent().change_ring(morphism.codomain())
     result = R(map(morphism, list(series)), series.valuation())
     return result.add_bigoh(series.prec())
 
-# This version puts the coefficients in the Symbolic Ring
-# so that we can see them in radical form
-
-def apply_map_to_laurent_series(morphism, series):
+def map_laurent_series_to_SR(series):
     R = series.parent().change_ring(SR)
-    result = R(map(lambda x: x.radical_expression(), map(morphism, list(series))), series.valuation())
+    result = R(map(lambda x: x.radical_expression(), list(series)), series.valuation())
     return result.add_bigoh(series.prec())
 
 def puiseux(origf, x0, y0, n):
@@ -1012,10 +1000,28 @@ def puiseux(origf, x0, y0, n):
         # then use 'morphism' (a particular pre-selected embedding)
         # to get the rest of the way into QQbar
 
-        if p[0][0].base_ring() is not newf.parent().base_ring():
+        #if p[0][0].base_ring() is not newf.parent().base_ring():
+        if p[0][0].base_ring() is not QQbar:
             morphism = p[0][0].base_ring().embeddings(QQbar)[0]
 
-        return [[apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])] for cycle in p]
+        ans = []
+        for cycle in p:
+           # This gets us back to QQbar
+           cycle = [apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])]
+           # This normalizes x to be exact and y to be approximate
+           if cycle[0].prec() != oo:
+               P = cycle[0].parent()
+               t = P.gen(0)
+               # XXX I'd like to do this:
+               # expansion = (cycle[0] - x0)
+               # but my QQbar map doesn't respect the embedding, so it doesn't always work.  Instead:
+               expansion = (cycle[0] - cycle[0][0])
+               v = expansion.valuation()
+               r = expansion^(1/v)
+               cycle = [cycle[0][0] + t^v, cycle[1].subs({t: r.reverse()})]
+           cycle = map(map_laurent_series_to_SR, cycle)
+           ans.append(cycle)
+        return ans
 
     f = recenter_curve(origf, x0, y0)
     hne = f._singular_().hnexpansion()
@@ -1032,9 +1038,7 @@ def puiseux(origf, x0, y0, n):
        return puiseux(extensionRing(origf), x0, y0, n)
 
     return [puiseux_cycle(f, x0, y0, n, cycle) for cycle in hne]
-
-
-\end{sageblock}
+\end{sagecommonsmall}
 
 \vfill\eject
 
@@ -1117,7 +1121,8 @@ puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
 \end{maximablock}
 
 \begin{sageblock}
-puiseux(y^2 + x^2 - 1, 1, 0, 3)
+R.<x,y> = QQbar[];
+puiseux(y^2 + x^2 - 1, 1, 0, 4)
 \end{sageblock}
 
 Now, let's analyze the point at infinity.  We move infinity to a
@@ -1166,6 +1171,10 @@ at a singular point where the curve is not locally Euclidean.
 puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, y);
 \end{maximablock}
 
+\begin{sageblock}
+puiseux(y^2 + x^2 - 1, oo, oo, 5)
+\end{sageblock}
+
 \endexample
 
 \example \cite{bliss} \S 68
@@ -1181,6 +1190,7 @@ discriminant(y^3 + x^3*y + x, y);
 \end{maximablock}
 
 \begin{sageblock}
+R.<x,y> = QQ[];
 f = y^3 + x^3*y + x
 f.discriminant(y).factor()
 \end{sageblock}
@@ -1194,6 +1204,8 @@ puiseux(y^3 + x^3*y +x, x, y, 0, false, 10);
 \end{maximablock}
 
 \begin{sageblock}
+R.<x,y> = QQbar[];
+f = y^3 + x^3*y + x
 puiseux(f, 0, 0, 10)
 \end{sageblock}
 
