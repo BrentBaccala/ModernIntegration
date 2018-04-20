@@ -882,19 +882,34 @@ def recenter_curve(f, x0, y0):
 
     return f.subs({x : x+x0, y : y+y0})
 
+def apply_map_to_laurent_series(morphism, series):
+    try:
+        R = series.parent().change_ring(morphism.codomain())
+    except AttributeError:
+        R = series.parent()
+    result = R(map(morphism, list(series)), series.valuation())
+    return result.add_bigoh(series.prec())
+
 def puiseux_cycle(f, x0, y0, n, hne):
 
     ed = singular.extdevelop(hne, n)
 
+    P = f.parent()
+
+    numfield = f.parent().base_ring()
+
+    # We'll add a new variable to perform the series expansion, but
+    # for a while we'll need to work with polynomials in all three
+    # variables - f's original two, plus the new one
+
+    (x,y,t) = PolynomialRing(numfield, list(P.gens()) + ['t']).gens()
+
     # We get a flag indicating which variable was used as a
     # uniformizing parameter.
 
-    (x,y) = f.parent().gens()
     if ed[3] == 1:
         (x,y) = (y,x)
         (x0,y0) = (y0,x0)
-
-    numfield = f.parent().base_ring()
 
     eds = ed[1].sage()
 
@@ -914,18 +929,9 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
     eds = eds.apply_map(h2)
 
-    # Construct a Laurent power series ring in a new variable
-
-    PSring = Frac(numfield[['t']])
-    t = PSring.0
-
-    # convert the matrix into power series
-    # XXX the matrix might include 'x' (or 'y') in some of its slots, right?
+    # convert the matrix into the trivariate polynomial ring
 
     p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
-
-    # XXX Can't handle a really complex HN expansion yet
-    assert(p.nrows() <= 2)
 
     if x0 == oo:
         x1 = 0
@@ -937,39 +943,55 @@ def puiseux_cycle(f, x0, y0, n, hne):
     else:
         y1 = y0
 
+    # Construct a Laurent power series ring in a new variable
+
+    PSring = Frac(numfield[['t']])
+
+    # XXX Can't handle a really complex HN expansion yet
+    assert(p.nrows() <= 2)
+
     if p.nrows() == 1:
-        xexpansion = x1 + t
-        PSelem = y1 + PSring(p[0,0]).add_bigoh(n+1)
+        xexpansion = x1 + PSring(t)
+        yexpansion = y1 + PSring(p[0,0]).add_bigoh(n+1)
     else:
-        xexpansion = x1 + PSring(p[1,0]).add_bigoh(n+1)
-        PSelem = y1 + (p[0,0].subs({x: xexpansion})/t).add_bigoh(n+1)
+        xexpansion = x1 + p[1,0]
+        yexpansion = y1 + p[0,0].subs({x: xexpansion}) // t
+
+        xexpansion = PSring(xexpansion).add_bigoh(n+1)
+        yexpansion = PSring(yexpansion).add_bigoh(n+1)
 
     if x0 == oo:
         xexpansion = 1/xexpansion
     if y0 == oo:
-        PSelem = 1/PSelem
-
-    if x0 == oo:
-       xequality = (SR.var(str(x)) == SR(1/t))
-    else:
-       xequality = (SR.var(str(x)) == SR(x0 + t))
+        yexpansion = 1/yexpansion
 
     if ed[3] == 0:
-        return [xexpansion, PSelem]
+        return [xexpansion, yexpansion]
     else:
-        return [PSelem, xexpansion]
-
-def apply_map_to_laurent_series(morphism, series):
-    R = series.parent().change_ring(morphism.codomain())
-    result = R(map(morphism, list(series)), series.valuation())
-    return result.add_bigoh(series.prec())
+        return [yexpansion, xexpansion]
 
 def map_laurent_series_to_SR(series):
     R = series.parent().change_ring(SR)
     result = R(map(lambda x: x.radical_expression(), list(series)), series.valuation())
     return result.add_bigoh(series.prec())
 
-def puiseux(origf, x0, y0, n):
+def puiseux(origf, x0, y0, n, *args):
+
+    # If a fifth argument was specified, it's a function to be
+    # expanded.  Recurse to get expansions of x and y, then
+    # substitute in to the function.
+
+    # XXX compute what 'n' we need for the recursion
+    # XXX handle differentials
+
+    if len(args) > 0:
+        assert(len(args) == 1)
+        p = puiseux(origf, x0, y0, n)
+        (x,y) = origf.parent().gens()
+        ans = []
+        for cycle in p:
+           ans.append(args[0].subs({x: cycle[0], y: cycle[1]}))
+        return ans
 
     # Singular can't work directly with QQbar, so if that's our base
     # ring, then we need to convert to a NumberField.
@@ -1008,6 +1030,10 @@ def puiseux(origf, x0, y0, n):
         for cycle in p:
            # This gets us back to QQbar
            cycle = [apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])]
+           #try:
+           #    cycle = [apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])]
+           #except:
+           #    return cycle
            # This normalizes x to be exact and y to be approximate
            if cycle[0].prec() != oo:
                P = cycle[0].parent()
@@ -1017,17 +1043,24 @@ def puiseux(origf, x0, y0, n):
                # but my QQbar map doesn't respect the embedding, so it doesn't always work.  Instead:
                expansion = (cycle[0] - cycle[0][0])
                v = expansion.valuation()
+               #return (expansion, v, cycle[0].prec(), cycle[0], cycle[1])
                r = expansion^(1/v)
                cycle = [cycle[0][0] + t^v, cycle[1].subs({t: r.reverse()})]
-           cycle = map(map_laurent_series_to_SR, cycle)
+           #cycle = map(map_laurent_series_to_SR, cycle)
            ans.append(cycle)
         return ans
+
+    # origf is a bivariate polynomial over a NumberField (or QQ)
+    # call Singular to compute its Hamburger-Noether expansion
 
     f = recenter_curve(origf, x0, y0)
     hne = f._singular_().hnexpansion()
 
     if len(hne) == 0:
        raise ValueError("specified coordinates not on curve")
+
+    # If Singular had to extend the NumberField to compute the
+    # result, recurse using the extension field
 
     if hne[1].type() == 'ring':
        extensionRing = hne[1].sage()
@@ -1036,6 +1069,8 @@ def puiseux(origf, x0, y0, n):
        # so just recurse
 
        return puiseux(extensionRing(origf), x0, y0, n)
+
+    # For each cycle in the result, finish the calculation
 
     return [puiseux_cycle(f, x0, y0, n, cycle) for cycle in hne]
 \end{sagecommonsmall}
@@ -1275,6 +1310,10 @@ puiseux(y^3 + x^3*y +x, x, y, inf, false, 10);
 \end{maximablock}
 
 \begin{sageblock}
+R.<x,y> = QQbar[]
+
+f = y^3 + x^3*y + x
+
 puiseux(f, oo, 0, 10)
 puiseux(f, oo, oo, 10)
 \end{sageblock}
@@ -1358,6 +1397,12 @@ truncated at the $-1$ term:
 \begin{maximablock}
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y);
 \end{maximablock}
+
+\begin{sageblock}
+R.<x,y> = QQbar[]
+
+puiseux(y^2 + x^2 - 1, 1, 0, 2, 1/y)
+\end{sageblock}
 
 \endexample
 

@@ -1873,6 +1873,14 @@ proofs and for specific examples, but unsuitable for algorithms
 designed to work with arbitrary inputs, for which smaller,
 more complicated fields are required.
 
+I use the algebraic closure of ${\bf Q}$ extensively.  This
+option causes Sage to print elements of $\overline{\bf Q}$
+using radical notation, if possible:
+
+\begin{sageblock}
+QQbar.options.display_format = 'radical';
+\end{sageblock}
+
 \begin{comment}
 
 Here I will present another proof, Gauss's second method (cast into
