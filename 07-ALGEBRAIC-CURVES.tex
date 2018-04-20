@@ -911,7 +911,6 @@ def puiseux_cycle(f, x0, y0, n, hne):
     # uniformizing parameter (we'll swap back later).
 
     if ed[3] == 1:
-        (x,y) = (y,x)
         (x0,y0) = (y0,x0)
 
     eds = ed[1].sage()
@@ -1319,6 +1318,11 @@ R.<x,y> = QQbar[]
 f = y^3 + x^3*y + x
 
 puiseux(f, oo, 0, 10)
+puiseux(f, oo, oo, 10)
+
+f = x^3 + y^3*x + y
+
+puiseux(f, 0, oo, 10)
 puiseux(f, oo, oo, 10)
 \end{sageblock}
 
