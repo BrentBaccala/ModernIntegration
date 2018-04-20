@@ -892,11 +892,9 @@ def apply_map_to_laurent_series(morphism, series):
 
 def puiseux_cycle(f, x0, y0, n, hne):
 
-    ed = singular.extdevelop(hne, n)
-
     P = f.parent()
 
-    numfield = f.parent().base_ring()
+    numfield = P.base_ring()
 
     # We'll add a new variable to perform the series expansion, but
     # for a while we'll need to work with polynomials in all three
@@ -904,8 +902,13 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
     (x,y,t) = PolynomialRing(numfield, list(P.gens()) + ['t']).gens()
 
+    # Call Singular
+
+    ed = singular.extdevelop(hne, n)
+
     # We get a flag indicating which variable was used as a
-    # uniformizing parameter.
+    # uniformizing parameter.  Swap variables if y was the
+    # uniformizing parameter (we'll swap back later).
 
     if ed[3] == 1:
         (x,y) = (y,x)
@@ -923,7 +926,7 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
     # a homomorphism that maps its polynomial ring to ours
 
-    h2 = eds.base_ring().hom(h, f.parent())
+    h2 = eds.base_ring().hom(h, P)
 
     # map the matrix back to the polynomial's original ring
 
@@ -943,22 +946,23 @@ def puiseux_cycle(f, x0, y0, n, hne):
     else:
         y1 = y0
 
-    # Construct a Laurent power series ring in a new variable
-
-    PSring = Frac(numfield[['t']])
-
     # XXX Can't handle a really complex HN expansion yet
     assert(p.nrows() <= 2)
 
     if p.nrows() == 1:
-        xexpansion = x1 + PSring(t)
-        yexpansion = y1 + PSring(p[0,0]).add_bigoh(n+1)
+        xexpansion = x1 + t
+        yexpansion = y1 + p[0,0]
     else:
         xexpansion = x1 + p[1,0]
         yexpansion = y1 + p[0,0].subs({x: xexpansion}) // t
 
-        xexpansion = PSring(xexpansion).add_bigoh(n+1)
-        yexpansion = PSring(yexpansion).add_bigoh(n+1)
+    # Construct a Laurent power series ring in the new variable,
+    # and convert our expansions into it.
+
+    PSring = Frac(numfield[['t']])
+
+    xexpansion = PSring(xexpansion)
+    yexpansion = PSring(yexpansion).add_bigoh(n+1)
 
     if x0 == oo:
         xexpansion = 1/xexpansion
