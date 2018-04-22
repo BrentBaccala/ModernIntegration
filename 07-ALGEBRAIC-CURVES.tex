@@ -902,9 +902,17 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
     (x,y,t) = PolynomialRing(numfield, list(P.gens()) + ['t']).gens()
 
+    # adjust n to compensate for expansions at infinity
+
+    adjn = n
+    if x0 == oo:
+        adjn = adjn + max_x_valuation(f)
+    if y0 == oo:
+        adjn = adjn + max_y_valuation(f)
+
     # Call Singular
 
-    ed = singular.extdevelop(hne, n-1)
+    ed = singular.extdevelop(hne, adjn-1)
 
     # We get a flag indicating which variable was used as a
     # uniformizing parameter.  Swap variables if y was the
@@ -963,12 +971,14 @@ def puiseux_cycle(f, x0, y0, n, hne):
     PSring = Frac(numfield[['t']])
 
     xexpansion = PSring(xexpansion)
-    yexpansion = PSring(yexpansion).add_bigoh(n)
+    yexpansion = PSring(yexpansion).add_bigoh(adjn)
 
     if x0 == oo:
         xexpansion = 1/xexpansion
+        xexpansion.add_bigoh(n)
     if y0 == oo:
         yexpansion = 1/yexpansion
+        yexpansion.add_bigoh(n)
 
     if ed[3] == 0:
         return [xexpansion, yexpansion]
@@ -980,7 +990,20 @@ def map_laurent_series_to_SR(series):
     result = R(map(lambda x: x.radical_expression(), list(series)), series.valuation())
     return result.add_bigoh(series.prec())
 
-def puiseux2(origf, x0, y0, n, normalize=True, *args):
+from sage.geometry.newton_polygon import NewtonPolygon
+
+def newton_polygon(f):
+    return NewtonPolygon(f.exponents())
+
+def max_x_valuation(f):
+    return max([-s.numerator() for s in newton_polygon(f).slopes() if s < 0])
+
+def max_y_valuation(f):
+    return max([s.denominator() for s in newton_polygon(f).slopes() if s < 0])
+
+def puiseux2(origf, x0, y0, n, *args):
+
+    normalize = True
 
     # If a fifth argument was specified, it's a function to be
     # expanded.  Recurse to get expansions of x and y, then
@@ -1016,7 +1039,22 @@ def puiseux2(origf, x0, y0, n, normalize=True, *args):
 
         newf = origf.map_coefficients(elem_map, new_base_ring=numfield)
 
-        p = puiseux(newf, elem_dict[x0], elem_dict[y0], n)
+        # If we're going to normalize, then we're going to take a mxv-th
+        # root of the x-expansion, so we need to make sure it's expanded
+        # out to at least n*mxv order to get n-th order after the root.
+
+        # If n is negative or zero, then we still need at least order mxv
+        # to be able to take the root at all.
+
+        adjn = n
+        if normalize:
+            mxv = max_x_valuation(recenter_curve(origf, x0, y0))
+            if n > 0:
+                adjn = mxv*n
+            else:
+                adjn = mxv
+
+        p = puiseux(newf, elem_dict[x0], elem_dict[y0], adjn)
 
         # We may have extended further to construct the results
         # If so, 'morphism' will no longer work, so replace it
@@ -1053,6 +1091,14 @@ def puiseux2(origf, x0, y0, n, normalize=True, *args):
                v = expansion.valuation()
                r = expansion^(1/v)
                cycle = [cycle[0][0] + t^v, cycle[1].subs({t: r.reverse()})]
+
+           # We might have computed our series to a higher precision that requested.
+           # If so, scale them back
+           if cycle[0].prec() != oo:
+               cycle[0] = cycle[0].add_bigoh(n)
+           if cycle[1].prec() != oo:
+               cycle[1] = cycle[1].add_bigoh(n)
+
            #cycle = map(map_laurent_series_to_SR, cycle)
            ans.append(cycle)
         return ans
@@ -1083,11 +1129,14 @@ def puiseux2(origf, x0, y0, n, normalize=True, *args):
 
 # Wrapper to double-check the results of a puiseux calculation
 
-def puiseux(f, x0, y0, n, normalize=True, *args):
-    p = puiseux2(f, x0, y0, n, normalize=normalize, *args)
-    (x,y) = f.parent().gens()
-    for cycle in p:
-       assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+def puiseux(*args):
+    if len(args) == 4:
+       p = puiseux2(*args)
+       (x,y) = args[0].parent().gens()
+       for cycle in p:
+          assert(args[0].subs({x : cycle[0], y : cycle[1]}) == 0)
+    else:
+       p = puiseux2(*args)
     return p
 \end{sagecommonsmall}
 
@@ -1223,7 +1272,7 @@ puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, y);
 \end{maximablock}
 
 \begin{sageblock}
-puiseux(y^2 + x^2 - 1, oo, oo, 5)
+puiseux(y^2 + x^2 - 1, oo, oo, 4)
 \end{sageblock}
 
 \endexample
@@ -1294,7 +1343,7 @@ f = y^3 + x^3*y + x
 puiseux(f, 0, 0, 10)
 
 g = QQbar(-27/4)^(1/7)
-puiseux(f, g, -3/(2*g^2), 3)
+puiseux(f, g, -3/(2*g^2), 2)
 puiseux(f, g, 3/g^2, 2)
 \end{sageblock}
 
@@ -1305,7 +1354,7 @@ R.<x,y> = S[]
 
 f = y^3 + x^3*y + x
 puiseux(f, g, -3/(2*g^2), 2)
-puiseux(f, g, 3/g^2, 1)
+puiseux(f, g, 3/g^2, 2)
 
 # Why doesn't this work?
 #
@@ -1335,10 +1384,10 @@ puiseux(f, oo, oo, 10)
 
 f = x^3 + y^3*x + y
 
-#puiseux(f, 0, oo, 10)
-#puiseux(f, oo, oo, 10)
+puiseux(f, 0, oo, 10)
+puiseux(f, oo, oo, 10)
 
-#for n in range(10,20):
+#for n in range(1,20):
 #   p1 = puiseux(f, 0, oo, n)
 #   p2 = puiseux(f, oo, oo, n)
 #   assert(f.subs({x: p1[0][0], y:p1[0][1]}) == 0)
