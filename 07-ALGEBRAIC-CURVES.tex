@@ -904,7 +904,7 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
     # Call Singular
 
-    ed = singular.extdevelop(hne, n)
+    ed = singular.extdevelop(hne, n-1)
 
     # We get a flag indicating which variable was used as a
     # uniformizing parameter.  Swap variables if y was the
@@ -952,6 +952,8 @@ def puiseux_cycle(f, x0, y0, n, hne):
         xexpansion = x1 + t
         yexpansion = y1 + p[0,0]
     else:
+        #xexpansion = x1 + p[1,0] * t
+        #yexpansion = y1 + p[0,0].subs({t: xexpansion, x: t})
         xexpansion = x1 + p[1,0]
         yexpansion = y1 + p[0,0].subs({x: xexpansion}) // t
 
@@ -961,7 +963,7 @@ def puiseux_cycle(f, x0, y0, n, hne):
     PSring = Frac(numfield[['t']])
 
     xexpansion = PSring(xexpansion)
-    yexpansion = PSring(yexpansion).add_bigoh(n+1)
+    yexpansion = PSring(yexpansion).add_bigoh(n)
 
     if x0 == oo:
         xexpansion = 1/xexpansion
@@ -978,7 +980,7 @@ def map_laurent_series_to_SR(series):
     result = R(map(lambda x: x.radical_expression(), list(series)), series.valuation())
     return result.add_bigoh(series.prec())
 
-def puiseux(origf, x0, y0, n, *args):
+def puiseux2(origf, x0, y0, n, normalize=True, *args):
 
     # If a fifth argument was specified, it's a function to be
     # expanded.  Recurse to get expansions of x and y, then
@@ -1025,8 +1027,11 @@ def puiseux(origf, x0, y0, n, *args):
         # then use 'morphism' (a particular pre-selected embedding)
         # to get the rest of the way into QQbar
 
-        #if p[0][0].base_ring() is not newf.parent().base_ring():
-        if p[0][0].base_ring() is not QQbar:
+        # XXX original 'morphism' might go to AA, not QQbar
+        # this seems to be a bug in number_field_elements_from_algebraics()
+
+        #if p[0][0].base_ring() is not numfield:
+        if True:
             morphism = p[0][0].base_ring().embeddings(QQbar)[0]
 
         ans = []
@@ -1038,7 +1043,7 @@ def puiseux(origf, x0, y0, n, *args):
            #except:
            #    return cycle
            # This normalizes x to be exact and y to be approximate
-           if cycle[0].prec() != oo:
+           if cycle[0].prec() != oo and normalize:
                P = cycle[0].parent()
                t = P.gen(0)
                # XXX I'd like to do this:
@@ -1046,7 +1051,6 @@ def puiseux(origf, x0, y0, n, *args):
                # but my QQbar map doesn't respect the embedding, so it doesn't always work.  Instead:
                expansion = (cycle[0] - cycle[0][0])
                v = expansion.valuation()
-               #return (expansion, v, cycle[0].prec(), cycle[0], cycle[1])
                r = expansion^(1/v)
                cycle = [cycle[0][0] + t^v, cycle[1].subs({t: r.reverse()})]
            #cycle = map(map_laurent_series_to_SR, cycle)
@@ -1076,6 +1080,15 @@ def puiseux(origf, x0, y0, n, *args):
     # For each cycle in the result, finish the calculation
 
     return [puiseux_cycle(f, x0, y0, n, cycle) for cycle in hne]
+
+# Wrapper to double-check the results of a puiseux calculation
+
+def puiseux(f, x0, y0, n, normalize=True, *args):
+    p = puiseux2(f, x0, y0, n, normalize=normalize, *args)
+    (x,y) = f.parent().gens()
+    for cycle in p:
+       assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+    return p
 \end{sagecommonsmall}
 
 \vfill\eject
@@ -1160,7 +1173,7 @@ puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
 
 \begin{sageblock}
 R.<x,y> = QQbar[];
-puiseux(y^2 + x^2 - 1, 1, 0, 4)
+p = puiseux(y^2 + x^2 - 1, 1, 0, 4)
 \end{sageblock}
 
 Now, let's analyze the point at infinity.  We move infinity to a
@@ -1281,8 +1294,8 @@ f = y^3 + x^3*y + x
 puiseux(f, 0, 0, 10)
 
 g = QQbar(-27/4)^(1/7)
-puiseux(f, g, -3/(2*g^2), 2)
-puiseux(f, g, 3/g^2, 1)
+puiseux(f, g, -3/(2*g^2), 3)
+puiseux(f, g, 3/g^2, 2)
 \end{sageblock}
 
 \begin{sageblock}
@@ -1322,8 +1335,14 @@ puiseux(f, oo, oo, 10)
 
 f = x^3 + y^3*x + y
 
-puiseux(f, 0, oo, 10)
-puiseux(f, oo, oo, 10)
+#puiseux(f, 0, oo, 10)
+#puiseux(f, oo, oo, 10)
+
+#for n in range(10,20):
+#   p1 = puiseux(f, 0, oo, n)
+#   p2 = puiseux(f, oo, oo, n)
+#   assert(f.subs({x: p1[0][0], y:p1[0][1]}) == 0)
+#   assert(f.subs({x: p2[0][0], y:p2[0][1]}) == 0)
 \end{sageblock}
 
 Here we have an ordinary point at $(\infty,0)$ and
@@ -1409,7 +1428,7 @@ puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y);
 \begin{sageblock}
 R.<x,y> = QQbar[]
 
-puiseux(y^2 + x^2 - 1, 1, 0, 2, 1/y)
+puiseux(y^2 + x^2 - 1, 1, 0, 3, 1/y)
 \end{sageblock}
 
 \endexample
@@ -1447,7 +1466,7 @@ puiseux(y^2 + x^2 - 1, x, y, inf, inf, 1, x/y);
 \begin{sageblock}
 R.<x,y> = QQbar[];
 f = y^2 + x^2 - 1
-puiseux(f, oo, oo, 1)
+puiseux(f, oo, oo, 2)
 \end{sageblock}
 
 $\frac{x}{y}$ has no poles at infinity, and approaches
