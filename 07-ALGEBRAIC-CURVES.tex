@@ -1001,9 +1001,9 @@ def max_x_valuation(f):
 def max_y_valuation(f):
     return max([s.denominator() for s in newton_polygon(f).slopes() if s < 0])
 
-def puiseux2(origf, x0, y0, n, *args):
+def puiseux2(origf, x0, y0, n, *args, **kwargs):
 
-    normalize = True
+    normalize = kwargs.get('normalize', True)
 
     # If a fifth argument was specified, it's a function to be
     # expanded.  Recurse to get expansions of x and y, then
@@ -1033,6 +1033,14 @@ def puiseux2(origf, x0, y0, n, *args):
         numfield = nfe[0]  # The number field
         new_elems = nfe[1] # The converted elements
         morphism = nfe[2]  # A morphism to get back to QQbar
+
+        # XXX original 'morphism' might go to AA, not QQbar
+        # this seems to be a bug in number_field_elements_from_algebraics()
+
+        if morphism.codomain() == AA:
+            morphism = AA.hom(QQbar) * morphism
+
+        # map our polynomial into numfield
 
         elem_dict = dict(zip(orig_elems + [oo], new_elems + [oo]))
         def elem_map(e): return elem_dict[e]
@@ -1065,21 +1073,15 @@ def puiseux2(origf, x0, y0, n, *args):
         # then use 'morphism' (a particular pre-selected embedding)
         # to get the rest of the way into QQbar
 
-        # XXX original 'morphism' might go to AA, not QQbar
-        # this seems to be a bug in number_field_elements_from_algebraics()
-
-        #if p[0][0].base_ring() is not numfield:
-        if True:
+        if p[0][0].base_ring() is not numfield:
+            # print numfield.embeddings(p[0][0].base_ring())
             morphism = p[0][0].base_ring().embeddings(QQbar)[0]
 
         ans = []
         for cycle in p:
            # This gets us back to QQbar
            cycle = [apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])]
-           #try:
-           #    cycle = [apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])]
-           #except:
-           #    return cycle
+
            # This normalizes x to be exact and y to be approximate
            if cycle[0].prec() != oo and normalize:
                P = cycle[0].parent()
@@ -1129,14 +1131,14 @@ def puiseux2(origf, x0, y0, n, *args):
 
 # Wrapper to double-check the results of a puiseux calculation
 
-def puiseux(*args):
+def puiseux(*args, **kwargs):
     if len(args) == 4:
-       p = puiseux2(*args)
+       p = puiseux2(*args, **kwargs)
        (x,y) = args[0].parent().gens()
        for cycle in p:
           assert(args[0].subs({x : cycle[0], y : cycle[1]}) == 0)
     else:
-       p = puiseux2(*args)
+       p = puiseux2(*args, **kwargs)
     return p
 \end{sagecommonsmall}
 
