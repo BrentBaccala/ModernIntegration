@@ -1998,6 +1998,53 @@ div : [[[0, 0], -4]];
 riemannroch(f, x, y, div);
 \end{maximablock}
 
+\begin{sageblock}
+R.<x,y,z> = QQ[]
+SE = R.quotient(y^2*z - x*(x-z)*(x+3*z))
+(x,y,z) = SE.gens()
+
+P = ideal(x,z)
+
+J = ideal(SE(1))
+I = P^2
+# this doesn't work
+#   I = (P^2).saturation(J)
+# so instead...
+I = ideal(z,x^2)
+
+f = z
+
+def newquotient(i,j):
+   iname = i._singular_().name()
+   jname = j._singular_().name()
+   return singular.ideal('quotient({0}, {1})'.format(iname, jname)).sage()
+
+def nbasis(L, n):
+   ans = []
+   for i in L:
+      if i.degree() <= n:
+         ans.append(i)
+      if i.degree() < n:
+         ans.extend(nbasis([m*i for m in i.parent().gens()], n))
+   return ans
+
+newquotient(f*J, I)
+\end{sageblock}
+
+\begin{sageblock}
+R.<x,y,z> = QQ[]
+SE = R.quotient((y^2 - x^3 + x).homogenize(z))
+(x,y,z) = SE.gens()
+
+P = ideal(x,y)
+I = P^4
+J = ideal(SE(1))
+f = I.gen(0)
+
+K = newquotient(f*J, I)
+\end{sageblock}
+
+
 Here are the examples from \cite{alvanos} \S6.3:
 
 \begin{maximablock}
