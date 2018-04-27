@@ -1675,7 +1675,27 @@ constructing Riemann-Roch bases.  Finding a basis for a Riemman-Roch
 space in a crucial first step in solving a Mittag-Leffler problem.
 
 Numerous algorithms have been developed for computing bases of
-Riemann-Roch spaces.  I've implemented in Maxima one of the oldest,
+Riemann-Roch spaces.  Sage uses Singular's implementation of
+the Brill-Noether algorithm.
+
+\begin{sageblock}
+singular.lib('brillnoether.lib');
+
+def riemannroch(CurveIdeal, ZeroIdeal, PoleIdeal):
+   def simplify(x):
+      if x in CurveIdeal.ring().base_ring():
+         return CurveIdeal.ring().base_ring().one()
+      else:
+         return x / x.factor().unit()
+   K = singular.RiemannRochBN(CurveIdeal, ZeroIdeal, PoleIdeal)
+   denom = K[2].sage()
+   B = [i.sage()/denom for i in K[1]]
+   x,y,z = CurveIdeal.ring().gens()
+   return [simplify(i.subs({z:1})) for i in B]
+\end{sageblock}
+
+\begin{comment}
+I've implemented in Maxima one of the oldest,
 from \cite{bliss}, though it probably dates back
 to \cite{dedekind-weber}.
 
@@ -1708,7 +1728,9 @@ each sheet at the singularity.  The order of sheets is the same
 returned by {\tt puiseux}.  Specifying multiple orders at
 singularities with cycles is currently not supported.
 
-\begin{maximacommonsmall}
+\end{comment}
+
+\begin{maximacode}
 /* in_namespace(riemannroch)$ */
 /* import(puiseux)$ */
 
@@ -1985,69 +2007,35 @@ riemannroch(f,x,y,divisor) := block([finite_divisor, infinite_divisor, basis, co
 /* export(riemannroch)$ */
 /* in_namespace(maxima)$ */
 /* import(riemannroch)$ */
-\end{maximacommonsmall}
+\end{maximacode}
 
 Here's a simple example\footnote{From
 {\tt https://math.stackexchange.com/questions/294644}}
 of a Riemann-Roch space calculation:
 
-\begin{maximablock}
+\begin{maximacode}
 f : y^2 - (x^3 - x);
 div : [[[0, 0], -4]];
 /* riemannroch_trace : true; */
 riemannroch(f, x, y, div);
-\end{maximablock}
+
+\end{maximacode}
 
 \begin{sageblock}
-R.<x,y,z> = QQ[]
-SE = R.quotient(y^2*z - x*(x-z)*(x+3*z))
-(x,y,z) = SE.gens()
+R.<x,y,z> = QQ[];
+f = y^2 - x^3 + x;
 
-P = ideal(x,z)
+C = ideal(f.homogenize(z));
+P1 = ideal(x,y);
+I = ideal(R(1));
 
-J = ideal(SE(1))
-I = P^2
-# this doesn't work
-#   I = (P^2).saturation(J)
-# so instead...
-I = ideal(z,x^2)
-
-f = z
-
-def newquotient(i,j):
-   iname = i._singular_().name()
-   jname = j._singular_().name()
-   return singular.ideal('quotient({0}, {1})'.format(iname, jname)).sage()
-
-def nbasis(L, n):
-   ans = []
-   for i in L:
-      if i.degree() <= n:
-         ans.append(i)
-      if i.degree() < n:
-         ans.extend(nbasis([m*i for m in i.parent().gens()], n))
-   return ans
-
-newquotient(f*J, I)
-\end{sageblock}
-
-\begin{sageblock}
-R.<x,y,z> = QQ[]
-SE = R.quotient((y^2 - x^3 + x).homogenize(z))
-(x,y,z) = SE.gens()
-
-P = ideal(x,y)
-I = P^4
-J = ideal(SE(1))
-f = I.gen(0)
-
-K = newquotient(f*J, I)
+riemannroch(C, P1^4, I)
 \end{sageblock}
 
 
 Here are the examples from \cite{alvanos} \S6.3:
 
-\begin{maximablock}
+\begin{maximacode}
 f : y^2 - x^3 - 1;
 P1 : [2,3]$
 P2 : [2,-3]$
@@ -2061,7 +2049,24 @@ riemannroch(f, x, y, [[Pinf, -4], [P1, 1]]);
 riemannroch(f, x, y, [[Pinf, -1]]);
 riemannroch(f, x, y, [[Pinf, -2]]);
 riemannroch(f, x, y, [[Pinf, -3]]);
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+f = y^2 - x^3 - 1;
+C = ideal(f.homogenize(z));
+I = ideal(R(1));
+P1 = ideal(x-2*z, y-3*z);
+P2 = ideal(x-2*z, y+3*z);
+Pinf = ideal(x,z);
+
+riemannroch(C, Pinf, P1)
+riemannroch(C, Pinf^2, P1)
+riemannroch(C, Pinf^3, P1)
+riemannroch(C, Pinf^4, P1)
+riemannroch(C, Pinf, I)
+riemannroch(C, Pinf^2, I)
+riemannroch(C, Pinf^3, I)
+\end{sageblock}
 
 \vfill\eject
 \mysection{Mittag-Leffler Problems}

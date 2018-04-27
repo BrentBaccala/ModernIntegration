@@ -1776,7 +1776,7 @@ def bwbsubs(self, *x, **kwds):
     return self(*x, **kwds)
 
 # Python insanity!  This changes the class's method to use my patched
-# version.  (but don't leave off the semicolon)
+# version.
 
 type(psi).subs = bwbsubs;
 
