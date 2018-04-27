@@ -1,0 +1,418 @@
+[This post updates a 1995 post by Wiener also available at this site. --djr]
+==============================================================================
+From: weemba@sagi.wistar.upenn.edu (Matthew P Wiener)
+Subject: Re: Repost: Integral of x^x
+Date: 30 Nov 1997 20:42:28 GMT
+Newsgroups: sci.math
+Keywords: Functions without elementary antiderivative
+
+What's the antiderivative of exp(-x^2)? of sin(x)/x? of x^x?
+------------------------------------------------------------------------
+These, and some similar problems, can't be done.
+
+More precisely, consider the notion of "elementary function".  These are
+the functions that can be expressed in terms of exponentals and logarithms,
+via the usual algebraic processes, including the solving (with or without
+radicals) of polynomials.  Since the trigonometric functions and their
+inverses can be expressed in terms of exponentials and logarithms using
+the complex numbers C, these too are elementary.
+
+The elementary functions are, so to speak, the "precalculus functions".
+
+Then there is a theorem that says certain elementary functions do not
+have an elementary antiderivative.  They still have antiderivatives,
+but "they can't be done".  The more common ones get their own names.
+Up to some scaling factors, "erf" is the antiderivative of exp(-x^2)
+and "Si" is the antiderivative of sin(x)/x, and so on.
+------------------------------------------------------------------------
+For those with a little bit of undergraduate algebra, we sketch a proof
+of these, and a few others, using the notion of a differential field.
+These are fields (F,+,.,1,0) equipped with a derivation, that is, a
+unary operator ' satisifying (a+b)'=a'+b' and (a.b)'=a.b'+a'.b.  Given
+a differential field F, there is a subfield Con(F)={a:a'=0}, called the
+_constants_ of F.  We let I(f) denote an antiderivative.  We ignore +cs.
+
+Most examples in practice are subfields of M, the meromorphic functions
+on C (or some domain).  Because of uniqueness of analytic extensions, one
+rarely has to specify the precise domain.
+
+Given differential fields F and G, with F a subfield of G, one calls G
+an algebraic extension of F if G is a finite field extension of F.
+
+One calls G a logarithmic extension of F if G=F(t) for some transcendental
+t that satisfies t'=s'/s, some s in F.  We may think of t as log s, but
+note that we are not actually talking about a logarithm function on F.  We
+simply have a new element with the right derivative.  Other "logarithms"
+would have to be adjoined as needed.
+
+Similarly, one calls G an exponential extension of F if G=F(t) for some
+transcendental t that satisfies t'=t.s', some s in F.  Again, we may
+think of t as exp s, but there is no actual exponential function on F.
+
+Finally, we call G an elementary differential extension of F if there is
+a finite chain of subfields from F to G, each an algebraic, logarithmic,
+or exponential extension of the next smaller field.
+
+The following theorem, in the special case of M, is due to Liouville.  The
+algebraic generality is due to Rosenlicht.  More powerful theorems have
+been proven by Risch, Davenport, and others, and are at the heart of
+symbolic integration packages.
+
+A short proof, accessible to those with a solid background in undergraduate
+algebra, can be found in Rosenlicht's AMM paper (see references).  It is
+probably easier to master its applications first, which often use similar
+techniques, and then learn the proof.
+------------------------------------------------------------------------
+MAIN THEOREM.  Let F,G be differential fields, let a be in F, let y be in G,
+and suppose y'=a and G is an elementary differential extension field of F,
+and Con(F)=Con(G).  Then there exist c_1,...,c_n in Con(F), u_1,...,u_n, v
+in F such that
+                           u_1'            u_n'
+                 a  =  c_1 --- + ... + c_n --- + v'.
+                           u_1             u_n
+
+That is, the only functions that have elementary antiderivatives are the
+ones that have this very specific form.  In words, elementary integrals
+always consist of a function at the same algebraic "complexity" level as
+the starting function (the v), along with the logarithms of functions at
+the same algebraic "complexity" level (the u_i 's).
+------------------------------------------------------------------------
+This is a very useful theorem for proving non-integrability.  Because
+this topic is of interest, but it is only written up in bits and pieces,
+I give numerous examples.  (Since the original version of this FAQ from
+way back when, two how-to-work-it write-ups have appeared.  See Fitt &
+Hoare and Marchisotto & Zakeri in the references.)
+
+In the usual case, F,G are subfields of M, so Con(F)=Con(G) always holds,
+both being C.  As a side comment, we remark that this equality is necessary.
+Over R(x), 1/(1+x^2) has an elementary antiderivative, but none of the above
+form.
+
+We first apply this theorem to the case of integrating f.exp(g), with f
+and g rational functions.  If g=0, this is just f, which can be integrated
+via partial fractions.  So assume g is nonzero.  Let t=exp(g), so t'=g't.
+Since g is not zero, it has a pole somewhere (perhaps out at infinity),
+so exp(g) has an essential singularity, and thus t is transcendental over
+C(z).  Let F=C(z)(t), and let G be an elementary differential extension
+containing an antiderivative for f.t.
+
+Then Liouville's theorem applies, so we can write
+
+                        u_1'            u_n'
+             f.t =  c_1 --- + ... + c_n --- + v'
+                        u_1             u_n
+
+with the c_i constants and the u_i and v in F.  Each u_i is a ratio of
+two C(z)[t] polynomials, U/V say.  But (U/V)'/(U/V)=U'/U-V'/V (quotient
+rule), so we may rewrite the above and assume each u_i is in C(z)[t].
+And if any u_i=U.V factors, then (U.V)'/(U.V)=U'/U+V'/V and so we can
+further assume each u_i is irreducible over C(z).
+
+What does a typical u'/u look like?  For example, consider the case of u
+quadratic in t.  If A,B,C are rational functions in C(z), then A',B',C'
+are also rational functions in C(z) and
+
+        (A.t^2+B.t+C)'    A'.t^2 + 2At(gt) + B'.t + B.(gt) + C'
+        -------------  =  -------------------------------------
+         A.t^2+B.t+C               A.t^2 + B.t + C
+
+                          (A'+2Ag).t^2 + (B'+Bg).t + C'
+                       =  -----------------------------   .
+                                 A.t^2 + B.t + C
+
+(Note that contrary to the usual situation, the degree of a polynomial
+in t stays the same after differentiation.  That is because we are
+taking derivatives with respect to z, not t.  If we write this out
+explicitly, we get (t^n)' = exp(ng)' = ng'.exp(ng) = ng'.t^n.)
+
+In general, each u'/u is a ratio of polynomials of the same degree.  We
+can, by doing one step of a long division, also write it as D+R/u, for
+some D in C(z) and R in C(z)[t], with deg(R)<deg(u).
+
+By taking partial fractions, we can write v as a sum of a C(z)[t] polynomial
+and some fractions P/Q^n with deg(P)<deg(Q), Q irreducible, with each P,Q
+in C(z)[t].  v' will thus be a polynomial plus partial fraction like terms.
+
+Somehow, this is supposed to come out to just f.t.  By the uniqueness of
+partial fraction decompositions, all terms other than multiples of t add
+up to 0.  Only the polynomial part of v can contribute to f.t, and this
+must be a monomial over C(z).  So f.t=(h.t)', for some rational h.  (The
+temptation to assert v=h.t here is incorrect, as there could be some C(z)
+term, cancelled by u'/u terms.  We only need to identify the terms in v
+that contribute to f.t, so this does not matter.)
+
+Summarizing, if f.exp(g) has an elementary antiderivative, with f and g
+rational functions, g nonzero, then it is of the form h.exp(g), with h
+rational.
+
+We work out particular examples, of this and related applications.  A
+bracketed function can be reduced to the specified example by a change
+of variables.
+
+**      exp(z^2)        [sqrt(z).exp(z),exp(z)/sqrt(z)]
+
+Let h.exp(z^2) be its antiderivative.  Then h'+2zh=1.  Solving this ODE
+gives h=exp(-z^2)*I(exp(z^2)), which has no pole (except perhaps at
+infinity), so h, if rational, must be a polynomial.  But the derivative
+of h cannot cancel the leading power of 2zh, contradiction.
+
+**      exp(z)/z        [exp(exp(z)),1/log(z)]
+
+Let h.exp(z) be an antiderivative.  Then h'+h=1/z.  I know of two quick
+ways to prove that h is not rational.
+
+One can explicitly solve the first order ODE (getting exp(-z)*I(exp(z)/z)),
+and then notice that the solution has a logarithmic singularity at zero.
+For example, h(z)->oo but sqrt(z)*h(z)->0 as z->0.  No rational function
+does this.
+
+Or one can assume h has a partial fraction decomposition.  Obviously no h'
+term will give 1/z, so 1/z must be present in h already. But (1/z)'=-1/z^2,
+and this is part of h'.  So there is a 1/z^2 in h to cancel this.  But
+(1/z^2) is -2/z^3, and this is again part of h'.  And again, something
+in h cancels this, etc etc etc.  This infinite regression is impossible.
+
+**      sin(z)/z        [sin(exp(z))]
+**      sin(z^2)        [sqrt(z).sin(z),sin(z)/sqrt(z)]
+
+Since sin(z)=%[exp(iz)-exp(-iz)] (where %=1/2i), we merely rework the
+above f.exp(g) result.  Let f be rational, let t=exp(iz) (so t'/t=i) and
+let T=exp(iz^2) (so T'/T=2iz) and we want an antiderivative of either
+%f.(t-1/t) or T-1/T.  For the former, the same partial fraction results
+still apply in identifying %f.t=(h.t)'=(h'+ih).t, which can't happen, as
+above.  In the case of sin(z^2), we want %T=(h.T)'=(h'+2izh).T, and again,
+this can't happen, as above.
+
+Although done, we push this analysis further in the f.sin(z)/z case, as
+there are extra terms hanging around.  This time around, the conclusion
+gives an additional k/t term inside v, so we have -%f/t=(k/t)'=(k'-ik)/t.
+So the antiderivative of %f*(t-1/t) is h.t+k/t.
+
+If f is even and real, then h and k (like t=exp(iz) and 1/t=exp(-iz)) are
+parity flips of each other, so (as expected) the antiderivative is even.
+Letting C=cos(z), S=sin(z), h=H+iF and k=K+iG, the real (and only) part
+of the antiderivative of f is (HC-FS)+(KC+GS)=(H+K)C+(G-F)S.  So over
+the reals, we find that the antiderivative of (rational even).sin(x) is
+of the form (rational even).cos(x)+ (rational odd).sin(x).
+
+A similar result holds for (odd).sin(x), (even).cos(x), (odd).cos(x).  And
+since a rational function is the sum of its (rational) even and odd parts,
+(rational).sin integrates to (rational).sin + (rational).cos, or not at all.
+
+Let's backtrack, and apply this to sin(x)/x directly, using reals only.
+If it has an elementary antiderivative, it must be of the form E.S+O.C.
+Taking derivatives gives (E'-O).S+(E+O').C.  As with partial fractions,
+we have a unique R(x)[S,C] representation here (this is a bit tricky,
+as S^2=1-C^2: this step can be proven directly or via solving for t,1/t
+coefficients over C).  So E'-O=1/x and E+O'=0, or O''+O=-1/x.  Expressing
+O in partial fraction form, it is clear only (-1/x) in O can contribute
+a -1/x.  So there is a -2/x^3 term in O'', so there is a 2/x^3 term in
+O to cancel it, and so on, an infinite regress.  Hence, there is no such
+rational O.
+
+**      arcsin(z)/z     [z.tan(z)]
+
+We consider the case where F=C(z,Z)(t) as a subfield of the meromorphic
+functions on some domain, where z is the identify function, Z=sqrt(1-z^2),
+and t=arcsin z.  Then Z'=-z/Z, and t'=1/Z.  We ask in the main theorem
+result if this can happen with a=t/z and some field G.  t is transcendental
+over C(z,Z), since it has infinite branch points.
+
+So we consider the more general situation of f(z).arcsin(z) where f(z)
+is rational in z and sqrt(1-z^2).  By letting z=2w/(1+w^2), note that
+members of C(z,Z) are always elementarily integrable.
+
+Because x^2+y^2-1 is irreducible, C[x,y]/(x^2+y^2-1) is an integral domain,
+C(z,Z) is isomorphic to its field of quotients in the obvious manner, and
+C(z,Z)[t] is a UFD whose field of quotients is amenable to partial fraction
+analysis in the variable t.  What follows takes place at times in various
+z-algebraic extensions of C(z,Z) (which may not have unique factorization),
+but the terms must combine to give something in C(z,Z)(t), where partial
+fraction decompositions are unique, and hence the t term will be as claimed.
+
+Thus, if we can integrate f(z).arcsin(z), we have f.t = sum of (u'/u)s
+and v', by the main theorem.
+
+The u terms can, by logarithmic differentiation in the appropriate
+algebraic extension field (recall that roots are analytic functions of
+the coefficients, and t is transcendental over C(z,Z)), be assumed to
+all be linear t+r, with r algebraic over z.  Then u'/u=(1/Z+r')/(t+r).
+When we combine such terms back in C(z,Z), they don't form a t term
+(nor any higher power of t, nor a constant).
+
+Partial fraction decomposition of v gives us a polynomial in t, with
+coefficients in C(z,Z), plus multiples of powers of linear t terms.
+The latter don't contribute to a t term, as above.
+
+If the polynomial is linear or quadratic, say v=g.t^2 + h.t + k, then
+v'=g'.t^2 + (2g/Z+h').t + (h/Z+k').  Nothing can cancel the g', so g
+is just a constant c.  Then 2c/Z+h'=f or I(f.t)=2c.t+I(h'.t).  The
+I(h'.t) can be integrated by parts.  So the antiderivative works out
+to c.(arcsin(z))^2 + h(z).arcsin(z) - I(h(z)/sqrt(1-z^2)), and as
+observed above, the latter is elementary.
+
+If the polynomial is cubic or higher, let v=A.t^n+B.t^(n-1)+...., then
+v'=A'.t^n + (n.A/Z+B').t^(n-1) +....  A must be a constant c.  But then
+nc/Z+B'=0, so B=-nct, contradicting B being in C(z,Z).
+
+In particular, since 1/z + c/sqrt(1-z^2) does not have a rational in
+"z and/or sqrt(1-z^2)" antiderivative, arcsin(z)/z does not have an
+elementary integral.
+
+**      z^z
+
+In this case, let F=C(z,l)(t), the field of rational functions in z,l,t,
+where l=log z and t=exp(z.l)=z^z.  Note that z,l,t are algebraically
+independent.  Then t'=(l+1).t, so for a=t in the main theorem, the
+partial fraction analysis shows that the only possibility is for
+v=w.t+... to be the source of the t term on the left, with w in C(z,l).
+
+So this means, equating t coefficients, 1=w'+(l+1)w.  This is a first
+order ODE, whose solution is w=I(z^z)/z^z.  So we must prove that no
+such w exists in C(z,l).  So suppose w=P/Q, with P,Q in C[z,l] and no
+common factors.  Then z^z=(z^z*P/Q)'=z^z*[(1+l)PQ+P'Q-PQ']/Q^2, or
+Q^2=(1+l)PQ+P'Q-PQ'.  So Q|Q', meaning Q is a constant, which we may
+assume to be one.  So we have it down to P'+P+lP=1.
+
+Let P=Sum[P_i l^i], with P_i, i=0...n in C[z].  But then in our equation,
+there's a dangling P_n l^(n+1) term, a contradiction.
+------------------------------------------------------------------------
+On a slight tangent, this theorem of Liouville will not tell you that
+Bessel functions are not elementary, since they are defined by second
+order ODEs.  This can be proven using differential Galois theory.  A
+variant of the above theorem of Liouville, with a different normal form,
+does show however that J_0 cannot be integrated in terms of elementary
+methods augmented with Bessel functions.
+========================================================================
+What follows is a fairly complete sketch of the proof of the Main Theorem.
+First, I just state some easy (if you've had Galois Theory 101) lemmas.
+Throughout the lemmas F is a differential field, and t is transcendental
+over F.
+
+Lemma 1: If K is an algebraic extension field of F, then there exists a
+unique way to extend the derivation map from F to K so as to make K into
+a differential field.
+
+Lemma 2: If K=F(t) is a differential field with derivation extending F's,
+and t' is in F, then for any polynomial f(t) in F[t], f(t)' is a polynomial
+in F[t] of the same degree (if the leading coefficient is not in Con(F))
+or of degree one less (if the leading coefficient is in Con(F)).
+
+Lemma 3: If K=F(t) is a differential field with derivation extending F's,
+and t'/t is in F, then for any a in F, n a positive integer, there exists
+h in F such that (a*t^n)'=h*t^n.  More generally, if f(t) is any polynomial
+in F[t], then f(t)' is of the same degree as f(t), and is a multiple of
+f(t) iff f(t) is a monomial.
+
+These are all fairly elementary.  For example, (a*t^n)'=(a'+at'/t)*t^n
+in lemma 3.  The final 'iff' in lemma 3 is where transcendence of t comes
+in.  Lemma 1 in the usual case of subfields of M is an easy consequence
+of the implicit function theorem.
+--------------------------------------------------------------------------
+MAIN THEOREM.  Let F,G be differential fields, let a be in F, let y be in G,
+and suppose y'=a and G is an elementary differential extension field of F,
+and Con(F)=Con(G).  Then there exist c_1,...,c_n in Con(F), u_1,...,u_n, v
+in F such that
+                        u_1'            u_n'
+               a =  c_1 --- + ... + c_n --- + v'.
+                        u_1             u_n
+
+In other words, the only functions that have elementary antiderivatives
+are the ones that have this very specific form.
+------------------------------------------------------------------------
+Proof:
+
+By assumption there exists a finite chain of fields connecting F to G
+such that the extension from one field to the next is given by performing
+an algebraic, logarithmic, or exponential extension.  We show that if the
+form (*) can be satisfied with values in F2, and F2 is one of the three
+kinds of allowable extensions of F1, then the form (*) can be satisfied
+in F1.  The form (*) is obviously satisfied in G: let all the c's be 0, the
+u's be 1, and let v be the original y for which y'=a.  Thus, if the form
+(*) can be pulled down one field, we will be able to pull it down to F,
+and the theorem holds.
+
+So we may assume without loss of generality that G=F(t).
+
+Case 1: t is algebraic over F.  Say t is of degree k.  Then there are
+polynomials U_i and V such that U_i(t)=u_i and V(t)=v.  So we have
+
+                        U_1(t)'            U_n(t)'
+               a =  c_1 ------ + ... + c_n ------ + V(t)'.
+                        U_1(t)             U_n(t)
+
+Now, by the uniqueness of extensions of derivatives in the algebraic case,
+we may replace t by any of its conjugates t_1,..., t_k, and the same equation
+holds.  In other words, because a is in F, it is fixed under the Galois
+automorphisms.  Summing up over the conjugates, and converting the U'/U
+terms into products using logarithmic differentiation, we have
+
+            [U_1(t_1)*...*U_1(t_k)]'
+ k a =  c_1 ----------------------- + ...  + [V(t_1)+...+V(t_k)]'.
+             U_1(t_1)*...*U_n(t_k)
+
+But the expressions in [...] are symmetric polynomials in t_i, and as
+they are polynomials with coefficients in F, the resulting expressions
+are in F.  So dividing by k gives us (*) holding in F.
+
+Case 2: t is logarithmic over F.  Because of logarithmic differentiation
+we may assume that the u's are monic and irreducible in t and distinct.
+Furthermore, we may assume v has been decomposed into partial fractions.
+The fractions can only be of the form f/g^j, where deg(f)<def(g) and g
+is monic irreducible.  The fact that no terms outside of F appear on the
+left hand side of (*), namely just a appears, means a lot of cancellation
+must be occuring.
+
+Let t'=s'/s, for some s in F.  If f(t) is monic in F[t], then f(t)' is also
+in F[t], of one less degree.  Thus f(t) does not divide f(t)'.  In particular,
+all the u'/u terms are in lowest terms already.  In the f/g^j terms in v,
+we have a g^(j+1) denominator contribution in v' of the form -jfg'/g^(j+1).
+But g doesn't divide fg', so no cancellation occurs.  But no u'/u term can
+cancel, as the u's are irreducible, and no (**)/g^(j+1) term appears in
+a, because a is a member of F.  Thus no f/g^j term occurs at all in v.  But
+then none of the u's can be outside of F, since nothing can cancel them.
+(Remember the u's are distinct, monic, and irreducible.)  Thus each of the
+u's is in F already, and v is a polynomial.  But v' = a - expression in u's,
+so v' is in F also.  Thus v = b t + c for some b in con(F), c in F, by lemma
+2.  Then
+
+                   u_1'            u_n'     s'
+          a =  c_1 --- + ... + c_n --- + b --- + c'
+                   u_1             u_n      s
+
+is the desired form.  So case 2 holds.
+
+Case 3: t is exponential over F.  So let t'/t=s' for some s in F.  As in
+case 2 above, we may assume all the u's are monic, irreducible, and distinct
+and put v in partial fraction decomposition form.  Indeed the argument is
+identical as in case 2 until we try to conclude what form v is.  Here lemma
+3 tells us that v is a finite sum of terms b*t^j where each coefficient is
+in F.  Each of the u's is also in F, with the possible exception that one
+of them may be t.  Thus every u'/u term is in F, so again we conclude v'
+is in F.  By lemma 3, v is in F.  So if every u is in F, a is in the desired
+form.  Otherwise, one of the u's, say u_n, is actually t, then 
+
+                        u_1'
+               a =  c_1 --- + ... + (c_n s + v)'
+                        u_1
+
+is the desired form.  So case 3 holds.
+========================================================================
+References:
+
+A D Fitt & G T Q Hoare "The closed-form integration of arbitrary functions",
+        MATHEMATICAL GAZETTE (1993), pp 227-236.
+I Kaplansky INTRODUCTION TO DIFFERENTIAL ALGEBRA (Hermann, 1957)
+E R Kolchin DIFFERENTIAL ALGEBRA AND ALGEBRAIC GROUPS (Academic Press, 1973)
+A R Magid LECTURES ON DIFFERENTIAL GALOIS THEORY (AMS, 1994)
+E Marchisotto & G Zakeri "An invitation to integration in finite terms",
+        COLLEGE MATHEMATICS JOURNAL (1994), pp 295-308.
+J F Ritt INTEGRATION IN FINITE TERMS (Columbia, 1948).
+J F Ritt DIFFERENTIAL ALGEBRA (AMS, 1950).
+M Rosenlicht "Liouville's theorem on functions with elementary integrals",
+        PACIFIC JOURNAL OF MATHEMATICS (1968), pp 153-161.
+M Rosenlicht "Integration in finite terms", AMERICAN MATHEMATICS MONTHLY,
+        (1972), pp 963-972.
+G N Watson A TREATISE ON THE THEORY OF BESSEL FUNCTIONS (Cambridge, 1962).
+
+

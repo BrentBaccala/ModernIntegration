@@ -1,0 +1,157 @@
+A bunch of responses:
+
+1. Thanks for providing a brief way of producing this error message.
+2. If you really want an answer, you could try
+
+integrate_use_rootof:true;
+
+integrate(1/(x^(5/2)+3*x^(1/3)),x);
+
+though I'm not sure the answer returned is correct or
+even sensible.
+
+It returns
+6*lsum(log(x^(1/6)-%r1)/(13*%r1^9),%r1,rootsof(x^(13/6)+3))
+
+Mathematica produces an answer, but one which is quite large.
+Wolfram Alpha produces an answer that is different but is
+also large, and runs out of time, it seems, in analyzing the
+expression.  Incidentally, it apparently allows the Maxima syntax :)
+
+I'm not sure the answer is correct or even sensible. The
+Mathematica system 10 could not simplify the derivative back
+to the input, at least not before I lost patience.
+
+
+
+3. My understanding of algebraic:true  is that it uses
+only roots of integers  (absent in your expression)
+%i (also absent),  and tellrat() info  (also absent).
+So setting algebraic to true is maybe not the right thing to do.
+
+Introducing  both sqrt(x) and x^(1/3) by a single algebraic
+extension of degree 6  is possible via tellrat.  I'm not
+sure this gets you to where you want.
+
+Or even if you really want this integral or are just poking at Maxima.
+
+4. If you really want to try to patch this bug in the handling of
+algebraic:true,
++ integrate + ratsimp,  not by fixing the bug, but by catching it in a
+different
+place, you can look at code in src/rat3a.lisp  where you can see that the
+polynomial division  in the function pquotient, at some point says, in
+effect,
+HEY!  you want me to divide exactly -- that's what pquotient does -- but
+the remainder is not zero.  There's no bug in pquotient, but there is a bug
+in someone who called it on bad argumemtns.   (This is probably because
+the GCD routine in use  fails when there are algebraically dependent
+indeterminates,  but this handling of algebraics is touchy. maybe because
+of comment 1. (thanks) someone can find this???   Anyway, this
+error-catch of the throw in pquotient is what you would have to change, so
+that
+it doesn't just vomit all the way to the top, but to some other err-catch.
+Maybe you can figure out enough from the comments and the code to
+do this.   The main body of code (but not all the comments) are almost
+50 years old,  circa 1966 I think.
+
+5. I am not sure what you mean by "throw to the outside" and how this makes
+life easier.  Perhaps you are resisting the "easy" way -- which is to use
+the Maxima  read-meval-print loop to call your functionality --   and
+calling
+Maxima  via some other language at the end of a pipe?
+(Why easy?   load into Maxima some lisp function from a file foo, by
+load("c:/..../foo.lisp");
+
+and in the file foo.lisp
+
+(defun $sherfgen(x)  (call_whatever_you_want_next    x))
+
+;; call_whatever .... can link to fortran, python, jscript, java, most any
+ windows dll, typical unix .o files, libraries etc
+
+And the load()  command can be put into a maxima initialization file so
+it is loaded up without user attention.
+
+
+Anyway. I  hope this info is useful, and you take the opportunity to learn
+more lisp and
+Maxima stuff.
+
+RJF
+
+
+On Mon, Sep 7, 2015 at 12:54 AM, David Scherfgen <d.scherfgen at googlemail.com
+> wrote:
+
+> Hello,
+>
+> the following integral results in an error "quotient by zero":
+>
+> integrate(ev(ratsimp(1/(x^(5/2)+3*x^(1/3))),algebraic),x);
+>
+> Unfortunately, I can't catch the error using errcatch. It goes right
+> through it, i.e. the whole evaluation is aborted, and I don't get any
+> result (usually, errcatch would give me an empty list if it caught an
+> error).
+>
+> I've had a similar problem with questions being asked by Maxima - there is
+> no official way to intercept them. This is really bad if you run Maxima
+> "automatedly" - without anybody being there to answer questions.
+>
+> But luckily, there is Robert Dodier's noninteractive package that
+> re-defines the Maxima functions that are responsible for asking those
+> questions. The re-defined functions don't ask the questions, but throw
+> them, so that it can be caught from the outside.
+>
+> I tried to do something similar with the function that's responsible for
+> generating the error, the function merror in merror.lisp.
+>
+> This is my attempt at it:
+>
+> ; If this is enabled, errors will be intercepted and thrown.
+> (defmvar $no_errors t)
+>
+> ; A wrapper around MERROR in merror.lisp.
+> (defvar *real-merror* (symbol-function 'merror))
+> (defun merror (sstring &rest l)
+>   (if $no_errors
+>     (meval `(($throw) '(($merror) ,sstring ,@ l)))
+>     (apply *real-merror* sstring l)))
+>
+> In a simple test case, it seems to work:
+>
+> (%i1) catch(1/0);
+> (%o1) merror("expt: undefined: 0 to a negative exponent.")
+>
+> It throws the error instead of aborting the evaluation, just as I want.
+>
+> But in my original problem, it doesn't work, but crashes Maxima instead:
+>
+> (%i1) catch(integrate(ev(ratsimp(1/(x^(5/2)+3*x^(1/3))),algebraic),x));
+> Maxima encountered a Lisp error:
+>  Condition in MEVAL [or a callee]: INTERNAL-SIMPLE-ERROR: Bind stack
+> overflow.
+> Automatically continuing.
+> To enable the Lisp debugger set *debugger-hook* to nil.
+>
+> Unfortunately, my LISP knowledge is basically nonexistent.
+>
+> Does anyone of you know why this doesn't work? Why can't errcatch catch
+> the error in the first place? Is there something wrong with my merror
+> wrapper?
+>
+> Thanks for any help!
+>
+> Best regards,
+> David
+>
+>
+> ------------------------------------------------------------------------------
+>
+> _______________________________________________
+> Maxima-discuss mailing list
+> Maxima-discuss at lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/maxima-discuss
+>
+>

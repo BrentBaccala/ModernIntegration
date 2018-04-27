@@ -1,0 +1,153 @@
+Comparison of open source computer algebra systems
+
+Axiom
+  doesn't use readline
+  builtin hyperdoc is way behind HTML
+  couldn't figure how to parse:
+    integrand := x*((x^2*exp(2*x^2)-log(x+1)^2)^2) / ((x+1)*(log(x+1)^2 - x^2*exp(2*x^2))^2)
+
+
+Maxima
+  uses LISP-style function definition syntax
+
+  MAXIMA function tex_displ(MLABEL %O14 EXPR)
+    - fetch tex-environment - either "" (strings) OR tex-environment property on car OR *tex-environment-default*
+    - print tex1(LABEL %O14) (minus 14 chars because of trailing \mathbb{false})
+    - then print env around tex1(EXPR)
+
+  MAXIMA function print(EXPR) calls displa for output
+
+
+Sage
+  struggling to do polynomial long division
+    calls Maxima or Singular to do this
+  implements algebraic closure of Q (QQbar)
+
+  + fix latex printing on power series
+  - subs should raise NotImplementedError if element not callable
+  - subs should work recursively on complicated rings
+  - option to specify how QQbar elements print
+  - can't type convert between two slightly different NumberRings:
+      Number Field in a with defining polynomial a^7 - 18
+      Number Field in a with defining polynomial y^7 - 18
+  - add map_coefficients method to Laurent series (Taylor, too?)
+
+
+Macaulay 2
+  doesn't implemente fraction fields over complicated (non-Z, non-Q) constant fields
+
+Singular
+  can't compute Riemann-Roch spaces in characteristic p
+  can compute Hamber-Noether expansions (can this be converted to a Puiseux expansion?)
+
+CoCoA
+  C++ library
+
+
+Macaulay 2 - Riemann-Roch space calculator (Noether-Brill algorithm ??)
+
+completeLinearSystemOnNodalPlaneCurve=method()
+completeLinearSystemOnNodalPlaneCurve(Ideal,List):=(J,D)->(
+     singJ:=saturate(ideal jacobian J+J);
+        -- adjoint ideal
+     H:=ideal (mingens ideal(gens intersect(singJ,D_0)%J))_(0,0);
+        -- a curve passing through singJ and D_0
+     E0:=((J+H):D_0):(singJ^2); -- residual divisor
+     if not(degree J *degree H - degree D_0 -2*degree singJ==degree E0)
+        then error"residual divisor of has wrong degree";
+     L1:=mingens ideal (gens truncate(degree H, intersect(E0,D_1,singJ)))%J;
+     h0D:=(tally degrees source L1)_{degree H}; -- h^0 O(D)
+     L:=L1_{0..h0D-1}; -- matrix of homogeneous forms, L/H =L(D) subset K(C)
+     (L,(gens H)_(0,0)))
+
+http://www2.macaulay2.com/Macaulay2/doc/Macaulay2-1.11/share/doc/Macaulay2/Macaulay2Doc/html/___Tutorial_co_sp__Divisors.html
+
+
+
+
+
+a=QQ['a'].0
+aRing = NumberField(a^2 + 1, 'a')
+
+b=QQ['b'].0
+bRing = NumberField(b^2 + 1, 'a')
+
+aRing is bRing
+
+aa=aRing.0
+bb=bRing.0
+
+bRing(aa)
+
+def ringmap(x):
+    # First map x from the polynomial ring down to its coefficent ring (a NumberField)
+    x = x.parent()(x)
+    # Then convert it to a polynomial and map to into numfield
+    return x.polynomial()(numfield.gens()[0])
+
+
+HOW TO CREATE A MAP BETWEEN TWO POLYNOMIAL RINGS INDUCED BY A MAP ON THEIR COEFFICIENTS
+
+R.<a> = QQ[]
+aRing = NumberField(a^2 + 1, 'a')
+R.<b> = QQ[]
+bRing = NumberField(b^2 + 1, 'a')
+
+aRing2 = aRing['x']
+bRing2 = bRing['x']
+
+h = aRing.hom(bRing.gens())
+
+h2 = aRing2.hom(h, bRing2)
+
+DOESN'T WORK FOR LAURENT SERIES
+
+
+
+BUG REPORT TO SHOW HOW SINGULAR RETURNS RESULTS IN WRONG FIELD
+
+R.<b> = QQ[]
+S = NumberField(b^7 - 18, 'a')
+
+R.<x,y> = S[]
+f = x + y
+
+singular.lib('hnoether.lib')
+hne = f._singular_().hnexpansion().sage()
+
+hne[0][0].base_ring() is f.parent()
+
+
+
+SAGE - SINGULAR IDEALS
+
+rings/polynomial/multi_polynomial_ideal.py
+  lines 558-592
+  create Singular ideal
+  lift generators into parent ring before str-ifying them for Singular
+
+interfaces/singular.py
+  lines 1957-1959
+  converts Singular ideal to sage ideal
+
+   1958             R = R or self.sage_global_ring()
+   1959             return R.ideal([p.sage_poly(R) for p in self])
+
+  if R is a quotient ring,
+    p.sage_poly(R) can't be lifted into the base ring
+
+  sage_poly:
+
+   1779             p = MPolynomial_polydict(R,PolyDict(sage_repr,force_int_exponents=False,force_etuples=False))
+   1780             if isinstance(R, MPolynomialRing_polydict):
+   1781                 return p
+   1782             else:
+   1783                 return QuotientRingElement(R,p,reduce=False)
+
+  what we get back is a QuotientRingElement containing an MPolynomial_polydict
+
+  self.sage_global_ring() will return a quotient ring different from the one we started with
+    its generators will be named 'x', 'y', 'z', instead of 'xbar', 'ybar', 'zbar'
+
+  subs doesn't work because _call_ isn't defined on QuotientRingElement's
+    (subs in RingElement returns self if _call_ isn't defined)
