@@ -1007,6 +1007,15 @@ def min_x_valuation(f):
 def min_y_valuation(f):
     return min([s.denominator() for s in newton_polygon(f).slopes() if s < 0])
 
+
+# This isn't the greatest way to define a differential, but it will do for now
+# In puiseux2, we assume that any variable starting with 'd' is a differential
+
+def d(x):
+    return SR.var('d' + str(x))
+
+from sage.symbolic.expression_conversions import RingConverter
+
 def puiseux2(origf, x0, y0, n, *args, **kwargs):
 
     normalize = kwargs.get('normalize', True)
@@ -1017,17 +1026,28 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
     # expanded.  Recurse to get expansions of x and y, then
     # substitute in to the function.
 
-    # XXX compute what 'n' we need for the recursion
-    # XXX handle differentials
-
     if len(args) > 0:
         assert(len(args) == 1)
         (x,y) = P.gens()
+
         # put the function in K(x)[y]/(p)
         R = P.base_ring()[x]
         F = Frac(R)[y]
         Q = QuotientRing(F, F(origf))
-        fn = Q(numerator(args[0])) / Q(denominator(args[0]))
+
+        fn = args[0]
+        dvar = None
+
+        if fn.parent() is SR:
+           RC = RingConverter(P)
+           if any((str(a).startswith('d') for a in fn.args())):
+              dvar = (a for a in fn.args() if str(a).startswith('d')).next()
+              fn = RC(fn / dvar)
+              dvar = RC(SR.var(str(dvar)[1:]))
+           else:
+              fn = RC(fn)
+
+        Qfn = Q(numerator(fn)) / Q(denominator(fn))
 
         yv = min_y_valuation(recenter_curve(origf, x0, y0))
         xv = min_x_valuation(recenter_curve(origf, x0, y0))
@@ -1035,8 +1055,8 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
         prec = 0
 
         for e in range(Q.degree()):
-            if fn[e] != 0:
-                cv = fn[e].valuation(R.0-x0)
+            if Qfn[e] != 0:
+                cv = Qfn[e].valuation(R.0-x0)
                 # let x's valuation be xv and y's valuation be yv
                 #
                 # if x's expansion is exact and y's absolute precision is O(t^p),
@@ -1058,8 +1078,17 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
         p = puiseux(origf, x0, y0, prec)
         ans = []
         for cycle in p:
-           # XXX only add bigoh if precision is finite
-           ans.append(args[0].subs({x: cycle[0], y: cycle[1]}).add_bigoh(n))
+           f = fn.subs({x: cycle[0], y: cycle[1]})
+           t = f.parent().0
+           if dvar == x:
+              f = f * diff(cycle[0], t)
+           if dvar == y:
+              f = f * diff(cycle[1], t)
+           if f.prec() != oo:
+              f = f.add_bigoh(n)
+           if dvar:
+              f = SR(f) * d(t)
+           ans.append(f)
         return ans
 
     # Singular can't work directly with QQbar, so if that's our base
@@ -1551,6 +1580,12 @@ all of the terms in our expansion by $2t$:
 \begin{maximablock}
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 6, x/y*del(x));
 \end{maximablock}
+
+\begin{sageblock}
+R.<x,y> = QQbar[]
+
+puiseux(y^2 + x^2 - 1, 1, 0, 7, x/y*d(x))
+\end{sageblock}
 
 Even though $\frac{x}{y}$ has a pole
 at $x=1$, $\frac{x}{y} \ud x$ does not!
