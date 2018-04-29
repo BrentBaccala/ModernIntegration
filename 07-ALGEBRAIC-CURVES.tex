@@ -1001,9 +1001,17 @@ def max_x_valuation(f):
 def max_y_valuation(f):
     return max([s.denominator() for s in newton_polygon(f).slopes() if s < 0])
 
+def min_x_valuation(f):
+    return min([-s.numerator() for s in newton_polygon(f).slopes() if s < 0])
+
+def min_y_valuation(f):
+    return min([s.denominator() for s in newton_polygon(f).slopes() if s < 0])
+
 def puiseux2(origf, x0, y0, n, *args, **kwargs):
 
     normalize = kwargs.get('normalize', True)
+
+    P = origf.parent()
 
     # If a fifth argument was specified, it's a function to be
     # expanded.  Recurse to get expansions of x and y, then
@@ -1014,17 +1022,50 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
 
     if len(args) > 0:
         assert(len(args) == 1)
-        p = puiseux(origf, x0, y0, n)
-        (x,y) = origf.parent().gens()
+        (x,y) = P.gens()
+        # put the function in K(x)[y]/(p)
+        R = P.base_ring()[x]
+        F = Frac(R)[y]
+        Q = QuotientRing(F, F(origf))
+        fn = Q(numerator(args[0])) / Q(denominator(args[0]))
+
+        yv = min_y_valuation(recenter_curve(origf, x0, y0))
+        xv = min_x_valuation(recenter_curve(origf, x0, y0))
+
+        prec = 0
+
+        for e in range(Q.degree()):
+            if fn[e] != 0:
+                cv = fn[e].valuation(R.0-x0)
+                # let x's valuation be xv and y's valuation be yv
+                #
+                # if x's expansion is exact and y's absolute precision is O(t^p),
+                #    y's relative precision is (p-yv), y^e's relative precision is the same,
+                #    so this term's absolute precision is cv*xv + e*yv + (p-yv)
+                #    IF EXPONENT e IS = 0, then this term doesn't involve y
+                #    IF EXPONENT e IS > 0, then the precision we need from y is...
+                #    n = cv*xv + e*yv + (p-yv)  -->  p = n - cv*xv - (e-1)*yv
+
+                # if y's expansion is exact and x's absolute precision is O(t^p),
+                #    this term's absolute precision is cv*xv + e*yv + (p-xv)
+                #    the precision we need from x is...
+                #    n = cv*xv + e*yv + (p-xv)  --> p = n - (cv-1)*xv - e*yv
+
+                prec = max(prec, n - (cv-1)*xv - e*yv)
+                if e > 0:
+                    prec = max(prec, n - cv*xv - (e-1)*yv)
+
+        p = puiseux(origf, x0, y0, prec)
         ans = []
         for cycle in p:
-           ans.append(args[0].subs({x: cycle[0], y: cycle[1]}))
+           # XXX only add bigoh if precision is finite
+           ans.append(args[0].subs({x: cycle[0], y: cycle[1]}).add_bigoh(n))
         return ans
 
     # Singular can't work directly with QQbar, so if that's our base
     # ring, then we need to convert to a NumberField.
 
-    if origf.parent().base_ring() == QQbar:
+    if P.base_ring() == QQbar:
         orig_elems = origf.coefficients()
         if x0 != oo: orig_elems.append(x0)
         if y0 != oo: orig_elems.append(y0)
@@ -1479,7 +1520,7 @@ puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y);
 \begin{sageblock}
 R.<x,y> = QQbar[]
 
-puiseux(y^2 + x^2 - 1, 1, 0, 3, 1/y)
+puiseux(y^2 + x^2 - 1, 1, 0, 0, 1/y)
 \end{sageblock}
 
 \endexample
@@ -1496,6 +1537,12 @@ Let's expand $\frac{x}{y}$ at $x=1$:
 \begin{maximablock}
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 5, x/y);
 \end{maximablock}
+
+\begin{sageblock}
+R.<x,y> = QQbar[]
+
+puiseux(y^2 + x^2 - 1, 1, 0, 6, x/y)
+\end{sageblock}
 
 Now $x=t^2+1$, so $\ud x=2t\ud t$.  Thus, multiplying $\frac{x}{y}$
 by $\ud x$ and changing our variable to $t$ will multiply
