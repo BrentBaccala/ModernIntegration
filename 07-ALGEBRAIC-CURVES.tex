@@ -1030,13 +1030,11 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
         assert(len(args) == 1)
         (x,y) = P.gens()
 
-        # put the function in K(x)[y]/(p)
-        R = P.base_ring()[x]
-        F = Frac(R)[y]
-        Q = QuotientRing(F, F(origf))
-
         fn = args[0]
         dvar = None
+
+        # If the function is in the symbolic ring, convert it to P
+        # after removing any differential that might be present.
 
         if fn.parent() is SR:
            RC = RingConverter(P)
@@ -1047,16 +1045,44 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
            else:
               fn = RC(fn)
 
+        if y0 == oo:
+           yv = -min_y_valuation(recenter_curve(origf, x0, y0))
+        else:
+           yv = min_y_valuation(recenter_curve(origf, x0, y0))
+
+        if x0 == oo:
+           xv = -min_x_valuation(recenter_curve(origf, x0, y0))
+        else:
+           xv = min_x_valuation(recenter_curve(origf, x0, y0))
+
+        # compute our goal precision, which is the requested precision,
+        # adjusted for the differential that we'll multiply through by
+
+        if dvar == x:
+           goal = n - xv + 1
+        elif dvar == y:
+           goal = n - yv + 1
+        else:
+           goal = n
+
+        # put the function in K(x)[y]/(p), for the next step
+
+        R = P.base_ring()[x]
+        F = Frac(R)[y]
+        Q = QuotientRing(F, F(origf))
+
         Qfn = Q(numerator(fn)) / Q(denominator(fn))
 
-        yv = min_y_valuation(recenter_curve(origf, x0, y0))
-        xv = min_x_valuation(recenter_curve(origf, x0, y0))
+        # compute the precision that we'll ask for in our x and y expansions
 
         prec = 0
 
         for e in range(Q.degree()):
             if Qfn[e] != 0:
-                cv = Qfn[e].valuation(R.0-x0)
+                if x0 == oo:
+                   cv = -Qfn[e].valuation()
+                else:
+                   cv = Qfn[e].valuation(R.0-x0)
                 # let x's valuation be xv and y's valuation be yv
                 #
                 # if x's expansion is exact and y's absolute precision is O(t^p),
@@ -1071,11 +1097,12 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
                 #    the precision we need from x is...
                 #    n = cv*xv + e*yv + (p-xv)  --> p = n - (cv-1)*xv - e*yv
 
-                prec = max(prec, n - (cv-1)*xv - e*yv)
+                prec = max(prec, goal - (cv-1)*xv - e*yv)
                 if e > 0:
-                    prec = max(prec, n - cv*xv - (e-1)*yv)
+                    prec = max(prec, goal - cv*xv - (e-1)*yv)
 
         p = puiseux(origf, x0, y0, prec)
+
         ans = []
         for cycle in p:
            f = fn.subs({x: cycle[0], y: cycle[1]})
@@ -1600,6 +1627,7 @@ puiseux(y^2 + x^2 - 1, x, y, inf, inf, 1, x/y);
 R.<x,y> = QQbar[];
 f = y^2 + x^2 - 1
 puiseux(f, oo, oo, 2)
+puiseux(f, oo, oo, 2, x/y)
 \end{sageblock}
 
 $\frac{x}{y}$ has no poles at infinity, and approaches
@@ -1612,6 +1640,10 @@ and since $x=\frac{1}{t}$, $\ud x = - \frac{1}{t^2} \ud t$.
 puiseux(y^2 + x^2 - 1, x, y, inf, inf, -1,
         x/y * del(x));
 \end{maximablock}
+
+\begin{sageblock}
+puiseux(f, oo, oo, 2, x/y*d(x))
+\end{sageblock}
 
 In short, while $\frac{x}{y}$ has poles only at $(\pm 1,0)$,
 $\frac{x}{y} \ud x$ has poles only at infinity.
