@@ -151,3 +151,36 @@ interfaces/singular.py
 
   subs doesn't work because _call_ isn't defined on QuotientRingElement's
     (subs in RingElement returns self if _call_ isn't defined)
+
+
+Sage univariate polynomial discriminant:
+
+rings/polynomial/polynomial_modn_dense_ntl.pyx:    def discriminant(self):
+
+rings/polynomial/polynomial_integer_dense_flint.pyx:    def discriminant(self, proof=True):
+        r"""
+        Return the discriminant of self, which is by definition
+
+        .. MATH::
+
+            (-1)^{m(m-1)/2} \mathop{\mathrm{resultant}}(a, a')/\mathop{\mathrm{lc}}(a),
+
+        temp = ZZX_discriminant(&ntl_poly, proof)
+rings/polynomial/polynomial_integer_dense_ntl.pyx:    def discriminant(self, proof=True):
+        cdef ZZ_c* temp = ZZX_discriminant(&self.__poly, proof)
+
+rings/polynomial/polynomial_quotient_ring.py:    def discriminant(self, v=None):
+        Return the discriminant of this ring over the base ring. This is by
+        definition the discriminant of the polynomial that we quotiented
+        out by.
+        return self.modulus().discriminant()
+
+rings/polynomial/polynomial_element.pyx:    def discriminant(self):
+   class Polynomial(CommutativeAlgebraElement)
+
+Sage multivariate polynomial discriminant:
+
+   cdef class MPolynomial_libsingular(MPolynomial):
+
+rings/polynomial/multi_polynomial_libsingular.pyx:    def discriminant(self,variable):
+        Returns the discriminant of self with respect to the given variable.

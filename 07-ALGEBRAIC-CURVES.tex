@@ -1656,6 +1656,37 @@ analyze_multiple_points(f, [args]) := block(
 );
 \end{maximacommon}
 
+\begin{sageblock}
+def analyze_multiple_points(f):
+   P = f.parent()
+   Base = P.base_ring()
+   x,y = P.gens()
+   # This next code is here to avoid Trac #25271, though it assumes
+   # that the curve's polynomial has only rational coefficients.
+   # (which is true for all of our test cases)
+   if False:
+      disc = f.discriminant(y)
+   else:
+      QQR = QQ[x,y]
+      disc = P(QQR(f).discriminant(QQR(y)))
+   print '$$', latex(disc.factor()), '$$'
+   for x0 in Base[x](disc).roots(multiplicities=False):
+      for y0 in Base[y](f.subs({x: x0})).roots(multiplicities=False):
+          print '$$', latex((x0,y0)), '$$'
+          print '$$', latex(puiseux(f, x0, y0, 3)), '$$'
+      if f.subs({x: x0}).degree(y) != f.degree(y):
+          print '$$', latex((x0,oo)), '$$'
+          print '$$', latex(puiseux(f, x0, oo, 3)), '$$'
+   finf = Base[y](f.subs({x: 1/x}).numerator().subs({x:0}))
+   for y0 in finf.roots(multiplicities=False):
+      print '$$', latex((oo,y0)), '$$'
+      print '$$', latex(puiseux(f, oo, y0, 3)), '$$'
+   if finf.degree() < f.degree(y):
+      print '$$', latex((oo,oo)), '$$'
+      print '$$', latex(puiseux(f, oo, oo, 3)), '$$'
+
+\end{sageblock}
+
 %% \begin{comment}
 
 $$y^3-3y+2x=0$$
@@ -1664,17 +1695,29 @@ $$y^3-3y+2x=0$$
 analyze_multiple_points(y^3 - 3*y + 2*x)$
 \end{maximablock}
 
+\begin{sageblock}
+analyze_multiple_points(y^3 - 3*y + 2*x);
+\end{sageblock}
+
 $$y^3+3y-x$$
 
 \begin{maximablock}
 analyze_multiple_points(y^3 + 3*y - x)$
 \end{maximablock}
 
+\begin{sageblock}
+analyze_multiple_points(y^3 + 3*y - x);
+\end{sageblock}
+
 $$y^3-3y^2-x$$
 
 \begin{maximablock}
 analyze_multiple_points(y^3 - 3*y^2 - x)$
 \end{maximablock}
+
+\begin{sageblock}
+analyze_multiple_points(y^3 - 3*y^2 - x);
+\end{sageblock}
 
 $$y^4-4y-x$$
 
@@ -1685,11 +1728,19 @@ properly.
 errcatch(analyze_multiple_points(y^4 - 4*y - x))$
 \end{maximablock}
 
+\begin{sageblock}
+analyze_multiple_points(y^4 - 4*y - x);
+\end{sageblock}
+
 $$y^4+2(1-2x)y^2+1$$
 
 \begin{maximablock}
 analyze_multiple_points(y^4+2*(1-2*x)*y^2+1)$
 \end{maximablock}
+
+\begin{sageblock}
+analyze_multiple_points(y^4+2*(1-2*x)*y^2+1);
+\end{sageblock}
 
 $$y^3-3y^2+x^6$$
 
@@ -1697,11 +1748,19 @@ $$y^3-3y^2+x^6$$
 analyze_multiple_points(y^3-3*y^2+x^6, 6)$
 \end{maximablock}
 
+\begin{sageblock}
+analyze_multiple_points(y^3-3*y^2+x^6);
+\end{sageblock}
+
 $$y^3-3y+2x^2(2-x^2)$$
 
 \begin{maximablock}
 analyze_multiple_points(y^3-3*y+2*x^2*(2-x^2))$
 \end{maximablock}
+
+\begin{sageblock}
+analyze_multiple_points(y^3-3*y+2*x^2*(2-x^2));
+\end{sageblock}
 
 $$y^3-3y+2x^3(2-x^3)$$
 
@@ -1709,11 +1768,19 @@ $$y^3-3y+2x^3(2-x^3)$$
 analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3))$
 \end{maximablock}
 
+\begin{sageblock}
+analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3));
+\end{sageblock}
+
 $$3x(x-1)y^4 -4(x-1)(x-2)y^3 + (4/27)(x-2)^4$$
 
 \begin{maximablocksmall}
 analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4)$
 \end{maximablocksmall}
+
+\begin{sageblocksmall}
+analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4);
+\end{sageblocksmall}
 
 $$y^5 + (x^2-1)y^4 - (4^4)/(5^5)x^2(x^2-1)$$
 
@@ -1724,6 +1791,12 @@ Maxima can't {\tt solve()}.
 errcatch(analyze_multiple_points(
    y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1)))$
 \end{maximablocksmall}
+
+% This one works, but takes several minutes to compute
+
+\begin{sageblocksmall}
+analyze_multiple_points(y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1));
+\end{sageblocksmall}
 
 $$y^3 - 3axy + x^3$$
 
@@ -1740,11 +1813,19 @@ $$y^3 - xy - x^2$$
 analyze_multiple_points(y^3 - x*y - x^2)$
 \end{maximablock}
 
+\begin{sageblock}
+analyze_multiple_points(y^3 - x*y - x^2);
+\end{sageblock}
+
 $$y^3 - 3x^2y + 2x$$
 
 \begin{maximablock}
 analyze_multiple_points(y^3 - 3*x^2*y + 2*x)$
 \end{maximablock}
+
+\begin{sageblock}
+analyze_multiple_points(y^3 - 3*x^2*y + 2*x);
+\end{sageblock}
 
 $$y^3 - 3xy + 2x^2$$
 
@@ -1752,11 +1833,19 @@ $$y^3 - 3xy + 2x^2$$
 analyze_multiple_points(y^3 - 3*x*y + 2*x^2)$
 \end{maximablock}
 
+\begin{sageblock}
+analyze_multiple_points(y^3 - 3*x*y + 2*x^2);
+\end{sageblock}
+
 $$y^3 - 3y + x^6$$
 
 \begin{maximablock}
 analyze_multiple_points(y^3 - 3*y + x^6)$
 \end{maximablock}
+
+\begin{sageblock}
+analyze_multiple_points(y^3 - 3*y + x^6);
+\end{sageblock}
 
 %% \end{comment}
 
