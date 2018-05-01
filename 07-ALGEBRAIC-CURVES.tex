@@ -912,14 +912,7 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
     # Call Singular
 
-    ed = singular.extdevelop(hne, adjn-1)
-
-    # We get a flag indicating which variable was used as a
-    # uniformizing parameter.  Swap variables if y was the
-    # uniformizing parameter (we'll swap back later).
-
-    if ed[3] == 1:
-        (x0,y0) = (y0,x0)
+    ed = singular.extdevelop(hne, adjn)
 
     eds = ed[1].sage()
 
@@ -935,13 +928,7 @@ def puiseux_cycle(f, x0, y0, n, hne):
 
     h2 = eds.base_ring().hom(h, P)
 
-    # map the matrix back to the polynomial's original ring
-
-    eds = eds.apply_map(h2)
-
-    # convert the matrix into the trivariate polynomial ring
-
-    p = eds * matrix([t^i for i in range(1, eds.ncols()+1)]).transpose()
+    param = singular.param(ed, 0).sage()
 
     if x0 == oo:
         x1 = 0
@@ -953,17 +940,8 @@ def puiseux_cycle(f, x0, y0, n, hne):
     else:
         y1 = y0
 
-    # XXX Can't handle a really complex HN expansion yet
-    assert(p.nrows() <= 2)
-
-    if p.nrows() == 1:
-        xexpansion = x1 + t
-        yexpansion = y1 + p[0,0]
-    else:
-        #xexpansion = x1 + p[1,0] * t
-        #yexpansion = y1 + p[0,0].subs({t: xexpansion, x: t})
-        xexpansion = x1 + p[1,0]
-        yexpansion = y1 + p[0,0].subs({x: xexpansion}) // t
+    xexpansion = x1 + h2(param[0].gens()[0]).subs({P.0: t})
+    yexpansion = y1 + h2(param[0].gens()[1]).subs({P.0: t})
 
     # Construct a Laurent power series ring in the new variable,
     # and convert our expansions into it.
@@ -971,19 +949,19 @@ def puiseux_cycle(f, x0, y0, n, hne):
     PSring = Frac(numfield[['t']])
 
     xexpansion = PSring(xexpansion)
-    yexpansion = PSring(yexpansion).add_bigoh(adjn)
+    yexpansion = PSring(yexpansion)
+
+    if param[1][0] != -1:
+       xexpansion = xexpansion.add_bigoh(param[1][0])
+    if param[1][1] != -1:
+       yexpansion = yexpansion.add_bigoh(param[1][1])
 
     if x0 == oo:
         xexpansion = 1/xexpansion
-        xexpansion.add_bigoh(n)
     if y0 == oo:
         yexpansion = 1/yexpansion
-        yexpansion.add_bigoh(n)
 
-    if ed[3] == 0:
-        return [xexpansion, yexpansion]
-    else:
-        return [yexpansion, xexpansion]
+    return [xexpansion, yexpansion]
 
 def map_laurent_series_to_SR(series):
     R = series.parent().change_ring(SR)
