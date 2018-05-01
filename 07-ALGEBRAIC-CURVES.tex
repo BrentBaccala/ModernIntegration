@@ -184,10 +184,10 @@ with respect to one of its variables.  The discriminant will be zero
 at special points, so these points can be located by computing the
 zeros of a univariate polynomial.
 
-\begin{maximacommon}
+\begin{maximacode}
 discriminant(f,y) :=
   factor(resultant(diff(f,y), f, y));
-\end{maximacommon}
+\end{maximacode}
 
 These points are further classified according to whether or not the
 curve is locally Euclidean in their neighborhood.  Geometrically, this
@@ -412,6 +412,8 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 
 \vfill\eject
 
+\begin{comment}
+
 {\tt puiseux(f,x,y,x0,y0,deg,[ratfunc])}, adopted from {\tt
 implicit_taylor} in the Maxima distribution, computes the Puiseux
 series of a function {\tt f} in variables $x$ and $y$, centered around
@@ -468,7 +470,9 @@ to graph the lower convex hull.
 
 \vfill\eject
 
-\begin{maximacommon}
+\end{comment}
+
+\begin{maximacode}
 /* in_namespace(puiseux)$ */
 
 recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
@@ -483,14 +487,14 @@ recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
    ),
    newf
 );
-\end{maximacommon}
+\end{maximacode}
 
-\begin{maximablock}
+\begin{maximacode}
 /* why doesn't this produce cdots? */
 taylor(sin(x),x,0,3);
-\end{maximablock}
+\end{maximacode}
 
-\begin{maximacommon}
+\begin{maximacode}
 monomial_powers(f,x,y,x0,y0) := block(
   [result: [], xcoeff],
   f : recenter_curve(f,x,y,x0,y0),
@@ -504,9 +508,9 @@ monomial_powers(f,x,y,x0,y0) := block(
   ),
   result
 );
-\end{maximacommon}
+\end{maximacode}
 
-\begin{maximacommonsmall}
+\begin{maximacode}
 /* list is a list of pairs, like [[0,1], [0,2], [2,0]] */
 /* this function returns the points on the lower convex hull */
 
@@ -581,9 +585,9 @@ newton_polygon(f, x, y, x0, y0) := block(
    embed_latex_graphic(filename)
 );
 
-\end{maximacommonsmall}
+\end{maximacode}
 
-\begin{maximacommonsmall}
+\begin{maximacode}
 puiseux2_cache : [];
 
 puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
@@ -650,27 +654,27 @@ puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
   puiseux2_cache: cons([[f,x,y,x0,y0,r,s,p], [deg, result]], puiseux2_cache),
   result
   );
-\end{maximacommonsmall}
+\end{maximacode}
 
-\begin{maximacommonsmall}
+\begin{maximacode}
 /* puiseux_fracexp controls whether series are returned with
  * fractional exponents, or using an auxilary variable (t).
  */
 
 puiseux_fracexp : false ;
 
-\end{maximacommonsmall}
+\end{maximacode}
 
-\begin{maximacommonsmall}
+\begin{maximacode}
 distribute_denominator(frac, var, lim) := block(
   [result: 0, n: num(expand(frac)), d: denom(expand(frac))],
   for i: lopow(n, var) thru min(hipow(n, var), lim + hipow(d, var)) do
     result : result + radcan(rectform(ratsimp(coeff(n, var, i)/d)))*var^i,
   result
 );
-\end{maximacommonsmall}
+\end{maximacode}
 
-\begin{maximacommontiny}
+\begin{maximacode}
 puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,b) :=
  block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, maxypow, rf:0, yserieslist, result],
 
@@ -737,9 +741,9 @@ puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,b) :=
          [result * differential, tsubst, y=orig_y0]
    ), yserieslist)
  );
-\end{maximacommontiny}
+\end{maximacode}
 
-\begin{maximacommonsmall}
+\begin{maximacode}
 puiseux4(f,x,y,x0,y0,deg,rf) :=
  block([result: [], lastslope : 0, orig_y0 : y0, sign, mp, pairs],
 
@@ -781,9 +785,9 @@ puiseux4(f,x,y,x0,y0,deg,rf) :=
    result
  );
 
-\end{maximacommonsmall}
+\end{maximacode}
 
-\begin{maximacommonsmall}
+\begin{maximacode}
 puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
  block([result: [], rf],
 
@@ -823,7 +827,7 @@ puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
 /* export(puiseux, puiseux_fracexp, newton_polygon)$ */
 /* in_namespace(maxima)$ */
 /* import(puiseux)$ */
-\end{maximacommonsmall}
+\end{maximacode}
 
 \begin{maximacode}
 
@@ -865,7 +869,6 @@ puiseux_fracexp: false)$
 \vfill\eject
 
 \begin{sagecommonsmall}
-
 singular.lib('hnoether.lib')
 
 def recenter_curve(f, x0, y0):
@@ -1249,9 +1252,9 @@ We normalize the defining polynomial by writing it as
 $y^2 + x^2 - 1 = 0$.  Where does it have multiple points?
 We compute the discriminant:
 
-\begin{maximablock}
+\begin{maximacode}
 discriminant(y^2 + x^2 - 1, y);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 R.<x,y> = QQbar[];
@@ -1294,11 +1297,19 @@ Now, substituting these expressions for $x^2$ and $y^2$ into the
 curve's defining equation $y^2 + x^2 - 1 = 0$ and setting all
 coefficients of $t$ to zero, we find:
 
-\begin{maximablock}
+\begin{maximacode}
 ratsimp(subst(
    [x=t^2+1, y=a[1]*t+a[2]*t^2+a[3]*t^3],
    y^2+x^2-1));
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+var('x, y, t, a1, a2, a3');
+f = y^2 + x^2 - 1;
+exp = f.subs({x: t^2+1,
+              y: a1*t + a2*t^2 + a3*t^3});
+exp.collect(t)
+\end{sageblock}
 
 $$2 + a_1^2 = 0 \qquad 2 a_1 a_2 = 0 \qquad 1 + 2 a_1 a_3 + a_2^2 = 0$$
 
@@ -1316,11 +1327,12 @@ in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
 x-series unchanged.  Let's confirm this result with Maxima:
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
+R.<x,y> = QQbar[];
 p = puiseux(y^2 + x^2 - 1, 1, 0, 4)
 \end{sageblock}
 
@@ -1348,11 +1360,19 @@ $$y = a_{-1} \frac{1}{u} + a_0 + a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
 Plugging this into $y^2 u^2 + 1 - u^2$ and setting all the resulting
 coefficients to zero, we conclude:
 
-\begin{maximablock}
+\begin{maximacode}
 ratsimp(subst(
    [y=a[-1]*(1/u)+a[0]+a[1]*u+a[2]*u^2+a[3]*u^3],
    y^2*u^2+1-u^2));
-\end{maximablock}
+\end{maximacode}
+
+\begin{sageblock}
+var('u, y, t, a0, a1, a2, a3');
+var('an1', latex_name='a_{-1}');
+f = y^2*u^2 + 1 - u^2
+exp = f.subs({y: an1*(1/u) + a0 + a1*u + a2*u^2 + a3*u^3});
+exp.collect(u)
+\end{sageblock}
 
 %% $$a_{-1}^2 + 1 = 0; \qquad 2 a_{-1} a_0 = 0 \qquad (2a_{-1}a_1+a_0^2-1)=0$$
 
@@ -1366,11 +1386,12 @@ yield two different values of $y$ for each value of $u$.
 Geometrically, we have two sheets that approach each other and touch
 at a singular point where the curve is not locally Euclidean.
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, y);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
+R.<x,y> = QQbar[]
 puiseux(y^2 + x^2 - 1, oo, oo, 4)
 \end{sageblock}
 
@@ -1384,9 +1405,9 @@ $$y^3+x^3y+x=0$$
 We begin by computing the discriminant of the
 equation, which gives us the locations of the multiple points.
 
-\begin{maximablock}
+\begin{maximacode}
 discriminant(y^3 + x^3*y + x, y);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 f = y^3 + x^3*y + x
@@ -1404,9 +1425,9 @@ The multiple points lie over the roots of this equation: $x=0$ and
 the seven roots of $4x^7+27=0$.  Infinity also needs to be
 examined.  We begin with $x=0$:
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^3 + x^3*y +x, x, y, 0, false, 10);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 f = y^3 + x^3*y + x
@@ -1423,10 +1444,10 @@ puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
 puiseux(y^3 + x^3*y +x, x, y, g, -(3/8)^(1/7), 1);
 \end{comment}
 
-\begin{maximablock}
+\begin{maximacode}
 g: (-27/4)^(1/7);
 puiseux(y^3 + x^3*y +x, x, y, g, false, 1);
-\end{maximablock}
+\end{maximacode}
 
 \begin{comment}
 \begin{sageblock}
@@ -1472,9 +1493,9 @@ and an ordinary point at $(g,3/g^2)$.
 
 Finally, let's look at what happens when $x$ goes to infinity:
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^3 + x^3*y +x, x, y, inf, false, 10);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 R.<x,y> = QQbar[]
@@ -1572,9 +1593,9 @@ simply the places where the denominator is zero, and that's just
 $x=\pm 1$.  Now, if we use {\tt puiseux}, we can just request a series
 truncated at the $-1$ term:
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 R.<x,y> = QQbar[]
@@ -1593,9 +1614,9 @@ differential, which must be adjusted at ramification points.
 
 Let's expand $\frac{x}{y}$ at $x=1$:
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 5, x/y);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 puiseux(y^2 + x^2 - 1, 1, 0, 6, x/y)
@@ -1605,9 +1626,9 @@ Now $x=t^2+1$, so $\ud x=2t\ud t$.  Thus, multiplying $\frac{x}{y}$
 by $\ud x$ and changing our variable to $t$ will multiply
 all of the terms in our expansion by $2t$:
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 6, x/y*del(x));
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 puiseux(y^2 + x^2 - 1, 1, 0, 7, x/y*d(x))
@@ -1618,9 +1639,9 @@ at $x=1$, $\frac{x}{y} \ud x$ does not!
 
 Its behavior at infinity also requires analysis.
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^2 + x^2 - 1, x, y, inf, inf, 1, x/y);
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 f = y^2 + x^2 - 1
@@ -1634,10 +1655,10 @@ infinity.  The differential $\frac{x}{y} \ud x$,
 on the other hand, requires us to multiply by $\ud x$,
 and since $x=\frac{1}{t}$, $\ud x = - \frac{1}{t^2} \ud t$.
 
-\begin{maximablock}
+\begin{maximacode}
 puiseux(y^2 + x^2 - 1, x, y, inf, inf, -1,
         x/y * del(x));
-\end{maximablock}
+\end{maximacode}
 
 \begin{sageblock}
 puiseux(f, oo, oo, 2, x/y*d(x))
