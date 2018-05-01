@@ -1253,7 +1253,7 @@ discriminant(y^2 + x^2 - 1, y);
 \end{maximablock}
 
 \begin{sageblock}
-R.<x,y> = QQ[];
+R.<x,y> = QQbar[];
 (y^2 + x^2 - 1).discriminant(y).factor()
 \end{sageblock}
 
@@ -1320,7 +1320,6 @@ puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
 \end{maximablock}
 
 \begin{sageblock}
-R.<x,y> = QQbar[];
 p = puiseux(y^2 + x^2 - 1, 1, 0, 4)
 \end{sageblock}
 
@@ -1389,9 +1388,15 @@ discriminant(y^3 + x^3*y + x, y);
 \end{maximablock}
 
 \begin{sageblock}
-R.<x,y> = QQ[];
 f = y^3 + x^3*y + x
 f.discriminant(y).factor()
+\end{sageblock}
+
+That result is rather confusing.  Let's try factoring over $\QQ$
+instead of $\QQbar$:
+
+\begin{sageblock}
+f.discriminant(y).change_ring(QQ).factor()
 \end{sageblock}
 
 The multiple points lie over the roots of this equation: $x=0$ and
@@ -1403,7 +1408,6 @@ puiseux(y^3 + x^3*y +x, x, y, 0, false, 10);
 \end{maximablock}
 
 \begin{sageblock}
-R.<x,y> = QQbar[];
 f = y^3 + x^3*y + x
 puiseux(f, 0, 0, 10)
 \end{sageblock}
@@ -1436,8 +1440,6 @@ f = y^3 + x^3*y + x
 \end{comment}
 
 \begin{sageblock}
-R.<x,y> = QQbar[]
-
 f = y^3 + x^3*y + x
 puiseux(f, 0, 0, 10)
 
@@ -1595,8 +1597,6 @@ puiseux(y^2 + x^2 - 1, x, y, 1, 0, 5, x/y);
 \end{maximablock}
 
 \begin{sageblock}
-R.<x,y> = QQbar[]
-
 puiseux(y^2 + x^2 - 1, 1, 0, 6, x/y)
 \end{sageblock}
 
@@ -1609,8 +1609,6 @@ puiseux(y^2 + x^2 - 1, x, y, 1, 0, 6, x/y*del(x));
 \end{maximablock}
 
 \begin{sageblock}
-R.<x,y> = QQbar[]
-
 puiseux(y^2 + x^2 - 1, 1, 0, 7, x/y*d(x))
 \end{sageblock}
 
@@ -1624,7 +1622,6 @@ puiseux(y^2 + x^2 - 1, x, y, inf, inf, 1, x/y);
 \end{maximablock}
 
 \begin{sageblock}
-R.<x,y> = QQbar[];
 f = y^2 + x^2 - 1
 puiseux(f, oo, oo, 2)
 puiseux(f, oo, oo, 2, x/y)
