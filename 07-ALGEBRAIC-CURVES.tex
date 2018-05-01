@@ -1141,7 +1141,13 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
 
         # We may have extended further to construct the results
         # If so, 'morphism' will no longer work, so replace it
-        # with the first possible embedding into QQbar.
+        # with the first compatible embedding into QQbar, with
+        # "compatible" meaning the first embedding that takes
+        # our coordinates to their original values.
+
+        # XXX maybe puiseux should return the embedding it used
+        # to extend with, and we should use that to pick a
+        # compatible embedding
 
         # XXX First, we shouldn't just pick an embedding at random
         # Second, we should embed into the original NumberField, and
@@ -1150,7 +1156,11 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
 
         if p[0][0].base_ring() is not numfield:
             # print numfield.embeddings(p[0][0].base_ring())
-            morphism = p[0][0].base_ring().embeddings(QQbar)[0]
+            for morphism in p[0][0].base_ring().embeddings(QQbar):
+               if all(((x0 == oo or (morphism(cycle[0][0]) == x0)) and
+                       (y0 == oo or (morphism(cycle[0][1]) == y0))
+                      for cycle in p)):
+                   break
 
         ans = []
         for cycle in p:
