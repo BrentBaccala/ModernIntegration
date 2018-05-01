@@ -1137,7 +1137,7 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
             else:
                 adjn = mxv
 
-        p = puiseux(newf, elem_dict[x0], elem_dict[y0], adjn)
+        p = puiseux2(newf, elem_dict[x0], elem_dict[y0], adjn)
 
         # We may have extended further to construct the results
         # If so, 'morphism' will no longer work, so replace it
@@ -1193,10 +1193,23 @@ def puiseux2(origf, x0, y0, n, *args, **kwargs):
     # result, recurse using the extension field
 
     if hne[1].type() == 'ring':
+
        extensionRing = hne[1].sage()
-       # XXX We've got hne computed and stored in the ring,
-       # but I'm not sure how to get to it from Sage,
-       # so just recurse
+
+       # XXX We've got hne computed and stored in the ring, but I'm
+       # not sure how to get to it from Sage, so just recurse
+
+       # Construct a homomorphism to map the coordinates into the new
+       # NumberField
+
+       # XXX we just pick the first embedding on the list
+
+       h = P.base_ring().embeddings(extensionRing.base_ring())[0]
+
+       if x0 != oo:
+          x0 = h(x0)
+       if y0 != oo:
+          y0 = h(y0)
 
        return puiseux(extensionRing(origf), x0, y0, n)
 
