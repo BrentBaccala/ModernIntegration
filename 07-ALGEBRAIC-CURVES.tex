@@ -1666,8 +1666,8 @@ analyze_multiple_points(f, [args]) := block(
 );
 \end{maximacommon}
 
-\begin{sageblock}
-def analyze_multiple_points(f):
+\begin{sageblocksmall}
+def analyze_multiple_points(f, pr=False):
    P = f.parent()
    Base = P.base_ring()
    x,y = P.gens()
@@ -1679,185 +1679,76 @@ def analyze_multiple_points(f):
    else:
       QQR = QQ[x,y]
       disc = P(QQR(f).discriminant(QQR(y)))
-   print '$$', latex(disc.factor()), '$$'
+   if pr: print '$$', latex(disc.factor()), '$$'
+
    for x0 in Base[x](disc).roots(multiplicities=False):
+      sheets = 0
       for y0 in Base[y](f.subs({x: x0})).roots(multiplicities=False):
-          print '$$', latex((x0,y0)), '$$'
-          print '$$', latex(puiseux(f, x0, y0, 3)), '$$'
+          p = puiseux(f, x0, y0, 3)
+          for cycle in p:
+             assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+             if cycle[0] == x0:
+                sheets = sheets + 1
+             else:
+                sheets = sheets + (cycle[0] - x0).valuation()
+          if pr: print '$$', latex((x0,y0)), '$$'
+          if pr: print '$$', latex(p), '$$'
       if f.subs({x: x0}).degree(y) != f.degree(y):
-          print '$$', latex((x0,oo)), '$$'
-          print '$$', latex(puiseux(f, x0, oo, 3)), '$$'
+          p = puiseux(f, x0, oo, 3)
+          for cycle in p:
+             assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+             if cycle[0] == x0:
+                sheets = sheets + 1
+             else:
+                sheets = sheets + (cycle[0] - x0).valuation()
+          if pr: print '$$', latex((x0,oo)), '$$'
+          if pr: print '$$', latex(p), '$$'
+      assert(sheets == f.degree(y))
+
    finf = Base[y](f.subs({x: 1/x}).numerator().subs({x:0}))
    for y0 in finf.roots(multiplicities=False):
-      print '$$', latex((oo,y0)), '$$'
-      print '$$', latex(puiseux(f, oo, y0, 3)), '$$'
+      p = puiseux(f, oo, y0, 3)
+      for cycle in p:
+         assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+      if pr: print '$$', latex((oo,y0)), '$$'
+      if pr: print '$$', latex(p), '$$'
    if finf.degree() < f.degree(y):
-      print '$$', latex((oo,oo)), '$$'
-      print '$$', latex(puiseux(f, oo, oo, 3)), '$$'
-
-\end{sageblock}
-
-%% \begin{comment}
-
-$$y^3-3y+2x=0$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*y + 2*x)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3 - 3*y + 2*x);
-\end{sageblock}
-
-$$y^3+3y-x$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 + 3*y - x)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3 + 3*y - x);
-\end{sageblock}
-
-$$y^3-3y^2-x$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*y^2 - x)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3 - 3*y^2 - x);
-\end{sageblock}
-
-$$y^4-4y-x$$
-
-This curve produces coordinates that aren't {\tt recenter}'ed
-properly.
-
-\begin{maximablock}
-errcatch(analyze_multiple_points(y^4 - 4*y - x))$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^4 - 4*y - x);
-\end{sageblock}
-
-$$y^4+2(1-2x)y^2+1$$
-
-\begin{maximablock}
-analyze_multiple_points(y^4+2*(1-2*x)*y^2+1)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^4+2*(1-2*x)*y^2+1);
-\end{sageblock}
-
-$$y^3-3y^2+x^6$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3-3*y^2+x^6, 6)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3-3*y^2+x^6);
-\end{sageblock}
-
-$$y^3-3y+2x^2(2-x^2)$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3-3*y+2*x^2*(2-x^2))$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3-3*y+2*x^2*(2-x^2));
-\end{sageblock}
-
-$$y^3-3y+2x^3(2-x^3)$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3))$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3));
-\end{sageblock}
-
-$$3x(x-1)y^4 -4(x-1)(x-2)y^3 + (4/27)(x-2)^4$$
-
-\begin{maximablocksmall}
-analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4)$
-\end{maximablocksmall}
-
-\begin{sageblocksmall}
-analyze_multiple_points(3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4);
+      p = puiseux(f, oo, oo, 3)
+      for cycle in p:
+         assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+      if pr: print '$$', latex((oo,oo)), '$$'
+      if pr: print '$$', latex(p), '$$'
 \end{sageblocksmall}
 
-$$y^5 + (x^2-1)y^4 - (4^4)/(5^5)x^2(x^2-1)$$
+\begin{sageblock}
+test_curves = [
+    y^3 - 3*y + 2*x,
+    y^3 + 3*y - x,
+    y^3 - 3*y^2 - x,
+    y^4 - 4*y - x,
+    y^4+2*(1-2*x)*y^2+1,
+    y^3-3*y^2+x^6,
+    y^3-3*y+2*x^2*(2-x^2),
+    y^3-3*y+2*x^3*(2-x^3),
+    3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4,
+    y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1),
+    y^3 - x*y - x^2,
+    y^3 - 3*x^2*y + 2*x,
+    y^3 - 3*x*y + 2*x^2,
+    y^3 - 3*y + x^6];
 
-This function produces complicated fifth degree equations that
-Maxima can't {\tt solve()}.
+# for f in test_curves:
+#     analyze_multiple_points(f)
+\end{sageblock}
 
-\begin{maximablocksmall}
-errcatch(analyze_multiple_points(
-   y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1)))$
-\end{maximablocksmall}
-
-% This one works, but takes several minutes to compute
-
-\begin{sageblocksmall}
-analyze_multiple_points(y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1));
-\end{sageblocksmall}
+%\begin{sageblocksmall}
+%analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3), True);
+%\end{sageblocksmall}
 
 $$y^3 - 3axy + x^3$$
 
 This function contains an extra variable and is, in fact, a family of
 algebraic curves.
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*a*x*y + x^3)$
-\end{maximablock}
-
-$$y^3 - xy - x^2$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - x*y - x^2)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3 - x*y - x^2);
-\end{sageblock}
-
-$$y^3 - 3x^2y + 2x$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*x^2*y + 2*x)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3 - 3*x^2*y + 2*x);
-\end{sageblock}
-
-$$y^3 - 3xy + 2x^2$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*x*y + 2*x^2)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3 - 3*x*y + 2*x^2);
-\end{sageblock}
-
-$$y^3 - 3y + x^6$$
-
-\begin{maximablock}
-analyze_multiple_points(y^3 - 3*y + x^6)$
-\end{maximablock}
-
-\begin{sageblock}
-analyze_multiple_points(y^3 - 3*y + x^6);
-\end{sageblock}
-
-%% \end{comment}
 
 \endexample
 
