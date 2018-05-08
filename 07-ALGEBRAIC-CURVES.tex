@@ -1827,6 +1827,30 @@ def riemannroch(f, ZeroIdeal, PoleIdeal):
    return [simplify(i.subs({z:1})) for i in B]
 \end{sageblock}
 
+\begin{sageblock}
+def riemannrochKash(f, ZeroIdeal, PoleIdeal):
+
+    xx, yy = f.parent().gens()
+
+    Q = kash.RationalField()
+    kT = Q.RationalFunctionField()
+    kTy = kT.PolynomialAlgebra()
+    x = kT.1
+    y = kTy.1
+    x
+    ff = f.subs({xx: x, yy: y})
+    K = ff.FunctionField()
+    ybar = K.1
+    O = K.MaximalOrderFinite()
+    I = O.Ideal(x,ybar)
+    P1 = I.Place()
+    D= P1.Divisor()
+    B = (4*D).Basis()
+
+    return B.sage({x: xx, ybar: yy})
+\end{sageblock}
+
+
 \begin{comment}
 I've implemented in Maxima one of the oldest,
 from \cite{bliss}, though it probably dates back
@@ -2155,13 +2179,13 @@ riemannroch(f, x, y, div);
 \end{maximacode}
 
 \begin{sageblock}
-R.<x,y,z> = QQ[];
+R.<x,y> = QQ[];
 f = y^2 - x^3 + x;
 
 P1 = ideal(x,y);
 I = ideal(R(1));
 
-riemannroch(f.homogenize(z), P1^4, I)
+riemannrochKash(f, P1^4, I)
 \end{sageblock}
 
 Here are the examples from \cite{alvanos} \S6.3:
