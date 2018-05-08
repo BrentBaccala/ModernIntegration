@@ -1797,17 +1797,32 @@ Riemann-Roch spaces.  Sage uses Singular's implementation of
 the Brill-Noether algorithm.
 
 \begin{sageblock}
-singular.lib('brillnoether.lib');
+singular.lib('hess.lib');
 
-def riemannroch(CurveIdeal, ZeroIdeal, PoleIdeal):
-   def simplify(x):
-      if x in CurveIdeal.ring().base_ring():
-         return CurveIdeal.ring().base_ring().one()
-      else:
-         return x / x.factor().unit()
-   K = singular.RiemannRochBN(CurveIdeal, ZeroIdeal, PoleIdeal)
+def riemannroch(f, ZeroIdeal, PoleIdeal):
+
+   if f.base_ring() is QQbar:
+      orig_elems = flatten([g.coefficients() for I in [ZeroIdeal, PoleIdeal] for g in I.gens()])
+      orig_elems = orig_elems + f.coefficients()
+      nfe = number_field_elements_from_algebraics(orig_elems)
+      numfield = nfe[0]
+      new_elems = nfe[1]
+
+      elem_dict = dict(zip(orig_elems, new_elems))
+      def elem_map(e): return elem_dict[e]
+
+      def ideal_map(Ideal):
+         return ideal([g.map_coefficients(elem_map, new_base_ring=numfield) for g in Ideal.gens()])
+
+      f = f.map_coefficients(elem_map, new_base_ring=numfield)
+      ZeroIdeal = ideal_map(ZeroIdeal)
+      PoleIdeal = ideal_map(PoleIdeal)
+
+   K = singular.RiemannRochHess(f, singular.list([ZeroIdeal, PoleIdeal]), '"ideals"')
+
    denom = K[2].sage()
    B = [i.sage()/denom for i in K[1]]
+   return B
    x,y,z = CurveIdeal.ring().gens()
    return [simplify(i.subs({z:1})) for i in B]
 \end{sageblock}
@@ -2143,13 +2158,11 @@ riemannroch(f, x, y, div);
 R.<x,y,z> = QQ[];
 f = y^2 - x^3 + x;
 
-C = ideal(f.homogenize(z));
 P1 = ideal(x,y);
 I = ideal(R(1));
 
-riemannroch(C, P1^4, I)
+riemannroch(f.homogenize(z), P1^4, I)
 \end{sageblock}
-
 
 Here are the examples from \cite{alvanos} \S6.3:
 
@@ -2170,20 +2183,22 @@ riemannroch(f, x, y, [[Pinf, -3]]);
 \end{maximacode}
 
 \begin{sageblock}
+R.<x,y,z> = QQ[];
 f = y^2 - x^3 - 1;
-C = ideal(f.homogenize(z));
+f = f.homogenize(z);
+
 I = ideal(R(1));
 P1 = ideal(x-2*z, y-3*z);
 P2 = ideal(x-2*z, y+3*z);
 Pinf = ideal(x,z);
 
-riemannroch(C, Pinf, P1)
-riemannroch(C, Pinf^2, P1)
-riemannroch(C, Pinf^3, P1)
-riemannroch(C, Pinf^4, P1)
-riemannroch(C, Pinf, I)
-riemannroch(C, Pinf^2, I)
-riemannroch(C, Pinf^3, I)
+riemannroch(f, Pinf, P1)
+riemannroch(f, Pinf^2, P1)
+riemannroch(f, Pinf^3, P1)
+riemannroch(f, Pinf^4, P1)
+riemannroch(f, Pinf, I)
+riemannroch(f, Pinf^2, I)
+riemannroch(f, Pinf^3, I)
 \end{sageblock}
 
 \vfill\eject
@@ -2270,6 +2285,17 @@ div : [[[%i,  sqrt(2)], -1],
        [[inf, inf], -2]]$
 basis : riemannroch(f, x, y, div);
 \end{maximablock}
+
+\begin{sageblock}
+R.<x,y,z> = QQbar[];
+f = y^2 - x^8 - 1;
+f = f.homogenize(z);
+def P(i,j):
+    return ideal(x-i*QQbar(sqrt(-1))*z, y-j*QQbar(sqrt(2))*z)
+inf = ideal(z, x);
+I = ideal(R(1));
+#riemannroch(f, P(1,1)*P(1,-1)*P(-1,1)*P(-1,-1)*inf^2, I)
+\end{sageblock}
 
 We now compute its principal parts matrix:
 
