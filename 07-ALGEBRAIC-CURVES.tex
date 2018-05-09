@@ -1842,10 +1842,10 @@ def riemannrochKash(f, ZeroIdeal, PoleIdeal):
     K = ff.FunctionField()
     ybar = K.1
     O = K.MaximalOrderFinite()
-    I = O.Ideal(x,ybar)
-    P1 = I.Place()
-    D= P1.Divisor()
-    B = (4*D).Basis()
+    I = O.Ideal(*[g.subs({xx:x, yy:ybar}) for g in ZeroIdeal.gens()])
+    D = I.Divisor()
+    B = D.Basis()
+
 
     return B.sage({x: xx, ybar: yy})
 \end{sageblock}
@@ -2185,6 +2185,9 @@ f = y^2 - x^3 + x;
 P1 = ideal(x,y);
 I = ideal(R(1));
 
+riemannrochKash(f, P1, I)
+riemannrochKash(f, P1^2, I)
+riemannrochKash(f, P1^3, I)
 riemannrochKash(f, P1^4, I)
 \end{sageblock}
 
