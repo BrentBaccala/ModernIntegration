@@ -184,3 +184,17 @@ Sage multivariate polynomial discriminant:
 
 rings/polynomial/multi_polynomial_libsingular.pyx:    def discriminant(self,variable):
         Returns the discriminant of self with respect to the given variable.
+
+
+
+RIEMANN-ROCH BASIS
+
+Singular: three methods
+  brnoeth.lib (D.10.1) - ground field must be finite
+  brillnoether.lib (D.15.2) - ground field must be Q
+  hess.lib (D.15.19) - ground field must be Q
+
+Macaulay 2
+  completeLinearSystemOnNodalPlaneCurve
+
+KASH

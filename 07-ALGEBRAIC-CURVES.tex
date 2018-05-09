@@ -1796,7 +1796,7 @@ Numerous algorithms have been developed for computing bases of
 Riemann-Roch spaces.  Sage uses Singular's implementation of
 the Brill-Noether algorithm.
 
-\begin{sageblock}
+\begin{sageblock}[riemannroch]
 singular.lib('hess.lib');
 
 def riemannroch(f, ZeroIdeal, PoleIdeal):
@@ -1827,10 +1827,10 @@ def riemannroch(f, ZeroIdeal, PoleIdeal):
    return [simplify(i.subs({z:1})) for i in B]
 \end{sageblock}
 
-\begin{sageblock}
+\begin{sageblocksmall}[riemannroch]
 def riemannrochKash(f, ZeroIdeal, PoleIdeal):
 
-    xx, yy = f.parent().gens()
+    xx, yy, zz = f.parent().gens()
 
     Q = kash.RationalField()
     kT = Q.RationalFunctionField()
@@ -1838,17 +1838,42 @@ def riemannrochKash(f, ZeroIdeal, PoleIdeal):
     x = kT.1
     y = kTy.1
     x
-    ff = f.subs({xx: x, yy: y})
+    ff = f.subs({xx: x, yy: y, zz: 1})
     K = ff.FunctionField()
     ybar = K.1
-    O = K.MaximalOrderFinite()
-    I = O.Ideal(*[g.subs({xx:x, yy:ybar}) for g in ZeroIdeal.gens()])
-    D = I.Divisor()
-    B = D.Basis()
 
+    O = K.MaximalOrderFinite()
+    Oi = K.MaximalOrderInfinite()
+
+    # We passed in homogenous ideals in projective space, but Kash
+    # works in affine space and requires the finite and infinite parts
+    # of the divisor to be handled separately.  Split the ideals
+    # into finite and infinite components.
+
+    FiniteZeroIdeal = Ideal(f.parent()(1))
+
+    def ideal2divisor(Ideal):
+       D = O.Ideal(1).Divisor()
+       for q,p in Ideal.complete_primary_decomposition():
+          if zz in p.gens():
+             # infinite component - only works for unit case
+             # D = D + Oi.Ideal([g.subs({xx:x, yy:ybar, zz: 1})/x**(g.degree()) for g in q.gens()]).Divisor()
+             # D = D + Integer(q.0.degree()) * Oi.Ideal([g.subs({xx:x, yy:ybar, zz: 1})/x for g in p.gens()]).Divisor()
+
+             # infinite component - use a generator of the maximal infinite ideal
+             # to create a divisor for all points at infinity
+             # XXX doesn't work for multiple points at infinity
+             D = D + Integer(q.0.degree()) * Oi.Ideal(Oi.Basis()[2]).Divisor()
+          else:
+             # finite component
+             # FiniteZeroIdeal = FiniteZeroIdeal.intersection(q)
+             D = D + O.Ideal(*[g.subs({xx:x, yy:ybar, zz:1}) for g in q.gens()]).Divisor()
+       return D
+
+    B = (ideal2divisor(ZeroIdeal) - ideal2divisor(PoleIdeal)).Basis()
 
     return B.sage({x: xx, ybar: yy})
-\end{sageblock}
+\end{sageblocksmall}
 
 
 \begin{comment}
@@ -2178,17 +2203,17 @@ riemannroch(f, x, y, div);
 
 \end{maximacode}
 
-\begin{sageblock}
-R.<x,y> = QQ[];
+\begin{sageblock}[riemannroch]
+R.<x,y,z> = QQ[];
 f = y^2 - x^3 + x;
 
 P1 = ideal(x,y);
 I = ideal(R(1));
 
-riemannrochKash(f, P1, I)
-riemannrochKash(f, P1^2, I)
-riemannrochKash(f, P1^3, I)
-riemannrochKash(f, P1^4, I)
+riemannrochKash(f.homogenize(z), P1, I)
+riemannrochKash(f.homogenize(z), P1^2, I)
+riemannrochKash(f.homogenize(z), P1^3, I)
+riemannrochKash(f.homogenize(z), P1^4, I)
 \end{sageblock}
 
 Here are the examples from \cite{alvanos} \S6.3:
@@ -2209,7 +2234,7 @@ riemannroch(f, x, y, [[Pinf, -2]]);
 riemannroch(f, x, y, [[Pinf, -3]]);
 \end{maximacode}
 
-\begin{sageblock}
+\begin{sageblock}[riemannroch]
 R.<x,y,z> = QQ[];
 f = y^2 - x^3 - 1;
 f = f.homogenize(z);
@@ -2220,12 +2245,19 @@ P2 = ideal(x-2*z, y+3*z);
 Pinf = ideal(x,z);
 
 riemannroch(f, Pinf, P1)
+riemannrochKash(f, Pinf, P1)
 riemannroch(f, Pinf^2, P1)
+riemannrochKash(f, Pinf^2, P1)
 riemannroch(f, Pinf^3, P1)
+riemannrochKash(f, Pinf^3, P1)
 riemannroch(f, Pinf^4, P1)
+riemannrochKash(f, Pinf^4, P1)
 riemannroch(f, Pinf, I)
+riemannrochKash(f, Pinf, I)
 riemannroch(f, Pinf^2, I)
+riemannrochKash(f, Pinf^2, I)
 riemannroch(f, Pinf^3, I)
+riemannrochKash(f, Pinf^3, I)
 \end{sageblock}
 
 \vfill\eject
@@ -2313,7 +2345,7 @@ div : [[[%i,  sqrt(2)], -1],
 basis : riemannroch(f, x, y, div);
 \end{maximablock}
 
-\begin{sageblock}
+\begin{sageblock}[riemannroch]
 R.<x,y,z> = QQbar[];
 f = y^2 - x^8 - 1;
 f = f.homogenize(z);
