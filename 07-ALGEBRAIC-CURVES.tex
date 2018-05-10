@@ -1827,18 +1827,68 @@ def riemannroch(f, ZeroIdeal, PoleIdeal):
    return [simplify(i.subs({z:1})) for i in B]
 \end{sageblock}
 
-\begin{sageblocksmall}[riemannroch]
+\begin{sageblocktiny}[riemannroch]
+from sage.rings.number_field.number_field_base import is_NumberField
+
 def riemannrochKash(f, ZeroIdeal, PoleIdeal):
 
-    xx, yy, zz = f.parent().gens()
+    if f.base_ring() is QQbar:
+      orig_elems = flatten([g.coefficients() for I in [ZeroIdeal, PoleIdeal] for g in I.gens()])
+      orig_elems = orig_elems + f.coefficients()
+      nfe = number_field_elements_from_algebraics(orig_elems)
+      numfield = nfe[0]
+      new_elems = nfe[1]
 
-    Q = kash.RationalField()
-    kT = Q.RationalFunctionField()
+      elem_dict = dict(zip(orig_elems, new_elems))
+      def elem_map(e): return elem_dict[e]
+
+      def ideal_map(Ideal):
+         return ideal([g.map_coefficients(elem_map, new_base_ring=numfield) for g in Ideal.gens()])
+
+      f = f.map_coefficients(elem_map, new_base_ring=numfield)
+      ZeroIdeal = ideal_map(ZeroIdeal)
+      PoleIdeal = ideal_map(PoleIdeal)
+
+    P = f.parent()
+    xx, yy, zz = P.gens()
+
+    if P.base_ring() is QQ:
+       Q = kash.RationalField()
+       kT = Q.RationalFunctionField()
+       aa = None
+       a = None
+    elif is_NumberField(P.base_ring()):
+       aa = P.base_ring().0
+       kZa = kash.IntegerRing().PolynomialAlgebra()
+       ka = kZa.Element(list(P.base_ring().defining_polynomial()))
+       kka = ka.NumberField()
+       a = kka.1
+       kT = kka.RationalFunctionField()
+    else:
+       raise NotImplementedError("base field must be QQ, QQbar, or a NumberField")
+
     kTy = kT.PolynomialAlgebra()
     x = kT.1
     y = kTy.1
     x
-    ff = f.subs({xx: x, yy: y, zz: 1})
+
+    # Convert a polynomial in P, which is a trivariate ring over a number field, to kash
+    # First, we build a new ring with an extra, fourth variable that will take the place of the NumberField generator
+    # Then, convert poly's coefficient ring to the new ring (now we're in a trivariate ring over the quadvariate ring)
+    # Then, convert the three main variables to the quadvariate ring (now we're in the quadvariate ring)
+    # Then, substitute in the four kash variables
+
+    def poly2kash(poly, newy):
+       if P.base_ring() is QQ:
+          return poly.subs({xx: x, yy: newy, zz: 1})
+       else:
+          aa = P.base_ring().0
+          R2 = QQ[P.gens() + ('a',)]
+          bb = poly.map_coefficients(lambda v: v.polynomial().subs({v.polynomial().parent().0 : R2.3}), new_base_ring = R2)
+          bb = bb.subs({bb.parent().0 : R2.0, bb.parent().1 : R2.1, bb.parent().2 : R2.2})
+          return bb.subs({R2.0 : x, R2.1 : newy, R2.2 : 1, R2.3 : a})
+
+    ff = poly2kash(f, y)
     K = ff.FunctionField()
     ybar = K.1
 
@@ -1867,13 +1917,13 @@ def riemannrochKash(f, ZeroIdeal, PoleIdeal):
           else:
              # finite component
              # FiniteZeroIdeal = FiniteZeroIdeal.intersection(q)
-             D = D + O.Ideal(*[g.subs({xx:x, yy:ybar, zz:1}) for g in q.gens()]).Divisor()
+             D = D + O.Ideal(*[poly2kash(g, ybar) for g in q.gens()]).Divisor()
        return D
 
     B = (ideal2divisor(ZeroIdeal) - ideal2divisor(PoleIdeal)).Basis()
 
-    return B.sage({x: xx, ybar: yy})
-\end{sageblocksmall}
+    return B.sage({x: xx, ybar: yy, a: aa})
+\end{sageblocktiny}
 
 
 \begin{comment}
@@ -2346,6 +2396,7 @@ basis : riemannroch(f, x, y, div);
 \end{maximablock}
 
 \begin{sageblock}[riemannroch]
+from functools import reduce
 R.<x,y,z> = QQbar[];
 f = y^2 - x^8 - 1;
 f = f.homogenize(z);
@@ -2353,6 +2404,12 @@ def P(i,j):
     return ideal(x-i*QQbar(sqrt(-1))*z, y-j*QQbar(sqrt(2))*z)
 inf = ideal(z, x);
 I = ideal(R(1));
+
+#Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1), inf^2]
+#Z = reduce(lambda i,j: i.intersection(j), Zlist)
+#riemannrochKash(f, Z, I)
+
+riemannrochKash(f, P(1,1)*P(1,-1)*P(-1,1)*P(-1,-1)*inf^2, I)
 #riemannroch(f, P(1,1)*P(1,-1)*P(-1,1)*P(-1,-1)*inf^2, I)
 \end{sageblock}
 
