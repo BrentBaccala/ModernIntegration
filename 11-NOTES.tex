@@ -1,6 +1,49 @@
 
 \mychapter{Notes}
 
+For a while I was thinking that the product of {\it prime} ideals is
+equal to their {\it intersection}.  This is true in principal ideal
+domains, but not in general.
+
+For example, consider $I=(x,z)$ and $J=(x+z)$ in $K[x,z]$.
+Now, $x+z \in I \cap J$, but $x+z \notin I \cdot J$.
+
+Sage was useful in puzzling this out:
+
+\begin{sageblock}[notes]
+R.<x,z> = QQ[];
+
+I = Ideal(x,z);
+J = Ideal(x+z);
+
+I.is_prime()
+J.is_prime()
+
+I.intersection(J) == I*J
+\end{sageblock}
+
+Looking at the primary decomposition, we see that the product is
+smaller than the intersection, because there's an extra ideal that
+needs to be intersected (the original ideal is the intersection of the
+ideals in its primary decomposition).  Sage's comparison operator
+for ideals also shows us that the product is contained in the
+intersection.
+
+\begin{sageblock}[notes]
+I.intersection(J).primary_decomposition()
+(I*J).primary_decomposition()
+
+I.intersection(J) > I*J
+\end{sageblock}
+
+So now it's a question of finding something in the intersection that
+isn't in the product.  The ideal quotient isn't useful for this,
+probably because of its Zariski closure property.
+
+\begin{sageblock}[notes]
+I.intersection(J).quotient(I*J)
+\end{sageblock}
+
 \vfill\eject
 
 \begin{maximablock}

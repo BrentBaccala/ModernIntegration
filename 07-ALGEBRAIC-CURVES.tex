@@ -2396,7 +2396,8 @@ basis : riemannroch(f, x, y, div);
 \end{maximablock}
 
 \begin{sageblock}[riemannroch]
-from functools import reduce
+QQbar.options.display_format = 'radical';
+
 R.<x,y,z> = QQbar[];
 f = y^2 - x^8 - 1;
 f = f.homogenize(z);
@@ -2405,12 +2406,19 @@ def P(i,j):
 inf = ideal(z, x);
 I = ideal(R(1));
 
-#Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1), inf^2]
-#Z = reduce(lambda i,j: i.intersection(j), Zlist)
-#riemannrochKash(f, Z, I)
+Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1), inf^2];
 
-riemannrochKash(f, P(1,1)*P(1,-1)*P(-1,1)*P(-1,-1)*inf^2, I)
-#riemannroch(f, P(1,1)*P(1,-1)*P(-1,1)*P(-1,-1)*inf^2, I)
+# Conceptionally, what we want is the intersection of the ideals:
+#    reduce(lambda i,j: i.intersection(j), Zlist)
+# However, Sage 8.3 can't compute intersections over QQbar
+# Fortunately, all of these ideals are prime (not to mention
+#   maximal), so intersecting is the same as producting
+# Unfortunately, that's only true in PIDs
+
+riemannrochKash(f, prod(Zlist), I)
+
+Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1)];
+riemannrochKash(f, prod(Zlist), I)
 \end{sageblock}
 
 We now compute its principal parts matrix:
