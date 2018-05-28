@@ -1575,7 +1575,8 @@ eq: D(A1) + D(psi)/psi*A1 - a1;
 
 \begin{sageblock}
 a1 = lintegrand/psi
-A1 = function('A1', nargs=1)(x)
+A1f = function('A1', nargs=1);
+A1 = A1f(x)
 eq = diff(A1,x) + D(psi)/psi * A1 - a1
 \end{sageblock}
 
@@ -1683,9 +1684,40 @@ user declare how variables differentiate.}, so I expanded
 it out by hand:
 
 \begin{sageblock}
-A1m1 = function('A1m1', latex_name='A_{1,-1}', nargs=1)(x);
+A1m1f = function('A1m1', latex_name='A_{1,-1}', nargs=1);
+A1m1 = A1m1f(x);
 eq2 = eq.subs({A1 : A1m1/theta,
    diff(A1,x) : (diff(A1m1,x)*theta - A1m1*D(theta))/theta^2})
+eq2.numerator()
+\end{sageblock}
+
+This can also be done with more sophisticated tools.  We create a
+differential ring involving $A_1$, $A_{1,-1}$ and $\theta$, with $x$
+as its sole derivation.  An elimination ordering is used (the
+default), with $A_1$ appearing earlier in the list than $A_{1,-1}$,
+thus eliminating $A_1$ in favor of $A_{1,-1}$.  Then we construct a
+differential ideal showing how $\theta$ differentiates and how $A_1$
+is related to $A_{1,-1}$.  Finally, we reduce our equation modulo the
+single differential chain in the differential ideal, producing a
+normal form with the desired result.\footnote{This is also somewhat
+painful with Sage, requiring us to convert $\theta$ into a
+``function'' so that we can take its derivative.}
+
+\begin{sageblock}
+function('thetaf', latex_name='\\theta', nargs=1);
+eq2a = eq.subs({theta: thetaf(x)});
+
+from sage.calculus.DifferentialAlgebra import DifferentialRing
+DR = DifferentialRing(derivations = [x],
+                      blocks = [A1f,A1m1f,thetaf])
+
+rels = [diff(thetaf(x),x) == thetaf(x),
+        A1 == A1m1/thetaf(x)]
+ideal = DR.RosenfeldGroebner(rels)
+
+ideal[0].normal_form(eq2a)
+ideal[0].normal_form(eq2a).simplify()
+eq2b = ideal[0].normal_form(eq2a).numerator()
 \end{sageblock}
 
 % Returning to equation \eqref{eq: exponential An}, I'll collect all the
@@ -1711,6 +1743,7 @@ lc(expand(%), theta);
 
 \begin{sageblock}
 eq2.numerator().coefficient(theta, 2)
+eq2b.coefficient(thetaf(x)^2)
 \end{sageblock}
 
 This Risch equation has an obvious solution.  Now we're solving
