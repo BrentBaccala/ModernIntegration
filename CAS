@@ -191,10 +191,15 @@ RIEMANN-ROCH BASIS
 
 Singular: three methods
   brnoeth.lib (D.10.1) - ground field must be finite
+     call NSplaces to get a list of non-singular places
+     pass in a intvec to specify the order of the divisor at each place
   brillnoether.lib (D.15.2) - ground field must be Q
   hess.lib (D.15.19) - ground field must be Q
+     pass in two fractional ideals - one for finite places, one for infinite places
 
 Macaulay 2
   completeLinearSystemOnNodalPlaneCurve
+     I guess this only works on a nodal curve?
+     input specified as a pair of ideals of coordinate ring (Weil divisor)
 
 KASH
