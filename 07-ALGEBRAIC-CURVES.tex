@@ -1895,30 +1895,43 @@ def riemannrochKash(f, ZeroIdeal, PoleIdeal):
     O = K.MaximalOrderFinite()
     Oi = K.MaximalOrderInfinite()
 
-    # We passed in homogenous ideals in projective space, but Kash
-    # works in affine space and requires the finite and infinite parts
-    # of the divisor to be handled separately.  Split the ideals
-    # into finite and infinite components.
+    # We passed in homogeneous ideals of the projective coordinate
+    # ring, but Kash works in affine space, wants ideals of maximal
+    # orders, requires the finite and infinite parts of the divisor to
+    # be handled separately.  Also, ideals of the coordinate ring
+    # specify Weil divisors, which don't map surjectively to Cartier
+    # divisors (specified by ideals of maximal orders) at
+    # singularities.
 
-    FiniteZeroIdeal = Ideal(f.parent()(1))
+    # This is only working well enough for the examples in this
+    # section.  We assume that there are no singularities at finite
+    # points, so finite components can be converted directly into
+    # ideals of the maximal finite order.  We also assume that there's
+    # a single point at infinity, and if it appears in the coordinate
+    # ring ideal, then it applies equally to all places at infinity.
+    # Not really what we want, but consistent with how I wrote the
+    # Maxima code (if a point is singular, assign the same degree to
+    # all places over it).
 
     def ideal2divisor(Ideal):
        D = O.Ideal(1).Divisor()
        for q,p in Ideal.complete_primary_decomposition():
           if zz in p.gens():
-             # infinite component - only works for unit case
-             # D = D + Oi.Ideal([g.subs({xx:x, yy:ybar, zz: 1})/x**(g.degree()) for g in q.gens()]).Divisor()
-             # D = D + Integer(q.0.degree()) * Oi.Ideal([g.subs({xx:x, yy:ybar, zz: 1})/x for g in p.gens()]).Divisor()
-
-             # infinite component - use a generator of the maximal infinite ideal
-             # to create a divisor for all points at infinity
-             # XXX doesn't work for multiple points at infinity
-             D = D + Integer(q.0.degree()) * Oi.Ideal(Oi.Basis()[2]).Divisor()
+             # infinite component
+             infinite_prime_ideals = Oi.Decomposition()
+             for i in range(1, infinite_prime_ideals.Length()+1):
+                D = D + Integer(q.0.degree()) * infinite_prime_ideals[i].Divisor()
           else:
              # finite component
-             # FiniteZeroIdeal = FiniteZeroIdeal.intersection(q)
              D = D + O.Ideal(*[poly2kash(g, ybar) for g in q.gens()]).Divisor()
        return D
+
+    # The system sum() doesn't work on Kash divisors.  It produces:
+    # TypeError: unsupported operand type(s) for +: 'int' and 'KashElement'
+    # (we don't actually use this function, though)
+
+    # def mysum(List):
+    #    return reduce(lambda i,j: i+j, List)
 
     B = (ideal2divisor(ZeroIdeal) - ideal2divisor(PoleIdeal)).Basis()
 
@@ -2393,6 +2406,17 @@ div : [[[%i,  sqrt(2)], -1],
        [[-%i, -sqrt(2)], -1],
        [[inf, inf], -2]]$
 basis : riemannroch(f, x, y, div);
+div2: [[[%i,  sqrt(2)], -1],
+       [[-%i,  sqrt(2)], -1],
+       [[%i, -sqrt(2)], -1],
+       [[-%i, -sqrt(2)], -1],
+       [[inf, inf], -1]]$
+basis : riemannroch(f, x, y, div2);
+div3: [[[%i,  sqrt(2)], -1],
+       [[-%i,  sqrt(2)], -1],
+       [[%i, -sqrt(2)], -1],
+       [[-%i, -sqrt(2)], -1]]$
+basis : riemannroch(f, x, y, div3);
 \end{maximablock}
 
 \begin{sageblock}[riemannroch]
@@ -2408,17 +2432,18 @@ I = ideal(R(1));
 
 Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1), inf^2];
 
-# Conceptionally, what we want is the intersection of the ideals:
-#    reduce(lambda i,j: i.intersection(j), Zlist)
-# However, Sage 8.3 can't compute intersections over QQbar
-# Fortunately, all of these ideals are prime (not to mention
-#   maximal), so intersecting is the same as producting
-# Unfortunately, that's only true in PIDs
+# Right now, only my patched Sage can compute intersections over QQbar
 
-riemannrochKash(f, prod(Zlist), I)
+def intersection(List):
+   return reduce(lambda i,j: i.intersection(j), List)
+
+riemannrochKash(f, intersection(Zlist), I)
+
+Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1), inf];
+riemannrochKash(f, intersection(Zlist), I)
 
 Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1)];
-riemannrochKash(f, prod(Zlist), I)
+riemannrochKash(f, intersection(Zlist), I)
 \end{sageblock}
 
 We now compute its principal parts matrix:
