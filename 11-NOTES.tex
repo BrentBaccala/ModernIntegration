@@ -110,7 +110,7 @@ Abel's theorem -- p. 29
 
 Classical Jacobian discussed on pp. 28-31
 
-``As we’ve defined it, the Jacobian is only a complex torus so far. Note that a
+``As we've defined it, the Jacobian is only a complex torus so far. Note that a
 general complex torus is not embeddable in projective space. However, it turns
 out that the Jacobian has enough meromorphic functions to embed in projective
 space, so it is a projective variety.''
@@ -368,3 +368,39 @@ open set, construct J locally.
 
 \end{verbatim}
 }
+
+\vfill\eject
+\mysection{Function Fields (Stichtenoth)}
+
+Stichtenoth, ``Algebraic Function Fields and Codes''.
+
+Let $K$ be a field.
+
+A valuation ring of a function field $F/K$ is a ring $O \in F$ such that
+   $K \in O \in F$ (both proper inclusions)
+   for every $z \in F$, either $z \in O$ or $z^{-1} \in O$
+
+For the rational function field $K(x)$, there's a valuation ring for each
+irreducible polynomial
+
+A place of a function field $F/K$ is the unique maximal ideal of a valuation ring $O$ of $F/K$.
+
+Every element of $t \in P$ such that $P = t O$ is called a prime element, or
+local paramter, or uniformizing variable of $P$).
+
+$P$ determines $O$ uniquely.  $O_P$ is called the valuation ring of the place $P$
+
+Definition 1.4.1 - a divisor is a formal sum over the places of $F/K$
+
+\vfill\eject
+\mysection{The Riemann-Roch Theorem}
+
+Various proofs of the Riemann-Roch Theorem:
+
+Fulton (Chapter 8) - uses nonsingular model of curve
+
+Milne (Theorem 14.6) - assumes curve is nonsingular
+
+Stichtenoth - constructs divisor using places (Cartier divisor)
+
+Vakil (Eq 18.4.2.1) - unclear to me if he assumes regularity
