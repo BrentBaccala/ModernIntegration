@@ -90,6 +90,8 @@ Chapter 9 proofs the Risch Theorem (currently only a sketch).
 
 Chapter 10, covering algebraic extensions in general, is also only a sketch.
 
+Chapter 11 is a loose collection of notes that won't be a chapter in the final edit
+
 ## Building from source
 
 After cloning this repository (use --recursive to get its submodule), you'll need the following packages (on Ubuntu):
@@ -101,5 +103,23 @@ After cloning this repository (use --recursive to get its submodule), you'll nee
     texlive-latex-base
     texlive-latex-extra
     texlive-publishers
+
+I use a patched version of Sage.  Though most of the patches are
+moving their way through the Sage development pipeline, the textbook
+can't currently build with a stock Sage.  Clone my [Sage repository](https://github.com/BrentBaccala/sage)
+on github and build with the optional packages `kash`, `blad`, and `bmi`, something like this:
+
+    git clone https://github.com/BrentBaccala/sage.git
+    cd sage
+    make build
+    SAGE_ROOT=$(pwd) ./local/bin/sage -i kash
+    SAGE_ROOT=$(pwd) ./local/bin/sage -i blad
+    SAGE_ROOT=$(pwd) ./local/bin/sage -i bmi
+    make build
+
+Then adjust `SAGEROOT` in the textbook's Makefile to point to your Sage installation,
+and build the textbook with `make`.
+
+## The current draft
 
 The current draft PDF is available [here](http://www.freesoft.org/ModernIntegration/ModernIntegration.pdf)
