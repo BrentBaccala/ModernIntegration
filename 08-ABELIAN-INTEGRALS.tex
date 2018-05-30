@@ -677,16 +677,16 @@ poles : map(mysimp, poles);
 \end{maximablock}
 
 Now we can see that all of our residues are $\pm\frac{5}{2}$, so we need only
-a single logarithmic term.  Let's compute its residue:
+a single logarithmic term.  It must have two poles and two zeros, at the
+coordinates we just calculated, and the obvious choice is for each of
+these poles and zero to have degree one.  Let's use our Riemann-Roch
+basis space algorithm to see if such a function exists:
 
-\begin{maximablock}
+\begin{maximacode}
 
 /* div : map(lambda([x], [[x[1], x[2]], signum(x[3])]), poles); */
 div(p) := map(lambda([x], [[x[1], x[2]], p*signum(x[3])]), poles)$
-\end{maximablock}
-
-This calculation is computationally infesible for the present
-Riemann-Roch basis space implementation.
+\end{maximacode}
 
 \begin{comment}
 \begin{maximablock}
@@ -702,6 +702,72 @@ div(5);
 riemannroch(f,x,y,div(5));
 \end{maximablock}
 \end{comment}
+
+\begin{sageblock}[riemannroch]
+QQbar.options.display_format = 'radical';
+
+R.<x,y,z> = QQbar[];
+f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1)
+f = f.homogenize(z);
+def P(j,k):
+    return ideal(x-j*1/QQbar(sqrt(2))*z,
+                 y-k*(QQbar(sqrt(2)) + j*1/2))
+#                 y-k*sqrt(9+j*QQbar(sqrt(2))^5)/2)
+
+Zlist = [P(1,1), P(-1,-1)];
+Plist = [P(1,-1), P(-1,1)];
+
+riemannrochKash(f, intersection(Zlist),
+                   intersection(Plist))
+\end{sageblock}
+
+No such function exists.  However, a function may exist with
+higher degree poles and zero.  Let's see... how about a
+function with second degree poles and zeros?  Third degree?
+
+\begin{sageblock}[riemannroch]
+riemannrochKash(f, intersection(Zlist),
+                   intersection(Plist), 2)
+riemannrochKash(f, intersection(Zlist),
+                   intersection(Plist), 3)
+riemannrochKash(f, intersection(Zlist),
+                   intersection(Plist), 4)
+res = riemannrochKash(f, intersection(Zlist),
+                   intersection(Plist), 5)
+\end{sageblock}
+
+Turns out that fifth degree poles and zeros give us our
+solution.  Leaving aside for a moment the question of
+finding this degree in some other way than multiplying
+the degree of the divisor by every larger integers
+(and how would we ever know when to stop?), let's
+continue with the problem by coaxing our result
+into a more reasonable form:
+
+\begin{sageblock}[riemannroch]
+#res[0].numerator()
+#res[0].denominator()
+
+# Why doesn't this work?  Bug in Sage?
+# R.<x,y> = QQbar[];
+# R(res[0].numerator())
+
+R.<x> = ZZ[]
+F = Frac(R)
+R2.<y> = F[]
+f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1)
+Q = R2.quo(ideal(f))
+
+# this doesn't work
+# Q(res[0])
+
+# do this instead
+n = Q(res[0].numerator());
+d = Q(res[0].denominator());
+
+n/d
+
+\end{sageblock}
 
 %% This attempt with Sage and Macaulay 2 came to naught because
 %% Macaulay 2 can't do fraction fields of polynomial rings over
@@ -740,8 +806,9 @@ macaulay2('MI = ideal(x-z*1/sqrt2, y+z*gamma/2)')
 \end{sageblock}
 \end{comment}
 
-\vfill\eject
-\bigskip
+%%\vfill\eject
+%%\bigskip
+
 \begin{center}
 Non-zero residues
 
