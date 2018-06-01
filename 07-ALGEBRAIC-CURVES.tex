@@ -2460,3 +2460,107 @@ pi : pseudoinverse(m);
 Introduce a sample vector {\tt b} and show how to proceed.
 
 \endexample
+
+\mysection{Parallels with the Transcendental Cases}
+
+At this point, it may seem that we've spent this entire chapter
+developing a suite of technical tools that appear completely different
+from everything that came before them.  Why should the algebraic case
+be so much different from the transcendental cases?  What would happen
+if we used here the same kind of techniques from earlier in the book?
+
+First, the key difference in the algebraic case is the lack of unique
+factorization.  Algebraic extensions are not, in general, unique
+factorization domains, a classic example being the factorization of
+$6$ into either $3\cdot 2$ or $(1+\sqrt{-5})\cdot(1-\sqrt{-5})$ in the
+ring $\ZZ[\sqrt{-5}]$.  You can show that all four numbers $3$, $2$,
+$(1+\sqrt{-5})$ and $(1-\sqrt{-5})$ are all prime in $\ZZ[\sqrt{-5}]$,
+so we have two distinct factorizations in this ring.
+
+{\bf Show an example in a function field.}
+
+The main problem with our earlier tools is the difficulty in defining
+factorization.  How, for example, do you construct a partial fractions
+expansion?  A review of Theorems \ref{logarithmic integration theorem}
+and \label{exponential integration theorem} reveals that both depend
+not merely on the construction of a partial fractions expansions, but
+also on its {\it uniqueness}.  Without unique factorization, how can
+you possibly have a unique partial fractions expansion?
+
+The primary goal of this chapter is to develop techniques to carry
+out the same kinds of operations we did earlier, but without relying
+on unique factorization.
+
+For example, a principle parts expansion of a function on an algebraic
+curve is exactly analogous to a partial fractions expansion of a
+rational function.
+
+{\bf Demonstrate}
+
+Although we began our development using infinite series expansions, we
+ultimately concluded that we can completely specify a function (up to
+an additive constant), using only a finite number of constants -- the
+principle parts coefficients, which turn out to align precisely with
+the coefficients in a partial fractions expansion.
+
+Reassembling a partial fractions expansion into a rational function is
+easy -- you just promote all the fractions to a common denominator,
+add up the terms, and cancel any common factors that remain between
+the numerator and the denominator.  Solving a Mittag-Lefler problem is
+considerably more difficult, but is in principle the same operation --
+given the principle parts coefficients (resp. the partial fractions
+expansion), construct a single rational function that matches.  The
+major caveat here is that, unlike reassembling a partial fractions
+expansion, there might be not solution.  Not every principle parts
+expansion has a matching algebraic function.
+
+Likewise, finding an algebraic function's divisor is exactly analogous
+to factoring the numerator and denominator of a rational function.
+You get a finite set of poles and zeros with their locations and
+multiplicities.  Again, in the algebraic case, it's more complicated --
+you might have singularities with multiple places lying over a single
+point; the ``coordinate'' is more complicated that a simple $(x,y)$
+coordinate pair, but the principle is the same.
+
+And finding a function with a specified set of poles and zeros is the
+same as taking a rational function in factored form and multiplying
+the factors together again.  Again, there's a caveat -- in the
+algebraic curve case there might be no solution.
+
+So, if the tools we've developed in this chapter parallel neatly with
+the tools we used in Chapter 4 to solve integrals of rational
+functions, can we generalize these tools to handle more complicated
+transcendental fields, like we did in Chapters 5 and 6?  And do we
+have anything like the Hermite reduction procedure we developed at the
+end of Chapter 4?
+
+The answers to both of these questions is 'yes'.  For the purpose of a
+clear exposition, I've developed this theory so far in its simplest
+form, and if you're seeing it for the first time, I suspect that you
+already appreciate not having met it in its full generality!  We can
+drop the assumption of an algebraically closed coefficient field and
+lose very little except simplicity; this will be the subject of
+Chapter 10.  Barry Trager showed in \cite{trager} how the Hermite
+reduction can be performed in an algebraic extension; it's now called
+{\it Hermite-Trager reduction} and I'll present it at the end of
+Chapter 8.
+
+However, continuing with the intent of presenting the theory in its
+simplest form first, we'll begin the next chapter by looking at how to
+use these tools to integrate Abelian integrals, much like we first met
+partial fractions expansion when learning to integrate in first year
+calculus, and only later generalized it into a form suitable for
+integrating in arbitrary transcendental extensions.  We'll find that
+completely solving integrals in even this simplest of algebraic
+extensions will require a significant excursion into modern algebraic
+geometry, so much so that the entirety of Chapter 9 will be devoted to
+proving the book's most exotic theorem.
+
+If there's a lesson to be learned from Chapter 7, though, it's this:
+
+\begin{key point}
+Divisors, principle parts expansions, Riemann-Roch spaces, and Mittag
+Leffler problems are how we do factorization, partial fractions
+expansions, and their inverse operations in algebraic extensions where
+we've lost unique factorization.
+\end{key point}
