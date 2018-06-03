@@ -16,12 +16,85 @@ in a transcendental (exponential or logarithmic) extension followed by
 an algebraic extension.  I'll use the notation ${\rm K}(\theta, y)$ to
 emphasize when this is the case.
 
+\mysection{Risch Equations over Simple Algebraic Extensions}
+
+As a bit of a warm-up exercise, let's revisit a linguring topic from
+Chapter 6: solving Risch equations.  We haven't yet developed the
+tools to handle this problem in general algebraic extensions, but we
+can use the tools of Chapter 7 to solve Risch equations in a simple
+algebraic extension of $\CC(x)$.  This will allow us to solve integrals
+involving exponentials of polynomial roots.  While such integrals
+aren't terribly common, this exercise will reinforce the principles
+of working over algebraic extensions.
+
+Recall that a Risch equation has the form
+
+\begin{equation}
+r' + S r = T \qquad S,T,r \in K
+\end{equation}
+
+$K$ is a differential field, that in our case will be an algebraic
+extension of $\CC(x)$:
+
+\begin{equation}
+\label{eq: simple algebraic Risch}
+r' + S r = T \qquad S,T,r \in \CC(x) \mod p(x)
+\end{equation}
+
+Our approach in Chapter 6 was to identify the poles in $S$ and $T$
+and then use this information to restrict $r$ enough to solve it.
+
+This same approach works with algebraic extensions; we just need to
+work with places and principal parts expansions instead of denominator
+factors and partial fractions expansions.
+
+We know that differentiating an algebraic function (w.r.t what?)
+causes its finite poles to increase in order.  Therefore, we can't
+have any finite poles at places where there aren't poles in at least
+one of $S$ or $T$.  So, we find the poles of $S$ and $T$ and construct
+principle parts expansions there.  If the order of $S$'s pole equals
+the ramification index at the place, then the $r'$ and $S r$ terms
+could cancel, so we look at $S$'s residue (is that the right term?)
+to see if it's an integer.  If so, that gives us the strength
+of the pole in $r$.
+
+Otherwise, if the order of $S$'s pole is greater than the ramification
+index, then $S r$ must cancel with $T$, and the difference between the
+order of $T$'s pole and $S$'s pole gives us the order of $r$'s pole.
+On the other hand, if the order of $S$'s pole is less than the
+ramification index, then $r'$ must cancel with $T$, and the difference
+between the order of $T$'s pole and the ramification index gives us
+the order of $r$'s pole.
+
+{\bf Summarize with a chart}
+
+We also need to apply a similar analysis to the places at infinity,
+the difference being that differentiating here can lower the order of
+an $r'$ pole.
+
+Once we've figured out the maximum orders of all of $r$'s poles, it's
+then a straightforward matter to construct a suitable divisor and
+compute a basis for its Riemann-Roch space.  Because of the $S r$
+product, the resulting system of equations is not as simple as a
+matrix equation, but can still be solved using fairly straightfoward
+techniques of polynomial elimination.
+
+\example
+Integrate $\int \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{\sqrt{x^3+1}}\right) + \frac{x}{\sqrt{x^3+1}}\right)e^{x\sqrt{x^3+1}} dx$
+
+From \cite{bronstein algebraic curve}
+\endexample
+
+\cite{bronstein algebraic curve} gives a more sophisticated algorithm for attacking these
+kinds of problems.
+
+
 \mysection{Integral Elements}
 
 \definition
 
-An element $f \in {\rm K}(\theta,y)$ is {\bf integral} if it satisfies a
-monic polynomial with coefficients in ${\rm K}[\theta]$.
+An element $f \in {\rm K}(\theta,y)$ is {\bf integral} if it satisfies
+a monic polynomial with coefficients in ${\rm K}[\theta]$.
 
 \enddefinition
 
