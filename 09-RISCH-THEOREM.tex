@@ -214,40 +214,10 @@ to the elements in $L(\mathfrak{p})$
 
 \endtheorem
 
-Back to the Riemann-Roch Theorem...
-
 It immediately follows (from $\mathfrak{b}={\bf 0}$) that
 $l(\mathfrak{c})=g$, which can be taken as the definition of the
 genus.
 
-We can now pick $g$ independent differentials from $\mathfrak{c}$ and
-use them (along with an arbitrary origin) to map into the torus
-${\bf C}/\Lambda^g$.
-
-Now, Abel's Theorem and the Jacobi inversion theorem ([Griffiths and
-Harris], p. 235) shows that ${\rm Pic}^0$, the group of divisors of
-degree zero modulo linear equivalence is isomorphic to ${\bf
-C}/\Lambda^g$.
-
-Alternately, ([Lang], II, \S1, Theorem 3), we can factor a mapping
-of a product into an abelian variety into mappings on each factor.
-
-Lang also characterizes Abel's theorem as follows:
-
-\begin{quote}
-
-Let $\omega_1, ..., \omega_g$ be a basis for the differential forms
-on the first kind of V.  If $\mathfrak{a} = \sum n_i P_i$ is a
-[divisor] of degree 0 on V, and P is a fixed point of V, then
-the map into ${\bf C}/\Lambda^g$ given by:
-
-$$\mathfrak{a} \to \sum n_i (\int_P^{P_i}\omega_1, ..., \int_P^{P_i}\omega_g)$$
-
-is well defined modulo the periods... the kernel consists of those
-divisors that are linearly equivalent to 0 (i.e, principal); this is
-Abel's theorem.
-
-\end{quote}
 
 
 \section{Jacobian Varieties}
@@ -286,6 +256,79 @@ We will be needing only a tiny bit of this theory here, so my goal in
 this section is only to demonstrate how the Riemann-Roch Theorem
 allows us to set up an abelian group structures on an algebraic
 extension.
+
+The oldest construction of the Jacobian variety uses integrals
+and only works over the complex field $\CC$, and requires us
+to work on a non-singular model of the curve.
+
+We can pick an arbitrary origin and $2g$ closed paths from that
+origin that form a basis for the surface's holonomy group.
+We can also pick $g$ independent holomorphic differentials
+and evaluate them over the $2g$ closed paths to get a lattice
+$\Lambda^g$ in $\CC^g$.  Given any point on the surface,
+we can now evaluate the differentials along a path from
+the origin to that point and thus map into the torus
+$\CC^g/\Lambda^g$.
+
+Not all complex torii are algebraic varieties, but this one is (PROOF
+NEEDED).
+
+Now, Abel's Theorem and the Jacobi inversion theorem ([Griffiths and
+Harris], p. 235) shows that ${\rm Pic}^0$, the group of divisors of
+degree zero modulo linear equivalence is isomorphic to
+$\CC^g/\Lambda^g$.
+
+Alternately, ([Lang], II, \S1, Theorem 3), we can factor a mapping
+of a product into an abelian variety into mappings on each factor.
+
+Lang also characterizes Abel's theorem as follows:
+
+\begin{quote}
+
+Let $\omega_1, ..., \omega_g$ be a basis for the differential forms
+on the first kind of V.  If $\mathfrak{a} = \sum n_i P_i$ is a
+[divisor] of degree 0 on V, and P is a fixed point of V, then
+the map into ${\bf C}/\Lambda^g$ given by:
+
+$$\mathfrak{a} \to \sum n_i (\int_P^{P_i}\omega_1, ..., \int_P^{P_i}\omega_g)$$
+
+is well defined modulo the periods... the kernel consists of those
+divisors that are linearly equivalent to 0 (i.e, principal); this is
+Abel's theorem.
+
+\end{quote}
+
+Pulling this all together, we need to show that the group operation
+is defined by rational functions.
+
+For our purposes, it isn't enough to construct the Jacobian over the
+complex field $\CC$; we also need Jacobians for curves in prime
+characteristic.  So the traditional construction using integrals
+isn't available, we need something different.
+
+Andre Weil, in Courbes Algébriques et Variétés Abéliennes (1948),
+constructs the Jacobian variety over arbitrary fields using the g-fold
+symmetric product of the curve.  See Michel Raynaud, ``André Weil and
+the Foundations of Algebraic Geometry'' for an broad overview of this
+French text.
+
+J.S. Milne's ``Jacobian Varieties'' (jmilne.org/math) also uses the
+symmetric power of the variety.
+
+Greg Anderson, ``Abeliants and their application to an elementary
+construction of Jacobians'' uses equivalence classes of matrices
+constructed using a Riemann-Roch space.  Equivalence of matrices
+defined over a vector space, as Joshua Grochow taught me\footnote{\tt
+https://mathoverflow.net/questions/303627}, is the same as
+simultaneous equivalence of matrices, a notoriously hard problem.
+Sergeichuk, ``Canonical matrices for linear matrix problems''
+shows how to convert such a matrix into an canonical form,
+but there's no obvious way to introduce the rank 1 condition
+required by Anderson's construction, nor is the canonical form
+easily parametized.
+
+
+
 
 \section{Endomorphism Rings}
 

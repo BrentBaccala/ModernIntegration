@@ -4,8 +4,11 @@
 {\bf THIS CHAPTER IS INCOMPLETE.}
 
 Having addressed logarithmic and exponential extensions, we now turn
-to the algebraic extension, which turns out to be completely different
-in character from the two transcendental cases.
+to the algebraic extension, which at first appears to be completely
+different in character from the two transcendental cases.  The
+differences stem largely from the lack of unique factorization in the
+algebraic case; algebraic extensions are not, in general, unique
+factorization domains.
 
 \begin{comment}
 
@@ -56,7 +59,10 @@ Instead, we'll use a different approach...
 
 \end{comment}
 
-In this chapter, we'll begin studying {\it Abelian integrals}, which
+In this chapter, we'll develop a basic set of technical tools
+for working in the simplest kind of algebraic extension, an
+extension of ${\bf C}(x)$.  This will prepare us for the
+next chapter, where we'lll study {\it Abelian integrals}, which
 are integrals whose integrands are formed from polynomials and roots
 of polynomials.  In other words, integrands in an algebraic extension
 of ${\bf C}(x)$.
@@ -1331,7 +1337,7 @@ It would seem that we have two different series to chose from.  This
 is not really the case, as they differ by only a $180^\circ$ rotation
 in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
-x-series unchanged.  Let's confirm this result with Maxima:
+x-series unchanged.  Let's confirm this result with Sage:
 
 \begin{maximacode}
 puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
@@ -1781,6 +1787,48 @@ algebraic curves.
 
 % A {\it Riemann surface}, more precisely, is a two-dimensional manifold
 % with a {\it complex analytic structure}.
+
+\vfill\eject
+\mysection{Places and Divisors}
+
+We've seen how to construct Puiseux expansions at arbitrary points of
+an algebraic curve, but some points have multiple expansions,
+corresponding to multiple cycles on their corresponding surfaces.
+
+We now seek some mechanism for distinguishing between multiple cycles
+at a single point.  To this end, we introduce the concept of a {\it
+place}.  Intuitively speaking, a place is a cycle, and places are in
+one-to-one correspondence with Puiseux expansions.  Therefore, we
+can handle singularities by thinking in terms of Puiseux expansions
+at cycles.  Non-singular points have a unique place associated
+with them, while there are multiple places (and multiple cycles)
+associated with a singular point.
+
+We can characterize places algebraically, both to formalize this
+concept and also to analyze them in a manner that will generalize
+in Chapter 10 to arbitrary algebraic extensions.
+
+Places correspond to ideals of maximal orders of the curve's
+function field.
+
+Given a function on an algebraic curve, we can ask at which places it
+has poles and zeros.  The location and strengths of a function's
+poles and zeros are called its {\it divisor}.
+
+For non-singular curves, the points and places are in one-to-one
+correspondence, and a function's divisor can be described in terms
+of the points where its poles and zeros lie.
+
+Thus, one way of defining a divisor is to associate integers (positive
+for zeros, negative for poles) with each point of the curve, subject
+to the stipulation that all but a finite number of those integers is
+zero.  Such a description is called a {\it Weil divisor}, and is most
+suitable for working in {\it intersection theory}.
+
+For singular curves, the situation is more complicated.  A divisor
+needs to be associated with places, not points.  Such a divisor is
+called a {\it Cartier divisor}, and is more suitable for our purposes.
+
 
 \vfill\eject
 \mysection{Riemann-Roch spaces}
