@@ -1845,7 +1845,7 @@ Numerous algorithms have been developed for computing bases of
 Riemann-Roch spaces.  Sage uses Singular's implementation of
 the Brill-Noether algorithm.
 
-\begin{sageblock}[riemannroch]
+\begin{sagecommon}
 singular.lib('hess.lib');
 
 def riemannroch(f, ZeroIdeal, PoleIdeal):
@@ -1874,9 +1874,11 @@ def riemannroch(f, ZeroIdeal, PoleIdeal):
    return B
    x,y,z = CurveIdeal.ring().gens()
    return [simplify(i.subs({z:1})) for i in B]
-\end{sageblock}
+\end{sagecommon}
 
-\begin{sageblocktiny}[riemannroch]
+\vfill\eject
+
+\begin{sagecommontiny}
 from sage.rings.number_field.number_field_base import is_NumberField
 
 def riemannrochKash(f, ZeroIdeal, PoleIdeal, multiple=1):
@@ -1985,7 +1987,7 @@ def riemannrochKash(f, ZeroIdeal, PoleIdeal, multiple=1):
     B = (ideal2divisor(ZeroIdeal) - ideal2divisor(PoleIdeal)).Basis()
 
     return B.sage({x: xx, ybar: yy, a: aa})
-\end{sageblocktiny}
+\end{sagecommontiny}
 
 
 \begin{comment}

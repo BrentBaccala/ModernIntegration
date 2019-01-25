@@ -825,6 +825,12 @@ gcd(5*x*y - 5*y^2 - 7*x + 7*y,
     2*x^2 - y*x - y^2);
 \end{maximablock}
 
+\begin{sageblock}
+R.<x,y> = QQ[]
+gcd(5*x*y - 5*y^2 - 7*x + 7*y,
+    2*x^2 - y*x - y^2)
+\end{sageblock}
+
 \endexample
 
 \vfill\eject
@@ -971,7 +977,7 @@ c: x^3+5*x^2+7*x+3 $
 \end{maximablock}
 
 \begin{sageblock}
-R.<x> = QQ['x']
+R.<x> = QQ[]
 a = 4*x^4+13*x^3+15*x^2+7*x+1;
 b = 2*x^3+x^2-4*x-3;
 c = x^3+5*x^2+7*x+3;
@@ -1416,6 +1422,12 @@ More succinctly, we can use the built-in Maxima function {\tt resultant}:
 resultant(t**2 - 1 - x, t**3 - t - y, t);
 \end{maximablock}
 
+\begin{sageblock}
+R.<x,y,t> = QQ[]
+(t^2 - 1 - x).sylvester_matrix(t^3 - t - y, t)
+(t^2 - 1 - x).resultant(t^3 - t - y, t)
+\end{sageblock}
+
 This result implies that the polynomials $t^2-1-x$ and $t^3-t-y$
 have a common factor when $y^2-x^3-x^2=0$.  For example,
 this condition is satisfied when $x=3$ and $y=6$, and
@@ -1426,6 +1438,11 @@ have the common factor $t-2$:
 factor(t**2-4);
 factor(t**3-t-6);
 \end{maximablock}
+
+\begin{sageblock}
+(t^2-4).factor()
+(t^3-t-6).factor()
+\end{sageblock}
 
 \endexample
 
@@ -1601,6 +1618,18 @@ $y$ equal to $x$, but it could also set $x$ equal to $y$:
 modulo(x^3+y, y-x, y);
 modulo(x^3+y, y-x, x);
 \end{maximablock}
+
+\begin{sageblock}
+R.<x> = QQ[]
+S.<y> = Frac(R)[]
+(x^3 + y) % (y-x)
+\end{sageblock}
+
+\begin{sageblock}
+R.<y> = QQ[]
+S.<x> = Frac(R)[]
+(x^3 + y) % (y-x)
+\end{sageblock}
 
 
 \begin{comment}
