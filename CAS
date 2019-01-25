@@ -202,4 +202,52 @@ Macaulay 2
      I guess this only works on a nodal curve?
      input specified as a pair of ideals of coordinate ring (Weil divisor)
 
-KASH
+KASH - finite fields, QQ, number fields
+
+Sage
+  not implemented at all in standard distribution
+  implemented for finite fields in klee's Trac #22982
+  via Kash for QQ and number fields (my code)
+
+Note for a native Sage implementation of function fields over QQ
+  when initializing a maximal order, we need a monic integral model
+    of the function field, either because the function field is
+    already integral, or we create a model, call it's _maximal_order_basis()
+    method, then map those basis elements back
+  need FunctionField_integral in addition to (or instead of) FunctionField_global_integral
+    computation of maximal order init routine uses a modified singular routine to compute normalization
+    I think the modification is because it's hard to get singular results back to Sage
+      when they're attached to a given ring; it's easiest to just write a new singular
+      function that returns the results the way Sage likes them
+
+
+HOW SAGE INITIALIZES atexit CALLBACKS
+
+SageCustomizations in sage.repl.ipython_extensions
+   __init__ calls self.set_quit_hook()
+      which defines a quit function with atexit that calls sage.all.quit_sage()
+      which calls expect_quitall() in sage.interfaces.quit
+
+(Pdb) where
+  /home/baccala/src/sage/src/bin/sage-ipython(15)<module>()
+-> app.initialize()
+  <decorator-gen-110>(2)initialize()
+  /home/baccala/src/sage/local/lib/python2.7/site-packages/traitlets/config/application.py(87)catch_config_error()
+-> return method(app, *args, **kwargs)
+  /home/baccala/src/sage/local/lib/python2.7/site-packages/IPython/terminal/ipapp.py(316)initialize()
+-> self.init_shell()
+  /home/baccala/src/sage/local/lib/python2.7/site-packages/sage/repl/interpreter.py(762)init_shell()
+-> self.shell.extension_manager.load_extension(SAGE_EXTENSION)
+  /home/baccala/src/sage/local/lib/python2.7/site-packages/IPython/core/extensions.py(85)load_extension()
+-> if self._call_load_ipython_extension(mod):
+  /home/baccala/src/sage/local/lib/python2.7/site-packages/IPython/core/extensions.py(132)_call_load_ipython_extension()
+-> mod.load_ipython_extension(self.shell)
+  /home/baccala/src/sage/local/lib/python2.7/site-packages/sage/__init__.py(11)load_ipython_extension()
+-> sage.repl.ipython_extension.load_ipython_extension(*args)
+  /home/baccala/src/sage/local/lib/python2.7/site-packages/sage/repl/ipython_extension.py(564)wrapper()
+-> result = func(*args, **kwargs)
+  /home/baccala/src/sage/local/lib/python2.7/site-packages/sage/repl/ipython_extension.py(577)load_ipython_extension()
+-> SageCustomizations(shell=ip)
+> /home/baccala/src/sage/local/lib/python2.7/site-packages/sage/repl/ipython_extension.py(426)__init__()
+-> self.auto_magics = SageMagics(shell)
+(Pdb)
