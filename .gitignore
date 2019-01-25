@@ -12,6 +12,10 @@ pythontex-files-ModernIntegration
 # Auto-generated from 'maximacommon' blocks
 common.mac
 
+# Auto-generated from 'sagecommon' blocks
+sagecommon.sage
+sagecommon.py
+
 # Symlinks to auto-generated files
 maxima.mac
 chebyshev.mac

@@ -321,28 +321,17 @@ resetmargins=true}
 \end{mdframed}
 }
 
+% sagecommon - don't put "sage:" prompts before the input lines,
+% and don't print output at all
+
+\newcounter{sagecommoncounter}
+\setcounter{sagecommoncounter}{0}
+
 \newenvironment{sagecommon}
-  {\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}
-  {\setpythontexautoprint{true}\endsagecode
-
-% At end of sageblock, redefine Sage processing commands,
-% then call \printpythontex to include the Sage output,
-% which will call the Sage processing commands.
-
-% Command called by python code that processes maximacode input
-% Command number is in argument 1
-% Command text is saved in verbatim block MaximaCode
-
-\def\sageinputcodebreak{}
-\renewcommand{\sageinputcode}{
-\sageinputcodebreak
-\textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
-\def\sageinputcodebreak{\break}
-}
-
-% Wrap everything in a nice colored frame and print it
-\begin{mdframed}[backgroundcolor=yellow!20]
-\printpythontex
+  {\stepcounter{sagecommoncounter}\VerbatimOut{sagecommon-\thesagecommoncounter}}
+  {\endVerbatimOut
+\begin{mdframed}[backgroundcolor=yellow!20,fontcolor=brown]
+\VerbatimInput{sagecommon-\thesagecommoncounter}
 \end{mdframed}
 }
 
@@ -383,6 +372,12 @@ resetmargins=true}
 \begin{maximacode}
 errcatch(batch("common.mac"))$
 \end{maximacode}
+\begin{sagecode}
+load("sagecommon.sage");
+\end{sagecode}
+\begin{sagecode}[riemannroch]
+load("sagecommon.sage");
+\end{sagecode}
 \setpythontexautoprint{true}
 
 \parindent 0pt
@@ -447,7 +442,7 @@ errcatch(batch("common.mac"))$
 
 \mainmatter
 
-% \part[Part I]{\normalfont where the author coaxes the reader into a shallow pool}
+% \part[Part I]{\normalfont where the author coaxes the reader into the wading pool}
 
 \input{01-INTRO.tex}
 \input{02-ALGEBRA.tex}
