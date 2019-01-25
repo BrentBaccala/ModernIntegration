@@ -1,0 +1,358 @@
+
+\documentclass{article}
+
+\usepackage{nopageno}
+
+\usepackage{vmargin}
+\usepackage{times}
+\usepackage{graphics}
+\usepackage{amsmath, amscd, amsxtra, amsthm}
+\usepackage{amssymb}
+\usepackage[retainorgcmds]{IEEEtrantools}
+
+\usepackage{comment}
+\usepackage{listings}
+\usepackage{minted}
+
+% This package makes cut-and-paste of carets work right, so
+% we can cut-and-paste from the PDF document into Maxima.
+
+\usepackage[T1]{fontenc}
+
+\newcommand{\Bold}[1]{\mathbf{#1}}
+\newcommand{\CC}{\Bold{C}}
+\newcommand{\QQ}{\Bold{Q}}
+\newcommand{\Norm}{{\rm Norm}}
+\newcommand{\QQbar}{\overline{\QQ}}
+
+\parindent 0pt
+\parskip 12pt
+
+\begin{document}
+\title{Factoring polynomials over $\QQbar$ using Singular {\tt absfact}}
+\author{Brent Baccala}
+\date{June 13, 2018}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+The Singular {\tt absfact} library provides routines for the {\it
+  absolute factorization} of polynomials with integer coefficients.
+Sage uses {\tt absfact} to implement factorization of polynomials with
+coefficients in {\tt QQbar}, its implementation of the algebraic
+number field.
+
+Singular {\tt absfact} will factor a multivariate polynomial $p$ with
+integer coefficients, returning a set
+of irreducible polynomials, each with an associated number field
+$\mathrm{NF} = \QQ(\beta)$, with an irreducible polynomial $n(\beta)=0$
+such that the polynomial and all of its conjugates are factors of
+$p$.  The conjugates correspond precisely with the complex
+numbers $\beta$ that solve $n(\beta)=0$, and can be formed by looping
+over all possible embeddings of $\mathrm{NF}$ into $\CC$, or
+equivalently $\QQbar$.
+
+The Sage implemention is based on \cite{geddes}'s observation (in
+section 8.8) that all of a polynomial's factors are factors of its
+norm, and the norm has only rational coefficients.  Thus, Singular's
+{\tt absfact} can be used to factor the norm; all Sage has to do is
+determine which factors belong to the original polynomial and which
+were introduced when applying the norm.
+
+More specifically, the {\it norm} of an element in a number field is
+defined as the product of the element with all of its conjugates, i.e,
+the product of the elements obtained by applying all possible
+automorphisms, or equivalently the product of the elements obtained
+by all possible embeddings of the number field into its algebraic
+closure.  The norm can be extended to polynomial rings over the
+number field, and can be computed in Sage as follows:
+
+\begin{minted}[frame=single]{python}
+norm_f = prod([f.map_coefficients(h)
+               for h in numfield.embeddings(QQbar)])
+\end{minted}
+
+The utility of the norm lies in the facts that it commutes with
+multiplication and that the norm of a number field element lies
+in $\QQ$, and the norm of a polynomial over a number field is
+a polynomial over $\QQ$.
+
+% Consider a polynomial $p$ with coefficients in $K = Q(\alpha) \supset
+% Q$, where $K$ is an algebraic extension of $Q$ and $\alpha$ is its
+% primitive element with minimal polynomial $m(\alpha)=0$, equipped with
+% a mapping into $\CC$ (the complex field).  We wish to determine its
+% factorization over $\QQbar$.
+
+% We are provided with a factorization of $\Norm(p)$, presented as a set
+% of irreducible polynomials, each with an associated number field
+% $\mathrm{NF} = Q(\beta)$, with an irreducible polynomial $n(\beta)=0$
+% such that the polynomial and all of its conjugates are factors of
+% $\Norm(p)$.  The conjugates correspond precisely with the complex
+% numbers $\beta$ that solve $n(\beta)=0$, and can be formed by looping
+% over all possible embeddings of $\mathrm{NF}$ into $\CC$, or
+% equivalently $\QQbar$.
+
+% We first check to see if the associated number field can be embedded
+% in the original number field, i.e. is there a mapping $\beta \to
+% b(\alpha)$ such that $n(b(\alpha)) = 0$ in $K$.
+
+% We first check to see if our original number field can be embedded
+% in the polynomial's associated number field, i.e. is there a mapping
+% $\alpha \to a(\beta)$ such that $m(a(\beta)) = 0$ in $N$.  If so,
+% then we use it to map our original polynomial to $N$ and compute
+% the multiplicity of the factor.  Then we consider all possible
+% mappings of $N$ into $\CC$, (i.e, consider $\beta$ to each root
+% of $n(\beta)$.  For each compatible mapping...
+
+% $p$ has factorization $p_1 \cdots p_n$.  Its norm has factorization
+% $\Norm(p_1)\cdots \Norm(p_n)$.  Factor $p_1$ has an associated number
+% field $N = Q(\beta)$ with an irreducible polynomial $n(\beta)=0$, and
+% a mapping $\beta \to \CC$ such that $p_1$ is a polynomial in $N[x]$.
+
+% If there is a mapping $\alpha \to a(\beta)$ such that $m(a(\beta)) =
+% 0$ in $N$, then there is a unique mapping $\beta \to \CC$ such that $a(\beta)$ maps
+% to the same complex number that $\alpha$ maps to,
+
+Taking the norm produced a polynomial with integer coefficients,
+so we can now use {\tt absfact}, and since the norm is a product
+of the original polynomial, all of the original polynomial's
+factors are present in the norm, although taking the norm
+introduced extraneous factors, so now we'd
+like to do essentially this:
+
+\begin{minted}[frame=single]{python}
+for hom in NF.embeddings(QQbar):
+    factor_f = factor_NF.map_coefficients(hom)
+    for i in itertools.count(1):
+        if f % factor_f**i != 0:
+            multiplicity = i-1
+            break
+    if multiplicity > 0:
+        factorization.append((factor_f, multiplicity))
+\end{minted}
+
+This code works fine.  There are two problems with it, however.
+First, it works for {\tt QQbar}, but how do we handle {\tt AA}?
+Second, and more important, it relies on Sage's ability to divide
+polynomials in {\tt QQbar}.  Sage does this by converting the polynomials
+into a number field, using Singular to do the division, and then
+converting the result back to {\tt QQbar}.  This is inefficient, and
+at the time of this writing, hasn't yet been merged into the released
+codebase.
+
+Instead, we'd prefer to do this calculation directly in the number
+fields, without converting back and forth to {\tt QQbar}.  We've
+already got the polynomial we're trying to factor in a number field
+called {\tt numfield}, equipped with an embedding into {\tt QQbar}
+(a homomorphism named {\tt morphism}), plus a number field
+called {\tt NF}, where the factor resides.
+I was thinking that I could construct the union of the two number
+fields, and do something like this:
+
+% By the definition of absolute factorization (?), we have to multiply
+% all of the conjugates together to form a polynomial in $Q[x]$.
+
+% The first question we need to answer is whether the intersection of
+% {\tt numfield} and {\tt NF} is $Q$, or a larger number field.  If
+% their intersection is $Q$, then all of the conjugates have the same
+% multiplicity.
+
+% Assume the converse, that their intersection is a number field $K \supset Q$.
+
+% If our original polynomial is written with coefficients as polynomials
+% in alpha, where alpha is numfield's generator, can NF map into those
+% polynomials even if it can't map to alpha?
+
+%a^4 = 1
+
+%x+(a^2)
+
+
+\begin{minted}[frame=single]{python}
+# Essentially, union_fld = numfield.union(NF), except that number
+# fields don't have a union method
+
+gen = qq_generator
+gen = gen.union(morphism(numfield.gen(0))._exact_field())
+union_fld = gen.union(NF.embeddings(QQbar)[0](NF.gen(0))._exact_field()).field()
+
+for NF_embed in NF.embeddings(union_fld):
+    for numfield_embed in numfield.embeddings(union_fld):
+
+        factor_union = factor_NF.map_coefficients(NF_embed)
+        f_union = numfield_f.map_coefficients(numfield_embed)
+
+        for i in itertools.count(1):
+            if f_union % factor_union**i != 0:
+                multiplicity = i-1
+                break
+
+        if multiplicity > 0:
+            for hom in union_fld.embeddings(QQbar):
+                if hom * numfield_embed != morphism:
+                    continue
+                factor_QQbar = factor_union.map_coefficients(hom)
+                factorization.add((factor_QQbar, multiplicity))
+\end{minted}
+
+However, this doesn't work.  Consider factoring
+
+$$f = (x^2+\sqrt{2})(x+\sqrt[8]{2})$$
+
+The presence of the eighth root causes {\tt numfield} to be
+$\QQ(\alpha)$, $\alpha^8=2$, and $f$ becomes:
+
+$$f = (x^2+\alpha^4)(x+\alpha)$$
+$$\Norm(f) = (x^4-2)^4(x^8-2)$$
+
+The first factor creates
+{\tt NF} $=\QQ(\beta)$, $\beta^4=2$, and the union of {\tt NF}
+with {\tt numfield} is {\tt numfield} itself.  The factor is $x-\beta$,
+which embeds into {\tt numfield} as $x-\alpha^2$.
+
+The problem is that $x-\alpha^2$ doesn't divide $x^2+\alpha^4$
+in $\QQ(\alpha)$.
+
+The reason is that {\tt NF} isn't a {\it splitting field}
+for $\Norm(f)$.
+In {\tt NF}, the norm's first factor factors as
+$(x^4-2) = (x-\beta)(x+\beta)(x^2+\beta^2)$.  But $f$'s
+factor is $(x^2+\alpha^4) = (x^2+\beta^2)$, which
+isn't divisible by $x-\beta$.
+
+At first, I thought that iterating over all possible embeddings
+would deal with this problem, but in this example there
+are only two possible embeddings of {\tt NF} into {\tt numfield}
+and all the other one does is flip the sign of $\beta$.
+
+\begin{comment}
+\begin{minted}[frame=single]{python}
+numfield_f = f.map_coefficients(elem_dict.__getitem__, new_base_ring=numfield)
+
+def NF_elem_map(e):
+    return NF(e.numerator()) / NF(e.denominator())
+
+factor_NF = factor.map_coefficients(NF_elem_map, new_base_ring=NF)
+
+homs = numfield.embeddings(NF)
+
+if len(homs) > 0:
+
+    for numfield_into_NF in homs:
+
+        numfield_NF = numfield_f.map_coefficients(numfield_into_NF)
+
+        for i in itertools.count(1):
+            if numfield_NF % (factor_NF)**i != 0:
+                multiplicity = i-1
+                break
+
+        if multiplicity > 0:
+            for hom in NF.embeddings(QQbar):
+                if hom * numfield_into_NF == morphism:
+                    QQbar_factor = factor_NF.map_coefficients(hom)
+                    factorization.append((QQbar_factor, multiplicity))
+
+else:
+
+    assert multiplicity % numfield.degree() == 0
+    multiplicity = multiplicity // numfield.degree()
+
+    for hom in NF.embeddings(QQbar):
+        QQbar_factor = factor_NF.map_coefficients(hom)
+        factorization.append((QQbar_factor, multiplicity))
+\end{minted}
+\end{comment}
+
+So, I've gone back to the first version of the code and modified it to
+handle {\tt AA} by discarding all complex embeddings that map to the
+lower half plane (negative imaginary component) and doubling up
+(via conjugation) on the complex embeddings that map to the upper
+half plane.  Real embeddings (imaginary component zero) are left
+alone.  This produces completely real factors if the original
+polynomial was completely real.
+
+\begin{minted}[frame=single]{python}
+for hom in NF.embeddings(QQbar):
+    factor_f = factor_NF.map_coefficients(hom)
+    if f.base_ring() is AA:
+        target = hom(NF.gen(0))
+        if target.imag() < 0:
+            continue
+        elif target.imag() > 0:
+            conjugate_hom = NF.hom([target.conjugate()], QQbar)
+            factor_f *= factor_NF.map_coefficients(conjugate_hom)
+        factor_f = factor_f.change_ring(AA)
+    for i in itertools.count(1):
+        if f % factor_f**i != 0:
+            multiplicity = i-1
+            break
+    if multiplicity > 0:
+        factorization.append((factor_f, multiplicity))
+\end{minted}
+
+
+
+\begin{thebibliography}{9}
+
+\bibitem[Ge92]{geddes}
+Geddes, Czapor, Labahn, {\it Algorithms for Computer Algebra}. Springer.
+ISBN: 978-0-585-33247-5
+
+\end{thebibliography}
+
+\begin{comment}
+\begin{minted}[frame=single]{python}
+# We now have a number field and a factor in that number field such
+# that the factor and all of its conjugates multiply together to
+# form a factor of the original polynomial's norm.
+
+homs = numfield.embeddings(NF)
+
+# Can we embed our original numfield into NF?
+
+if len(homs) > 0:
+
+    for numfield_into_NF in homs:
+
+        # We can't rely on the multiplicity computed by Singular,
+        # since there might be multiple factors in the original
+        # polynomial that give rise to the same factor in the
+        # norm.  Therefore, we recompute the multiplicity here
+        # for each possible embedding.
+
+        numfield_NF = numfield_f.map_coefficients(numfield_into_NF)
+
+        for i in itertools.count(1):
+            if numfield_NF % (factor_NF)**i != 0:
+                multiplicity = i-1
+                break
+
+        # Then, for all of the conjugates, check to see if composing
+        # with numfield_into_NF produces the original morphism that
+        # maps number_field into QQbar.  If so, this conjugate is
+        # a factor of the original polynomial, and not just its norm.
+
+        if multiplicity > 0:
+            for hom in NF.embeddings(QQbar):
+                if hom * numfield_into_NF == morphism:
+                    QQbar_factor = factor_NF.map_coefficients(hom)
+                    factorization.append((QQbar_factor, multiplicity))
+
+else:
+
+    # No.  This corresponds to a factor of the original polynomial
+    # that doesn't require numfield, so add all of its conjugates
+    # to factorization.
+
+    assert multiplicity % numfield.degree() == 0
+    multiplicity = multiplicity // numfield.degree()
+
+    for hom in NF.embeddings(QQbar):
+        QQbar_factor = factor_NF.map_coefficients(hom)
+        factorization.append((QQbar_factor, multiplicity))
+\end{minted}
+\end{comment}
+
+\end{document}
