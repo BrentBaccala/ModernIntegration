@@ -1802,7 +1802,6 @@ riemannrochKash(f, intersection(Zlist), I)
 
 We now compute its principal parts matrix:
 
-\begin{comment}
 \begin{sageblock}[riemannroch]
 QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
@@ -1815,12 +1814,15 @@ y.divisor();
 O = F.maximal_order()
 Oinf = F.maximal_order_infinite()
 
-O.ideal(x-QQbar(-1).sqrt(), y-QQbar(2).sqrt())
-F.places_infinite()
+Dfinite = add([O.ideal(x-a*QQbar(-1).sqrt(), y-b*QQbar(2).sqrt()).place().divisor() for a in [-1, 1] for b in [-1, 1]])
+Dinf = add([pl.divisor() for pl in F.places_infinite()])
 
-principal_parts_matrix()
+D1 = Dfinite + 2*Dinf
+
+basis = Dfinite.basis_function_space()
+
+principal_parts_matrix(D1, basis)
 \end{sageblock}
-\end{comment}
 
 {\bf TODO}
 
