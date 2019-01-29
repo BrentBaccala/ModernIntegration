@@ -190,11 +190,6 @@ with respect to one of its variables.  The discriminant will be zero
 at special points, so these points can be located by computing the
 zeros of a univariate polynomial.
 
-\begin{maximacode}
-discriminant(f,y) :=
-  factor(resultant(diff(f,y), f, y));
-\end{maximacode}
-
 These points are further classified according to whether or not the
 curve is locally Euclidean in their neighborhood.  Geometrically, this
 corresponds to looping around the point until you return to your
@@ -593,285 +588,6 @@ newton_polygon(f, x, y, x0, y0) := block(
 
 \end{maximacode}
 
-\begin{maximacode}
-puiseux2_cache : [];
-
-puiseux2(f,x,y,x0,y0,deg,r,s,p) :=
- block([n:max(deg,s), xexpansion, yexpansion, res,
-        allans, ans, eqns, deqn, cache, result],
-
-  cache: assoc([f,x,y,x0,y0,r,s,p], puiseux2_cache),
-  if listp(cache) and cache[1] >= deg then return(cache[2]),
-
-  if x0 # inf then
-    xexpansion: x0 + t^r
-  else
-    xexpansion: (1/t)^r,
-
-  yexpansion: y0 + sum(t^i*a[i],i,s,n),
-
-  res: subst([x=xexpansion, y=yexpansion], f/t^p),
-
-  res: expand(num(radcan(ratsimp(res)))),
-  eqns: create_list(coeff(res,t,i),i,0,(n-s)),
-
-  /* eqns[1] should be a polynomial in a[s] */
-  /* We can only handle its simple roots, so compute */
-  /* its derivative to check that */
-
-  deqn: diff(eqns[1], a[s]),
-  allans: sort(radcan(solve(eqns[1],a[s]))),
-
-  /* Maxima's solve() can't handle arbitrary high powered */
-  /* polynomials.  Check to see if it worked. */
-
-  if apply("+", multiplicities) # hipow(eqns[1], a[s]) then
-     error("NYI: solve didn't work in puiseux2"),
-
-  /* If r > 1, then we expect each solution to be duplicated */
-  /* r times, differing only by r'th roots of unity.  These */
-  /* different solutions all correspond to the same branch, */
-  /* so we'll remove all but one of each. */
-
-  /* We exclude zero as a solution, since zero corresponds */
-  /* to a higher degree solution than the ones we're seeking. */
-
-  ans: [],
-  for a in allans do
-     if rhs(a) # 0
-        and not member(ratsimp(a^r), ratsimp(ans^r)) then
-           if ratsimp(subst(a[s]=a, deqn)) = 0 then
-              error("NYI: multiple root in puiseux2")
-           else
-              ans: endcons(a, ans),
-
-  /* For each solution to eqns[1], solve the remaining eqns. */
-  /* IFT guarantees unique solutions to all eqns. */
-
-  ans: map(makelist, ans),
-  result: map(lambda([oneans], block([eqns2:subst(oneans, eqns)],
-    for i:1 thru n-s do block([s:radcan(solve(eqns2[i+1],a[s+i]))],
-      if not listp(s) or length(s) # 1 then
-         error("puiseux2: internal error"),
-      oneans: endcons(s[1], oneans),
-      eqns2: subst(oneans, eqns2)),
-    subst(oneans, yexpansion))), ans),
-
-  puiseux2_cache: cons([[f,x,y,x0,y0,r,s,p], [deg, result]], puiseux2_cache),
-  result
-  );
-\end{maximacode}
-
-\begin{maximacode}
-/* puiseux_fracexp controls whether series are returned with
- * fractional exponents, or using an auxilary variable (t).
- */
-
-puiseux_fracexp : false ;
-
-\end{maximacode}
-
-\begin{maximacode}
-distribute_denominator(frac, var, lim) := block(
-  [result: 0, n: num(expand(frac)), d: denom(expand(frac))],
-  for i: lopow(n, var) thru min(hipow(n, var), lim + hipow(d, var)) do
-    result : result + radcan(rectform(ratsimp(coeff(n, var, i)/d)))*var^i,
-  result
-);
-\end{maximacode}
-
-\begin{maximacode}
-puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,b) :=
- block([xsubst, tsubst, differential: 1, adjustment: 1, maxpow, maxypow, rf:0, yserieslist, result],
-
-   if x0 # inf then (
-      xsubst: x = x0 + t^r,
-      tsubst: t^r = x - x0
-   ) else (
-      xsubst: x = 1 / t^r,
-      tsubst: t^r = 1/x
-   ),
-
-   /* deg is the highest t-degree we want in our final result */
-
-   maxpow: deg,
-
-   if not freeof(del(x), b) then (
-      b: ratsimp(b/del(x)),
-      if not freeof(del(x), b) then
-         error("puiseux: requested differential can't be normalized"),
-      differential: del(t),
-      if x0 # inf then (
-         /* x= t^r  ->  dx = r t^(r-1) dt */
-         /* so we don't need as many terms to get to maxpow */
-         maxpow : maxpow - (r-1),
-         adjustment : r * t^(r-1)
-      ) else (
-         /* x= t^-r  ->  dx = -r t^(-r-1) dt */
-         /* so we need more terms to get to maxpow */
-         maxpow : maxpow + (r+1),
-         adjustment : -r * t^(-r-1)
-      )
-   ),
-
-   /* Expand each of the coefficients of the requested */
-   /* function as a Taylor or Laurent series in x, */
-   /* leaving y alone.  We'll later substitute a Puiseux */
-   /* series for y. */
-
-   maxypow : 0,
-   for i: 0 thru hipow(b, y) do block([icomponent],
-      /* s is the lowest t-degree expected in the expansion of y */
-      /* if y0 is non-zero, then use min(s,0) instead of s */
-      /* therefore, maxpow-s*i is the highest t-degree required in rf's expansion */
-      /* ceiling((maxpow-s*i)/r) is the highest x-degree required */
-      icomponent: ratsimp(subst(xsubst, taylor(ratsimp(coeff(expand(b), y, i)),
-                                            x, x0, ceiling((maxpow-min(s,0)*i)/r)))
-                          * adjustment),
-      /* maxpow(rf) = minpow(icomponent) + maxpow(y) * i */
-      if i # 0 then
-         maxypow: ceiling((deg - lopow(icomponent,t))/i),
-      rf: rf + icomponent * y^i
-   ),
-
-   /* expand y to the requested degree */
-   yserieslist: puiseux2(f,x,y,x0,y0,maxypow,r,s,p),
-
-   map(lambda([yseries],
-      result: ratsimp(subst(y=yseries, rf)),
-      result: distribute_denominator(result, t, deg),
-
-      if puiseux_fracexp then
-         subst(t=(x-x0)^(1/r), result * differential)
-      else
-         [result * differential, tsubst, y=orig_y0]
-   ), yserieslist)
- );
-\end{maximacode}
-
-\begin{maximacode}
-puiseux4(f,x,y,x0,y0,deg,rf) :=
- block([result: [], lastslope : 0, orig_y0 : y0, sign, mp, pairs],
-
-   if y0 # inf then (
-      sign: -1
-   ) else (
-      /* If we're expanding y at infinity, don't recenter y, */
-      /* but use upward sloping segments on the Newton polygon */
-
-      y0 : 0,
-      sign: 1
-   ),
-
-   /* Make a list of all line segments on the Newton polygon */
-
-   mp: lower_convex_points(monomial_powers(f,x,y,x0,y0)),
-
-   if sign = -1 and mp[1] = [0,0] then
-      error(concat("puiseux: coordinates do not solve equation of curve")),
-   if sign = 1 and last(mp)[2] = 0 then
-      error(concat("puiseux: coordinates do not solve equation of curve")),
-
-   pairs: makelist([mp[i], mp[i+1]], i, length(mp)-1),
-
-   for pair in pairs do block([delta, g, r, s, p],
-     delta: pair[2]-pair[1],
-     if delta[2] * sign > 0 then (
-       g: gcd(delta[1],delta[2]),
-       r: delta[1]/g,
-       s: -delta[2]/g,
-       p: pair[1][2]*r + pair[1][1]*s,
-
-       if s/r # lastslope then
-          result: append(result, puiseux3(f,x,y,x0,y0,orig_y0,deg,r,s,p,rf)),
-
-       lastslope : s/r
-     )
-   ),
-   result
- );
-
-\end{maximacode}
-
-\begin{maximacode}
-puiseux(f,x,y,x0,y0,deg,[ratfunc]) :=
- block([result: [], rf],
-
-   /* If the caller requested a specific rational function to */
-   /* be expaned, use modulo to normalize it.  Default is y. */
-
-   if length(ratfunc) > 0 then
-      rf: modulo(ratfunc[1], f, y)
-   else
-      rf: y,
-
-   /* If y0 is false, compute the possible solutions for y0. */
-
-   if y0 = false then block([ys, f0],
-      if x0 # inf then
-         f0 : subst(x=x0, f)
-      else
-         f0 : subst(x=0, num(ratsimp(subst(x=1/x, f)))),
-      ys : unique(radcan(rectform(solve(f0, y)))),
-
-      if apply("+", multiplicities) # hipow(f0, y) then
-         error("NYI: solve didn't work in puiseux"),
-      for yi in ys do
-         result: append(result, puiseux4(f,x,y,x0,rhs(yi),deg,rf)),
-
-      /* If substituting x0 into f reduced hipow(y), then */
-      /* some of our solutions are at infinity. */
-
-      if hipow(f,y) # hipow(f0,y) then
-         result: append(result, puiseux4(f,x,y,x0,inf,deg,rf))
-   ) else
-      result: puiseux4(f,x,y,x0,y0,deg,rf),
-
-   result
- );
-
-/* export(puiseux, puiseux_fracexp, newton_polygon)$ */
-/* in_namespace(maxima)$ */
-/* import(puiseux)$ */
-\end{maximacode}
-
-\begin{maximacode}
-
-/* This is a small test suite to verify puiseux's correct operation. */
-
-load("taylor1.mac")$
-
-ev((
-  test1: puiseux(y^2 - x^2 - 1, x, y, 0, 1, 5),
-  test2: implicit_taylor(y^2 - x^2 - 1, 0, 5, 1),
-  if is(test1[1] # test2) then error("puiseux: test1/2 failed"),
-
-  test3: puiseux(b^2-a^2-1, a, b, 0, 1, 5),
-  if is(test1 # subst(a=x, test3)) then error("puiseux: test3 failed"),
-
-  test4: puiseux(y^2 + y - x^3, x, y, 0, 0, 10),
-  test5: implicit_taylor(y^2 + y - x^3, 0, 10, 0),
-  if test4[1] # test5 then error("puiseux: test4/5 failed"),
-
-  test6: puiseux(y^2 - x, x, y, 0, 0, 10),
-  if test6[1] # -sqrt(x) then error("puiseux: test6 failed")),
-puiseux_fracexp: true)$
-
-ev((
-  test7: puiseux(y^2 + x^2 - 1, x, y, inf, inf, 12, x/y),
-  test8: puiseux(y^2 + x^2 - 1, x, y, inf, inf, 10, x/y * del(x)),
-  if not(test8[1][1] === - test7[1][1] * t^-2 * del(t)) then error("puiseux7/8: test failed")),
-puiseux_fracexp: false)$
-
-/* I'd like to check that these throw errors, but I've got no */
-/* good way to remove error messages from the output. */
-
-/* puiseux(y^2 + x^2 - 1, x, y, 0, 0, 5); */
-/* puiseux(y^2 + x^2 - 1, x, y, 0, inf, 5); */
-/* puiseux(y^2 + x^2 - 1, x, y, inf, 0, 5); */
-/* puiseux(x*y - 1, x, y, inf, inf, 5); */
-\end{maximacode}
-
 \vfill\eject
 
 \begin{sagecommonsmall}
@@ -1263,10 +979,6 @@ We normalize the defining polynomial by writing it as
 $y^2 + x^2 - 1 = 0$.  Where does it have multiple points?
 We compute the discriminant:
 
-\begin{maximacode}
-discriminant(y^2 + x^2 - 1, y);
-\end{maximacode}
-
 \begin{sageblock}
 
 R.<x,y> = QQbar[];
@@ -1309,12 +1021,6 @@ Now, substituting these expressions for $x^2$ and $y^2$ into the
 curve's defining equation $y^2 + x^2 - 1 = 0$ and setting all
 coefficients of $t$ to zero, we find:
 
-\begin{maximacode}
-ratsimp(subst(
-   [x=t^2+1, y=a[1]*t+a[2]*t^2+a[3]*t^3],
-   y^2+x^2-1));
-\end{maximacode}
-
 \begin{sageblock}
 var('x, y, t, a1, a2, a3');
 f = y^2 + x^2 - 1;
@@ -1338,10 +1044,6 @@ is not really the case, as they differ by only a $180^\circ$ rotation
 in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
 x-series unchanged.  Let's confirm this result with Sage:
-
-\begin{maximacode}
-puiseux(y^2 + x^2 - 1, x, y, 1, 0, 3);
-\end{maximacode}
 
 \begin{sageblock}
 R.<x,y> = QQbar[];
@@ -1372,12 +1074,6 @@ $$y = a_{-1} \frac{1}{u} + a_0 + a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
 Plugging this into $y^2 u^2 + 1 - u^2$ and setting all the resulting
 coefficients to zero, we conclude:
 
-\begin{maximacode}
-ratsimp(subst(
-   [y=a[-1]*(1/u)+a[0]+a[1]*u+a[2]*u^2+a[3]*u^3],
-   y^2*u^2+1-u^2));
-\end{maximacode}
-
 \begin{sageblock}
 var('u, y, t, a0, a1, a2, a3');
 var('an1', latex_name='a_{-1}');
@@ -1398,10 +1094,6 @@ yield two different values of $y$ for each value of $u$.
 Geometrically, we have two sheets that approach each other and touch
 at a singular point where the curve is not locally Euclidean.
 
-\begin{maximacode}
-puiseux(y^2 + x^2 - 1, x, y, inf, inf, 3, y);
-\end{maximacode}
-
 \begin{sageblock}
 R.<x,y> = QQbar[]
 puiseux(y^2 + x^2 - 1, oo, oo, 4)
@@ -1416,10 +1108,6 @@ $$y^3+x^3y+x=0$$
 
 We begin by computing the discriminant of the
 equation, which gives us the locations of the multiple points.
-
-\begin{maximacode}
-discriminant(y^3 + x^3*y + x, y);
-\end{maximacode}
 
 \begin{sageblock}
 f = y^3 + x^3*y + x
@@ -1437,10 +1125,6 @@ The multiple points lie over the roots of this equation: $x=0$ and
 the seven roots of $4x^7+27=0$.  Infinity also needs to be
 examined.  We begin with $x=0$:
 
-\begin{maximacode}
-puiseux(y^3 + x^3*y +x, x, y, 0, false, 10);
-\end{maximacode}
-
 \begin{sageblock}
 f = y^3 + x^3*y + x
 puiseux(f, 0, 0, 10)
@@ -1455,11 +1139,6 @@ puiseux(y^3 + x^3*y +x, x, y, g, -3/(2*g^2), 1);
 puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
 puiseux(y^3 + x^3*y +x, x, y, g, -(3/8)^(1/7), 1);
 \end{comment}
-
-\begin{maximacode}
-g: (-27/4)^(1/7);
-puiseux(y^3 + x^3*y +x, x, y, g, false, 1);
-\end{maximacode}
 
 \begin{comment}
 \begin{sageblock}
@@ -1504,10 +1183,6 @@ We have one sheet of two cycles at $(g,-3/(2g^2))$
 and an ordinary point at $(g,3/g^2)$.
 
 Finally, let's look at what happens when $x$ goes to infinity:
-
-\begin{maximacode}
-puiseux(y^3 + x^3*y +x, x, y, inf, false, 10);
-\end{maximacode}
 
 \begin{sageblock}
 R.<x,y> = QQbar[]
@@ -1605,10 +1280,6 @@ simply the places where the denominator is zero, and that's just
 $x=\pm 1$.  Now, if we use {\tt puiseux}, we can just request a series
 truncated at the $-1$ term:
 
-\begin{maximacode}
-puiseux(y^2 + x^2 - 1, x, y, 1, 0, -1, 1/y);
-\end{maximacode}
-
 \begin{sageblock}
 R.<x,y> = QQbar[]
 
@@ -1626,10 +1297,6 @@ differential, which must be adjusted at ramification points.
 
 Let's expand $\frac{x}{y}$ at $x=1$:
 
-\begin{maximacode}
-puiseux(y^2 + x^2 - 1, x, y, 1, 0, 5, x/y);
-\end{maximacode}
-
 \begin{sageblock}
 puiseux(y^2 + x^2 - 1, 1, 0, 6, x/y)
 \end{sageblock}
@@ -1637,10 +1304,6 @@ puiseux(y^2 + x^2 - 1, 1, 0, 6, x/y)
 Now $x=t^2+1$, so $\ud x=2t\ud t$.  Thus, multiplying $\frac{x}{y}$
 by $\ud x$ and changing our variable to $t$ will multiply
 all of the terms in our expansion by $2t$:
-
-\begin{maximacode}
-puiseux(y^2 + x^2 - 1, x, y, 1, 0, 6, x/y*del(x));
-\end{maximacode}
 
 \begin{sageblock}
 puiseux(y^2 + x^2 - 1, 1, 0, 7, x/y*d(x))
@@ -1650,10 +1313,6 @@ Even though $\frac{x}{y}$ has a pole
 at $x=1$, $\frac{x}{y} \ud x$ does not!
 
 Its behavior at infinity also requires analysis.
-
-\begin{maximacode}
-puiseux(y^2 + x^2 - 1, x, y, inf, inf, 1, x/y);
-\end{maximacode}
 
 \begin{sageblock}
 f = y^2 + x^2 - 1
@@ -1666,11 +1325,6 @@ the limiting values $\pm i$ as $x$ and $y$ approach
 infinity.  The differential $\frac{x}{y} \ud x$,
 on the other hand, requires us to multiply by $\ud x$,
 and since $x=\frac{1}{t}$, $\ud x = - \frac{1}{t^2} \ud t$.
-
-\begin{maximacode}
-puiseux(y^2 + x^2 - 1, x, y, inf, inf, -1,
-        x/y * del(x));
-\end{maximacode}
 
 \begin{sageblock}
 puiseux(f, oo, oo, 2, x/y*d(x))
@@ -1687,17 +1341,6 @@ the exercises in \cite{bliss} \S 68.
 
 To facilitate this example, let's define an
 auxiliary function to perform the analysis:
-
-\begin{maximacommon}
-analyze_multiple_points(f, [args]) := block(
-  [discriminant: discriminant(f, y), deg],
-  display(discriminant),
-  deg : if length(args) > 0 then args[1] else 2,
-  for r in solve(discriminant, x) do
-    disp(puiseux(f, x, y, rhs(r), false, deg)),
-  disp(puiseux(f, x, y, inf, false, 5))
-);
-\end{maximacommon}
 
 \begin{sageblocksmall}
 def analyze_multiple_points(f, pr=False):
@@ -2026,296 +1669,9 @@ singularities with cycles is currently not supported.
 
 \end{comment}
 
-\begin{maximacode}
-/* in_namespace(riemannroch)$ */
-/* import(puiseux)$ */
-
-riemannroch_trace: false;
-
-extract_one_point(f,x,y,x0,y0,orders,func) :=
-  if listp(orders) then block(
-    [p: puiseux(f,x,y,x0,y0,apply(max, orders),func)],
-    makelist(coeff(p[i][1], t, orders[i]), i, 1, length(orders))
-  )
-  else
-    map(lambda([exp], coeff(exp[1], t, orders)), puiseux(f,x,y,x0,y0,orders,func))
-;
-
-matrix_for_basis_at_x0(f,x,y,divisor,basis,x0) :=
- block([ys, cycles, A, required_degrees, pairs, expansions], local(A),
-    /* First, compute the y-coordinates of places over x0 */
-    ys : map(rhs, solve(subst(x=x0, f), y)),
-    ys : unique(ratsimp(ys)),
-
-    if hipow(ratsimp(subst(x=x0,f)),y) < length(basis) then
-      ys : append(ys, [inf]),
-
-    /* Now we handle multiple points */
-    /* compute sheets in cycle at each point */
-    /* XXX: surely we should have a better way than calling puiseux */
-
-    expansions: puiseux(f,x,y,x0,false,0,1),
-    cycles: map(lambda([expansion], hipow(lhs(expansion[2]), t)), expansions),
-
-    if apply("+", cycles) # length(basis) then
-       error("wrong basis length in riemannroch"),
-
-    /* Next, what degrees does our divisor require for each of these places? */
-    /* required_degrees is a list of degrees, the same length as ys */
-
-    required_degrees : map(lambda([y0], assoc([x0,y0], divisor, 0)), ys),
-
-    /* Construct pairs of y-coordinate and required degree */
-    /* pairs can contain multiple duplicate y-values (at cycles), */
-    /*   but might not be the same length as basis (at singularities) */
-
-    pairs : apply(append, map(lambda([i], if cycles[i] = 1 then [[ys[i], required_degrees[i]]]
-                                          else makelist([ys[i],j], j, required_degrees[i], required_degrees[i] + cycles[i] - 1)),
-        makelist(i, i, 1, length(ys)))),
-
-    /* Now compute a matrix of the coefficients in the Puiseux expansion */
-
-    transpose(apply(matrix, map(lambda([basis_func],
-               apply(append, map(lambda([pair], extract_one_point(f,x,y,x0,pair[1],pair[2],basis_func)),
-               pairs))),
-        basis)))
-);
-
-expansions_at_x0(f,x,y,divisor,basis,x0) :=
- block([ys, A, required_degrees], local(A),
-    /* First, compute the y-coordinates of places over x0 */
-    ys : map(rhs, solve(subst(x=x0, f), y)),
-    /* assert: length(ys) == length(basis) */
-    /* XXX handle multiple points */
-    if length(ys) # length(basis) then return(0),
-
-    /* Now compute a matrix of the principal parts in the Puiseux expansion */
-    A[i,j] := puiseux(f,x,y,x0,ys[i],-1,basis[j]),
-    ev(genmatrix(A,length(ys),length(ys)), puiseux_fracexp: false)
-);
-
-basis_of_divisor_except_at_inf(f,x,y,divisor) :=
- block([basis,xs],
-
-    /* Find the x's that lie under our divisor or the curve's discriminant */
-    xs : map(rhs, solve(discriminant(f, y), x)),
-    xs : append(xs, map(first, map(first, divisor))),
-    xs : unique(ratsimp(xs)),
-
-    if riemannroch_trace then display(xs),
-
-    /* First, construct a C(x)-basis for all rational functions */
-    basis : makelist(y^i, i, 0, hipow(f, y)-1),
-
-    /* Next, adjust the basis to put its elements in the Riemann-Roch space */
-    /* Remove poles at xs */
-    for x0 in xs do block([target],
-      /* What degree does our divisor require for this x0? */
-      target: lmax(flatten(cons(0, map(lambda([d], d[2]), sublist(divisor, lambda([d], d[1][1] = x0)))))),
-      /* if riemannroch_trace then display(basis), */
-      for i: 1 thru length(basis) do
-        /* XXX doesn't take ramification into account */
-        basis[i] : basis[i] * (x-x0)^max(0, target-lopow(puiseux(f,x,y,x0,false,0,basis[i])[1][1], t))
-    ),
-
-    if riemannroch_trace then display(basis),
-
-    /* Finally, reduce until the determinant for the basis is non-zero */
-    for x0 in xs do block(
-      [unstable: true],
-      while unstable do block(
-        [m : matrix_for_basis_at_x0(f,x,y,divisor,basis,x0)],
-        if riemannroch_trace then block([expansions],
-           display(x0),
-           expansions : expansions_at_x0(f,x,y,divisor,basis,x0),
-           display(expansions),
-           display(m)
-        ),
-        if determinant(m) = 0 then block(
-          [v : args(nullspace(m))[1]],
-          if riemannroch_trace then display(v),
-          basis[sublist_indices (args(transpose(v))[1], lambda ([x], x # 0))[1]] : ratsimp((basis.v) / (x-x0)),
-          if riemannroch_trace then display(basis)
-        ) else block(
-          unstable: false
-        )
-      )
-    ),
-    basis
-);
-
-/* XXX if divisor specifies a single number at a singularity, doesn't sum it up right */
-
-total_degree(divisor) :=
-  lsum(if listp(i) then lsum(j, j, i) else i, i, map(second, divisor))
-;
-
-column_orders(f,x,y,func,maxcolord) :=
-  /* Could use a function to return the degree of an Puiseux expansion */
-  lmin(map(lambda([pe], lopow(pe[1], t)), puiseux(f,x,y,inf,false,maxcolord,func)))
-;
-
-normal_matrix_at_inf(f,x,y,basis,colord) := block([expansions, cycles], local(A),
-
-  expansions: puiseux(f,x,y,inf,false,0,1),
-  cycles: map(lambda([expansion], hipow(lhs(expansion[2]), t)), expansions),
-
-  if apply("+", cycles) # length(basis) then
-     error("wrong basis length in riemannroch"),
-
-  A[j,i] := coeff(  puiseux(f,x,y,inf,false,colord[i],basis[i])  [j][1], t, colord[i]),
-  genmatrix(A,length(basis),length(basis))
-);
-
-basis_of_divisor_normal_at_inf(f,x,y,divisor) := block([basis, nb, d, colord],
-  basis : basis_of_divisor_except_at_inf(f,x,y,divisor),
-
-  /* maximum column order is negative of the divisor's total degree */
-  maxcolord : -total_degree(divisor),
-
-  /* this determinant has to be non-zero for the basis to be normal at inf */
-  colord : map(lambda([i], column_orders(f,x,y,i,maxcolord)), basis),
-  nb : normal_matrix_at_inf(f,x,y,basis,colord),
-  d : ratsimp(determinant(nb)),
-
-  if riemannroch_trace then block([expansions],
-    display(basis),
-    disp("normalizing at infinity"),
-    expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis),
-    display(expansions),
-    display(nb),
-    display(d)
-  ),
-
-  while d = 0 do block([v, vt, sli],
-    v : args(nullspace(nb))[1],
-    vt : args(transpose(v))[1],
-
-    if riemannroch_trace then block([expansions],
-      display(v),
-      expansions : map(lambda([i], puiseux(f,x,y,inf,false,5,i)), basis),
-      display(expansions),
-      display(colord)
-    ),
-
-    /* make a list of [index, v-entry, column order] for each function in basis */
-    sli : makelist([i,vt[i],colord[i]],i,1,length(basis)),
-
-    /* pick out the subset with non-zero v-entry's */
-    sli : sublist(sli, lambda([i], i[2] # 0)),
-
-    /* sort by increasing column order */
-    sli : sort(sli, lambda([i,j], orderlessp(i[3],j[3]))),
-
-    /* multiple v by powers of x based on minimum column order from last step */
-    v : v * makelist(x^(colord[i]-sli[1][3]),i,1,length(basis)),
-
-    /* rewrite the basis element with lowest column order */
-    basis[sli[1][1]] : ratsimp(basis.v),
-
-    colord : map(lambda([i], column_orders(f,x,y,i,maxcolord)), basis),
-    nb : normal_matrix_at_inf(f,x,y,basis,colord),
-    d : determinant(nb),
-
-    if riemannroch_trace then block(
-      display(v),
-      display(basis),
-      display(nb),
-      display(d)
-    )
-  ),
-
-  if riemannroch_trace then disp("normal at infinity"),
-
-  basis
-);
-
-riemannroch2(f,x,y,divisor) := block([basis, maxcolord, colord, a],
-
-  basis : basis_of_divisor_normal_at_inf(f,x,y,divisor),
-
-  /* maximum column order is negative of the divisor's total degree */
-  maxcolord : -total_degree(divisor),
-
-  colord : map(lambda([i], column_orders(f,x,y,i,maxcolord)), basis),
-
-  if riemannroch_trace then block(
-    disp("normal at infinity"),
-    display(colord)
-  ),
-
-  flatten(basis * map(lambda([i], makelist(x^j, j, 0, i)), colord))
-);
-
-recenter_curve2(f,x,y,a) := block([xcoeff, newf:0],
-   f : expand(subst([x=1/x+a], f)),
-   f : expand(num(ratsimp(f))),
-   for xpow: 0 thru hipow(f, x) do (
-      xcoeff : coeff(f, x, xpow),
-      for ypow: 0 thru hipow(xcoeff, y) do
-         newf : newf + radcan(ratsimp(coeff(xcoeff, y, ypow)))*x^xpow*y^ypow
-   ),
-   newf
-);
-
-load('grobner)$   /* For poly_content() */
-
-simplify_basis(basis,x,y) :=
-  map(lambda([e], ratsimp(e/poly_content(e,[x,y]))), basis)
-;
-
-riemannroch(f,x,y,divisor) := block([finite_divisor, infinite_divisor, basis, colord],
-
-  finite_divisor : sublist(divisor, lambda([d], first(first(d)) # inf)),
-  infinite_divisor : sublist(divisor, lambda([d], first(first(d)) = inf)),
-
-  if length(infinite_divisor) # 0
-     or length(puiseux(f,x,y,inf,false,0,1)) # hipow(f,y) then block([xs, a],
-
-     /* need to recenter the curve */
-     xs : map(rhs, solve(discriminant(f, y), x)),
-     xs : append(xs, map(first, map(first, divisor))),
-     xs : unique(xs),
-
-     /* find an integer not in xs */
-     xs : sort(sublist(xs, nonnegintegerp)),
-     a : if length(xs) # 0 then last(xs)+1 else 0,
-
-     f : recenter_curve2(f,x,y,a),
-     finite_divisor : map(lambda([d], [[1/(d[1][1]-a), d[1][2]], d[2]]), finite_divisor),
-     infinite_divisor : map(lambda([d], [[0, d[1][2]], d[2]]), infinite_divisor),
-
-     divisor : append(finite_divisor, infinite_divisor),
-
-     if riemannroch_trace then block(
-        disp("transforming curve to normalize infinity"),
-        display(a),
-        display(f),
-        display(divisor)
-     ),
-
-     basis : riemannroch2(f,x,y,divisor),
-     simplify_basis(map(lambda([f], ratsimp(subst([x=1/(x-a)], f))), basis), x, y)
-
-  ) else simplify_basis(riemannroch2(f,x,y,divisor), x, y)
-);
-
-/* export(riemannroch)$ */
-/* in_namespace(maxima)$ */
-/* import(riemannroch)$ */
-\end{maximacode}
-
 Here's a simple example\footnote{From
 {\tt https://math.stackexchange.com/questions/294644}}
 of a Riemann-Roch space calculation:
-
-\begin{maximacode}
-f : y^2 - (x^3 - x);
-div : [[[0, 0], -4]];
-/* riemannroch_trace : true; */
-riemannroch(f, x, y, div);
-
-\end{maximacode}
 
 \begin{sageblock}[riemannroch]
 R.<x,y,z> = QQ[];
@@ -2324,29 +1680,13 @@ f = y^2 - x^3 + x;
 P1 = ideal(x,y);
 I = ideal(R(1));
 
-riemannrochKash(f.homogenize(z), P1, I)
-riemannrochKash(f.homogenize(z), P1^2, I)
-riemannrochKash(f.homogenize(z), P1^3, I)
-riemannrochKash(f.homogenize(z), P1^4, I)
+#riemannrochKash(f.homogenize(z), P1, I)
+#riemannrochKash(f.homogenize(z), P1^2, I)
+#riemannrochKash(f.homogenize(z), P1^3, I)
+#riemannrochKash(f.homogenize(z), P1^4, I)
 \end{sageblock}
 
 Here are the examples from \cite{alvanos} \S6.3:
-
-\begin{maximacode}
-f : y^2 - x^3 - 1;
-P1 : [2,3]$
-P2 : [2,-3]$
-Pinf : [inf, inf]$
-
-/* riemannroch_trace : true; */
-riemannroch(f, x, y, [[Pinf, -1], [P1, 1]]);
-riemannroch(f, x, y, [[Pinf, -2], [P1, 1]]);
-riemannroch(f, x, y, [[Pinf, -3], [P1, 1]]);
-riemannroch(f, x, y, [[Pinf, -4], [P1, 1]]);
-riemannroch(f, x, y, [[Pinf, -1]]);
-riemannroch(f, x, y, [[Pinf, -2]]);
-riemannroch(f, x, y, [[Pinf, -3]]);
-\end{maximacode}
 
 \begin{sageblock}[riemannroch]
 R.<x,y,z> = QQ[];
@@ -2399,28 +1739,20 @@ combined with a vector of coefficients.
 
 Let's assume that we've got our data in the latter form, so we can run
 {\tt riemannroch} on the divisor and obtain a set of basis functions.
-Now let's construct a Maxima function to extract the principal parts
+Now let's construct a Sage function to extract the principal parts
 of the basis functions and form them into a matrix:
 
-\begin{maximacommon}
-principal_parts(f,x,y, func, divisor) :=
-  flatten(
-  map(lambda([d], map(lambda([e], map(lambda([order], coeff(e[1], t, order)), makelist(order, order, d[2], -1))),
-                      puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
-  )
-;
-
-principal_parts_matrix(f,x,y, basis, divisor) :=
-  transpose(apply(matrix, map(lambda([func], principal_parts(f,x,y,func,divisor)), basis)))
-;
-\end{maximacommon}
+\begin{sageblock}[riemannroch]
+def principal_parts_matrix(div, basis):
+    F = div.parent().function_field()
+    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
+    return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
+\end{sageblock}
 
 Given a vector {\tt b} of coefficients, we now want to
 solve a matrix equation:
 
-\begin{maximablock}
-m . v = b;
-\end{maximablock}
+$$m \cdot v = b$$
 
 This will typically be an overspecified system -- a non-square matrix
 that may or may not have a solution.  That's fine; since some
@@ -2431,15 +1763,7 @@ that no function exists on this curve with the coefficients {\tt b}.
 To proceed, we'll use the
 {\it Moore-Penrose pseudoinverse}\footnote{\tt https://en.wikipedia.org/wiki/System_of_linear_equations\#Matrix_solution},
 which has the property that if a solution exists, it can
-be found by multiplying the $b$ vector by the pseudoinverse:
-
-\begin{maximacommon}
-pseudoinverse(m) := block([mm, z : ?gensym(), scalarmatrixp : false],
-  require_unblockedmatrix(m, "first", "pseudoinverse"),
-  mm : m . ctranspose(m),       
-  subst(z=0, ratsimp(ctranspose(m) . ratsimp((mm - z * identfor(mm))^^-1)))
-);
-\end{maximacommon}
+be found by multiplying the $b$ vector by the pseudoinverse.
 
 To find out if there actually is a solution, we first compute a trial
 solution by multiplying the pseudoinverse by {\tt b}, then checking
@@ -2448,27 +1772,6 @@ to see if the trial solution actual solves the original equation.
 \example
 Let's say that we've identified a divisor on an algebraic
 curve (example \ref{an integral Maxima can't solve}):
-
-\begin{maximablock}
-f: y^2 - x^8 - 1$
-div : [[[%i,  sqrt(2)], -1],
-       [[-%i,  sqrt(2)], -1],
-       [[%i, -sqrt(2)], -1],
-       [[-%i, -sqrt(2)], -1],
-       [[inf, inf], -2]]$
-basis : riemannroch(f, x, y, div);
-div2: [[[%i,  sqrt(2)], -1],
-       [[-%i,  sqrt(2)], -1],
-       [[%i, -sqrt(2)], -1],
-       [[-%i, -sqrt(2)], -1],
-       [[inf, inf], -1]]$
-basis : riemannroch(f, x, y, div2);
-div3: [[[%i,  sqrt(2)], -1],
-       [[-%i,  sqrt(2)], -1],
-       [[%i, -sqrt(2)], -1],
-       [[-%i, -sqrt(2)], -1]]$
-basis : riemannroch(f, x, y, div3);
-\end{maximablock}
 
 \begin{sageblock}[riemannroch]
 QQbar.options.display_format = 'radical';
@@ -2499,11 +1802,25 @@ riemannrochKash(f, intersection(Zlist), I)
 
 We now compute its principal parts matrix:
 
-\begin{maximablock}
-m : principal_parts_matrix(f,x,y, basis, div);
+\begin{comment}
+\begin{sageblock}[riemannroch]
+QQbar.options.display_format = 'radical'
+R.<x> = FunctionField(QQbar, implementation='kash')
+L.<y> = R[]
+F.<y> = R.extension(y^2 - x^8 - 1)
 
-pi : pseudoinverse(m);
-\end{maximablock}
+# do this to force the extension code to run
+y.divisor();
+
+O = F.maximal_order()
+Oinf = F.maximal_order_infinite()
+
+O.ideal(x-QQbar(-1).sqrt(), y-QQbar(2).sqrt())
+F.places_infinite()
+
+principal_parts_matrix()
+\end{sageblock}
+\end{comment}
 
 {\bf TODO}
 

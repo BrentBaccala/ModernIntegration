@@ -495,128 +495,34 @@ limits, sums, and series, but to rings, fields and polynomials.  Quite a
 triumph for ``al-jabr''.
 
 \vfill\eject
-\section{Maxima}
+\section{Sage}
 
-Many of the more complex examples in the book will be solved
-using the open source computer algebra system Maxima.
+To demonstrate the power of this theory, it's important to do some
+fairly difficult examples, such as integrals (C) and (D) in the ``Who
+Wants to be a Mathematician?'' question on the first page of this
+chapter.  However, attempts to work such difficult integrals by hand
+quickly bogs down in a mess of algebra.  Therefore, the judicious use
+of a computer algebra system is an essential learning tool in this
+subject.  I've chosen the open source program Sage, and will use it
+liberally in the book's exercises.
 
-In the section, I'll collect several useful functions
-that I'll use throughout the book.
+In the course of writing the book, I've encountered a number of
+computation that Sage couldn't do, and have added code to Sage (taking
+advantage of its open source philosophy) to improve its functionality.
+While some of these features have been incorporated into the main Sage
+distribution, not all have, so the examples in the book are
+constructed using a customized version of Sage, the source code of
+while I maintain in a Github repository\footnote{\tt
+https://github.com/BrentBaccala/sage}.  To do the exercises yourself,
+it's likely that you'll need to download and compile this customized
+version of Sage.
 
-First, TeX has two different ways of displaying the Greek letter
-$\theta$, and Maxima lets us select which we will use.
-I prefer $\theta$.
+In the section, I'll collect several useful functions that I'll use
+throughout the book.
 
-\begin{maximacommon}
-:lisp-quiet (defprop $theta "\\theta" texword)
-\end{maximacommon}
+\subsection{Arrayss}
 
-\begin{maximablock}
-theta;
-\end{maximablock}
-
-I often want to differentiate with respect to $x$, so I use a shorthand for this:
-
-\begin{maximacommon}
-D(f) := diff(f,x);
-\end{maximacommon}
-
-Maxima has some basic support for namespaces, which allows us to hide
-the definitions of auxiliary functions and only make the primary
-functions visible.
-
-\begin{maximablock}
-load("share/contrib/namespaces/namespaces.lisp")$
-\end{maximablock}
-
-I use lambda expressions with a single variable so much that I find it
-useful to create a version of {\tt map} that treats its first argument
-as a lambda expression in $u$.
-
-\begin{maximacommon}
-mapu(func, expr) ::=
-   map(buildq([func], lambda([u], func)),
-       ev(expr));
-\end{maximacommon}
-
-\begin{maximablock}
-mapu(u+4, [1,2,3]);
-mapu(denom(u), [x,1,1/x,1/x^2]);
-\end{maximablock}
-
-The $cis$ function is a useful shorthand for constructing
-roots of unity:
-
-\begin{maximacommon}
-cis(theta) := %i*sin(theta) + cos(theta);
-\end{maximacommon}
-
-Example \ref{an integral Maxima can't solve} uses
-trigonometric functions of $\frac{\pi}{8}$, which
-Maxima does not expand by default.
-
-\begin{maximacommon}
-matchdeclare(ii, integerp, xx, true);
-
-tellsimpafter(sin(ii*%pi/8),
-   subst(x=ii*%pi/4, ev(sin(x/2), halfangles=true)));
-tellsimpafter(cos(ii*%pi/8),
-   subst(x=ii*%pi/4, ev(cos(x/2), halfangles=true)));
-\end{maximacommon}
-
-\subsection{List Functions}
-
-Here's a function that finds the index of an
-element in a list:
-
-\begin{maximacommon}
-which(n,u) :=
-   sublist_indices(n, lambda([x], x=u))[1];
-\end{maximacommon}
-
-\begin{maximablock}
-which([a,b,c,d,e], b);
-\end{maximablock}
-
-This function converts the parts of a mathematical expression into a
-list:
-
-\begin{maximacommon}
-partlist(expr) := block(
-   [partswitch: true, result:[]],
-   for i:1 step 1 unless part(expr,i) = end
-      do result:cons(part(expr,i), result),
-   result);
-\end{maximacommon}
-
-\begin{maximablock}
-partlist(a+b+c);
-\end{maximablock}
-
-\subsection{Array Functions}
-
-This next function is convenient for displaying Maxima arrays.
-Conceptionally, it's just
-
-\begin{maximaverbatim}
-displayarray(b) :=
-   map(display,
-      map(lambda([u], arraymake(b,u)),
-          rest(arrayinfo(b),2)));
-\end{maximaverbatim}
-
-This doesn't work because {\tt arrayinfo} quotes its first argument
-and interprets it as the name of an array, so the block of code above
-would always return the array info for array {\tt b}.  Something a
-little more complicated is required: a macro that evaluates its
-argument and then calls {\tt arrayinfo}.
-
-\begin{maximacommon}
-displayarray(b) ::=
-   map(display,
-      map(lambda([u], arraymake(''b,u)),
-          rest(apply(arrayinfo, ''[b]),2)));
-\end{maximacommon}
+This next function is convenient for displaying Sage arrays.
 
 Here's a Python trick\footnote{\tt https://stackoverflow.com/questions/2749796}
 to find out what variable name a caller uses:
@@ -643,31 +549,3 @@ def displayarray(b):
        print latex(k)
      print '}=', latex(b[k]), '$$'
 \end{sageblock}
-
-\subsection{Simplification}
-
-The Maxima function {\tt ratsimp} simplifies a rational function to
-its simplest form, and I use it so much, let's define a shorthand
-notation to simplify an expression and assign it to a variable:
-
-\begin{maximacommon}
-infix(":::", 180, 20);
-(x ::: y) := x :: ratsimp(y);
-\end{maximacommon}
-
-\begin{maximablock}
-(x+1)/(x^2-1) - 1/(x-1);
-a ::: (x+1)/(x^2-1) - 1/(x-1);
-\end{maximablock}
-
-Since {\tt :::} now means ``simplify and assign'', let's make {\tt ===}
-mean ``simplify and test for equality''.
-
-\begin{maximacommon}
-infix("===", 20, 20);
-(x === y) := is(ratsimp(x - y) = 0);
-\end{maximacommon}
-
-\begin{maximablock}
-(x+1)/(x^2-1) === 1/(x-1);
-\end{maximablock}

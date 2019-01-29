@@ -782,18 +782,6 @@ $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\o
 We proceed as before, putting the integral into Liouvillian form
 and dividing out $\frac{x}{x+1}$ to obtain a proper fraction:
 
-\begin{maximacode}
-/* This code makes \theta appear first in the output ordering for this example. */
-/* x was previously declared mainvar back in Chapter 2. */
-
-remove(x, mainvar)$
-declare(theta, mainvar)$
-\end{maximacode}
-
-\begin{maximacode}
-divide(num(lintegrand), denom(lintegrand), psi);
-\end{maximacode}
-
 \begin{sageblock}
 F.<x,theta> = FractionField(ZZ['x', 'theta']);
 Ring.<psi> = F['psi']
@@ -810,18 +798,6 @@ This time, we'll operate in ${\mathbb C}(x,\theta = \ln (x+1),\psi = \exp x^2)$,
 this as an exponential extension of ${\mathbb C}(x,\theta)$.  We'll begin again by
 computing a partial fractions expansion, this time with respect to $\psi$:
 
-\begin{maximacode}
-pf: partfrac(N/denom(lintegrand), psi);
-denoms: map(lambda([u], den(u,psi)),
-            partlist(pf));
-n: unique(map(base, denoms));
-map(lambda([u],
-       c[which(n, base(den(u,psi))),
-         power(den(u,psi))]: u*den(u,psi)),
-    partlist(pf))$
-displayarray(c)$
-\end{maximacode}
-
 \begin{sageblock}
 n = [f[0] for f in factor(den)]
 
@@ -830,10 +806,6 @@ displayarray(c);
 \end{sageblock}
 
 Now Theorem \ref{exponential integration theorem} tells us that
-
-\begin{maximacode}
-R[1,1] : c[1,2];
-\end{maximacode}
 
 \begin{sageblock}
 R = {};
@@ -845,12 +817,6 @@ $$C_{0,1}(\psi) = - \frac{R_{0,1}(\psi)}{n_0'(\psi)} \mod n_0(\psi)$$
 This time, we do need to perform a modulo reduction, but as modulo reductions go, it's
 trivial.  We construct a quotient ring, map our operands into it, and perform
 the division there.
-
-\begin{maximacode}
-kill(C)$
-C[1,1] ::: modulo( - R[1,1] / D(n[1]),
-                     n[1], psi);
-\end{maximacode}
 
 \begin{sageblock}
 F2 = Ring.quo(n[0]);
@@ -864,12 +830,6 @@ perform exact division (as opposed to working in a fraction field).
 
 $$Q_{0,1}(\psi) = - \frac{R_{0,1}(\theta) + C_{0,1}(\theta) n_0'(\theta)}{n_0(\theta)}$$
 
-\begin{maximacode}
-kill(Q)$
-Q[1,1] ::: - (R[1,1] + C[1,1] * D(n[1]))
-                     / n[1];
-\end{maximacode}
-
 \begin{sageblock}
 Q = {};
 Q[0,1] = - (R[0,1] + C[0,1].lift() * D(n[0])) // n[0]
@@ -879,12 +839,6 @@ Having computed $C_{0,1}$ and $Q_{0,1}$, we are now able to compute $D_0$:
 
 $$ D_0 = \frac{c_{0,1} - C_{0,1}'(\psi) - Q_{0,1}(\psi)}{n_0'(\psi) - \frac{\lc n_0'(\psi)}{\lc n_0(\psi)} n_0(\psi)}$$
 
-\begin{maximacode}
-lc(a,v) := coeff(a, v, hipow(a,v))$
-D[1] ::: (c[1,1] - D(C[1,1]) - Q[1,1])
-/ (D(n[1])-lc(D(n[1]),psi)/lc(n[1],psi)*n[1]);
-\end{maximacode}
-
 \begin{sageblock}
 myD = {};
 myD[0] = (c[n[0],1] - D(C[0,1].lift()) - Q[0,1]) \
@@ -893,17 +847,8 @@ myD[0] = (c[n[0],1] - D(C[0,1].lift()) - Q[0,1]) \
 
 % XXX I'd like to drop the semicolor in the \maximac element.
 
-A similar calculation for $n_1(\psi) = \maximac{n[2];}$ yields
-
-\begin{maximacode}
-R[2,1] : c[2,2];
-C[2,1] ::: modulo( - R[2,1] / D(n[2]),
-                     n[2], psi);
-Q[2,1] ::: - (R[2,1] + C[2,1] * D(n[2]))
-                     / n[2];
-D[2] ::: (c[2,1] - D(C[2,1]) - Q[2,1])
-/ (D(n[2])-lc(D(n[2]),psi)/lc(n[2],psi)*n[2]);
-\end{maximacode}
+%A similar calculation for $n_1(\psi) = \maximac{n[2];}$ yields
+A similar calculation for $n_1(\psi) = \sage{n[1]}$ yields yields
 
 \begin{sageblock}
 R[1,1] = c[n[1],2]
@@ -918,11 +863,6 @@ In an exponential extension, our $D$ coefficients can affect our $A_0$ term...
 
 $$A_0' = a_0 - \sum_{i=1}^\nu D_i \,\frac{\lc n_1'(\psi)}{\lc n_1(\psi)} $$
 
-\begin{maximacode}
-a: a - sum(D[i]*lc(D(n[i]),psi)/lc(n[i],psi),i,1,2);
-A: integrate(a,x);
-\end{maximacode}
-
 \begin{sageblock}
 a = a - sum([myD[i]*D(n[i]).lc()/n[i].lc() for i in range(2)])
 A = integrate(a,x)
@@ -930,13 +870,6 @@ A = integrate(a,x)
 
 We end up with
 the same result that we obtained from the logarithmic theory:
-
-\begin{maximacode}
-A + ratsimp(sum(C[i,1]/n[i],i,1,2))
-  + logcontract(2*sum(D[i]*log(n[i]),i,1,2))/2;
-subst([theta=log(x+1), psi=exp(x^2)], %);
-diff(%,x) === integrand;
-\end{maximacode}
 
 \begin{sagespacedblock}
 lans = A + sum([C[i,1].lift()/n[i] for i in range(2)]) \
@@ -1115,32 +1048,6 @@ def partfrac1(num, den):
    return(b)
 \end{sagecommon}
 
-\begin{maximacode}
-factors(u,v) := block(
-   [f],
-   f: factor(u),
-   if atom(f) and f=v then [f]
-   elseif atom(f) then []
-   elseif op(f) = "*" then partlist(f)
-   else [f]
-);
-
-partlist1(L) :=
-   if atom(L) then [L]
-   elseif op(L) = "+" then partlist(L)
-   else [L]
-;
-
-partfrac1(expr,v) := block(
-   [expr1],
-   expr1 : ratsimp(expr),
-   if atom(expr1) then []
-   elseif op(expr1) = "/" then
-      partlist1(partfrac(expr1,v))
-   else []
-);
-\end{maximacode}
-
 Next, given a Risch equation in the form
 
 $$r' + S r = T$$
@@ -1158,25 +1065,6 @@ numerator, in the following format:
 \end{verbatim}
 \end{center}
 
-\begin{maximacode}
-normal_risch_factors(S, T, var) := block(
-   [n, sf, tf],
-   n: map(base,
-          factors(denom(ratsimp(S))
-                  * denom(ratsimp(T)), var)),
-   sf: map(lambda([u], [base(denom(u)),
-                        [num(u), power(denom(u))]]),
-           partfrac1(S, var)),
-   tf: map(lambda([u], [base(denom(u)),
-                        [num(u), power(denom(u))]]),
-           partfrac1(T, var)),
-   sf: sort(sf, lambda([u,v], u[2][2] > v[2][2])),
-   tf: sort(tf, lambda([u,v], u[2][2] > v[2][2])),
-   map(lambda([u], [u, assoc(u, sf, [0,0]),
-                       assoc(u, tf, [0,0])]), n)
-);
-\end{maximacode}
-
 \begin{sagecommon}
 def normal_risch_factors(S, T):
    result = {}
@@ -1189,27 +1077,6 @@ def normal_risch_factors(S, T):
 
 {\tt normal_risch_denominator} uses {\tt normal_risch_factors}
 to compute the solutions's denominator.
-
-\begin{maximacode}
-normal_risch_denominator1(L) := block(
-   [factor, Snum, k, Tnum, l],
-   [factor, [Snum, k], [Tnum, l]] : L,
-   if k = 0 then factor^max(0,l-1)
-   elseif k = 1 then factor^block(
-      [j],
-      j = modulo(Snum/D(factor), factor, var),
-      if integerp(j) then max(l-1, j, 0)
-                     else max(l-1, 0)
-   )
-   else factor^max(0,l-k)
-);
-
-normal_risch_denominator(S, T, var) := block(
-   apply("*",
-      map(normal_risch_denominator1,
-         normal_risch_factors(S, T, var)))
-);
-\end{maximacode}
 
 \begin{sagecommon}
 def is_integer(P):
@@ -1246,17 +1113,6 @@ $$A n' + B n = C$$
 
 in the form {\tt [A, B, C]}.
 
-\begin{maximacode}
-normal_risch_polynomial(S, T, var, D1) := block(
-   [D2, A, B, C],
-   D2 : denom(S*D1)*denom(T*D1),
-   A : D1*D2,
-   B : S*D1*D2 - D(D1)*D2,
-   C : T*D1^2*D2,
-   [A, B, C]
-);
-\end{maximacode}
-
 \begin{sagecommon}
 def normal_risch_polynomial(S, T, D1, D):
   D2 = (S*D1).denominator() * (T*D1).denominator()
@@ -1267,29 +1123,6 @@ def normal_risch_polynomial(S, T, D1, D):
 Next, given $A$, $B$, and $C$, we wish to compute the
 maximum degree of the numerator, or {\tt None} if we can
 determine at this point that there is no solution.
-
-\begin{maximacode}
-normal_risch_degree(A, B, C, var) := block(
-   [k, p],
-
-   /* XXX What if B is zero? */
-
-   if C # 0 then
-      k : hipow(C, var) - max(hipow(A, var) - 1,
-                              hipow(B,var))
-   else
-      k : -1,
-
-   if constantp(C/B) then k : max(k,0),
-
-   if hipow(A, var) = hipow(B, var) + 1
-   then
-      p : - lc(B, var) / lc(A, var),
-      if integerp(p) then k : max(k, p),
-
-   k
-);
-\end{maximacode}
 
 \begin{sagecommon}
 def is_constant(P, D):
@@ -1318,21 +1151,6 @@ def normal_risch_degree(A, B, C, D):
 Finally, we combine all these pieces together into a function that
 either returns a solution to a normal Risch equation, or {\tt None}
 if no such solution exists.
-
-\begin{maximacode}
-normal_risch_equation(S, T, var) := block(
-   [D, A, B, C],
-   D : normal_risch_denominator(S, T, var),
-   [A, B, C] : normal_risch_polynomial(S, T, var, D),
-
-   if constantp(C/B) then C/B/D
-   elseif normal_risch_degree(A,B,C,var) = -1
-      then false
-   else product(c[i] * var^i, i, 0,
-                normal_risch_degree(A,B,C,var))
-        / D
-);
-\end{maximacode}
 
 \begin{sagecommon}
 def normal_risch_equation(S, T, D):
@@ -1368,16 +1186,6 @@ R2.<theta> = R[]
 D = Derivation(R2, {x: 1, theta: 1/x})
 normal_risch_equation(theta+1, R2(1), theta)
 \end{sageblock}
-
-\begin{maximacommon}
-normal_risch_solver(eq,var) := block(
-   [A, B, AB, C],
-   [C, AB] : partition(eq, var),
-   [B, A] : ratsimp(partition(AB, D(var))
-          / [var, D(var)]),
-   normal_risch_equation(B/A, - C/A, var)
-);
-\end{maximacommon}
 
 \vfill\eject
 \section{Risch Equations over Special Polynomials}
@@ -1512,29 +1320,6 @@ $$\int \frac{e^x - x^2 + 2x}{(e^x + x)^2 x^2}e^{(x^2-1)/x+1/(e^x+x)} dx$$
 We'll use the differential field ${\mathbb C}(x, \theta, \psi)$ where
 $\theta = \exp x$ and $\psi = \exp\left( \frac{x^2-1}{x}+\frac{1}{\theta+x}\right)$.
 
-\begin{maximacode}
-/* kill(allbut(functions, macros, props))$ */
-/* kill(values, arrays)$ */
-kill(pf, denoms, n, c, R, Q, D, C, a, A)$
-/* have to redefine D because it was also a variable and got killed! */
-D(f) := diff(f,x)$
-\end{maximacode}
-
-\begin{maximacode}
-integrand:
-   (exp(x) - x^2 + 2*x)
-      / ((exp(x) + x)^2 * x^2)
-   * exp((x^2-1)/x + 1/(exp(x)+x));
-gradef(theta, x, theta)$
-gradef(psi, x,
-   D((x^2-1)/x + 1/(theta+x))*psi)$
-lintegrand:
-   subst([exp(x) = theta,
-          exp((x^2-1)/x + 1/(theta+x))
-             = psi],
-      integrand);
-\end{maximacode}
-
 \begin{sageblock}
 # First, we switch back to using the Symbolic Ring,
 # instead of the ring variables from the last example.
@@ -1566,12 +1351,6 @@ The integrand has the form $a_1 \psi$, where
 $a_1 \in {\mathbb C}(x, \theta)$, so we're ready to apply
 Theorem \ref{exponential integration theorem}.
 Equation \eqref{eq: exponential An} gives:
-
-\begin{maximacode}
-depends(A1,x)$
-a1 : lintegrand/psi$
-eq: D(A1) + D(psi)/psi*A1 - a1;
-\end{maximacode}
 
 \begin{sageblock}
 a1 = lintegrand/psi
@@ -1614,13 +1393,6 @@ Let's use {\tt numerator()} to collapse the entire equation into a
 single fraction and discard the denominator, and
 then extract the coefficients of $A_1$ and $A_1'$.
 
-\begin{maximacode}
-expand(num(ratsimp(eq)));
-[C, AB] : partition(%, A1);
-[B, A] : ratsimp(partition(AB, D(A1))
-          / [A1, D(A1)]);
-\end{maximacode}
-
 \begin{sageblock}
 [BC, _], [A, _] = \
    eq.numerator().coefficients(diff(A1,x));
@@ -1634,10 +1406,6 @@ C
 Now we want to integrate $A(0)/B(0)$, to determine the highest power
 of $\theta$ that can appear in the denominator:
 
-\begin{maximacode}
-subst(theta=0,A/B);
-\end{maximacode}
-
 \begin{sageblock}
 (A/B).subs(theta=0)
 \end{sageblock}
@@ -1648,15 +1416,6 @@ us that $\theta$ can appear in $r$'s denominator with multiplicity
 one.
 
 What about the polynomial degree?
-
-\begin{maximacode}
-A;
-B;
-lc(expand(A),theta);
-lc(B,theta);
-integrate(lc(B,theta) / lc(expand(A),theta), x);
-remvalue(A,B,C,AB);
-\end{maximacode}
 
 \begin{sageblock}
 R2 = ZZ['x']['theta']
@@ -1672,11 +1431,6 @@ Since the lower bound is also $-1$, this
 gives us the following form for $A_1$:
 
 $$A_1 = A_{1,-1} \theta^{-1} \qquad A_{1,-1} \in {\mathbb C}(x)$$
-
-\begin{maximacode}
-depends(A,x)$
-A1: A[1,-1] * theta^-1 + A[1,0] + A[1,1] * theta;
-\end{maximacode}
 
 Sage doesn't know how {\tt theta} differentiates\footnote{Maxima is
 somewhat better in this regard.  It's {\tt gradef} command lets the
@@ -1727,19 +1481,10 @@ eq2b = ideal[0].normal_form(eq2a).numerator()
 % $A_1$ that I just set, and specifying the {\tt diff} flag causes
 % the derivatives to be expanded.
 
-\begin{maximacode}
-num(ratsimp(eq));
-ev(%,diff);
-\end{maximacode}
-
 $A_{1,-1}$ is a rational functions in
 ${\mathbb C}(x)$.  In particular, it does not involve $\theta$, so
 each power of $\theta$ in this equation must be zero.
 Let's extract the leading $\theta$ coefficient and set it equal to zero.
-
-\begin{maximacode}
-lc(expand(%), theta);
-\end{maximacode}
 
 \begin{sageblock}
 eq2.numerator().coefficient(theta, 2)
@@ -1750,20 +1495,6 @@ This Risch equation has an obvious solution.  Now we're solving
 in ${\mathbb C}(x)$, so if it were difficult, we could use the theory
 of the previous section:
 
-\begin{maximacode}
-A[1,1]: normal_risch_solver(%, A[1,1]);
-
-num(ratsimp(eq));
-ev(%,eval,diff);
-lc(expand(%), theta);
-A[1,0]: normal_risch_solver(%, A[1,0]);
-
-num(ratsimp(eq));
-ev(%,eval,diff);
-lc(expand(%), theta);
-A[1,-1]: normal_risch_solver(%, A[1,-1]);
-\end{maximacode}
-
 \begin{sageblock}
 R2.<x> = QQbar[];
 D = Derivation(R2, {x: 1});
@@ -1772,25 +1503,12 @@ normal_risch_equation(1/x^2, 1/x^2, D)
 
 Having solved for $A_{1,-1}$, we've now solved for $A_1$:
 
-\begin{maximacode}
-ev(A1);
-\end{maximacode}
-
 \begin{sageblock}
 A1 = R(1/theta)
 \end{sageblock}
 
 Since our integrand was of the form $a_1 \psi$, our integral is of the
 form $A_1 \psi$, so we've completed our calculation.  Is it correct?
-
-\begin{maximacode}
-ev(A1 * psi);
-subst([psi = exp((x^2-1)/x + 1/(theta+x)),
-       theta = exp(x)],
-      %);
-ratsimp(%);
-diff(%,x) === integrand;
-\end{maximacode}
 
 \begin{sagecode}
 

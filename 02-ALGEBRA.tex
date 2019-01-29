@@ -820,11 +820,6 @@ Thus, $x-y$ is the GCD of the primitive polynomials, and it has unit
 content $\gcd(1,-y)$.  The GCD of the original contents
 ($1$ and $5y-7$) is 1, so the final result is again $x-y$.
 
-\begin{maximablock}
-gcd(5*x*y - 5*y^2 - 7*x + 7*y,
-    2*x^2 - y*x - y^2);
-\end{maximablock}
-
 \begin{sageblock}
 R.<x,y> = QQ[]
 gcd(5*x*y - 5*y^2 - 7*x + 7*y,
@@ -966,15 +961,7 @@ s &=& {2\over35}(x+3) \cr\cr
 t &=& - {1\over35}(4x^2+23x+33) \cr
 \end{eqnarray*}
 
-Now let's verify this solution using Maxima:
-
-% \vfill\eject
-
-\begin{maximablock}
-a: 4*x^4+13*x^3+15*x^2+7*x+1 $
-b: 2*x^3+x^2-4*x-3 $
-c: x^3+5*x^2+7*x+3 $
-\end{maximablock}
+Now let's verify this solution using Sage:
 
 \begin{sageblock}
 R.<x> = QQ[]
@@ -983,16 +970,8 @@ b = 2*x^3+x^2-4*x-3;
 c = x^3+5*x^2+7*x+3;
 \end{sageblock}
 
-Maxima's {\tt gcdex(a,b)} function returns a list {\tt [s,t,gcd]} satisfying
-
-$$as + bt = \gcd(a,b)$$
-
-\begin{maximablock}
-gcdex(a,b);
-\end{maximablock}
-
 \begin{sageblock}
-xgcd(a,b);
+xgcd(a,b)
 \end{sageblock}
 
 \begin{sageblock}
@@ -1014,19 +993,8 @@ def diophantine(a,b,c):
 c == a*s + b*t
 \end{sageblock}
 
-\vfill\eject
-
-If the $c$ polynomial divides the GCD we just computed, then we can just multiply
-through by the quotient:
-
-\begin{maximablock}
-divide(c, %[3]);
-[s,t,_] : %th(2)*%[1];
-s;
-t;
-a*s + b*t === c;
-kill(a,b,c,s,t)$
-\end{maximablock}
+%If the $c$ polynomial divides the GCD we just computed, then we can just multiply
+%through by the quotient:
 
 \endexample
 
@@ -1248,12 +1216,6 @@ so,
 
 $${{x^2 + 3x + 2}\over{x^3-3x^2+4}} = {{1}\over{x+1}} + {2\over{(x-2)^2}} + {2\over{(x-2)}}$$
 
-Again, let's verify this result using Maxima:
-
-\begin{maximablock}
-partfrac((3*x^2 - 4*x + 2)/(x^3 - 3*x^2 + 4), x);
-\end{maximablock}
-
 Here's Sage code to do a partial fractions expansion
 and save the results in an array:
 
@@ -1380,47 +1342,7 @@ original system to be solvable.
 
 \vfill\eject
 
-Here's a Maxima function that constructs a Sylvester matrix:
-
-\begin{maximacommon}
-syl_elem(a,b,t,i,j) :=
-   if (i > hipow(b,t))
-      then coeff(b,t,i-j)
-      else coeff(a,t,i-j+hipow(a,t));
-sylvester(a,b,t) := block(
-   [size: hipow(a,t) + hipow(b,t)],
-   genmatrix(lambda([i,j], syl_elem(a,b,t,i,j)),
-             size, size)
-);
-\end{maximacommon}
-
-\begin{comment}
-...alternate Maxima function to construct Sylvester matrix
-\begin{maximacommon}
-syl1[a, x, rows, cols] :=
-   genmatrix(lambda([i,j], coeff(a,x,hipow(a,x)-j+i)),
-             rows, cols);
-sylvester(a,b,x) :=
-   addrow(syl1[expand(a), x,
-               hipow(b,x),hipow(a,x)+hipow(b,x)],
-          syl1[expand(b), x,
-               hipow(a,x),hipow(a,x)+hipow(b,x)]);
-\end{maximacommon}
-\end{comment}
-
 \example Compute the $t-$resultant of $t^2 - 1 -x$ and $t^3-t-y$.
-
-\begin{maximablock}
-
-sylvester(t**2 - 1 - x, t**3 - t - y, t);
-ratsimp(determinant(%));
-\end{maximablock}
-
-More succinctly, we can use the built-in Maxima function {\tt resultant}:
-
-\begin{maximablock}
-resultant(t**2 - 1 - x, t**3 - t - y, t);
-\end{maximablock}
 
 \begin{sageblock}
 R.<x,y,t> = QQ[]
@@ -1433,11 +1355,6 @@ have a common factor when $y^2-x^3-x^2=0$.  For example,
 this condition is satisfied when $x=3$ and $y=6$, and
 the two polynomials become $t^2-4$ and $t^3-t-6$, which
 have the common factor $t-2$:
-
-\begin{maximablock}
-factor(t**2-4);
-factor(t**3-t-6);
-\end{maximablock}
 
 \begin{sageblock}
 (t^2-4).factor()
@@ -1594,30 +1511,10 @@ If $n$ was not irreducible, this construction would
 not work for all values of $x$, and we would have
 a ring but not a field.
 
-When calculating in ${\cal F}[x]$ mod $n(x)$,
-I'll use the following Maxima function.
-{\tt modulo} takes a rational function, an irreducible polynomial $n$,
-and the variable $x$ used to construct the extension.  After splitting
-the rational function into its numerator and denominator, it uses {\tt
-gcdex} to invert the denominator modulo $n(x)$, then multiplies it by
-the numerator and uses {\tt divide} to perform modulo reduction.
-
-\begin{maximacommon}
-modulo(r,n,x) := block(
-   [d_inverse : gcdex(denom(r),n,x)[1]],
-   divide(num(r) * d_inverse,n,x)[2]
-);
-\end{maximacommon}
-
 We need to specify the variable in order to distinguish between
 operations in ${\cal C}(x)[y]$ mod $n(y)$ and ${\cal C}(y)[x]$
 mod $n(x)$.  For example, reducing mod $(y-x)$ effectively sets
 $y$ equal to $x$, but it could also set $x$ equal to $y$:
-
-\begin{maximablock}
-modulo(x^3+y, y-x, y);
-modulo(x^3+y, y-x, x);
-\end{maximablock}
 
 \begin{sageblock}
 R.<x> = QQ[]

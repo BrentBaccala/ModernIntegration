@@ -70,12 +70,6 @@ sophisticated techniques of this chapter.
 First, we convert the the integrand into
 a rational function on an algebraic curve:
 
-\begin{maximablock}
-f : y^2 - (x^2 + 1)$
-
-integrand : x/y$
-\end{maximablock}
-
 \begin{sageblock}[riemannroch]
 R.<x,y> = QQbar[]
 
@@ -96,10 +90,6 @@ Let's compute the principal parts of $\frac{x}{y}$
 at $x=i$.  Calling {\tt puiseux} with {\tt deg=-1} computes just
 the principal part of the differential:
 
-\begin{maximablock}
-puiseux(f, x, y, %i, false, -1, x/y);
-\end{maximablock}
-
 \begin{sageblock}[riemannroch]
 I = sqrt(QQbar(-1))
 puiseux(f, I, 0, 0, x/y)
@@ -115,10 +105,6 @@ m(x/y)
 There appears to be a pole here, but appearances are deceptive.
 We need to expand the {\it differential}, not the {\it integrand}:
 
-\begin{maximablock}
-puiseux(f, x, y, %i, false, -1, x/y*del(x));
-\end{maximablock}
-
 \begin{sageblock}[riemannroch]
 puiseux(f, I, 0, 0, x/y * d(x))
 \end{sageblock}
@@ -131,10 +117,6 @@ So, even though the {\it integrand} has a pole at $(i,0)$, the {\it
 differential} does not... and the differential is what matters!
 
 The only other place we might have a pole is infinity.
-
-\begin{maximablock}
-puiseux(f, x, y, inf, false, 0, x/y);
-\end{maximablock}
 
 \begin{sageblock}[riemannroch]
 puiseux(f, oo, oo, 0, x/y)
@@ -152,10 +134,6 @@ but again
 we have to take the differential into account.  Since $x=\frac{1}{t}$,
 $dx=-\frac{1}{t^2} dt$, and we actually have second order poles
 at infinity.
-
-\begin{maximablock}
-puiseux(f, x, y, inf, false, 0, x/y*del(x));
-\end{maximablock}
 
 \begin{sageblock}[riemannroch]
 puiseux(f, oo, oo, 0, x/y *d(x))
@@ -177,10 +155,6 @@ characterizes the integral.
 %at infinity -- $y$ itself!
 
 What functions have first order poles at infinity and nowhere else?
-
-\begin{maximablock}
-basis : riemannroch(f, x, y, [[[inf, inf], -1]]);
-\end{maximablock}
 
 \begin{sageblock}[riemannroch]
 S.<x,y,z> = QQ[];
@@ -208,11 +182,6 @@ our differential.
 
 Let's expand them:
 
-\begin{maximablock}
-puiseux(f, x, y, inf, false, 0, x);
-puiseux(f, x, y, inf, false, 0, y);
-\end{maximablock}
-
 \begin{sageblock}[riemannroch2]
 [m2(x), m3(x)]
 [m2(y), m3(y)]
@@ -222,14 +191,9 @@ No linear algebra games are required to see that $y$ will match the
 principal parts of the differential if it is itself differentiated.
 Therefore, $y=\sqrt{x^2+1}$ is our solution.
 
-\begin{maximablock}
-'integrate(x/sqrt(x^2+1), x)
-   = integrate(x/sqrt(x^2+1), x);
-\end{maximablock}
-
-\begin{sageblock}[riemannroch2]
-integrate(SR(x)/sqrt(x^2+1), SR(x), hold=True)
-\end{sageblock}
+\begin{comment}
+$$\sage{integrate(SR(x)/sqrt(x^2+1), SR(x), hold=True)} = \sage{integrate(SR(x)/sqrt(x^2+1), SR(x))}$$
+\end{comment}
 
 \endexample
 
@@ -243,19 +207,7 @@ Integrate $\int \frac{x^9+2x^7-x}{(x^4+2x^2+1)\sqrt{x^8+1}}\, dx$
 When I say that Maxima can't solve this integral, I mean that its
 built-in integration routine can't solve the integral:
 
-\begin{maximablock}
-integrand: (x^9+2*x^7-x)/((x^4+2*x^2+1)*sqrt(x^8+1));
-
-integrate(integrand, x);
-\end{maximablock}
-
 Now let's attack the problem using the techniques of this book.
-
-\begin{maximablock}
-f: y^2 - x^8 - 1$
-
-lintegrand: subst(sqrt(x^8+1)=y, integrand);
-\end{maximablock}
 
 \begin{sageblock}[riemannroch3]
 QQbar.options.display_format = 'radical'
@@ -266,33 +218,11 @@ F.<y> = R.extension(y^2 - (x^8+1))
 integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
 \end{sageblock}
 
-Inspecting the denominator, we see that since $x^4+2x^2+1=(x^2+1)^2$,
-our finite poles can be at $x=\pm i$, as well as the eight roots of
-$x^8+1=0$.
-
-\begin{maximablock}
-
-puiseux(f, x, y, %i, false, -1,
-        lintegrand * del(x));
-puiseux(f, x, y, -%i, false, -1,
-        lintegrand * del(x));
-\end{maximablock}
-\begin{maximablocksmall}
-for i:1 thru 15 step 2 do
-   disp(puiseux(f, x, y, cis(i*%pi/8), 0, -1,
-                lintegrand * del(x)));
-\end{maximablocksmall}
+Where are our poles?
 
 \begin{sageblock}[riemannroch3]
 D = (integrand * x.differential()).divisor_of_poles()
 \end{sageblock}
-
-We also need to check for poles at infinity.
-
-\begin{maximablock}
-puiseux(f, x, y, inf, inf, -1,
-        lintegrand * del(x));
-\end{maximablock}
 
 We've found four second order poles at the ordinary points $(\pm i, \pm\sqrt{2})$,
 as well as two third order poles at a singular point with two sheets at infinity.
@@ -310,15 +240,6 @@ i.e, all the functions on our algebraic curve with at most first order
 poles at $(\pm i,\pm\sqrt{2})$, no other finite poles, and at most
 second order poles at infinity.
 
-\begin{maximablock}
-div : [[[%i,  sqrt(2)], -1],
-       [[-%i,  sqrt(2)], -1],
-       [[%i, -sqrt(2)], -1],
-       [[-%i, -sqrt(2)], -1],
-       [[inf, inf], -2]]$
-basis : riemannroch(f, x, y, div);
-\end{maximablock}
-
 \begin{sageblock}[riemannroch3]
 from sage.rings.function_field.divisor import FunctionFieldDivisor
 D = FunctionFieldDivisor(D.parent().function_field(), {p:m-1 for p,m in D.list()})
@@ -333,10 +254,6 @@ last chapter for solving Mittag-Leffler problems:
 basis = D.basis_function_space()
 \end{sageblock}
 
-\begin{maximablock}
-m : principal_parts_matrix(f,x,y, basis, div);
-\end{maximablock}
-
 \begin{sageblock}[riemannroch3]
 def principal_parts_matrix(div, basis):
     F = div.parent().function_field()
@@ -348,24 +265,9 @@ def principal_parts_matrix(div, basis):
 m = principal_parts_matrix(D, basis)
 \end{sageblock}
 
-Another Maxima function will extract the principal parts of the
+Another Sage function will extract the principal parts of the
 differential, and divide them by the powers needed for term-wise
 integration:
-
-\begin{maximacommon}
-principal_parts2(f,x,y, func, divisor) :=
-  flatten(map(lambda([d],
-    map(lambda([e],
-      map(lambda([order], coeff(e[1]/del(t), t, order-1)/order),
-          makelist(order, order, d[2], -1))),
-       puiseux(f, x, y, d[1][1], d[1][2], 0, func))), divisor)
-  )
-;
-\end{maximacommon}
-
-\begin{maximablock}
-b : transpose(matrix(principal_parts2(f,x,y, lintegrand * del(x), div)));
-\end{maximablock}
 
 \begin{sageblock}[riemannroch3]
 def solution_vector(div, differential):
@@ -380,18 +282,10 @@ b = solution_vector(D, integrand * x.differential())
 
 Now we have a matrix equation that we want to solve:
 
-\begin{maximablock}
-m . v = b;
-\end{maximablock}
-
 $$\sage[riemannroch3]{m} \cdot v = \sage[riemannroch3]{b}$$
 
 The equation has a non-trivial null space, which we expect because
 of the presence of the constant of integration.
-
-\begin{maximablock}
-nullspace(m);
-\end{maximablock}
 
 \begin{sageblock}[riemannroch3]
 m.kernel()
@@ -399,21 +293,11 @@ m.kernel()
 
 Now let's compute the pseudoinverse:
 
-\begin{maximablock}
-pi : pseudoinverse(m);
-\end{maximablock}
-
 \begin{sageblock}[riemannroch3]
 pi = m.pseudoinverse()
 \end{sageblock}
 
 To find out if there actually is a solution, we simply have to check:
-
-\begin{maximablock}
-v : pi.b;
-
-is(m.v = b);
-\end{maximablock}
 
 \begin{sageblock}[riemannroch3]
 v = pi * b
@@ -423,19 +307,11 @@ m * v == b
 So, yes, this system does have a solution.  Now let's multiply our
 solution vector by the original basis:
 
-\begin{maximablock}
-basis.v;
-\end{maximablock}
-
 \begin{sageblock}[riemannroch3]
 solution = (matrix(basis) * v)[0,0]
 \end{sageblock}
 
 ...and convert back to our original form:
-
-\begin{maximablock}
-solution : subst([y=sqrt(x^8+1)], %);
-\end{maximablock}
 
 \begin{sageblock}[riemannroch3]
 var('x')
@@ -444,16 +320,6 @@ solution = solution.element().change_ring(F).subs({y:sqrt(x^8+1)})
 \end{sageblock}
 
 Now we can verify the solution:
-
-\begin{maximablock}
-diff(solution,x) === integrand;
-\end{maximablock}
-
-...and confirm that:
-
-\begin{maximablock}
-'integrate(integrand, x) = solution;
-\end{maximablock}
 
 \begin{sageblock}[riemannroch3]
 integrand = integrand.element().change_ring(F).subs({y:sqrt(x^8+1)})
@@ -477,24 +343,6 @@ This is a familiar example from first year calculus, but let's
 approach it using the techniques of this book.  We'll
 use the algebraic extension $y^2=1-x^2$ and integrate ${1\over
 y}\,dx$.
-
-\begin{maximablock}
-f : y^2 - (1 - x^2)$
-\end{maximablock}
-
-Any finite poles where the denominator is zero?
-
-\begin{maximablock}
-puiseux(f, x, y, 1, false,
-        -1, 1/y * del(x));
-\end{maximablock}
-
-Poles at infinity?
-
-\begin{maximablock}
-puiseux(f, x, y, inf, false,
-        -1, 1/y * del(x));
-\end{maximablock}
 
 \begin{sageblock}[arcsin]
 QQbar.options.display_format = 'radical'
@@ -520,10 +368,6 @@ So, we have a singular point at infinity, and we want a function with
 a simple zero on one cycle and a simple pole on the other.
 The basis will have either one element or no elements, depending
 on whether an algebraic function exists with the desired properties.
-
-\begin{maximablock}
-basis : riemannroch(f, x, y, [[[inf, inf], [-1,1]]]);
-\end{maximablock}
 
 \begin{sageblock}[arcsin]
 pls = D.support()
@@ -558,12 +402,6 @@ chapter.
 
 First, transform the problem into an algebraic curve:
 
-\begin{maximablock}
-f: y^2 - (4 - x^2)$
-
-lintegrand: y * del(x)$
-\end{maximablock}
-
 \begin{sageblock}[ex8.7]
 QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
@@ -573,10 +411,6 @@ F.<y> = R.extension(y^2 - (4-x^2))
 
 With no denominator, there can be no poles at finite points, so we
 just need to check infinity:
-
-\begin{maximablock}
-puiseux(f,x,y,inf,false,0,lintegrand);
-\end{maximablock}
 
 \begin{sageblock}[ex8.7]
 integrand = y * x.differential()
@@ -593,11 +427,6 @@ components.
 Let's start with the algebraic part.  We need a Riemann-Roch
 space with at most second order poles at infinity:
 
-\begin{maximablock}
-div : [[[inf, inf], -2]]$
-basis : riemannroch(f,x,y,div);
-\end{maximablock}
-
 \begin{sageblock}[ex8.7]
 from sage.rings.function_field.divisor import FunctionFieldDivisor
 def reduced_divisor(D):
@@ -609,12 +438,6 @@ basis = D2.basis_function_space()
 
 Now let's construct a matrix of principal parts
 and its pseudoinverse:
-
-\begin{maximablock}
-m : principal_parts_matrix(f,x,y, basis, div);
-
-pi : pseudoinverse(m);
-\end{maximablock}
 
 \begin{sageblock}[ex8.7]
 def principal_parts_matrix(div, basis):
@@ -629,10 +452,6 @@ m.kernel()
 pi = m.pseudoinverse()
 \end{sageblock}
 
-\begin{maximablock}
-b : transpose(matrix(principal_parts2(f,x,y, lintegrand, div)));
-\end{maximablock}
-
 \begin{sageblock}[ex8.7]
 def solution_vector(div, differential):
     F = differential.parent().function_field()
@@ -643,14 +462,6 @@ def solution_vector(div, differential):
 \begin{sageblock}[ex8.7]
 b = solution_vector(D2, integrand)
 \end{sageblock}
-
-\begin{maximablock}
-m.(pi.b);
-\end{maximablock}
-
-\begin{maximablock}
-part1: ratsimp(basis . (pi.b));
-\end{maximablock}
 
 \begin{sageblock}[ex8.7]
 v = pi * b
@@ -663,11 +474,6 @@ part, let's return to the series expansion of the differential,
 note that the residues are $-2i$ and $2i$, which can be placed
 in the $Z$-module $\{2i\}$, and search for:
 
-\begin{maximablock}
-basis : riemannroch(f,x,y,
-         [[[inf, inf], [-1, 1]]]);
-\end{maximablock}
-
 \begin{sageblock}[ex8.7]
 pls = D.support()
 basis2 = (pls[0].divisor() - pls[1].divisor()).basis_function_space()
@@ -675,11 +481,6 @@ log_solution = basis2[0]
 \end{sageblock}
 
 The logarithmic component of our solution is thus:
-
-\begin{maximablock}
-solution : subst(y=sqrt(4-x^2),
-             2*%i*log(basis[1]));
-\end{maximablock}
 
 \begin{sageblock}[ex8.7]
 var('x')
@@ -712,31 +513,6 @@ leads to a rational function and a partial fractions expansion.
 
 We'll use ${\bf C}(x,y); y^2=x^4+1$ and integrate ${1\over{xy}}$.
 
-\begin{maximablock}
-f : y^2 - (x^4 + 1)$
-integrand : 1/(x*y) * del(x)$
-\end{maximablock}
-
-\begin{maximablock}
-puiseux(f,x,y,inf,false,0,integrand);
-puiseux(f,x,y,0,false,0,integrand);
-for i:1 thru 7 step 2 do
-   disp(puiseux(f, x, y, cis(i*%pi/4), false, 0,
-                integrand));
-\end{maximablock}
-
-$$ {y\over{x^5+x}} = {y\over{x(x+\omega)(x-\omega)(x+i\omega)(x-i\omega)}} \qquad \omega = \sqrt{i} = {\sqrt{2}\over2} + {\sqrt{2}\over2} i $$
-
-\bigskip
-\begin{center}
-\begin{supertabular}{l l l}
-  $(0, 1)$  &  $\displaystyle {y\over{x^4+1}}$ @ $(0, 1)$     & = $1$    \cr
-  $(0, -1)$  &  $\displaystyle {y\over{x^4+1}}$ @ $(0, -1)$     & = $-1$    \cr
-  $(\omega, 0)$  &  $\displaystyle 2{y\over{x(x^2+i)(x+\omega)}}$ @ $(\omega, 1)$     & = $0$    \cr
-  \multicolumn{2}{l}{$(-\omega, 0), (i\omega, 0), (-i\omega, 0)\qquad\cdots$}    & = $0$    \cr
-\end{supertabular}
-\end{center}
-
 \begin{sageblock}[geddes]
 QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
@@ -750,11 +526,6 @@ D = integrand.divisor_of_poles()
 Our only poles are a pair of first order poles at $x=0$.  This will give rise to
 a logarithmic term; can we find a function that matches?
 
-\begin{maximablock}
-riemannroch(f,x,y,
-    [[[0, -1], -1], [[0, 1], 1]]);
-\end{maximablock}
-
 \begin{sageblock}[geddes]
 pls = D.support()
 D2 = (pls[0].divisor() - pls[1].divisor())
@@ -764,22 +535,11 @@ D2.basis_function_space()
 Since we can't find a function that matches that divisor; let's try
 doubling the strength of the poles.
 
-\begin{maximablock}
-riemannroch(f,x,y,
-    [[[0, -1], -2], [[0, 1], 2]]);
-\end{maximablock}
-
 \begin{sageblock}[geddes]
 log_solution = (2*D2).basis_function_space()[0]
 \end{sageblock}
 
 This is the function we are looking for inside our logarithm.
-
-\begin{maximablock}
-ans : 1/2 * log(subst(y=sqrt(x^4+1), %[1]));
-
-diff(ans,x) === 1/(x*sqrt(x^4+1));
-\end{maximablock}
 
 \begin{sageblock}[geddes]
 var('x')
@@ -792,11 +552,7 @@ $$\int {1\over{x\sqrt{x^4+1}}} \, dx
    = {1\over2} \ln{{\sqrt{x^4+1}-1}\over{x^2}}$$
 \end{comment}
 
-Maxima's built-in integrator produces the result in a different form:
-
-\begin{maximablock}
-integrate(1/(x*sqrt(x^4+1)), x);
-\end{maximablock}
+Sage's built-in integrator produces the result in a different form:
 
 \begin{sageblock}[geddes]
 integrate(1/(x*sqrt(x^4+1)),x)
@@ -804,11 +560,6 @@ integrate(1/(x*sqrt(x^4+1)),x)
 
 We can obtain this result from our algorithm by factoring $\frac{1}{4}$ out
 of the residues and using fourth-order poles:
-
-\begin{maximablock}
-riemannroch(f,x,y,
-    [[[0, -1], -4], [[0, 1], 4]]);
-\end{maximablock}
 
 \begin{sageblock}[geddes]
 (4*D2).basis_function_space()
@@ -891,36 +642,13 @@ pi : pseudoinverse(m);
 \example
 \label{Chebyshev's Integral I}
 
-\begin{maximacode}
-num : 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8$
-den: 2*x^2-1$
-root : x^4+4*x^3+2*x^2+1$
+\begin{sagecode}[chebyshev1]
+root = x^4+4*x^3+2*x^2+1;
+num = 6*x^2 + 5*x +7;
+den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1;
+\end{sagecode}
 
-gradef(y,x,ratsimp(D(root)/2*y/root))$
-
-U: root$
-V: den$
-S2: ratsimp(U*V^2*D(y/V))$
-
-f2 ::: num*y/S2$
-T2 ::: num(f2)$
-Q ::: denom(f2)$
-
-[A,R,g] : gcdex(V,Q,x)$
-
-[Q2, B2]: divide(T2*R, V, x)$
-h ::: A*num*y/(V*U) - (D(V)*Q2+D(B2))*y/V + Q2*D(y)$
-\end{maximacode}
-
-Compute: $$ \maxima{'integrate(subst(y=sqrt(root), h), x);} $$
-
-\begin{maximablock}
-f: y^2 - root;
-solve(denom(h));
-for r in solve(denom(h)) do
-  disp(puiseux(f,x,y,rhs(r),false,-1,h*del(x)))$
-puiseux(f,x,y,inf,false,-1,h*del(x));
-\end{maximablock}
+Compute: $$ \sage[chebyshev1]{integrate(sqrt(root)*num/den, x, hold=True)}$$
 
 \begin{sageblock}[chebyshev]
 QQbar.options.display_format = 'radical'
@@ -942,48 +670,11 @@ D = integrand.divisor_of_poles()
 We have poles at $x=\pm \frac{1}{\sqrt{2}}$
 and nowhere else.
 
-\begin{maximablock}
-extract_simple_poles(x0) :=
-  apply(append,
-    map(lambda([exp], if is(exp[1] # 0) then [[if rhs(exp[2]) # 1/x then x-rhs(exp[2]) else inf, rhs(exp[3]), coeff(exp[1]/del(t), t, -1)]] else []),
-        puiseux(f,x,y,rhs(x0),false,-1,h*del(x))))
-$
-poles : unique(apply(append, map(extract_simple_poles, solve(denom(h)))));
-\end{maximablock}
-
-Maxima has difficulty simplifying this expression.  I found a way to coax it, though...
-
-\begin{maximablock}
-mysimp(x) := signum(x)*sqrt(ratsimp(x*x))$
-poles : map(mysimp, poles);
-\end{maximablock}
-
 Now we can see that all of our residues are $\pm\frac{5}{2}$, so we need only
 a single logarithmic term.  It must have two poles and two zeros, at the
 coordinates we just calculated, and the obvious choice is for each of
 these poles and zero to have degree one.  Let's use our Riemann-Roch
 basis space algorithm to see if such a function exists:
-
-\begin{maximacode}
-
-/* div : map(lambda([x], [[x[1], x[2]], signum(x[3])]), poles); */
-div(p) := map(lambda([x], [[x[1], x[2]], p*signum(x[3])]), poles)$
-\end{maximacode}
-
-\begin{comment}
-\begin{maximablock}
-div(1);
-riemannroch(f,x,y,div(1));
-div(2);
-riemannroch(f,x,y,div(2));
-div(3);
-riemannroch(f,x,y,div(3));
-div(4);
-riemannroch(f,x,y,div(4));
-div(5);
-riemannroch(f,x,y,div(5));
-\end{maximablock}
-\end{comment}
 
 \begin{sageblock}[riemannroch]
 QQbar.options.display_format = 'radical';
@@ -1422,13 +1113,6 @@ $$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}}
 
 The polynomial under the square root is square-free:
 
-\begin{maximablock}
-num : 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8;
-den: 2*x^2-1;
-root : x^4+4*x^3+2*x^2+1;
-factor(root);
-\end{maximablock}
-
 \setpythontexautoprint{false}
 \begin{sagecode}[chebyshev2]
 load("sagecommon.sage");
@@ -1453,14 +1137,6 @@ Applying now Bronstein's Hermite reduction from
 section 2.1 of his ``Symbolic Integration Tutorial'' with $v=2x^2-1$
 to eliminate this square in the denominator:
 
-\begin{maximablock}
-gradef(y,x,ratsimp(D(root)/2*y/root));
-D(y);
-U: root;
-V: den;
-S2: ratsimp(U*V^2*D(y/V));
-\end{maximablock}
-
 \begin{sageblock}[chebyshev2]
 D = Derivation(F, {x: 1, y: root.derivative(x)/2*y/root})
 D(y)
@@ -1469,24 +1145,6 @@ V = den
 S2 = U*V^2*D(y/V)
 \end{sageblock}
 Now we want to solve $f_2 S_2 = A_2 y$ where $A_2 y$ is our numerator.
-
-\begin{maximablock}
-kill(f,T,Q,h);
-f[2] ::: num*y/S2;
-T[2] ::: num(f[2]);
-/* Q::: S2/y; */
-Q ::: denom(f[2]);
-
-[A,R,g] : gcdex(V,Q,x);
-/* T2: num; */
-[Q2, B2]: divide(T[2]*R, V, x);
-h ::: A*num*y/(V*U) - (D(V)*Q2+D(B2))*y/V + Q2*D(y);
-
-simp: false$
-'integrate(num*y/den,x) = ratsimp(B2*y/V)
-   + 'integrate(h,x);
-simp: true$
-\end{maximablock}
 
 \begin{sageblock}[chebyshev2]
 def diophantine(a,b,c):

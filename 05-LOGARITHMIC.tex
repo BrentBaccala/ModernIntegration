@@ -486,13 +486,6 @@ $$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\o
 
 Due to the complexity of this integral, I'll use Sage for the entire calculation.
 
-\begin{maximacode}
-integrand:
-   x*((x^2*exp(2*x^2)-log(x+1)^2)^2
-      +2*x*exp(3*x^2)*(x-(2*x^3+2*x^2+x+1)*log(x+1)))
-   / ((x+1)*(log(x+1)^2 - x^2*exp(2*x^2))^2);
-\end{maximacode}
-
 \begin{sageblocksmall}
 integrand = x                                           \
    *((x^2*exp(2*x^2)-log(x+1)^2)^2                      \
@@ -501,15 +494,6 @@ integrand = x                                           \
 \end{sageblocksmall}
 
 We begin by putting our integral into Liouvillian form, assigning $\psi = \exp(x^2)$ and $\theta = \ln (x+1)$.
-
-\begin{maximacode}
-lintegrand:
-   subst([log(x+1) = theta,
-          exp(x^2) = psi,
-          exp(2*x^2) = psi^2,
-          exp(3*x^2) = psi^3],
-      integrand);
-\end{maximacode}
 
 \begin{sageblock}
 theta = var('theta');
@@ -545,20 +529,9 @@ num = R(lintegrand.numerator(False))
 den = R(lintegrand.denominator(False))
 \end{sageblock}
 
-\begin{maximacode}
-gradef(theta, x, 1/(x+1))$
-gradef(psi, x, 2*x*psi)$
-\end{maximacode}
-
 We need to put our integrand into partial fractions form, so let's begin by
 using Sage's {\ttfamily quo_rem} function, which performs polynomial long division
 with respect to a specific variable, and obtain:
-
-\begin{maximacode}
-[a, N]:
-   divide(num(lintegrand),
-          denom(lintegrand), theta);
-\end{maximacode}
 
 \begin{sageblock}
 (a,N) = num.quo_rem(den)
@@ -596,10 +569,6 @@ $$\int {x\over{x+1}} + {{(-4x^5-4x^4-2x^3-2x^2)\psi^3\theta + {2x^3}\psi^3}\over
 
 The $a_0 = \frac{x}{x+1}$ term is easy.
 
-\begin{maximacode}
-A : integrate(a, x);
-\end{maximacode}
-
 \begin{sageblock}
 A = integrate(SR(a), x)
 \end{sageblock}
@@ -610,46 +579,12 @@ is easy -- it's just a difference of squares: $(\theta^2 - x^2\psi^2) = (\theta-
 We'll factor the denominator into its irreducible factors and then
 perform a partial fractions expansion:
 
-\begin{maximacode}
-pf: partfrac(N/denom(lintegrand), theta);
-\end{maximacode}
-
 \begin{sageblock}
 n = [f[0] for f in factor(den)]
 
 b = partfrac(N, den);
 displayarray(b);
 \end{sageblock}
-
-\begin{maximacode}
-is_power(expr) :=
-   not atom(expr) and part(expr, 0) = "^";
-base(e) :=
-   if is_power(e) then part(e,1) else e;
-power(e) :=
-   if is_power(e) then part(e,2) else 1;
-\end{maximacode}
-
-\begin{maximacode}
-den(pl,v) := partition(denom(pl),v)[2]$
-denoms: map(lambda([u], den(u,theta)),
-            partlist(pf));
-\end{maximacode}
-
-\begin{maximacode}
-n: unique(map(base, denoms));
-\end{maximacode}
-
-\begin{maximacode}
-map(lambda([u], which(n, base(u))), denoms);
-map(power, denoms);
-map(lambda([u],
-       b[which(n, base(den(u,theta))),
-         power(den(u,theta))]: u*den(u,theta)),
-    partlist(pf))$
-displayarray(b)$
-\end{maximacode}
-
 
 Now we're ready to apply
 Theorem \ref{logarithmic integration theorem}.  We'll number
@@ -659,20 +594,11 @@ $n_0(\theta)$.  $m_0=2$, so
 
 $$R_{0,1}(\theta) = b_{0,2}(\theta) = \frac{2x^4+2x^3+x^2+x}{2(x+1)}\psi^2 + \frac{x}{2(x+1)} \psi$$
 
-\begin{maximacode}
-R[1,1] : b[1,2];
-\end{maximacode}
-
 and we wish to compute
 
 $$ B_{0,1}(\theta) \equiv - \frac{R_{0,1}(\theta)}{n_0'(\theta) } \mod n_0(\theta)$$
 
 As modulo calculations go, this one is easy.
-
-\begin{maximacode}
-B[1,1] ::: - R[1,1] / D(n[1]);
-\end{maximacode}
-
 
 \begin{sageblock}
 R = {};
@@ -685,11 +611,6 @@ Now we wish to compute $Q_{0,1}(\theta)$:
 
 $$ Q_{0,1}(\theta) = - \frac{R_{0,1}(\theta) + B_{0,1}(\theta) n_0'(\theta)}{n_0(\theta)}$$
 
-\begin{maximacode}
-Q[1,1] :::
-   - (R[1,1] + B[1,1] * D(n[1])) / n[1];
-\end{maximacode}
-
 \begin{sageblock}
 Q = {};
 Q[0,1] = -(R[0,1] + B[0,1] * D(n[0])) / n[0]
@@ -700,26 +621,12 @@ to obtain $C_{0}$.  If the division isn't exact, or if $C_0$ isn't a constant, t
 
 $$ C_0 = \frac{b_{0,1}(\theta) - B_{0,1}'(\theta) - Q_{0,1}(\theta)}{n_0'(\theta)} $$
 
-\begin{maximacode}
-C[1] :::
-   (b[1,1] - D(B[1,1]) - Q[1,1]) / D(n[1]);
-\end{maximacode}
-
 \begin{sageblock}
 C = {};
 C[0] = (b[n[0],1] - D(B[0,1]) - Q[0,1]) / D(n[0])
 \end{sageblock}
 
 A similar calculation handles the other irreducible factor:
-
-\begin{maximacode}
-R[2,1] : b[2,2];
-B[2,1] ::: - R[2,1] / D(n[2]);
-Q[2,1] :::
-   - (R[2,1] + B[2,1] * D(n[2])) / n[2];
-C[2] :::
-   (b[2,1] - D(B[2,1]) - Q[2,1]) / D(n[2]);
-\end{maximacode}
 
 \begin{sageblock}
 R[1,1] = b[n[1],2]
@@ -729,11 +636,6 @@ C[1] = (b[n[1],1] - D(B[1,1]) - Q[1,1]) / D(n[1])
 \end{sageblock}
 
 Plugging everything together, we conclude that our solution is:
-
-\begin{maximacode}
-A + ratsimp(sum(B[i,1]/n[i],i,1,2))
-   + logcontract(2*sum(C[i] * log(n[i]),i,1,2))/2;
-\end{maximacode}
 
 \begin{sageblock}
 lans = A + sum([B[i,1]/n[i] for i in range(2)]) \
@@ -751,20 +653,12 @@ $$ = x - \theta -\frac{x \psi \theta}{\theta^2 - x^2 \psi^2} + \frac{1}{2}\ln\fr
 
 Converting back to our original form:
 
-\begin{maximacode}
-subst([theta=log(x+1), psi=exp(x^2)], %);
-\end{maximacode}
-
 \begin{sageblock}
 ans = lans.subs({theta : log(x+1), psi : exp(x^2)})
 \end{sageblock}
 
 Finally, we verify that this is, in fact,
 an anti-derivative of the original integrand:
-
-\begin{maximacode}
-diff(%,x) === integrand;
-\end{maximacode}
 
 \begin{sageblock}
 bool(diff(ans,x) == integrand)
@@ -952,9 +846,3 @@ $$= x - \ln(x+1) - {x e^{x^2}\ln(x+1)\over{\ln^2(x+1)-x^2 e^{2x^2}}}$$
 $$+ {1\over2}\ln\left[\ln(x+1) + x e^{x^2}\right] - {1\over2}\ln\left[\ln(x+1) - x e^{x^2}\right]$$
 
 \endexample
-
-\begin{maximacode}
-/* a and N are used again in example 6.8, so don't kill them */
-kill(A, pf, n, R, b, B, Q, C)$
-kill(v, vtick, r, S, T, A, B)$
-\end{maximacode}

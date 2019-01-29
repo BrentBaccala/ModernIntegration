@@ -20,11 +20,8 @@ ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	pdflatex ModernIntegration
 	ls -v sagecommon*.tex | xargs cat > sagecommon.sage
 	rm sagecommon*.tex
-	ls -v common*.tex | xargs cat > common.mac
-	rm common*.tex
-	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --verbose ModernIntegration.tex --jobs 1
+	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --interpreter maxima:/home/baccala/src/maxima-code/maxima-local --verbose ModernIntegration.tex --jobs 1
 	pdflatex ModernIntegration
-	rm common*.tex
 	rm sagecommon*.tex
 
 out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
