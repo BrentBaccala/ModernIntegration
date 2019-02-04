@@ -350,9 +350,11 @@ R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (1-x^2))
 
-D = (1/y * x.differential()).divisor_of_poles()
+integrand = 1/y * x.differential()
 
-[[pl, F.completion(pl)(1/y * x.differential())] for pl in D.support()]
+D = integrand.divisor_of_poles()
+
+[[pl, F.completion(pl)(integrand)] for pl in D.support()]
 \end{sageblock}
 
 Our only poles are at infinity, and they're first order poles,
@@ -362,7 +364,8 @@ The poles' residues (coefficients) are $-i$ and $i$.  These
 exist in the field ${\bf Q}[i]$, which can be regarded as a vector
 field over ${\bf Q}$ with basis $\{1, i\}$, and we want to construct a
 function whose poles and zeros match the $i$-component of the residues
-(the 1-component is uniformly zero).
+(the 1-component is uniformly zero), with the signs flipped due to
+the effect of differentiation of a negative power.
 
 So, we have a singular point at infinity, and we want a function with
 a simple zero on one cycle and a simple pole on the other.
@@ -370,8 +373,13 @@ The basis will have either one element or no elements, depending
 on whether an algebraic function exists with the desired properties.
 
 \begin{sageblock}[arcsin]
-pls = D.support()
-(pls[0].divisor() - pls[1].divisor()).basis_function_space()
+def logarithmic_divisor(differential, component):
+    return add([- ZZ(differential.residue(pl) / component) * pl.divisor() for pl in differential.divisor_of_poles().support()])
+\end{sageblock}
+
+\begin{sageblock}[arcsin]
+D = logarithmic_divisor(integrand, QQbar(-1).sqrt())
+D.basis_function_space()
 \end{sageblock}
 
 Yes, it does exist.
