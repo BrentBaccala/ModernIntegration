@@ -166,14 +166,20 @@ $$\sage{integrate(SR(x)/sqrt(x^2+1), SR(x), hold=True)} = \sage{integrate(SR(x)/
 \endexample
 
 \vfill\eject
-\mysection{An integral Maxima can't solve}
+\mysection{An integral Sage can't solve}
 
 \example
-\label{an integral Maxima can't solve}
+\label{an integral Sage can't solve}
 Integrate $\int \frac{x^9+2x^7-x}{(x^4+2x^2+1)\sqrt{x^8+1}}\, dx$
 
-When I say that Maxima can't solve this integral, I mean that its
+When I say that Sage can't solve this integral, I mean that its
 built-in integration routine can't solve the integral:
+
+\begin{sageblock}[riemannroch3-2]
+y = sqrt(x^8+1);
+integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
+integrate(integrand,x)
+\end{sageblock}
 
 Now let's attack the problem using the techniques of this book.
 
