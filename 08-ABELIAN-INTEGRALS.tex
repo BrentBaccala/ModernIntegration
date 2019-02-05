@@ -70,12 +70,6 @@ sophisticated techniques of this chapter.
 First, we convert the the integrand into
 a rational function on an algebraic curve:
 
-\begin{sageblock}[riemannroch]
-R.<x,y> = QQbar[]
-
-f = y^2 - (x^2 + 1)
-\end{sageblock}
-
 \begin{sageblock}[riemannroch2]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -90,11 +84,6 @@ Let's compute the principal parts of $\frac{x}{y}$
 at $x=i$.  Calling {\tt puiseux} with {\tt deg=-1} computes just
 the principal part of the differential:
 
-\begin{sageblock}[riemannroch]
-I = sqrt(QQbar(-1))
-puiseux(f, I, 0, 0, x/y)
-\end{sageblock}
-
 \begin{sageblock}[riemannroch2]
 D = (x/y).divisor()
 p = D.support()[0]
@@ -105,10 +94,6 @@ m(x/y)
 There appears to be a pole here, but appearances are deceptive.
 We need to expand the {\it differential}, not the {\it integrand}:
 
-\begin{sageblock}[riemannroch]
-puiseux(f, I, 0, 0, x/y * d(x))
-\end{sageblock}
-
 \begin{sageblock}[riemannroch2]
 m(x/y * x.differential())
 \end{sageblock}
@@ -117,10 +102,6 @@ So, even though the {\it integrand} has a pole at $(i,0)$, the {\it
 differential} does not... and the differential is what matters!
 
 The only other place we might have a pole is infinity.
-
-\begin{sageblock}[riemannroch]
-puiseux(f, oo, oo, 0, x/y)
-\end{sageblock}
 
 \begin{sageblock}[riemannroch2]
 D2 = (x/y * x.differential()).divisor()
@@ -134,10 +115,6 @@ but again
 we have to take the differential into account.  Since $x=\frac{1}{t}$,
 $dx=-\frac{1}{t^2} dt$, and we actually have second order poles
 at infinity.
-
-\begin{sageblock}[riemannroch]
-puiseux(f, oo, oo, 0, x/y *d(x))
-\end{sageblock}
 
 \begin{sageblock}[riemannroch2]
 m2 = F.completion(D2.support()[0], prec=0)
@@ -155,15 +132,6 @@ characterizes the integral.
 %at infinity -- $y$ itself!
 
 What functions have first order poles at infinity and nowhere else?
-
-\begin{sageblock}[riemannroch]
-S.<x,y,z> = QQ[];
-
-I = ideal(S(1));
-Pinf = ideal(x,z);
-
-riemannrochKash(S(f).homogenize(z), Pinf, I)
-\end{sageblock}
 
 \begin{sageblock}[riemannroch2]
 D3 = add([-(m+1)*p for p,m in D2.list() if m < 0])
@@ -216,6 +184,7 @@ L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^8+1))
 
 integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
+
 \end{sageblock}
 
 Where are our poles?
@@ -684,24 +653,6 @@ coordinates we just calculated, and the obvious choice is for each of
 these poles and zero to have degree one.  Let's use our Riemann-Roch
 basis space algorithm to see if such a function exists:
 
-\begin{sageblock}[riemannroch]
-QQbar.options.display_format = 'radical';
-
-R.<x,y,z> = QQbar[];
-f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1)
-f = f.homogenize(z);
-def P(j,k):
-    return ideal(x-j*1/QQbar(sqrt(2))*z,
-                 y-k*(QQbar(sqrt(2)) + j*1/2))
-#                 y-k*sqrt(9+j*QQbar(sqrt(2))^5)/2)
-
-Zlist = [P(1,1), P(-1,-1)];
-Plist = [P(1,-1), P(-1,1)];
-
-riemannrochKash(f, intersection(Zlist),
-                   intersection(Plist))
-\end{sageblock}
-
 \begin{sageblock}[chebyshev]
 D2 = add([QQ(integrand.residue(pl)).sign() * pl for pl in D.support()])
 D2.basis_function_space()
@@ -710,17 +661,6 @@ D2.basis_function_space()
 No such function exists.  However, a function may exist with
 higher degree poles and zero.  Let's see... how about a
 function with second degree poles and zeros?  Third degree?
-
-\begin{sageblock}[riemannroch]
-riemannrochKash(f, intersection(Zlist),
-                   intersection(Plist), 2)
-riemannrochKash(f, intersection(Zlist),
-                   intersection(Plist), 3)
-riemannrochKash(f, intersection(Zlist),
-                   intersection(Plist), 4)
-res = riemannrochKash(f, intersection(Zlist),
-                   intersection(Plist), 5)
-\end{sageblock}
 
 \begin{sageblock}[chebyshev]
 (2*D2).basis_function_space()
@@ -736,31 +676,6 @@ the degree of the divisor by every larger integers
 (and how would we ever know when to stop?), let's
 continue with the problem by coaxing our result
 into a more reasonable form:
-
-\begin{sageblock}[riemannroch]
-#res[0].numerator()
-#res[0].denominator()
-
-# Why doesn't this work?  Bug in Sage?
-# R.<x,y> = QQbar[];
-# R(res[0].numerator())
-
-R.<x> = ZZ[]
-F = Frac(R)
-R2.<y> = F[]
-f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1)
-Q = R2.quo(ideal(f))
-
-# this doesn't work
-# Q(res[0])
-
-# do this instead
-n = Q(res[0].numerator());
-d = Q(res[0].denominator());
-
-n/d
-
-\end{sageblock}
 
 \begin{sageblock}[chebyshev]
 R2.<x> = ZZ[]
@@ -783,7 +698,6 @@ ln = lcm([QQ(c).denominator() for c in num3.coefficients()]);
 
 # why not Q(num3*ln) / Q(den2*ld)
 Q(num3*ln) / R2(den2*ld)
-
 \end{sageblock}
 
 %% This attempt with Sage and Macaulay 2 came to naught because

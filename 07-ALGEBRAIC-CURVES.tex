@@ -1485,153 +1485,8 @@ constructing Riemann-Roch bases.  Finding a basis for a Riemman-Roch
 space in a crucial first step in solving a Mittag-Leffler problem.
 
 Numerous algorithms have been developed for computing bases of
-Riemann-Roch spaces.  Sage uses Singular's implementation of
-the Brill-Noether algorithm.
-
-\begin{sagecommon}
-singular.lib('hess.lib');
-
-def riemannroch(f, ZeroIdeal, PoleIdeal):
-
-   if f.base_ring() is QQbar:
-      orig_elems = flatten([g.coefficients() for I in [ZeroIdeal, PoleIdeal] for g in I.gens()])
-      orig_elems = orig_elems + f.coefficients()
-      nfe = number_field_elements_from_algebraics(orig_elems)
-      numfield = nfe[0]
-      new_elems = nfe[1]
-
-      elem_dict = dict(zip(orig_elems, new_elems))
-      def elem_map(e): return elem_dict[e]
-
-      def ideal_map(Ideal):
-         return ideal([g.map_coefficients(elem_map, new_base_ring=numfield) for g in Ideal.gens()])
-
-      f = f.map_coefficients(elem_map, new_base_ring=numfield)
-      ZeroIdeal = ideal_map(ZeroIdeal)
-      PoleIdeal = ideal_map(PoleIdeal)
-
-   K = singular.RiemannRochHess(f, singular.list([ZeroIdeal, PoleIdeal]), '"ideals"')
-
-   denom = K[2].sage()
-   B = [i.sage()/denom for i in K[1]]
-   return B
-   x,y,z = CurveIdeal.ring().gens()
-   return [simplify(i.subs({z:1})) for i in B]
-\end{sagecommon}
-
-\vfill\eject
-
-\begin{sagecommontiny}
-from sage.rings.number_field.number_field_base import is_NumberField
-
-def riemannrochKash(f, ZeroIdeal, PoleIdeal, multiple=1):
-
-    if f.base_ring() is QQbar:
-      orig_elems = flatten([g.coefficients() for I in [ZeroIdeal, PoleIdeal] for g in I.gens()])
-      orig_elems = orig_elems + f.coefficients()
-      nfe = number_field_elements_from_algebraics(orig_elems)
-      numfield = nfe[0]
-      new_elems = nfe[1]
-
-      elem_dict = dict(zip(orig_elems, new_elems))
-      def elem_map(e): return elem_dict[e]
-
-      def ideal_map(Ideal):
-         return ideal([g.map_coefficients(elem_map, new_base_ring=numfield) for g in Ideal.gens()])
-
-      f = f.map_coefficients(elem_map, new_base_ring=numfield)
-      ZeroIdeal = ideal_map(ZeroIdeal)
-      PoleIdeal = ideal_map(PoleIdeal)
-
-    P = f.parent()
-    xx, yy, zz = P.gens()
-
-    if P.base_ring() is QQ:
-       Q = kash.RationalField()
-       kT = Q.RationalFunctionField()
-       aa = None
-       a = None
-    elif is_NumberField(P.base_ring()):
-       aa = P.base_ring().0
-       kZa = kash.IntegerRing().PolynomialAlgebra()
-       ka = kZa.Element(list(P.base_ring().defining_polynomial()))
-       kka = ka.NumberField()
-       a = kka.1
-       kT = kka.RationalFunctionField()
-    else:
-       raise NotImplementedError("base field must be QQ, QQbar, or a NumberField")
-
-    kTy = kT.PolynomialAlgebra()
-    x = kT.1
-    y = kTy.1
-    x
-
-    # Convert a polynomial in P, which is a trivariate ring over a number field, to kash
-    # First, we build a new ring with an extra, fourth variable that will take the place of the NumberField generator
-    # Then, convert poly's coefficient ring to the new ring (now we're in a trivariate ring over the quadvariate ring)
-    # Then, convert the three main variables to the quadvariate ring (now we're in the quadvariate ring)
-    # Then, substitute in the four kash variables
-
-    def poly2kash(poly, newy):
-       if P.base_ring() is QQ:
-          return poly.subs({xx: x, yy: newy, zz: 1})
-       else:
-          aa = P.base_ring().0
-          R2 = QQ[P.gens() + ('a',)]
-          bb = poly.map_coefficients(lambda v: v.polynomial().subs({v.polynomial().parent().0 : R2.3}), new_base_ring = R2)
-          bb = bb.subs({bb.parent().0 : R2.0, bb.parent().1 : R2.1, bb.parent().2 : R2.2})
-          return bb.subs({R2.0 : x, R2.1 : newy, R2.2 : 1, R2.3 : a})
-
-    ff = poly2kash(f, y)
-    K = ff.FunctionField()
-    ybar = K.1
-
-    O = K.MaximalOrderFinite()
-    Oi = K.MaximalOrderInfinite()
-
-    # We passed in homogeneous ideals of the projective coordinate
-    # ring, but Kash works in affine space, wants ideals of maximal
-    # orders, requires the finite and infinite parts of the divisor to
-    # be handled separately.  Also, ideals of the coordinate ring
-    # specify Weil divisors, which don't map surjectively to Cartier
-    # divisors (specified by ideals of maximal orders) at
-    # singularities.
-
-    # This is only working well enough for the examples in this
-    # section.  We assume that there are no singularities at finite
-    # points, so finite components can be converted directly into
-    # ideals of the maximal finite order.  We also assume that there's
-    # a single point at infinity, and if it appears in the coordinate
-    # ring ideal, then it applies equally to all places at infinity.
-    # Not really what we want, but consistent with how I wrote the
-    # Maxima code (if a point is singular, assign the same degree to
-    # all places over it).
-
-    def ideal2divisor(Ideal):
-       D = O.Ideal(1).Divisor()
-       for q,p in Ideal.complete_primary_decomposition():
-          if zz in p.gens():
-             # infinite component
-             infinite_prime_ideals = Oi.Decomposition()
-             for i in range(1, infinite_prime_ideals.Length()+1):
-                D = D + Integer(q.0.degree()) * infinite_prime_ideals[i].Divisor()
-          else:
-             # finite component
-             D = D + O.Ideal(*[poly2kash(g, ybar) for g in q.gens()]).Divisor()
-       return multiple * D
-
-    # The system sum() doesn't work on Kash divisors.  It produces:
-    # TypeError: unsupported operand type(s) for +: 'int' and 'KashElement'
-    # (we don't actually use this function, though)
-
-    # def mysum(List):
-    #    return reduce(lambda i,j: i+j, List)
-
-    B = (ideal2divisor(ZeroIdeal) - ideal2divisor(PoleIdeal)).Basis()
-
-    return B.sage({x: xx, ybar: yy, a: aa})
-\end{sagecommontiny}
-
+Riemann-Roch spaces.  Sage uses an implementation of Hess's algorithm
+from \cite{hess}.
 
 \begin{comment}
 I've implemented in Maxima one of the oldest,
@@ -1674,44 +1529,43 @@ Here's a simple example\footnote{From
 of a Riemann-Roch space calculation:
 
 \begin{sageblock}[riemannroch]
-R.<x,y,z> = QQ[];
-f = y^2 - x^3 + x;
+R.<x> = FunctionField(QQbar, implementation='kash')
+L.<y> = R[]
+F.<y> = R.extension(y^2 - x^3 + x)
 
-P1 = ideal(x,y);
-I = ideal(R(1));
+O = F.maximal_order()
+P = O.ideal(x,y)
+D = P.divisor()
 
-#riemannrochKash(f.homogenize(z), P1, I)
-#riemannrochKash(f.homogenize(z), P1^2, I)
-#riemannrochKash(f.homogenize(z), P1^3, I)
-#riemannrochKash(f.homogenize(z), P1^4, I)
+D.basis_function_space()
+(2*D).basis_function_space()
+(3*D).basis_function_space()
+(4*D).basis_function_space()
 \end{sageblock}
 
 Here are the examples from \cite{alvanos} \S6.3:
 
 \begin{sageblock}[riemannroch]
-R.<x,y,z> = QQ[];
-f = y^2 - x^3 - 1;
-f = f.homogenize(z);
+R.<x> = FunctionField(QQbar, implementation='kash')
+L.<y> = R[]
+F.<y> = R.extension(y^2 - x^3 - 1)
 
-I = ideal(R(1));
-P1 = ideal(x-2*z, y-3*z);
-P2 = ideal(x-2*z, y+3*z);
-Pinf = ideal(x,z);
+O = F.maximal_order()
+P1 = O.ideal(x-2,y-3)
+P2 = O.ideal(x-2,y+3)
+Pinf = F.places_infinite()[0]
 
-riemannroch(f, Pinf, P1)
-riemannrochKash(f, Pinf, P1)
-riemannroch(f, Pinf^2, P1)
-riemannrochKash(f, Pinf^2, P1)
-riemannroch(f, Pinf^3, P1)
-riemannrochKash(f, Pinf^3, P1)
-riemannroch(f, Pinf^4, P1)
-riemannrochKash(f, Pinf^4, P1)
-riemannroch(f, Pinf, I)
-riemannrochKash(f, Pinf, I)
-riemannroch(f, Pinf^2, I)
-riemannrochKash(f, Pinf^2, I)
-riemannroch(f, Pinf^3, I)
-riemannrochKash(f, Pinf^3, I)
+D1 = P1.divisor()
+D2 = P2.divisor()
+Dinf = Pinf.divisor()
+
+(Dinf-D1).basis_function_space()
+(2*Dinf-D1).basis_function_space()
+(3*Dinf-D1).basis_function_space()
+(4*Dinf-D1).basis_function_space()
+(Dinf).basis_function_space()
+(2*Dinf).basis_function_space()
+(3*Dinf).basis_function_space()
 \end{sageblock}
 
 \vfill\eject
@@ -1773,33 +1627,6 @@ to see if the trial solution actual solves the original equation.
 Let's say that we've identified a divisor on an algebraic
 curve (example \ref{an integral Maxima can't solve}):
 
-\begin{sageblock}[riemannroch]
-QQbar.options.display_format = 'radical';
-
-R.<x,y,z> = QQbar[];
-f = y^2 - x^8 - 1;
-f = f.homogenize(z);
-def P(i,j):
-    return ideal(x-i*QQbar(sqrt(-1))*z, y-j*QQbar(sqrt(2))*z)
-inf = ideal(z, x);
-I = ideal(R(1));
-
-Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1), inf^2];
-
-# Right now, only my patched Sage can compute intersections over QQbar
-
-def intersection(List):
-   return reduce(lambda i,j: i.intersection(j), List)
-
-riemannrochKash(f, intersection(Zlist), I)
-
-Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1), inf];
-riemannrochKash(f, intersection(Zlist), I)
-
-Zlist = [P(1,1), P(1,-1), P(-1,1), P(-1,-1)];
-riemannrochKash(f, intersection(Zlist), I)
-\end{sageblock}
-
 We now compute its principal parts matrix:
 
 \begin{sageblock}[riemannroch]
@@ -1820,6 +1647,8 @@ Dinf = add([pl.divisor() for pl in F.places_infinite()])
 D1 = Dfinite + 2*Dinf
 
 basis = Dfinite.basis_function_space()
+
+D1.basis_function_space()
 
 principal_parts_matrix(D1, basis)
 \end{sageblock}
