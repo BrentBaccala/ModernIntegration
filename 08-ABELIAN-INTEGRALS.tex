@@ -1,22 +1,22 @@
 
 \mychapter{Abelian Integrals}
 
-{\bf THIS CHAPTER IS VERY VAGUE AND INCOMPLETE.}
+{\bf THIS CHAPTER IS INCOMPLETE.}
 
 We can now use the machinery developed in the previous chapter to
 solve Abelian integrals in general.
 
-\theorem
-Differentials of rational functions on an algebraic curve have no
-simple (i.e, first order) poles.
-\endtheorem
+%\theorem
+%Differentials of rational functions on an algebraic curve have no
+%simple (i.e, first order) poles.
+%\endtheorem
 
-\theorem
-Logarithmic differentials on an algebraic curve have only simple
-poles.
-\endtheorem
+%\theorem
+%Logarithmic differentials on an algebraic curve have only simple
+%poles.
+%\endtheorem
 
-These two theorems, taken together with Liouville's Theorem, provide
+These techniques, taken together with Liouville's Theorem, provide
 our method of attack for integration of Abelian integrals.  We find
 all of the poles of the differential, construct Puiseux expansions of
 the differential there, and split the principal parts easily into two
@@ -43,9 +43,9 @@ locations.  Having done so, it then becomes a straightforward exercise
 in linear algebra to find a combination of those basis functions
 that match a specified set of principal parts.
 
-\theorem
-Finite poles are always located over a zero of the denominator.
-\endtheorem
+%\theorem
+%Finite poles are always located over a zero of the denominator.
+%\endtheorem
 
 \begin{comment}
 The techniques of the previous chapter suffice to compute the {\it
@@ -57,6 +57,49 @@ corresponds to poles of second order poles and higher in the integrand,
 while the logarithmic portion corresponds to first order poles
 in the integrand.
 \end{comment}
+
+\vfill\eject
+\mysection{The Abelian Integration Theorem}
+
+\theorem\label{abelian integration theorem}
+Let $\CC$ be the complex field, let
+$\CC(x)$ be the rational function field in $x$ over $\CC$,
+let $\CC(x,y)$ be an algebraic extension of $\CC(x)$,
+and let $f$ be an element of $\CC(x,y)$
+with pole divisor $(f)_\infty$ and principle parts expansion:
+
+$$\forall P \in (f)_\infty\qquad f = \sum_{\nu_P<i<0} a_{P,i}\ t^i + \cdots$$
+
+If $f$ has
+an elementary anti-derivative $F$, then $F \in \CC(x, y, \Psi)$,
+where $\CC(x, y, \Psi)$ is a finite logarithm extension
+of $\CC(x,y)$, $F$ can be written as the sum of an algebraic
+function in $A \in \CC(x,y)$ and logarithms of algebraic functions $B_j \in \CC(x,y)$:
+
+$$F = A + \sum_j c_j \ln B_j$$
+
+$A$'s pole divisor is a subset of $f$'s pole divisor, and its principle parts expansion has the form:
+
+$$\forall P \in (f)_\infty\qquad A = \sum_{(\nu_P+1)<i<0} A_{P,i}\ t^i + \cdots$$
+
+$$A_{P,i} = \frac{1}{i} a_{P,i-1}$$
+
+(what about ramification and infinity?)
+
+The residues $a_{P,-1}$ can be written in terms of a $\ZZ$-module in $\CC$, with basis $\{c_j\}$:
+
+$$a_{P,-1} = \sum_j b_{P,j} c_j \qquad b_{P,j} \in \ZZ$$
+
+and the divisors of the $B_j$ can be written:
+
+$$(B_j) = \sum_P b_{P,j} P$$
+
+(and any such basis is as good as any other)
+
+%\vfill\eject
+%\proof
+
+\endtheorem
 
 \vfill\eject
 \mysection{Integration Examples}
