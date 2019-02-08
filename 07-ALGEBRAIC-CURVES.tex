@@ -590,387 +590,14 @@ newton_polygon(f, x, y, x0, y0) := block(
 
 \vfill\eject
 
-\begin{sagecommonsmall}
-singular.lib('hnoether.lib')
-
-def recenter_curve(f, x0, y0):
-
-    # XXX expect parent to be QQ[x,y] or something very similar
-    (x,y) = f.parent().gens()
-
-    if x0 == oo:
-        f = f.subs({x : 1/x}).numerator()
-        x0 = 0
-    if y0 == oo:
-        f = f.subs({y : 1/y}).numerator()
-        y0 = 0
-
-    return f.subs({x : x+x0, y : y+y0})
-
-def apply_map_to_laurent_series(morphism, series):
-    try:
-        R = series.parent().change_ring(morphism.codomain())
-    except AttributeError:
-        R = series.parent()
-    result = R(map(morphism, list(series)), series.valuation())
-    return result.add_bigoh(series.prec())
-\end{sagecommonsmall}
-
-\begin{sagecommontiny}
-def puiseux_cycle(f, x0, y0, n, hne):
-
-    P = f.parent()
-
-    numfield = P.base_ring()
-
-    # We'll add a new variable to perform the series expansion, but
-    # for a while we'll need to work with polynomials in all three
-    # variables - f's original two, plus the new one
-
-    (x,y,t) = PolynomialRing(numfield, list(P.gens()) + ['t']).gens()
-
-    # adjust n to compensate for expansions at infinity
-
-    adjn = n
-    if x0 == oo:
-        adjn = adjn + max_x_valuation(f)
-    if y0 == oo:
-        adjn = adjn + max_y_valuation(f)
-
-    # Call Singular
-
-    ed = singular.extdevelop(hne, adjn)
-
-    eds = ed[1].sage()
-
-    # eds is a matrix over a bivariate polynomial ring over a number field,
-    # but it might not be the same number field use to define the polynomial
-    # Sage Trac #25176
-
-    # a homomorphism that maps its number field to our number field
-
-    h = eds.base_ring().base_ring().hom(numfield.gens())
-
-    # a homomorphism that maps its polynomial ring to ours
-
-    h2 = eds.base_ring().hom(h, P)
-
-    param = singular.param(ed, 0).sage()
-
-    if x0 == oo:
-        x1 = 0
-    else:
-        x1 = x0
-
-    if y0 == oo:
-        y1 = 0
-    else:
-        y1 = y0
-
-    xexpansion = x1 + h2(param[0].gens()[0]).subs({P.0: t})
-    yexpansion = y1 + h2(param[0].gens()[1]).subs({P.0: t})
-
-    # Construct a Laurent power series ring in the new variable,
-    # and convert our expansions into it.
-
-    PSring = Frac(numfield[['t']])
-
-    xexpansion = PSring(xexpansion)
-    yexpansion = PSring(yexpansion)
-
-    if param[1][0] != -1:
-       xexpansion = xexpansion.add_bigoh(param[1][0])
-    if param[1][1] != -1:
-       yexpansion = yexpansion.add_bigoh(param[1][1])
-
-    if x0 == oo:
-        xexpansion = 1/xexpansion
-    if y0 == oo:
-        yexpansion = 1/yexpansion
-
-    return [xexpansion, yexpansion]
-\end{sagecommontiny}
-
-\begin{sagecommonsmall}
-def map_laurent_series_to_SR(series):
-    R = series.parent().change_ring(SR)
-    result = R(map(lambda x: x.radical_expression(), list(series)), series.valuation())
-    return result.add_bigoh(series.prec())
-
+\begin{comment}
+\begin{sageblock}
 from sage.geometry.newton_polygon import NewtonPolygon
 
 def newton_polygon(f):
     return NewtonPolygon(f.exponents())
-
-def max_x_valuation(f):
-    return max([-s.numerator() for s in newton_polygon(f).slopes() if s < 0])
-
-def max_y_valuation(f):
-    return max([s.denominator() for s in newton_polygon(f).slopes() if s < 0])
-
-def min_x_valuation(f):
-    return min([-s.numerator() for s in newton_polygon(f).slopes() if s < 0])
-
-def min_y_valuation(f):
-    return min([s.denominator() for s in newton_polygon(f).slopes() if s < 0])
-
-
-# This isn't the greatest way to define a differential, but it will do for now
-# In puiseux, we assume that any variable starting with 'd' is a differential
-
-def d(x):
-    return SR.var('d' + str(x))
-
-from sage.symbolic.expression_conversions import RingConverter
-\end{sagecommonsmall}
-
-\begin{sagecommontiny}
-def puiseux_function(origf, x0, y0, n, fn):
-
-    P = origf.parent()
-    (x,y) = P.gens()
-
-    dvar = None
-
-    # If the function is in the symbolic ring, convert it to P
-    # after removing any differential that might be present.
-
-    if fn.parent() is SR:
-       RC = RingConverter(P)
-       if any((str(a).startswith('d') for a in fn.args())):
-          dvar = (a for a in fn.args() if str(a).startswith('d')).next()
-          fn = RC(fn / dvar)
-          dvar = RC(SR.var(str(dvar)[1:]))
-       else:
-          fn = RC(fn)
-
-    if y0 == oo:
-       yv = -min_y_valuation(recenter_curve(origf, x0, y0))
-    else:
-       yv = min_y_valuation(recenter_curve(origf, x0, y0))
-
-    if x0 == oo:
-       xv = -min_x_valuation(recenter_curve(origf, x0, y0))
-    else:
-       xv = min_x_valuation(recenter_curve(origf, x0, y0))
-
-    # compute our goal precision, which is the requested precision,
-    # adjusted for the differential that we'll multiply through by
-
-    if dvar == x:
-       goal = n - xv + 1
-    elif dvar == y:
-       goal = n - yv + 1
-    else:
-       goal = n
-
-    # put the function in K(x)[y]/(p), for the next step
-
-    R = P.base_ring()[x]
-    F = Frac(R)[y]
-    Q = QuotientRing(F, F(origf))
-
-    Qfn = Q(numerator(fn)) / Q(denominator(fn))
-
-    # compute the precision that we'll ask for in our x and y expansions
-
-    prec = 0
-
-    for e in range(Q.degree()):
-        if Qfn[e] != 0:
-            if x0 == oo:
-               cv = -Qfn[e].valuation()
-            else:
-               cv = Qfn[e].valuation(R.0-x0)
-            # let x's valuation be xv and y's valuation be yv
-            #
-            # if x's expansion is exact and y's absolute precision is O(t^p),
-            #    y's relative precision is (p-yv), y^e's relative precision is the same,
-            #    so this term's absolute precision is cv*xv + e*yv + (p-yv)
-            #    IF EXPONENT e IS = 0, then this term doesn't involve y
-            #    IF EXPONENT e IS > 0, then the precision we need from y is...
-            #    n = cv*xv + e*yv + (p-yv)  -->  p = n - cv*xv - (e-1)*yv
-
-            # if y's expansion is exact and x's absolute precision is O(t^p),
-            #    this term's absolute precision is cv*xv + e*yv + (p-xv)
-            #    the precision we need from x is...
-            #    n = cv*xv + e*yv + (p-xv)  --> p = n - (cv-1)*xv - e*yv
-
-            prec = max(prec, goal - (cv-1)*xv - e*yv)
-            if e > 0:
-                prec = max(prec, goal - cv*xv - (e-1)*yv)
-
-    p = puiseux(origf, x0, y0, prec)
-
-    ans = []
-    for cycle in p:
-       f = fn.subs({x: cycle[0], y: cycle[1]})
-       t = f.parent().0
-       if dvar == x:
-          f = f * diff(cycle[0], t)
-       if dvar == y:
-          f = f * diff(cycle[1], t)
-       if f.prec() != oo:
-          f = f.add_bigoh(n)
-       if dvar:
-          f = SR(f) * d(t)
-       ans.append(f)
-    return ans
-\end{sagecommontiny}
-
-\begin{sagecommontiny}
-def puiseux_qqbar(origf, x0, y0, n, normalize):
-
-    orig_elems = origf.coefficients()
-    if x0 != oo: orig_elems.append(x0)
-    if y0 != oo: orig_elems.append(y0)
-
-    nfe = number_field_elements_from_algebraics(orig_elems)
-    numfield = nfe[0]  # The number field
-    new_elems = nfe[1] # The converted elements
-    morphism = nfe[2]  # A morphism to get back to QQbar
-
-    # XXX original 'morphism' might go to AA, not QQbar
-    # this seems to be a bug in number_field_elements_from_algebraics()
-
-    if morphism.codomain() == AA:
-        morphism = AA.hom(QQbar) * morphism
-
-    # map our polynomial into numfield
-
-    elem_dict = dict(zip(orig_elems + [oo], new_elems + [oo]))
-    def elem_map(e): return elem_dict[e]
-
-    newf = origf.map_coefficients(elem_map, new_base_ring=numfield)
-
-    # If we're going to normalize, then we're going to take a mxv-th
-    # root of the x-expansion, so we need to make sure it's expanded
-    # out to at least n*mxv order to get n-th order after the root.
-
-    # If n is negative or zero, then we still need at least order mxv
-    # to be able to take the root at all.
-
-    adjn = n
-    if normalize:
-        mxv = max_x_valuation(recenter_curve(origf, x0, y0))
-        if n > 0:
-            adjn = mxv*n
-        else:
-            adjn = mxv
-
-    p = puiseux(newf, elem_dict[x0], elem_dict[y0], adjn)
-
-    # We may have extended further to construct the results
-    # If so, 'morphism' will no longer work, so replace it
-    # with the first compatible embedding into QQbar, with
-    # "compatible" meaning the first embedding that takes
-    # our coordinates to their original values.
-
-    # XXX maybe puiseux should return the embedding it used
-    # to extend with, and we should use that to pick a
-    # compatible embedding
-
-    # XXX First, we shouldn't just pick an embedding at random
-    # Second, we should embed into the original NumberField, and
-    # then use 'morphism' (a particular pre-selected embedding)
-    # to get the rest of the way into QQbar
-
-    if p[0][0].base_ring() is not numfield:
-        # print numfield.embeddings(p[0][0].base_ring())
-        for morphism in p[0][0].base_ring().embeddings(QQbar):
-           if all(((x0 == oo or (morphism(cycle[0][0]) == x0)) and
-                   (y0 == oo or (morphism(cycle[0][1]) == y0))
-                  for cycle in p)):
-               break
-
-    ans = []
-    for cycle in p:
-       # This gets us back to QQbar
-       cycle = [apply_map_to_laurent_series(morphism, cycle[0]), apply_map_to_laurent_series(morphism, cycle[1])]
-
-       # This normalizes x to be exact and y to be approximate
-       if cycle[0].prec() != oo and normalize:
-           P = cycle[0].parent()
-           t = P.gen(0)
-           # XXX I'd like to do this:
-           # expansion = (cycle[0] - x0)
-           # but my QQbar map doesn't respect the embedding, so it doesn't always work.  Instead:
-           expansion = (cycle[0] - cycle[0][0])
-           v = expansion.valuation()
-           r = expansion^(1/v)
-           cycle = [cycle[0][0] + t^v, cycle[1].subs({t: r.reverse()})]
-
-       # We might have computed our series to a higher precision that requested.
-       # If so, scale them back
-       if cycle[0].prec() != oo:
-           cycle[0] = cycle[0].add_bigoh(n)
-       if cycle[1].prec() != oo:
-           cycle[1] = cycle[1].add_bigoh(n)
-
-       #cycle = map(map_laurent_series_to_SR, cycle)
-       ans.append(cycle)
-    return ans
-\end{sagecommontiny}
-
-\begin{sagecommontiny}
-def puiseux(origf, x0, y0, n, *args, **kwargs):
-
-    normalize = kwargs.get('normalize', True)
-
-    P = origf.parent()
-
-    # If a fifth argument was specified, it's a function to be
-    # expanded.  Recurse to get expansions of x and y, then
-    # substitute in to the function.
-
-    if len(args) > 0:
-        return puiseux_function(origf, x0, y0, n, args[0])
-
-    # Singular can't work directly with QQbar, so if that's our base
-    # ring, then we need to convert to a NumberField.
-
-    if P.base_ring() == QQbar:
-        return puiseux_qqbar(origf, x0, y0, n, normalize)
-
-    # origf is a bivariate polynomial over a NumberField (or QQ)
-    # call Singular to compute its Hamburger-Noether expansion
-
-    f = recenter_curve(origf, x0, y0)
-    hne = f._singular_().hnexpansion()
-
-    if len(hne) == 0:
-       raise ValueError("specified coordinates not on curve")
-
-    # If Singular had to extend the NumberField to compute the
-    # result, recurse using the extension field
-
-    if hne[1].type() == 'ring':
-
-       extensionRing = hne[1].sage()
-
-       # XXX We've got hne computed and stored in the ring, but I'm
-       # not sure how to get to it from Sage, so just recurse
-
-       # Construct a homomorphism to map the coordinates into the new
-       # NumberField
-
-       # XXX we just pick the first embedding on the list
-
-       h = P.base_ring().embeddings(extensionRing.base_ring())[0]
-
-       if x0 != oo:
-          x0 = h(x0)
-       if y0 != oo:
-          y0 = h(y0)
-
-       return puiseux(extensionRing(origf), x0, y0, n)
-
-    # For each cycle in the result, finish the calculation
-
-    return [puiseux_cycle(f, x0, y0, n, cycle) for cycle in hne]
-\end{sagecommontiny}
-
-\vfill\eject
+\end{sageblock}
+\end{comment}
 
 \example Construct Puiseux expansions of $y$ at the multiple points of the
 curve $y^2 = 1 - x^2$
@@ -980,7 +607,6 @@ $y^2 + x^2 - 1 = 0$.  Where does it have multiple points?
 We compute the discriminant:
 
 \begin{sageblock}
-
 R.<x,y> = QQbar[];
 (y^2 + x^2 - 1).discriminant(y).factor()
 \end{sageblock}
@@ -1045,11 +671,6 @@ in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
 x-series unchanged.  Let's confirm this result with Sage:
 
-\begin{sageblock}
-R.<x,y> = QQbar[];
-p = puiseux(y^2 + x^2 - 1, 1, 0, 4)
-\end{sageblock}
-
 \begin{sageblock}[ch7]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -1060,7 +681,25 @@ O = F.maximal_order()
 pl = O.ideal(x-1, y).place()
 xseries = F.completion(pl, prec=5)(x)
 yseries = F.completion(pl, prec=4)(y)
-yseries(((xseries-1)^(1/2)).reverse())
+\end{sageblock}
+
+This answer differs from the one we computed by hand because the
+choice of uniformizing variable ($s$) is not unique, and because the
+computer made a different choice than did.  Our ``$t$'' variable was
+roughly $\sqrt{x-1}$.  Even though square roots don't exist per se in
+this field, we can take the square root of a power series that starts
+with a square term.  Performing that operation on {\tt xseries}, we
+get a series expansion for $\sqrt{x-1}$ (our $t$) in terms of the
+computer's $s$.  Reversing the series gives us a series for $s$ in
+terms of $t$, and substituting this series in for $s$ confirms
+our previous calculation:
+
+\begin{sageblock}[ch7]
+t = (xseries-1)^(1/2)
+S = LaurentSeriesRing(t.base_ring(), name='t')
+s = S(t.reverse())
+xseries(s)
+yseries(s)
 \end{sageblock}
 
 Now, let's analyze the point at infinity.  We move infinity to a
@@ -1107,11 +746,6 @@ yield two different values of $y$ for each value of $u$.
 Geometrically, we have two sheets that approach each other and touch
 at a singular point where the curve is not locally Euclidean.
 
-\begin{sageblock}
-R.<x,y> = QQbar[]
-puiseux(y^2 + x^2 - 1, oo, oo, 4)
-\end{sageblock}
-
 \begin{sageblock}[ch7]
 Pinf = F.places_infinite()
 # [(F.completion(pl, prec=4)(x), F.completion(pl, prec=4)(y)) for pl in Pinf]
@@ -1129,6 +763,7 @@ We begin by computing the discriminant of the
 equation, which gives us the locations of the multiple points.
 
 \begin{sageblock}
+R.<x,y> = QQbar[];
 f = y^3 + x^3*y + x
 f.discriminant(y).factor()
 \end{sageblock}
@@ -1143,11 +778,6 @@ f.discriminant(y).change_ring(QQ).factor()
 The multiple points lie over the roots of this equation: $x=0$ and
 the seven roots of $4x^7+27=0$.  Infinity also needs to be
 examined.  We begin with $x=0$:
-
-\begin{sageblock}
-f = y^3 + x^3*y + x
-puiseux(f, 0, 0, 10)
-\end{sageblock}
 
 \begin{sageblock}[ch7-2]
 QQbar.options.display_format = 'radical'
@@ -1173,55 +803,17 @@ puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
 puiseux(y^3 + x^3*y +x, x, y, g, -(3/8)^(1/7), 1);
 \end{comment}
 
-\begin{comment}
-\begin{sageblock}
-# Not correct.  See below.
-R.<x,y,a> = QQ[];
-I = ideal(4*a^7+27)
-Q = R.quo(I)
-
-f = y^3 + x^3*y + x
-# puiseux(Q(f), a, 3/a^2, 10)
-\end{sageblock}
-\end{comment}
-
-\begin{sageblock}
-f = y^3 + x^3*y + x
-puiseux(f, 0, 0, 10)
-
-g = QQbar(-27/4)^(1/7)
-puiseux(f, g, -3/(2*g^2), 2)
-puiseux(f, g, 3/g^2, 2)
-\end{sageblock}
-
 \begin{sageblock}[ch7-2]
 g = QQbar(-27/4)^(1/7)
 pl = O.ideal(x-g, y+3/(2*g^2)).place()
 xseries = F.completion(pl, prec=3)(x)
 yseries = F.completion(pl, prec=2)(y)
+# This is the algebraic number that takes forever to print
 # yseries(((xseries-g)^(1/2)).reverse())
 pl = O.ideal(x-g, y-3/g^2).place()
 xseries = F.completion(pl, prec=3)(x)
 yseries = F.completion(pl, prec=2)(y)
 yseries((xseries-g).reverse())
-\end{sageblock}
-
-\begin{sageblock}
-R1.<g> = QQ[]
-S.<g> = NumberField(4*g^7+27)
-R.<x,y> = S[]
-
-f = y^3 + x^3*y + x
-puiseux(f, g, -3/(2*g^2), 3)
-puiseux(f, g, 3/g^2, 2)
-
-# Why doesn't this work?
-#
-# try:
-#     puiseux(f, g, 0, 1)
-#     raise AssertionError()
-# except ValueError:
-#     pass
 \end{sageblock}
 
 \begin{sageblock}[ch7-3]
@@ -1249,26 +841,6 @@ We have one sheet of two cycles at $(g,-3/(2g^2))$
 and an ordinary point at $(g,3/g^2)$.
 
 Finally, let's look at what happens when $x$ goes to infinity:
-
-\begin{sageblock}
-R.<x,y> = QQbar[]
-
-f = y^3 + x^3*y + x
-
-puiseux(f, oo, 0, 10)
-puiseux(f, oo, oo, 10)
-
-f = x^3 + y^3*x + y
-
-puiseux(f, 0, oo, 10)
-puiseux(f, oo, oo, 10)
-
-#for n in range(1,20):
-#   p1 = puiseux(f, 0, oo, n)
-#   p2 = puiseux(f, oo, oo, n)
-#   assert(f.subs({x: p1[0][0], y:p1[0][1]}) == 0)
-#   assert(f.subs({x: p2[0][0], y:p2[0][1]}) == 0)
-\end{sageblock}
 
 \begin{sageblock}[ch7-2]
 Pinf = F.places_infinite()
@@ -1355,12 +927,6 @@ simply the places where the denominator is zero, and that's just
 $x=\pm 1$.  Now, if we use {\tt puiseux}, we can just request a series
 truncated at the $-1$ term:
 
-\begin{sageblock}
-R.<x,y> = QQbar[]
-
-puiseux(y^2 + x^2 - 1, 1, 0, 0, 1/y)
-\end{sageblock}
-
 \begin{sageblock}[ch7-4]
 QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
@@ -1381,10 +947,6 @@ differential, which must be adjusted at ramification points.
 
 Let's expand $\frac{x}{y}$ at $x=1$:
 
-\begin{sageblock}
-puiseux(y^2 + x^2 - 1, 1, 0, 6, x/y)
-\end{sageblock}
-
 \begin{sageblock}[ch7-5]
 QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
@@ -1392,16 +954,13 @@ L.<y> = R[]
 F.<y> = R.extension(y^2 + x^2 - 1)
 O = F.maximal_order()
 pl = O.ideal(x-1, y).place()
+F.completion(pl, prec=6)(x)
 F.completion(pl, prec=6)(x/y)
 \end{sageblock}
 
 Now $x=t^2+1$, so $\ud x=2t\ud t$.  Thus, multiplying $\frac{x}{y}$
 by $\ud x$ and changing our variable to $t$ will multiply
 all of the terms in our expansion by $2t$:
-
-\begin{sageblock}
-puiseux(y^2 + x^2 - 1, 1, 0, 7, x/y*d(x))
-\end{sageblock}
 
 \begin{sageblock}[ch7-5]
 F.completion(pl, prec=6)(x/y*x.differential())
@@ -1411,12 +970,6 @@ Even though $\frac{x}{y}$ has a pole
 at $x=1$, $\frac{x}{y} \ud x$ does not!
 
 Its behavior at infinity also requires analysis.
-
-\begin{sageblock}
-f = y^2 + x^2 - 1
-puiseux(f, oo, oo, 2)
-puiseux(f, oo, oo, 2, x/y)
-\end{sageblock}
 
 \begin{sageblock}[ch7-5]
 Pinf = F.places_infinite()
@@ -1432,10 +985,6 @@ infinity.  The differential $\frac{x}{y} \ud x$,
 on the other hand, requires us to multiply by $\ud x$,
 and since $x=\frac{1}{t}$, $\ud x = - \frac{1}{t^2} \ud t$.
 
-\begin{sageblock}
-puiseux(f, oo, oo, 2, x/y*d(x))
-\end{sageblock}
-
 In short, while $\frac{x}{y}$ has poles only at $(\pm 1,0)$,
 $\frac{x}{y} \ud x$ has poles only at infinity.
 
@@ -1446,6 +995,8 @@ D = v.divisor()
 \end{sageblock}
 
 \endexample
+
+\begin{comment}
 
 \example
 Compute expansions at all multiple points of
@@ -1539,6 +1090,8 @@ This function contains an extra variable and is, in fact, a family of
 algebraic curves.
 
 \endexample
+
+\end{comment}
 
 % A {\it Riemann surface}, more precisely, is a two-dimensional manifold
 % with a {\it complex analytic structure}.

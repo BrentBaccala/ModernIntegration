@@ -251,3 +251,47 @@ SageCustomizations in sage.repl.ipython_extensions
 > /home/baccala/src/sage/local/lib/python2.7/site-packages/sage/repl/ipython_extension.py(426)__init__()
 -> self.auto_magics = SageMagics(shell)
 (Pdb)
+
+
+
+A very slow Sage calculation that arose from the y^3 + x^3*y + x example,
+when I tried to normalize the series at (g, -3/(2*g^2)).
+
+R.<x> = QQbar[]
+b = (x^28 + 104976).roots()[18][0]
+a = (x^2 + 7/11664*b^24).roots()[1][0]
+a.exactify()
+
+
+This tests a bug fixed in Trac #26593:
+
+g = QQbar(-27/4)^(1/7)
+(nf, elems, mor) = number_field_elements_from_algebraics([sqrt(2), sqrt(-1), g])
+nf3.<n> = NumberField(nf.polynomial(), embedding=mor(nf.0))
+QQbar(-1/108*n^12) == -g
+
+This doesn't work (should it)?
+
+R.<x,y,a> = QQ[];
+I = ideal(4*a^7+27)
+Q = R.quo(I)
+f = y^3 + x^3*y + x
+puiseux(Q(f), a, 3/a^2, 10)
+
+\begin{sageblock}
+R1.<g> = QQ[]
+S.<g> = NumberField(4*g^7+27)
+R.<x,y> = S[]
+
+f = y^3 + x^3*y + x
+puiseux(f, g, -3/(2*g^2), 3)
+puiseux(f, g, 3/g^2, 2)
+
+# Why doesn't this work?
+#
+# try:
+#     puiseux(f, g, 0, 1)
+#     raise AssertionError()
+# except ValueError:
+#     pass
+\end{sageblock}
