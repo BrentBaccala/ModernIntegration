@@ -1,4 +1,4 @@
-# Modern Integration [![Download PDF](https://img.shields.io/badge/Download-PDF-brightgreen.svg)](http://www.freesoft.org/ModernIntegration/ModernIntegration.pdf)
+# Modern Integration [![Download PDF](https://img.shields.io/badge/Download-PDF-brightgreen.svg?style=for-the-badge)](http://www.freesoft.org/ModernIntegration/ModernIntegration.pdf)
 ## A differential algebra textbook
 
 From the preface:
