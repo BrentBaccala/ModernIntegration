@@ -127,7 +127,7 @@ $$
 \endtheorem
 
 \vfill\eject
-\mysection{Integration Examples}
+\mysection{Some Simple Examples}
 
 \example Evaluate $\int \frac{x}{\sqrt{x^2+1}}\,dx$
 
@@ -232,153 +232,6 @@ $$\sage{integrate(SR(x)/sqrt(x^2+1), SR(x), hold=True)} = \sage{integrate(SR(x)/
 \end{comment}
 
 \endexample
-
-\vfill\eject
-\mysection{An integral Sage can't solve}
-
-\example
-\label{an integral Sage can't solve}
-Integrate $\int \frac{x^9+2x^7-x}{(x^4+2x^2+1)\sqrt{x^8+1}}\, dx$
-
-When I say that Sage can't solve this integral, I mean that its
-built-in integration routine can't solve the integral:
-
-\begin{sageblock}[riemannroch3-2]
-y = sqrt(x^8+1);
-integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
-integrate(integrand,x)
-\end{sageblock}
-
-Now let's attack the problem using the techniques of this book.
-
-\begin{sageblock}[riemannroch3]
-QQbar.options.display_format = 'radical'
-R.<x> = FunctionField(QQbar, implementation='kash')
-L.<y> = R[]
-F.<y> = R.extension(y^2 - (x^8+1))
-
-integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
-
-\end{sageblock}
-
-Where are our poles?
-
-\begin{sageblock}[riemannroch3]
-D = (integrand * x.differential()).divisor_of_poles()
-\end{sageblock}
-
-We've found four second order poles at the ordinary points $(\pm i, \pm\sqrt{2})$,
-as well as two third order poles at a singular point with two sheets at infinity.
-
-Our next goal is to construct a basis for a suitable Riemann-Roch space.
-We invert the signs of the finite poles,
-since the convention for Riemann Roch spaces is their functions must
-have order greater than the {\it negative} of a divisor, remember
-that poles decrease in order by $1$ when they are integrated,
-and conclude that the Riemann-Roch space that we're interested in is:
-
-$${\cal L}(Z(i, \sqrt{2}) Z(-i, \sqrt{2}), Z(i, -\sqrt{2}) Z(-i, -\sqrt{2}) Z^2(\infty,\infty))$$
-
-i.e, all the functions on our algebraic curve with at most first order
-poles at $(\pm i,\pm\sqrt{2})$, no other finite poles, and at most
-second order poles at infinity.
-
-\begin{sageblock}[riemannroch3]
-from sage.rings.function_field.divisor import FunctionFieldDivisor
-D = FunctionFieldDivisor(D.parent().function_field(), {p:m-1 for p,m in D.list()})
-\end{sageblock}
-
-We now wish to see if a linear combination of these basis functions will
-match the poles in the differential.  This problem is a bit more complicated
-than the last one, so let's use the tools we developed in the
-last chapter for solving Mittag-Leffler problems:
-
-\begin{sageblock}[riemannroch3]
-basis = D.basis_function_space()
-\end{sageblock}
-
-\begin{sageblock}[riemannroch3]
-def principal_parts_matrix(div, basis):
-    F = div.parent().function_field()
-    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
-    return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
-\end{sageblock}
-
-\begin{sageblock}[riemannroch3]
-m = principal_parts_matrix(D, basis)
-\end{sageblock}
-
-Another Sage function will extract the principal parts of the
-differential, and divide them by the powers needed for term-wise
-integration:
-
-\begin{sageblock}[riemannroch3]
-def solution_vector(div, differential):
-    F = differential.parent().function_field()
-    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
-    return matrix([[c[0](differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
-\end{sageblock}
-
-\begin{sageblock}[riemannroch3]
-b = solution_vector(D, integrand * x.differential())
-\end{sageblock}
-
-Now we have a matrix equation that we want to solve:
-
-$$\sage[riemannroch3]{m} \cdot v = \sage[riemannroch3]{b}$$
-
-The equation has a non-trivial null space, which we expect because
-of the presence of the constant of integration.
-
-\begin{sageblock}[riemannroch3]
-m.kernel()
-\end{sageblock}
-
-Now let's compute the pseudoinverse:
-
-\begin{sageblock}[riemannroch3]
-pi = m.pseudoinverse()
-\end{sageblock}
-
-To find out if there actually is a solution, we simply have to check:
-
-\begin{sageblock}[riemannroch3]
-v = pi * b
-m * v == b
-\end{sageblock}
-
-So, yes, this system does have a solution.  Now let's multiply our
-solution vector by the original basis:
-
-\begin{sageblock}[riemannroch3]
-solution = (matrix(basis) * v)[0,0]
-\end{sageblock}
-
-...and convert back to our original form:
-
-\begin{sageblock}[riemannroch3]
-var('x')
-F = FractionField(PolynomialRing(QQbar, x))
-solution = solution.element().change_ring(F).subs({y:sqrt(x^8+1)})
-\end{sageblock}
-
-Now we can verify the solution:
-
-\begin{sageblock}[riemannroch3]
-integrand = integrand.element().change_ring(F).subs({y:sqrt(x^8+1)})
-bool(solution.diff(x) == integrand)
-\end{sageblock}
-
-% https://ocw.mit.edu/courses/mathematics/18-782-introduction-to-arithmetic-geometry-fall-2013/lecture-notes/MIT18_782F13_lec21.pdf
-% Theorem 21.9. For any divisor D we have dim L(D) ≤ deg D0 + 1.
-
-% or use Riemann-Roch theorem directly
-
-\endexample
-
-
-\vfill\eject
-\mysection{Examples}
 
 \example Compute $\int {1\over{\sqrt{1-x^2}}} \,dx$
 
@@ -552,6 +405,150 @@ Adding in the rational component we computed earlier, the final answer is:
 $$ \int \sqrt{4-x^2} \, dx  = 2\arcsin\frac{x}{2} + \frac{x \sqrt{4-x^2}}{2}$$
 
 \endexample
+
+\vfill\eject
+\mysection{An integral Sage can't solve}
+
+\example
+\label{an integral Sage can't solve}
+Integrate $\int \frac{x^9+2x^7-x}{(x^4+2x^2+1)\sqrt{x^8+1}}\, dx$
+
+When I say that Sage can't solve this integral, I mean that its
+built-in integration routine can't solve the integral:
+
+\begin{sageblock}[riemannroch3-2]
+y = sqrt(x^8+1);
+integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
+integrate(integrand,x)
+\end{sageblock}
+
+Now let's attack the problem using the techniques of this book.
+
+\begin{sageblock}[riemannroch3]
+QQbar.options.display_format = 'radical'
+R.<x> = FunctionField(QQbar, implementation='kash')
+L.<y> = R[]
+F.<y> = R.extension(y^2 - (x^8+1))
+
+integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
+
+\end{sageblock}
+
+Where are our poles?
+
+\begin{sageblock}[riemannroch3]
+D = (integrand * x.differential()).divisor_of_poles()
+\end{sageblock}
+
+We've found four second order poles at the ordinary points $(\pm i, \pm\sqrt{2})$,
+as well as two third order poles at a singular point with two sheets at infinity.
+
+Our next goal is to construct a basis for a suitable Riemann-Roch space.
+We invert the signs of the finite poles,
+since the convention for Riemann Roch spaces is their functions must
+have order greater than the {\it negative} of a divisor, remember
+that poles decrease in order by $1$ when they are integrated,
+and conclude that the Riemann-Roch space that we're interested in is:
+
+$${\cal L}(Z(i, \sqrt{2}) Z(-i, \sqrt{2}), Z(i, -\sqrt{2}) Z(-i, -\sqrt{2}) Z^2(\infty,\infty))$$
+
+i.e, all the functions on our algebraic curve with at most first order
+poles at $(\pm i,\pm\sqrt{2})$, no other finite poles, and at most
+second order poles at infinity.
+
+\begin{sageblock}[riemannroch3]
+from sage.rings.function_field.divisor import FunctionFieldDivisor
+D = FunctionFieldDivisor(D.parent().function_field(), {p:m-1 for p,m in D.list()})
+\end{sageblock}
+
+We now wish to see if a linear combination of these basis functions will
+match the poles in the differential.  This problem is a bit more complicated
+than the last one, so let's use the tools we developed in the
+last chapter for solving Mittag-Leffler problems:
+
+\begin{sageblock}[riemannroch3]
+basis = D.basis_function_space()
+\end{sageblock}
+
+\begin{sageblock}[riemannroch3]
+def principal_parts_matrix(div, basis):
+    F = div.parent().function_field()
+    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
+    return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
+\end{sageblock}
+
+\begin{sageblock}[riemannroch3]
+m = principal_parts_matrix(D, basis)
+\end{sageblock}
+
+Another Sage function will extract the principal parts of the
+differential, and divide them by the powers needed for term-wise
+integration:
+
+\begin{sageblock}[riemannroch3]
+def solution_vector(div, differential):
+    F = differential.parent().function_field()
+    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
+    return matrix([[c[0](differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
+\end{sageblock}
+
+\begin{sageblock}[riemannroch3]
+b = solution_vector(D, integrand * x.differential())
+\end{sageblock}
+
+Now we have a matrix equation that we want to solve:
+
+$$\sage[riemannroch3]{m} \cdot v = \sage[riemannroch3]{b}$$
+
+The equation has a non-trivial null space, which we expect because
+of the presence of the constant of integration.
+
+\begin{sageblock}[riemannroch3]
+m.kernel()
+\end{sageblock}
+
+Now let's compute the pseudoinverse:
+
+\begin{sageblock}[riemannroch3]
+pi = m.pseudoinverse()
+\end{sageblock}
+
+To find out if there actually is a solution, we simply have to check:
+
+\begin{sageblock}[riemannroch3]
+v = pi * b
+m * v == b
+\end{sageblock}
+
+So, yes, this system does have a solution.  Now let's multiply our
+solution vector by the original basis:
+
+\begin{sageblock}[riemannroch3]
+solution = (matrix(basis) * v)[0,0]
+\end{sageblock}
+
+...and convert back to our original form:
+
+\begin{sageblock}[riemannroch3]
+var('x')
+F = FractionField(PolynomialRing(QQbar, x))
+solution = solution.element().change_ring(F).subs({y:sqrt(x^8+1)})
+\end{sageblock}
+
+Now we can verify the solution:
+
+\begin{sageblock}[riemannroch3]
+integrand = integrand.element().change_ring(F).subs({y:sqrt(x^8+1)})
+bool(solution.diff(x) == integrand)
+\end{sageblock}
+
+% https://ocw.mit.edu/courses/mathematics/18-782-introduction-to-arithmetic-geometry-fall-2013/lecture-notes/MIT18_782F13_lec21.pdf
+% Theorem 21.9. For any divisor D we have dim L(D) ≤ deg D0 + 1.
+
+% or use Riemann-Roch theorem directly
+
+\endexample
+
 
 \vfill\eject
 \mysection{Geddes's example}
