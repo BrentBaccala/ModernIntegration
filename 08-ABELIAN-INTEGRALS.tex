@@ -96,8 +96,33 @@ $$(B_j) = \sum_P b_{P,j} P$$
 
 (and any such basis is as good as any other)
 
-%\vfill\eject
-%\proof
+\vfill\eject
+\proof
+
+By Theorem \ref{weak Liouville theorem}, an elementary antiderivative
+of $f$ can only exist in a finite logarithm extension $\CC(x, y, \Psi)$
+of $\CC(x,y)$ and therefore must have the form:
+
+$$F = A + \sum_j c_j \ln B_j$$
+
+where $A,B_j \in \CC(x,y)$, and the $c_j$ are constants.  Differentiating, we obtain:
+
+$$f = \frac{\dd{F}}{\dd{x}} = \frac{\dd{A}}{\dd{x}} + c_j \frac{\frac{\dd{B_j}}{\dd{x}}}{B_j}$$
+
+Consider a place $P$ with uniformizing variable $s$.
+
+$$f = \frac{\dd{A}}{\dd{s}}\frac{\dd{s}}{\dd{x}} + c_j \frac{\frac{\dd{B_j}}{\dd{s}} \frac{\dd{s}}{\dd{x}}}{B_j}$$
+
+Let $A$'s Pusieux expansion at $P$
+be $A_a s^a + A_{a+1} s^{a+1} + \cdots$, let $B_j$'s Pusieux expansions at $P$ be
+$B_{j,k} s^{k_j} + B_{j,k+1} s^{k_j+1} + \cdots$, and let $x$'s Pusieux expansion
+at $P$ be $C_c s^c + C_{c+1} s^{c+1} + \cdots$.  Substituting:
+
+
+$$f = \frac{a A_a s^{a-1} + (a+1) A_{a+1} s^{a} + \cdots}{c C_c s^{c-1} + (c+1) C_{c+1} s^{c} + \cdots}$$
+$$+ \frac{k_j B_{j,k} s^{k_j-1} + (k_j+1) B_{j,k+1} s^{k_j} + \cdots}{c C_c s^{c-1} + (c+1) C_{c+1} s^{c} + \cdots}
+\frac{1}{B_{j,k} s^{k_j} + B_{j,k+1} s^{k_j+1} + \cdots}
+$$
 
 \endtheorem
 
