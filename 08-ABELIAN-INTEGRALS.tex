@@ -1001,7 +1001,40 @@ D = integrand.divisor()
 # (5*D2).basis_function_space()
 \end{sageblock}
 
-Not sure what this means!  Let's take a look at mod 7:
+What does this mean?  Let's take a look at how this
+function behaves over $\QQ$:
+
+\begin{sageblock}[chebyshevQ]
+R.<x> = FunctionField(QQ, implementation='kash')
+L.<y> = R[]
+root = x^4+4*x^3+2*x^2+1
+F.<y> = R.extension(y^2 - root)
+num = 6*x^2 + 5*x +7
+den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1
+integrand = y*num/den * x.differential()
+D = integrand.divisor()
+\end{sageblock}
+
+\begin{sagecode}[chebyshevQ]
+ppoly = [pl.prime_ideal().gens()[0] for pl,m in D.list() if m < 0][0];
+zpoly = [pl.prime_ideal().gens()[0] for pl,m in D.list() if m > 0][0];
+\end{sagecode}
+
+Pay attention to how the ideals' polynomials behaves when reduced mod 5.
+$\sage[chebyshevQ]{zpoly} \mod 5 = \sage[chebyshevQ]{zpoly.numerator().change_ring(GF(5))}$,
+and
+$\sage[chebyshevQ]{ppoly} \mod 5 = \sage[chebyshevQ]{ppoly.numerator().change_ring(GF(5))}$,
+so the pole set and the zero set collapse together mod 5,
+and we get a zero divisor.
+
+Since a zero divisor is principal (it matches any constant, non-zero function),
+we conclude that $D$ is principal mod 5, and the original divisor's
+order is 1 times some multiple of 5.  Combine this with the
+previous fact that the divisor's order is 5 times some multiple of 3,
+and we conclude that the divisor's order is exactly 5 -- the only
+divisor we actually need to check over $\QQbar$.
+
+Let's take a look at mod 7:
 
 \begin{sageblock}[chebyshev]
 PP.<x,y,z> = ProjectiveSpace(GF(7), 2)
