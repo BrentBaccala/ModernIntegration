@@ -895,9 +895,17 @@ to higher and higher powers until we find its order.  Do this for two
 different primes, each exhibiting good reduction, and then we can find
 the order of the original divisor in characteristic zero.
 
-To proof the above claims, I want to construct the Jacobian variety in
-arbitrary characteristic, then show how Jacobians map under good
-reduction.
+I'll prove these claims in the next chapter (not yet written), but
+for now let's just see how to use these theorems to fix the degree
+of the divisor in the last section.  First, let's determine the
+genus of the curve over $\QQ$ (what about $\QQbar$?):
+
+\begin{sageblock}[chebyshev]
+PP.<x,y,z> = ProjectiveSpace(QQ, 2)
+root = x^4+4*x^3+2*x^2+1
+C = Curve((y^2-root).homogenize(z))
+C.geometric_genus()
+\end{sageblock}
 
 \begin{comment}
 x,y,z = PolynomialRing(QQ,3,'xyz').gens()
@@ -911,9 +919,128 @@ X = Curve(f)
 X.genus()
 \end{comment}
 
+Now, let's check reduction mod 2:
+
+\begin{sageblock}[chebyshev]
+PP.<x,y,z> = ProjectiveSpace(GF(2), 2)
+root = x^4+4*x^3+2*x^2+1
+C = Curve((y^2-root).homogenize(z))
+C.geometric_genus()
+\end{sageblock}
+
+The genus changed, so we don't have good reduction mod 2.
+
+What about mod 3 and mod 5?
+
+\begin{sageblock}[chebyshev]
+PP.<x,y,z> = ProjectiveSpace(GF(3), 2)
+root = x^4+4*x^3+2*x^2+1
+C = Curve((y^2-root).homogenize(z))
+C.geometric_genus()
+
+PP.<x,y,z> = ProjectiveSpace(GF(5), 2)
+root = x^4+4*x^3+2*x^2+1
+C = Curve((y^2-root).homogenize(z))
+C.geometric_genus()
+\end{sageblock}
+
+Since the genus is unchanged, both of these primes exhibit
+good reduction.  Let's do the divisor calculation, first
+modulo 3:
+
 %\begin{mdframed}[backgroundcolor=yellow!20]
 %\printpythontex
 %\end{mdframed}
+
+\begin{sageblock}[chebyshev]
+A.<a> = GF(3)[]
+B.<b> = GF(3^2, modulus=a^2-2)
+#PP.<x,y,z> = ProjectiveSpace(B, 2)
+#root = x^4+4*x^3+2*x^2+1
+#C = Curve((y^2-root).homogenize(z))
+# C.geometric_genus()
+
+R.<x> = FunctionField(B)
+L.<y> = R[]
+root = x^4+4*x^3+2*x^2+1
+F.<y> = R.extension(y^2 - root)
+num = 6*x^2 + 5*x +7
+den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1
+integrand = y*num/den * x.differential()
+D = integrand.divisor()
+D2 = add([ZZ(1 if B(integrand.residue(pl))==1 else -1) * pl for pl,m in D.list() if m < 0])
+D2.basis_function_space()
+(2*D2).basis_function_space()
+(3*D2).basis_function_space()
+(4*D2).basis_function_space()
+(5*D2).basis_function_space()
+\end{sageblock}
+
+So, we see that the divisor has order 5, mod 3.  This means
+that the original divisor's order is 5 times some multiple of 3.
+
+Again, let's find the divisor's order mod 5:
+
+\begin{sageblock}[chebyshev]
+A.<a> = GF(5)[]
+B.<b> = GF(5^2, modulus=a^2-2)
+R.<x> = FunctionField(B)
+L.<y> = R[]
+root = x^4+4*x^3+2*x^2+1
+F.<y> = R.extension(y^2 - root)
+num = 6*x^2 + 5*x +7
+den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1
+integrand = y*num/den * x.differential()
+D = integrand.divisor()
+# [(integrand.residue(pl), pl) for pl,m in D.list() if m < 0]
+# D2 = add([ZZ(1 if B(integrand.residue(pl))==1 else -1) * pl for pl,m in D.list() if m < 0])
+# D2.basis_function_space()
+# (2*D2).basis_function_space()
+# (3*D2).basis_function_space()
+# (4*D2).basis_function_space()
+# (5*D2).basis_function_space()
+\end{sageblock}
+
+Not sure what this means!  Let's take a look at mod 7:
+
+\begin{sageblock}[chebyshev]
+PP.<x,y,z> = ProjectiveSpace(GF(7), 2)
+root = x^4+4*x^3+2*x^2+1
+C = Curve((y^2-root).homogenize(z))
+C.geometric_genus()
+\end{sageblock}
+
+So, we have good reduction mod 7, as well as the interesting
+property that $\sqrt{2}$ already exists in this field, since
+$3^2 = 2 \mod 7$.  This causes two of the places in our
+$\QQbar$ divisor to collapse together and cancel each other
+out, so we get a divisor supported over only two places.
+
+\begin{sageblock}[chebyshev7]
+#A.<a> = GF(7)[]
+#B.<b> = GF(7^2, modulus=a^2-2)
+R.<x> = FunctionField(GF(7))
+L.<y> = R[]
+root = x^4+4*x^3+2*x^2+1
+F.<y> = R.extension(y^2 - root)
+num = 6*x^2 + 5*x +7
+den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1
+integrand = y*num/den * x.differential()
+D = integrand.divisor()
+[(integrand.residue(pl), pl) for pl,m in D.list() if m < 0]
+D2 = add([ZZ(1 if (integrand.residue(pl))==1 else -1) * pl for pl,m in D.list() if m < 0])
+D2.basis_function_space()
+(2*D2).basis_function_space()
+(3*D2).basis_function_space()
+(4*D2).basis_function_space()
+(5*D2).basis_function_space()
+\end{sageblock}
+
+The divisor also has order 5, mod 7.  This means that the original
+divisor's order is 5 times some multiple of 7.  Combine this with the
+previous fact that the divisor's order is 5 times some multiple of 3,
+and we conclude that the divisor's order is exactly 5 -- the only
+divisor we actually need to check over $\QQbar$.
 
 \section{Simple Algebraic Extensions over Finite Fields}
 
