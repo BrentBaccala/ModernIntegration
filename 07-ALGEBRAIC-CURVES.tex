@@ -675,31 +675,20 @@ x-series unchanged.  Let's confirm this result with Sage:
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 + x^2 - 1)
-# XXX need to extend by i
-y.divisor();
 O = F.maximal_order()
 pl = O.ideal(x-1, y).place()
-xseries = F.completion(pl, prec=5)(x)
-yseries = F.completion(pl, prec=4)(y)
+F.completion(pl, prec=4)(y)
 \end{sageblock}
 
 This answer differs from the one we computed by hand because the
-choice of uniformizing variable ($s$) is not unique, and because the
-computer made a different choice than did.  Our ``$t$'' variable was
-roughly $\sqrt{x-1}$.  Even though square roots don't exist per se in
-this field, we can take the square root of a power series that starts
-with a square term.  Performing that operation on {\tt xseries}, we
-get a series expansion for $\sqrt{x-1}$ (our $t$) in terms of the
-computer's $s$.  Reversing the series gives us a series for $s$ in
-terms of $t$, and substituting this series in for $s$ confirms
-our previous calculation:
+choice of uniformizing variable is not unique, and because the
+computer made a different choice than we did.  Our ``$t$'' variable
+was roughly $\sqrt{x-1}$.  Even though square roots don't exist {\it
+per se} in this field, we can use this notation to express
+the desired uniformizing variable and confirm our calculation:
 
 \begin{sageblock}[ch7]
-t = (xseries-1)^(1/2)
-S = LaurentSeriesRing(t.base_ring(), name='t')
-s = S(t.reverse())
-xseries(s)
-yseries(s)
+F.completion(pl, uvar=sqrt(x-1), prec=4)(y)
 \end{sageblock}
 
 Now, let's analyze the point at infinity.  We move infinity to a
@@ -748,8 +737,7 @@ at a singular point where the curve is not locally Euclidean.
 
 \begin{sageblock}[ch7]
 Pinf = F.places_infinite()
-# [(F.completion(pl, prec=4)(x), F.completion(pl, prec=4)(y)) for pl in Pinf]
-[F.completion(pl, prec=4)(y)((1/F.completion(pl, prec=4)(x)).reverse()) for pl in Pinf]
+[F.completion(pl, prec=4, uvar=1/x)(y) for pl in Pinf]
 \end{sageblock}
 
 \endexample
@@ -784,9 +772,8 @@ QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^3 + x^3*y + x)
-# XXX need to extend by i
-y.divisor();
 O = F.maximal_order()
+O.ideal(x).factor()
 pl = O.ideal(x, y).place()
 xseries = F.completion(pl, prec=30)(x)
 yseries = F.completion(pl, prec=10)(y)
@@ -825,6 +812,8 @@ L.<y> = R[]
 F.<y> = R.extension(y^3 + x^3*y + x)
 
 O = F.maximal_order()
+
+O.ideal(x-g).factor()
 
 pl = O.ideal(x-g, y+3/(2*g^2)).place()
 xseries = F.completion(pl, prec=3)(x)
