@@ -344,15 +344,7 @@ Now let's construct a matrix of principal parts
 and its pseudoinverse:
 
 \begin{sageblock}[ex8.7]
-def principal_parts_matrix(div, basis):
-    F = div.parent().function_field()
-    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
-    return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
-\end{sageblock}
-
-\begin{sageblock}[ex8.7]
 m = principal_parts_matrix(D2, basis)
-m.kernel()
 pi = m.pseudoinverse()
 \end{sageblock}
 
@@ -468,13 +460,6 @@ last chapter for solving Mittag-Leffler problems:
 
 \begin{sageblock}[riemannroch3]
 basis = D.basis_function_space()
-\end{sageblock}
-
-\begin{sageblock}[riemannroch3]
-def principal_parts_matrix(div, basis):
-    F = div.parent().function_field()
-    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
-    return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
 \end{sageblock}
 
 \begin{sageblock}[riemannroch3]
