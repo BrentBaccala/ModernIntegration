@@ -241,7 +241,6 @@ use the algebraic extension $y^2=1-x^2$ and integrate ${1\over
 y}\,dx$.
 
 \begin{sageblock}[arcsin]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (1-x^2))
@@ -307,7 +306,6 @@ chapter.
 First, transform the problem into an algebraic curve:
 
 \begin{sageblock}[ex8.7]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (4-x^2))
@@ -425,7 +423,6 @@ integrate(integrand,x)
 Now let's attack the problem using the techniques of this book.
 
 \begin{sageblock}[riemannroch3]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^8+1))
@@ -562,7 +559,6 @@ leads to a rational function and a partial fractions expansion.
 We'll use ${\bf C}(x,y); y^2=x^4+1$ and integrate ${1\over{xy}}$.
 
 \begin{sageblock}[geddes]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^4+1))

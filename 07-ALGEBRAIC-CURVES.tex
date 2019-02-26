@@ -768,7 +768,6 @@ the seven roots of $4x^7+27=0$.  Infinity also needs to be
 examined.  We begin with $x=0$:
 
 \begin{sageblock}[ch7-2]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^3 + x^3*y + x)
@@ -917,7 +916,6 @@ $x=\pm 1$.  Now, if we use {\tt puiseux}, we can just request a series
 truncated at the $-1$ term:
 
 \begin{sageblock}[ch7-4]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 + x^2 - 1)
@@ -937,7 +935,6 @@ differential, which must be adjusted at ramification points.
 Let's expand $\frac{x}{y}$ at $x=1$:
 
 \begin{sageblock}[ch7-5]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 + x^2 - 1)
@@ -1284,7 +1281,6 @@ curve (example \ref{an integral Maxima can't solve}):
 We now compute its principal parts matrix:
 
 \begin{sageblock}[riemannroch]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 - x^8 - 1)

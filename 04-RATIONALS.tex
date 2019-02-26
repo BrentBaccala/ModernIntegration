@@ -124,7 +124,6 @@ T.<x> = S[]
 trager = (T(a) - z*T(b).differentiate()).resultant(b);
 trager.factor()
 
-QQbar.options.display_format = 'radical';
 SS.<z> = QQbar[]
 SS(trager).roots()
 \end{sageblock}
