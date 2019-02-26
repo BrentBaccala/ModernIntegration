@@ -249,7 +249,8 @@ integrand = 1/y * x.differential()
 
 D = integrand.divisor_of_poles()
 
-[[pl, F.completion(pl)(integrand)] for pl in D.support()]
+table([[pl, F.completion(pl)(integrand, prec=0)] \
+    for pl in D.support()])
 \end{sageblock}
 
 Our only poles are at infinity, and they're first order poles,
@@ -319,7 +320,8 @@ integrand = y * x.differential()
 
 D = integrand.divisor_of_poles()
 
-[[pl, F.completion(pl)(integrand)] for pl in D.support()]
+table([[pl, F.completion(pl)(integrand, prec=0)] \
+    for pl in D.support()])
 \end{sageblock}
 
 Since these polar expansions have components at both $t^{-3}$ and
@@ -435,6 +437,7 @@ Where are our poles?
 
 \begin{sageblock}[riemannroch3]
 D = (integrand * x.differential()).divisor_of_poles()
+table([[pl, F.completion(pl, prec=0)(integrand * x.differential())] for pl in D.support()])
 \end{sageblock}
 
 We've found four second order poles at the ordinary points $(\pm i, \pm\sqrt{2})$,
@@ -564,7 +567,7 @@ L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^4+1))
 integrand = 1/(x*y) * x.differential()
 D = integrand.divisor_of_poles()
-[[pl, F.completion(pl)(integrand)] for pl in D.support()]
+table([[pl, F.completion(pl, prec=0)(integrand)] for pl in D.support()])
 \end{sageblock}
 
 Our only poles are a pair of first order poles at $x=0$.  This will give rise to
@@ -695,7 +698,6 @@ den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1;
 Compute: $$ \sage[chebyshev1]{integrate(sqrt(root)*num/den, x, hold=True)}$$
 
 \begin{sageblock}[chebyshev]
-QQbar.options.display_format = 'radical'
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 root = x^4+4*x^3+2*x^2+1
@@ -707,8 +709,7 @@ num = 6*x^2 + 5*x +7
 den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1
 integrand = y*num/den * x.differential();
 D = integrand.divisor_of_poles()
-[[pl, F.completion(pl, prec=0)(integrand)] for pl in D.support()]
-
+table([[pl, F.completion(pl, prec=0)(integrand)] for pl in D.support()])
 \end{sageblock}
 
 We have poles at $x=\pm \frac{1}{\sqrt{2}}$

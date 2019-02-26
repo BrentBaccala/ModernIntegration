@@ -520,6 +520,25 @@ version of Sage.
 In the section, I'll collect several useful functions that I'll use
 throughout the book.
 
+\subsection{Tables}
+
+Sage has matrices where all entries share a common mathematical type,
+but lacks any native tool for formatting tables that contain entries
+with different mathematical types.  The following code creates a {\tt
+table} function that accepts a list of lists and formats the output as
+a table:
+
+\begin{sagecommon}
+class LatexObject(SageObject):
+    def __init__(self, str):
+        self.str = str
+    def _latex_(self):
+        return self.str
+
+def table(listOfLists):
+    return LatexObject('\\begin{aligned}' + '\\\\'.join(['&\\quad&'.join([latex(e) for e in l]) for l in listOfLists]) + '\\end{aligned}')
+\end{sagecommon}
+
 \subsection{Arrays}
 
 This next function is convenient for displaying Sage arrays.

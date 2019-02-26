@@ -920,7 +920,7 @@ R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 + x^2 - 1)
 D = (1/y).divisor()
-[F.completion(p, prec=0)(1/y) for p,m in D.list() if m < 0]
+table([[p, F.completion(p, prec=0)(1/y)] for p,m in D.list() if m < 0])
 \end{sageblock}
 
 \endexample
@@ -977,7 +977,7 @@ $\frac{x}{y} \ud x$ has poles only at infinity.
 \begin{sageblock}[ch7-5]
 v = x/y*x.differential()
 D = v.divisor()
-[F.completion(p, prec=0)(v) for p,m in D.list() if m < 0]
+table([[p, F.completion(p, prec=0)(v)] for p,m in D.list() if m < 0])
 \end{sageblock}
 
 \endexample
