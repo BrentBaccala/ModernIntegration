@@ -59,10 +59,59 @@ Instead, we'll use a different approach...
 
 \end{comment}
 
+There are four basic operations we perform on a rational
+function in order to integrate it:
+
+\begin{enumerate}
+\item We {\bf factor} its numerator and denominator
+\begin{sagecode}[ch7-intro]
+load("sagecommon.sage");
+R.<x> = QQ[];
+n = (x-1)^2*(x+3);
+d = (x-2)*(x-3);
+p = n/d;
+def partfrac2(n,d):
+    r = partfrac(n%d,d)
+    a = latex(n//d)
+    a += '&'
+    for k,v in r.items():
+        if v < 0:
+            a += "-\\frac{"+latex(-v)+"}{"+latex(k[0])+"}"
+        else:
+            a += "+\\frac{"+latex(v)+"}{"+latex(k[0])+"}"
+    return a
+def partfrac3(n,d):
+    r = partfrac(n%d,d)
+    a = latex(n//d).replace("x", "\\frac{{1}}{{1/x}}")
+    a += '&'
+    for k,v in r.items():
+        if v < 0:
+            a += "-\\frac{"+latex(-v)+"}{"+latex(k[0])+"}"
+        else:
+            a += "+\\frac{"+latex(v)+"}{"+latex(k[0])+"}"
+    return a
+\end{sagecode}
+$$\sage[ch7-intro]{p} = \frac{\sage[ch7-intro]{n.factor()}}{\sage[ch7-intro]{d.factor()}}$$
+From the factorization, we can read off the locations of the function's
+zeros and poles.  In this example, our zeros are at -3 and 1 (multiplicity 2),
+and our poles are at 2 and 3.
+\item We construct a {\bf partial fractions expansion}
+\begin{IEEEeqnarray*}{rCCL}
+\sage[ch7-intro]{p} & = & \sage[ch7-intro]{partfrac2(n, d)} \\
+                    & = & \sage[ch7-intro]{partfrac3(n, d)}
+\end{IEEEeqnarray*}
+\item We reconstruct a function given a factorization of its numerator and denominator
+(or equivalently, a list of poles and zeros along with
+their multiplicities)
+\item We reconstruct a function given a partial fractions expansion (or
+equivalently, a set of principal parts expansions
+at the function's poles)
+\end{enumerate}
+
 In this chapter, we'll develop a basic set of technical tools
 for working in the simplest kind of algebraic extension, an
 extension of ${\bf C}(x)$.  This will prepare us for the
-next chapter, where we'lll study {\it Abelian integrals}, which
+next chapter, where we'll study {\it Abelian integrals}, which
 are integrals whose integrands are formed from polynomials and roots
 of polynomials.  In other words, integrands in an algebraic extension
 of ${\bf C}(x)$.
@@ -920,7 +969,8 @@ R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 + x^2 - 1)
 D = (1/y).divisor()
-table([[p, F.completion(p, prec=0)(1/y)] for p,m in D.list() if m < 0])
+table([[p, F.completion(p, prec=0)(1/y)] \
+    for p,m in D.list() if m < 0])
 \end{sageblock}
 
 \endexample
@@ -1330,7 +1380,7 @@ so we have two distinct factorizations in this ring.
 The main problem with our earlier tools is the difficulty in defining
 factorization.  How, for example, do you construct a partial fractions
 expansion?  A review of Theorems \ref{logarithmic integration theorem}
-and \label{exponential integration theorem} reveals that both depend
+and \ref{exponential integration theorem} reveals that both depend
 not merely on the construction of a partial fractions expansions, but
 also on its {\it uniqueness}.  Without unique factorization, how can
 you possibly have a unique partial fractions expansion?
