@@ -17,7 +17,7 @@ clean:
 
 ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	#rm -f pythontex-files-ModernIntegration/*
-	pdflatex ModernIntegration
+	pdflatex ModernIntegration || true
 	ls -v sagecommon*.tex | xargs cat > sagecommon.sage
 	rm sagecommon*.tex
 	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --interpreter maxima:/home/baccala/src/maxima-code/maxima-local --verbose ModernIntegration.tex --jobs 1
