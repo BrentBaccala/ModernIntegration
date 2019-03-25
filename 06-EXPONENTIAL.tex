@@ -891,7 +891,10 @@ Consider again such a Risch equation, this time in a simple
 transcendental extension $K(\theta)$ of an arbitrary differential
 field $K$:
 
-$$r' + S r = T \qquad S,T,r \in K(\theta)$$
+\begin{equation}
+\label{eq: normal polynomial Risch}
+r' + S r = T \qquad S,T,r \in K(\theta)
+\end{equation}
 
 Once again, we can perform a partial fractions expansion on $S$, $T$,
 and $r$, except that this time our irreducible polynomials are more
@@ -941,13 +944,19 @@ $$j = \frac{b(\theta)}{n'(\theta)} \mod n(\theta)$$
 
 Our three cases become:
 
+% Labeling text with equation numbers
+% https://tex.stackexchange.com/questions/114113
+\makeatletter
+\newcommand{\eqnum}[1]{\hfill\textup{\tagform@{\theequation #1}}}
+\refstepcounter{equation}
+\label{normal Risch cases}
 \begin{enumerate}
 
-\item $k=0$ and $j = l-1$.
+\item $k=0$ and $j = l-1$. \eqnum{a}
 
-\item $k=1$ and either $j=l-1$ or $j = \frac{b(\theta)}{n'(\theta)} \mod n(\theta)$.
+\item $k=1$ and either $j=l-1$ or $j = \frac{b(\theta)}{n'(\theta)} \mod n(\theta)$. \eqnum{b}
 
-\item $k>1$ and $j=l-k$.
+\item $k>1$ and $j=l-k$. \eqnum{c}
 
 \end{enumerate}
 
@@ -1194,7 +1203,10 @@ Finally, let's consider Risch equations over fields
 with special polynomials, i.e, exponential extensions
 with $\theta = \exp k$ and $\theta' = k' \theta$.
 
-$$r' + S r = T \qquad S,T,r \in K(\theta)$$
+\begin{equation}
+\label{eq: general polynomial Risch}
+r' + S r = T \qquad S,T,r \in K(\theta)
+\end{equation}
 
 First, what happens when our partial
 fractions decomposition yields special polynomials
@@ -1371,7 +1383,7 @@ deepmap(func, expr, level) :=
 deepmap(factor, eq, 2);
 \end{comment}
 
-This is already in the form required by equation ?:
+This is already in the form required by equation \ref{eq: general polynomial Risch}:
 
 $$r' + S r = T \qquad S,T,r \in K(\theta)$$
 
@@ -1379,9 +1391,10 @@ with $S$ and $T$ expanded in partial fractions.  None of the
 denominator factors are special (only factors of the form $\theta^n$
 are special), and both $(\theta+x)$ and $x$ are normal polynomials
 with $k=2$ (the multiplicity in $S$'s denominator) and $l=2$
-(the multiplicity in $T$'s denominator).  Case 3 in ? tells us
-that $j=l-k=0$, so neither of these factors can appear
-in the denominator of $r$.
+(the multiplicity in $T$'s denominator).  Case 3 in \ref{normal Risch cases} tells us
+that $j=l-k=0$, so neither of these (normal) factors can appear
+in the denominator of $r$, and $r$'s denominator can
+only involve special factors.
 
 Next we can move on to equation \ref{eq: special polynomial Risch}:
 
