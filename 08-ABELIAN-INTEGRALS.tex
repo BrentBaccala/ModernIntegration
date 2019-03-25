@@ -365,6 +365,14 @@ m * v == b
 algebraic_solution = (matrix(basis) * v)[0,0]
 \end{sageblock}
 
+We expect an infinity of solutions, of course.
+
+\begin{sageblock}[ex8.7]
+m2 = 1 - (pi * m)
+m2.rank()
+m2 * matrix([basis]).transpose()
+\end{sageblock}
+
 This is the rational part of our answer.  To find the logarithmic
 part, let's return to the series expansion of the differential,
 note that the residues are $-2i$ and $2i$, which can be placed
@@ -422,7 +430,6 @@ L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^8+1))
 
 integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
-
 \end{sageblock}
 
 Where are our poles?
@@ -485,13 +492,6 @@ Now we have a matrix equation that we want to solve:
 
 $$\sage[riemannroch3]{m} \cdot v = \sage[riemannroch3]{b}$$
 
-The equation has a non-trivial null space, which we expect because
-of the presence of the constant of integration.
-
-\begin{sageblock}[riemannroch3]
-m.kernel()
-\end{sageblock}
-
 Now let's compute the pseudoinverse:
 
 \begin{sageblock}[riemannroch3]
@@ -503,6 +503,15 @@ To find out if there actually is a solution, we simply have to check:
 \begin{sageblock}[riemannroch3]
 v = pi * b
 m * v == b
+\end{sageblock}
+
+The equation has a non-trivial null space, which we expect because
+of the presence of the constant of integration.
+
+\begin{sageblock}[riemannroch3]
+m2 = 1 - (pi * m)
+m2.rank()
+m2 * matrix([basis]).transpose()
 \end{sageblock}
 
 So, yes, this system does have a solution.  Now let's multiply our
@@ -731,27 +740,48 @@ continue with the problem by coaxing our result
 into a more reasonable form:
 
 \begin{sageblock}[chebyshev]
+num2 = R._to_bivariate_polynomial(res[0])[0]
+den2 = R._to_bivariate_polynomial(res[0])[1]
+
+ld = lcm([QQ(c).denominator() for c in den2.coefficients()]);
+ln = lcm([QQ(c).denominator() for c in num2.coefficients()]);
+
+R2.<x> = QQ[]
+F2 = Frac(R2)
+R3.<y> = F2[]
+f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1)
+Q = R3.quo(ideal(f))
+
 R2.<x> = ZZ[]
-F = Frac(R2)
-R3.<y> = F[]
+F2 = Frac(R2)
+R3.<y> = F2[]
+f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1)
+Q2 = R3.quo(ideal(f))
+
+Q2(Q(res[0].element()*(ln/ld)))
+\end{sageblock}
+
+\begin{comment}
+\begin{sageblock}[chebyshev]
+R2.<x> = ZZ[]
+F2 = Frac(R2)
+R3.<y> = F2[]
 f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1)
 Q = R3.quo(ideal(f))
 
 num2 = R._to_bivariate_polynomial(res[0])[0]
 den2 = R._to_bivariate_polynomial(res[0])[1]
 
-gn = gcd([QQ(c).numerator() for c in num2.coefficients()]);
-gd = gcd([QQ(c).denominator() for c in num2.coefficients()]);
-
 ld = lcm([QQ(c).denominator() for c in den2.coefficients()]);
 
-num3 = num2/gn*gd
-
-ln = lcm([QQ(c).denominator() for c in num3.coefficients()]);
+ln = lcm([QQ(c).denominator() for c in num2.coefficients()]);
 
 # why not Q(num3*ln) / Q(den2*ld)
-Q(num3*ln) / R2(den2*ld)
+Q(num2*ln) / R2(den2*ld)
+F(num2*ln) / F(den2*ld)
+res[0]*(ln/ld)
 \end{sageblock}
+\end{comment}
 
 %% This attempt with Sage and Macaulay 2 came to naught because
 %% Macaulay 2 can't do fraction fields of polynomial rings over
@@ -792,20 +822,6 @@ macaulay2('MI = ideal(x-z*1/sqrt2, y+z*gamma/2)')
 
 %%\vfill\eject
 %%\bigskip
-
-\begin{center}
-Non-zero residues
-
-\begin{supertabular}{r @{} l | r @{} l | r @{} l}
-\multicolumn{2}{c|}{x} & \multicolumn{2}{c|}{y} & \multicolumn{2}{c}{residue} \cr
-\hline
-&$\sqrt{2}\over 2$ & &${1\over 2} + \sqrt{2}$ & &${5\over2}$ \cr
-&$\sqrt{2}\over 2$ & $-$&${1\over 2} - \sqrt{2}$ & $-$&${5\over2}$ \cr
-$-$&${\sqrt{2}\over 2}$ & &${1\over 2} - \sqrt{2}$ & &${5\over2}$ \cr
-$-$&${\sqrt{2}\over 2}$ & $-$&${1\over 2} + \sqrt{2}$ & $-$&${5\over2}$ \cr
-\end{supertabular}
-\end{center}
-
 
 $$A(x) = 1023x^8+4104x^7+5048x^6+2182x^5+805x^4+624x^3+10x^2+28x$$
 $$B(x) = 1025x^{10} + 6138x^9 + 12307x^8 + 10188x^7 + 4503x^6 + 3134x^5 + 1598x^4 + 140x^3 + 176x^2 +2$$
