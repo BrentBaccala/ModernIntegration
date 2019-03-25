@@ -974,7 +974,7 @@ c = x^3+5*x^2+7*x+3;
 xgcd(a,b)
 \end{sageblock}
 
-\begin{sageblock}
+\begin{sagecommon}
 def diophantine(a,b,c):
    (g,s,t) = xgcd(b,c)
    if not g.divides(a):
@@ -986,6 +986,9 @@ def diophantine(a,b,c):
    (q,r) = s.quo_rem(c)
    # s = r + qb, so r = s - qb
    return (r, t + q*b)
+\end{sagecommon}
+
+\begin{sageblock}
 \end{sageblock}
 
 \begin{sageblock}

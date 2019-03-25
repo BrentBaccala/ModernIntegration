@@ -1114,20 +1114,6 @@ S2 = U*V^2*D(y/V)
 Now we want to solve $f_2 S_2 = A_2 y$ where $A_2 y$ is our numerator.
 
 \begin{sageblock}[chebyshev2]
-def diophantine(a,b,c):
-   (g,s,t) = xgcd(b,c)
-   if not g.divides(a):
-      raise ValueError("diophantine: a doesn't divide gcd(b,c)")
-   s = s * (a//g)
-   t = t * (a//g)
-   # g = sb + ct
-   # a = mg = (ms)b + (mc)t
-   (q,r) = s.quo_rem(c)
-   # s = r + qb, so r = s - qb
-   return (r, t + q*b)
-\end{sageblock}
-
-\begin{sageblock}[chebyshev2]
 f2 = num*y/S2
 T2 = f2.numerator()
 Q = f2.denominator()
