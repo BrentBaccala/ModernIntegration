@@ -373,6 +373,62 @@ open set, construct J locally.
 }
 
 \vfill\eject
+\mysection{Notes on Bronstein}
+
+Definition 3.4.1. We say that $t \in K$ is a monomial over k (w.r.t. D), if
+\begin{enumerate}
+\item t is transcendental over k,
+\item $Dt \in k[t]$.
+\end{enumerate}
+
+Definition 3.4.3. We say that $u \in k$ is a logarithmic derivative of
+a k-radical if there exist $v \in k^*$ and an integer $n \ne 0$ such
+that $nu = Dv/v$.
+
+Definition 5.1.1. $t \in K$ is a primitive over $k$ if $Dt \in
+k$. $t \in K^*$ is an hyperexponential over $k$ if $Dt/t \in
+k$. $t \in K$ is Liouvillian over $k$ if $t$ is either algebraic, or a
+primitive or an hyperexponential over k. K is a Liouvillian extension
+of $k$ if there are $t_1, ... , t_n$ in K such that $K = k(t_1, ... ,
+t_n)$ and $t_i$ is Liouvillian over $k(t_1, ... , t_{i-1}$ for i in
+${1, ... , n}$.
+
+Theorem 5.1.1. If $t$ is a primitive over k and Dt is not the
+derivative of an element of k, then t is a monomial over k,
+Const(k(t)) = Const(k), and S = k (i.e. $S^{irr} = S_1^{irr} =
+0$). Conversely, if $t$ is transcendental and primitive over k, and
+Const(k(t)) = Const(k), then Dt is not the derivative of an element of
+k.
+
+Theorem 5.1.2. If $t$ is an hyperexponential over k and $Dt/t$ is not
+a logarithmic derivative of a k-radical, then $t$ is a monomial over
+k, Const(k(t)) = Const(k), and $S^{irr} = S_1^{irr} =
+{t}$. Conversely, if t is transcendental and hyperexponential over k,
+and Const(k(t)) = Const(k), then $Dt/t$ is not a logarithmic
+derivative of a k-radical.
+
+This next corollary ($E_{K/C(x)}$ and $L_{K/C(x)}$ are the exponential
+and logarithm elementary monomials in a tower of elementary
+extensions) leads directly to an algorithm for testing new logarithmic
+and exponential primitives to see if they are monomials.
+
+Corollary 9.3.1. Let $C, x, K, E_{K/C(x)}$ and $L_{K/C(x)}$ be as in Theorem 9.3.1,
+$a \in K^*$ and $b \in K$. Then,
+\begin{enumerate}
+\item $Da/a$ is the derivative of an element of K if and only if there are $r_i \in \QQ$
+such that
+
+\[ \sum_{i\in L_{K/C(x)}} r_iDt_i + \sum_{i\in E_{K/C(x)}} r_i\frac{Dt_i}{t_i} = \frac{Da}{a} \]
+
+\item $Db$ is the logarithmic derivative of a K-radical if and only if there are $r_i \in \QQ$
+such that
+
+\[ \sum_{i\in L_{K/C(x)}} r_iDt_i + \sum_{i\in E_{K/C(x)}} r_i\frac{Dt_i}{t_i} = Db \]
+\end{enumerate}
+
+
+
+\vfill\eject
 \mysection{Function Fields (Stichtenoth)}
 
 Stichtenoth, ``Algebraic Function Fields and Codes''.
