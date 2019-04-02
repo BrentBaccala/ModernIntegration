@@ -1221,6 +1221,82 @@ divisor.basis_function_space()
 
 \end{frame}
 
+%%% BEGIN GEDDES' INTEGRAL
+
+\begin{frame}[fragile]
+\frametitle{Geddes's Integral}
+
+%%\centerline{$\int \frac{1}{x\sqrt{x^4+1}} dx$}
+
+\begin{tabular}{ p{.5\textwidth} p{.5\textwidth} }
+$$\int \frac{1}{x\sqrt{x^4+1}} dx$$
+
+&
+  \begin{tikzpicture}[baseline = (log field.north)]
+    \small
+    \node (log field) [field, minimum height=50, minimum width=175, fill=blue!45] {};
+    \node (log label) [below=5pt] at (log field.north) {$\CC(x,y) \qquad y^2 = x^4+1$};
+
+    \node (rational field) [field, minimum height=20, minimum width=30, fill=white, below=1pt] {$\CC(x)$};
+
+  \end{tikzpicture}
+\\
+\end{tabular}
+
+\begin{sagecode}[geddes]
+QQbar.options.display_format = 'radical';
+\end{sagecode}
+
+\begin{sageblock}[geddes]
+R.<x> = FunctionField(QQbar, implementation='kash'); L.<y> = R[];
+root = x^4+1; F.<y> = R.extension(y^2 - root)
+integrand = 1/(x*y) * x.differential()
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Geddes's Integral (cont)}
+\centerline{$\int \frac{1}{x\sqrt{x^4+1}} dx$}
+
+\begin{sageblock}[geddes]
+
+table([[pl, F.completion(pl, prec=0)(integrand)] for pl in integrand.divisor_of_poles().support()])
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Geddes's Integral (cont)}
+
+\begin{sageblock}[geddes]
+Dpoles = integrand.divisor_of_poles();
+D2 = add([ZZ(integrand.residue(pl)) * pl.divisor() for pl in Dpoles.support()])
+D2.basis_function_space()
+(2*D2).basis_function_space()
+sol = (2*D2).basis_function_space()
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Geddes's Integral (cont)}
+
+\begin{sageblock}[geddes]
+- (1/2)*(1/sol[0])*sol[0].differential()
+integrand
+var('x,y')
+sol2 = eval(preparse(str(sol[0])))
+sol3 = -1/2 * log(sol2.subs({y:sqrt(x^4+1)}))
+bool(diff(sol3,x) == 1/(x*sqrt(x^4+1)))
+#SRsol = eval(preparse(str(sol[0])))
+#bool(diff(SRsol,x) == 1/(x*sqrt(x^4+1)))
+\end{sageblock}
+
+\end{frame}
+
+%%% BEGIN CHEBYSHEV'S INTEGRAL
+
 \begin{frame}[fragile]
 \frametitle{Chebyshev's Integral}
 
@@ -1231,7 +1307,7 @@ $$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}}
 
 &
   \begin{tikzpicture}[baseline = (log field.north)]
-    \small    
+    \small
     \node (log field) [field, minimum height=50, minimum width=175, fill=blue!45] {};
     \node (log label) [below=5pt] at (log field.north) {$\CC(x,y) \qquad y^2 = x^4+4 x^3+2 x^2+1$};
 
@@ -1370,37 +1446,13 @@ integrand
 \begin{frame}[fragile]
 \frametitle{Chebyshev's Integral (cont)}
 
-\begin{sagecode}[chebyshev]
-num2 = R._to_bivariate_polynomial(sol2[0])[0];
-den2 = R._to_bivariate_polynomial(sol2[0])[1];
-
-ld = lcm([QQ(c).denominator() for c in den2.coefficients()]);
-ln = lcm([QQ(c).denominator() for c in num2.coefficients()]);
-
-R2.<x> = QQ[];
-F2 = Frac(R2);
-R3.<y> = F2[];
-f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1);
-Q = R3.quo(ideal(f));
-
-R2.<x> = ZZ[];
-F2 = Frac(R2);
-R3.<y> = F2[];
-f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1);
-Q2 = R3.quo(ideal(f));
-
-sol2a = Q2(Q(sol2[0].element()*(ln/ld)));
-\end{sagecode}
-
 \begin{sageblock}[chebyshev]
-sol1a = R._to_bivariate_polynomial(sol1)
-sol1b =sol1a[0].subs({L.0:sqrt(root)})/sol1a[1]
-
-sol2a = R._to_bivariate_polynomial(sol2[0])
-sol2b = sol2a[0].subs({L.0:sqrt(root)})/sol2a[1]
-
-sol3 = sol1b - 1/2 * log(sol2b)
-
+var('x,y');
+num = 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8; den = (2*x^2-1)^2; root = x^4+4*x^3+2*x^2+1;
+sol1a = eval(preparse(str(sol1)));
+sol2a = eval(preparse(str(sol2[0])));
+sol3 = sol1a.subs({y:sqrt(root)}) - 1/2 * log(sol2a.subs({y:sqrt(root)}))
+bool(diff(sol3,x) == num/(den*sqrt(root)))
 \end{sageblock}
 
 \end{frame}
