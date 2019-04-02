@@ -48,6 +48,7 @@ in the base field.
 \section{The Logarithmic Integration Theorem}
 
 \theorem\label{logarithmic integration theorem}
+\Copy{LIT1}{
 Let $K$ be a differential field, let $K(\theta = \ln k)$ be a simple
 logarithmic extension of $K$, let $n_i(\theta)$ be
 irreducible polynomials in $K[\theta]$,
@@ -87,6 +88,8 @@ A_0 \in K(\Psi) & A_i \in K & B_{i,j}(\theta),n_i(\theta) \in K[\theta] & c_i' =
 \end{equation*}
 
 and the following relationships hold:
+}
+\Copy{LIT2}{
 
 \begin{subequations}
 \begin{eqnarray}
@@ -96,15 +99,6 @@ and the following relationships hold:
 \left[ A_i + (i+1) c_{i+1} \theta \right]' &=& a_i - (i+1) \frac{k'}{k} A_{i+1} \qquad {}_{0\le i<n}
 \end{eqnarray}
 \end{subequations}
-
-\begin{comment}
-\begin{IEEEeqnarray*}{rClc}
-R_{i,m_i-1}(\theta) &=& b_{i,m_i}(\theta) & \IEEEyessubnumber \\*[10pt]
-R_{i,j}(\theta) &=& b_{i,j+1}(\theta) - B_{i,j+1}'(\theta) - Q_{i,j+1}(\theta) \qquad{}_{1\le j<m_i-1}&  \IEEEyessubnumber \\
-B_{i,j}(\theta) &\equiv& - \frac{R_{i,j}(\theta)}{j n_i'(\theta) } \mod n_i(\theta) &  \IEEEyesnumber \\*[10pt]
-Q_{i,j}(\theta) &=& - \frac{R_{i,j}(\theta) + j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)} &  \IEEEyesnumber
-\end{IEEEeqnarray*}
-\end{comment}
 
 \begin{subequations}
 \begin{eqnarray}
@@ -119,13 +113,6 @@ B_{i,j}(\theta) &\equiv& - \frac{R_{i,j}(\theta)}{j n_i'(\theta) } \mod n_i(\the
 Q_{i,j}(\theta) &=& - \frac{R_{i,j}(\theta) + j B_{i,j}(\theta) n_i'(\theta)}{n_i(\theta)}
 \end{eqnarray}
 %\end{IEEEeqnarray}
-
-\begin{comment}
-\begin{IEEEeqnarray*}{rCl?c}
-\IEEEeqnarraymulticol{3}{c}{m_i > 1} & m_i = 1 \\*[10pt]
-C_i &=& \frac{b_{i,1}(\theta) - B_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta)} & C_i = \frac{b_{i,1}(\theta)}{n_i'(\theta)} \IEEEyesnumber
-\end{IEEEeqnarray*}
-\end{comment}
 
 % IEEEeqnarray respects the settings of the environment, and we're
 % in a theorem environment with italic text.  Change this behavior
@@ -142,7 +129,7 @@ C_i &=& \frac{b_{i,1}(\theta) - B_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta)
 C_i &=& \frac{b_{i,1}(\theta)}{n_i'(\theta)} & {}_{m_i = 1}
 \end{IEEEeqnarray}
 \end{subequations}
-
+}
 
 \proof
 

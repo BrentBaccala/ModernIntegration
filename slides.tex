@@ -1,0 +1,1408 @@
+
+% Slideshow, written by Brent Baccala, for a lecture at Catholic University
+%
+% A screencast of the original lecture is available on youtube:
+%
+% https://www.youtube.com/watch?v=JwsuAEF2FYE
+
+\documentclass[aspectratio=169,dvipsnames]{beamer}
+\usetheme{Madrid}
+
+\title{Techniques of Modern Integration}
+\author{Brent Baccala}
+\institute{\tt cosine@freesoft.org}
+\date{April 3, 2019}
+
+\setbeamertemplate{footline}{}
+\beamertemplatenavigationsymbolsempty
+
+%\usepackage{vmargin}
+\usepackage{times}
+\usepackage{graphics}
+\usepackage{amsmath, amscd, amsxtra, amsthm}
+\usepackage{amssymb}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{framed}
+\usepackage{mdframed}
+\usepackage{float}
+
+\usepackage{comment}
+\usepackage{graphicx}
+
+\usepackage{tabularx}
+
+\usepackage{ragged2e}
+
+%% to scale '<' for Bronstein's notation
+\usepackage{scalerel}
+
+%% Suggested by http://tex.stackexchange.com/questions/349580
+\usepackage{array}
+
+%% Define a new column declaration
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\newcommand{\ud}{\,\mathrm{d}}
+
+\newcommand{\N}{{\rm N\,}}
+\newcommand{\lc}{{\rm lc\,}}
+
+\usepackage{clipboard}
+\openclipboard{ModernIntegration}
+
+\usepackage[usefamily=sage,keeptemps=all,pygments=false]{pythontex}
+
+
+% These packages are used when embedding Maxima code
+
+\usepackage{breqn}      % auto-break long equations - has to come after pythontex
+\usepackage{listings}
+\usepackage{fancyvrb}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, fit, backgrounds, arrows, trees, shapes, shadows, calc}
+
+\usepackage{adjustbox}
+
+\begin{document}
+
+\newtheorem{idea}{Idea}
+
+% Do similar formatting with Sage
+
+\newcommand{\sageinputcode}{}
+\newcommand{\sageoutputmath}[1]{#1}
+
+%% Sage preamble - should get this by calling latex_extra_preamble() in sage.misc.latex
+
+\newcommand{\ZZ}{\Bold{Z}}
+\newcommand{\NN}{\Bold{N}}
+\newcommand{\RR}{\Bold{R}}
+\newcommand{\CC}{\Bold{C}}
+\newcommand{\QQ}{\Bold{Q}}
+\newcommand{\QQbar}{\overline{\QQ}}
+\newcommand{\GF}[1]{\Bold{F}_{#1}}
+\newcommand{\Zp}[1]{\ZZ_{#1}}
+\newcommand{\Qp}[1]{\QQ_{#1}}
+\newcommand{\Zmod}[1]{\ZZ/#1\ZZ}
+\newcommand{\CDF}{\Bold{C}}
+\newcommand{\CIF}{\Bold{C}}
+\newcommand{\CLF}{\Bold{C}}
+\newcommand{\RDF}{\Bold{R}}
+\newcommand{\RIF}{\Bold{I} \Bold{R}}
+\newcommand{\RLF}{\Bold{R}}
+\newcommand{\CFF}{\Bold{CFF}}
+\newcommand{\Bold}[1]{\mathbf{#1}}
+
+%% XXX - check if we can turn autoprint off and leave it turned off
+
+\renewenvironment{sageblock}{\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}{\setpythontexautoprint{true}\endsagecode
+
+% At end of sageblock, redefine Sage processing commands,
+% then call \printpythontex to include the Sage output,
+% which will call the Sage processing commands.
+
+% Command called by python code that processes maximacode input
+% Command number is in argument 1
+% Command text is saved in verbatim block MaximaCode
+%
+% We need a \break between two adjacent \sageinputcode's,
+% but we leave it out if there's an intervening \sageoutputmath.
+
+\definecolor{mytextcolor}{rgb}{0,0,0}
+
+\def\sageinputcodebreak{}
+\renewcommand{\sageinputcode}{
+\sageinputcodebreak
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{L{1cm} L{10cm}}
+\textcolor{blue}{\ttfamily sage:} &
+\textcolor{mytextcolor}{\BUseVerbatim[baseline=t]{SageCode}}
+\end{tabular}
+\egroup
+\def\sageinputcodebreak{\break}
+}
+
+\renewcommand{\sageoutputmath}[1]{
+\def\sageinputcodebreak{}
+\setlength\abovedisplayskip{0pt}
+\setlength\belowdisplayskip{0pt}
+\setlength\abovedisplayshortskip{0pt}
+\setlength\belowdisplayshortskip{0pt}
+\begin{dmath*}
+##1
+\end{dmath*}
+}
+
+% Wrap everything in a nice colored frame and print it
+\begin{mdframed}[backgroundcolor=yellow!20]
+\tiny
+\printpythontex
+\end{mdframed}
+}
+
+\newenvironment{sagespacedblock}{\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}{\setpythontexautoprint{true}\endsagecode
+
+% At end of sageblock, redefine Sage processing commands,
+% then call \printpythontex to include the Sage output,
+% which will call the Sage processing commands.
+
+% Command called by python code that processes maximacode input
+% Command number is in argument 1
+% Command text is saved in verbatim block MaximaCode
+%
+% We need a \break between two adjacent \sageinputcode's,
+% but we leave it out if there's an intervening \sageoutputmath.
+
+\def\sageinputcodebreak{}
+\renewcommand{\sageinputcode}{
+\sageinputcodebreak
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{L{1cm} L{10cm}}
+\textcolor{blue}{\ttfamily sage:} &
+\textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
+\end{tabular}
+\egroup
+\def\sageinputcodebreak{\break}
+}
+
+\renewcommand{\sageoutputmath}[1]{
+\def\sageinputcodebreak{}
+\begin{dmath*}
+##1
+\end{dmath*}
+}
+
+% Wrap everything in a nice colored frame and print it
+\begin{mdframed}[backgroundcolor=yellow!20]
+\printpythontex
+\end{mdframed}
+}
+
+% sagecommon - don't put "sage:" prompts before the input lines,
+% and don't print output at all
+
+\newcounter{sagecommoncounter}
+\setcounter{sagecommoncounter}{0}
+
+\newenvironment{sagecommon}
+  {\stepcounter{sagecommoncounter}\VerbatimOut{sagecommon-\thesagecommoncounter}}
+  {\endVerbatimOut
+\begin{mdframed}[backgroundcolor=yellow!20,fontcolor=brown]
+\VerbatimInput{sagecommon-\thesagecommoncounter}
+\end{mdframed}
+}
+
+\newenvironment{sagecommonsmall}{\small\sagecommon}{\endsagecommon}
+\newenvironment{sagecommontiny}{\tiny\sagecommon}{\endsagecommon}
+
+% sagecommon.sage was generated by the Makefile after a LaTeX run.
+% Now we insert a load command at beginning of every sage session
+% to load it in.
+
+\begin{pythontexcustomcode}{sage}
+load("sagecommon.sage");
+\end{pythontexcustomcode}
+
+\setbeamertemplate{enumerate item}[default]
+\setbeamercolor{enumerate item}{fg=black}
+
+\begin{frame}
+\titlepage
+\begin{block}{}
+\centerline{\tt https://www.freesoft.org/ModernIntegration}
+\end{block}
+%%\begin{block}{Abstract}
+%%An introduction to Risch integration.
+%%\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Who Wants to be a Mathematician?}
+\def\QuestionFont{\Huge\bf}
+\def\AnswerFont{}
+\def\huge{}
+\def\LARGE{}
+\Paste{WWTBAM}
+\end{frame}
+
+\begin{frame}
+\frametitle{Elementary (Liouvillian) Forms}
+\tiny
+\def\sech{{\rm sech}}
+\def\csch{{\rm csch}}
+
+\begin{columns}[T]
+\begin{column}{.48\textwidth}
+
+\begin{tabular}{c c c c}
+Expression & \multicolumn{1}{c}{Liouvillian Form} &
+Expression & \multicolumn{1}{c}{Liouvillian Form} \\
+\hline
+& \\
+$f^g$ & $\displaystyle e^{\,g \ln f}$ &
+ & \\
+$\sin x$ & $\displaystyle {-i \,{{e^{ix} - e^{-ix}}\over 2}}$ \vbox to20pt{}&
+ $\sinh x$ & $\displaystyle {{e^{x} - e^{-x}}\over 2}$ \vbox to20pt{} \\
+$\cos x$ & $\displaystyle {{e^{ix} + e^{-ix}}\over 2}$ &
+ $\cosh x$ & $\displaystyle {{e^{x} + e^{-x}}\over 2}$ \vbox to20pt{} \\
+$\tan x$ & $\displaystyle {-i \,{{e^{ix}-e^{-ix}}\over {e^{ix}+e^{-ix}}}}$ &
+ $\tanh x$ & $\displaystyle {{e^{x}-e^{-x}}\over {e^{x}+e^{-x}}}$ \\
+
+$\sec x$ & $\displaystyle {2\over{e^{ix} + e^{-ix}}}$ &
+ $\sech\, x$ & $\displaystyle {2\over{e^{x} + e^{-x}}}$ \vbox to20pt{} \\
+$\csc x$ & $\displaystyle {{2i}\over{e^{ix} - e^{-ix}}}$ \vbox to20pt{}&
+ $\csch\, x$ & $\displaystyle {2\over{e^{x} - e^{-x}}}$ \vbox to20pt{} \\
+$\cot x$ & $\displaystyle {i \,{{e^{ix}+e^{-ix}}\over {e^{ix}-e^{-ix}}}}$ &
+ $\coth x$ & $\displaystyle {{e^{x}+e^{-x}}\over {e^{x}-e^{-x}}}$ \\
+
+\end{tabular}
+\end{column}
+\begin{column}{.48\textwidth}
+
+\begin{tabular}{c c c c}
+Expression & \multicolumn{1}{c}{Liouvillian Form} &
+Expression & \multicolumn{1}{c}{Liouvillian Form} \\
+\hline
+& \\
+
+$\arcsin x$ & $\displaystyle -i \,\ln (ix + \sqrt{1-x^2})$ &
+ $\sinh^{-1} x$ & $\displaystyle \ln (x + \sqrt{x^2+1})$ \\
+$\arccos x$ & $\displaystyle -i \,\ln (x + i\sqrt{1-x^2})$ &
+ $\cosh^{-1} x$ & $\displaystyle \ln (x + \sqrt{x^2-1})$ \\
+$\arctan x$ & $\displaystyle {1\over2}\,i\,\ln {{ix-1}\over{ix+1}}$ &
+ $\tanh^{-1} x$ & $\displaystyle {1\over2} \ln {{1+x}\over{1-x}}$ \\
+$
+
+\sec^{-1} x$ & $\displaystyle -i \,\ln {{1 + i\sqrt{x^2-1}}\over{x}}$ &
+ $\sech^{-1} x$ & $\displaystyle {1\over2} \ln {{1+\sqrt{1-x^2}}\over{1-\sqrt{1-x^2}}}$ \\
+$\csc^{-1} x$ & $\displaystyle -i \,\ln {{i + \sqrt{x^2-1}}\over{x}}$ &
+ $\csch^{-1} x$ & $\displaystyle {1\over2} \ln {{\sqrt{1+x^2}+1}\over{\sqrt{1+x^2}-1}}$ \\
+$\cot^{-1} x$ & $\displaystyle {1\over2}\,i\,\ln {{i+x}\over{i-x}}$ &
+ $\coth^{-1} x$ & $\displaystyle {1\over2} \ln {{x+1}\over{x-1}}$ \\
+
+\end{tabular}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Testing $\ln$ for transcendence}
+\begin{theorem}
+$\ln u$ is transcendental over $k$ and
+$\qquad\Longleftrightarrow\qquad$
+$\frac{u'}{u}$ is not a derivative of any element of $k$
+
+the constant subfield remains fixed
+\end{theorem}
+\begin{proof}
+$\Rightarrow$
+Assume the contrary, that $v'=\frac{u'}{u}$ for some $v \in k$.  Then $\ln u = v$.
+
+\bigskip
+$\Leftarrow$
+Assume the contrary, that $a=\ln u$ exists in $K$, an algebraic extension of $k$.
+
+Let $a$'s minimal polynomial be $p(a) = a^m + \cdots + c_0$.  Differentiating,
+we get $p'(a) = m \frac{u'}{u} a^{m-1} + \cdots + c_0' = 0$, contradicting the
+minimality of $p(a)$ if $m>1$.
+
+If $m=1$, then $p'(a) = \frac{u'}{u} + c_0' = 0$,
+so $\frac{u'}{u}$ is the derivative of $-c_0$.
+
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Logarithmic Derivatives}
+\begin{definition}
+In a differential field $k$,
+$u$ is a {\bf logarithmic derivative} of $v \in k$ if there exists an
+integer $n$ such that
+\[ nu=\frac{v'}{v} \]
+\end{definition}
+\[ v = (\exp f)^n \]
+\[ v' = n f' (\exp f)^n \]
+\[ \frac{v'}{v} = n f' \]
+\end{frame}
+
+\begin{frame}
+\frametitle{Logarithmic Derivatives (cont)}
+\begin{theorem}[Bronstein]
+If $u$ is not a logarithmic derivative in a differential field $k$,
+then it is not a logarithmic derivative in any algebraic extension of $k$.
+\end{theorem}
+\begin{proof}
+Assume the contrary: that $K$ is an algebraic extension of $k$ in which $u$
+is a logarithmic derivative.  Let $\alpha$ be the element of $K$ for which
+$nu=\frac{\alpha'}{\alpha}$ and let $p(\alpha)$ be $\alpha$'s minimal polynomial in $K$
+\[ p(\alpha) = \alpha^m + \cdots + k_0 = 0 \]
+\[ p(\alpha)' = m n u \alpha^m + \cdots + k_0' = m n u p(\alpha) = m n u (\alpha^m + \cdots + k_0)\]
+\[ \frac{k_0'}{k_0} = m n u \]
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Testing $\exp$ for transcendence}
+\begin{theorem}
+$\exp u$ is transcendental over $k$
+$\qquad\Longleftrightarrow\qquad$
+$u'$ is not a logarithmic derivative of any $v \in k$
+
+and the constant subfield remains fixed
+\end{theorem}
+\begin{proof}
+$\Rightarrow$
+Assume the contrary, that $u'$ is the logarithmic derivative of $v \in k$,
+so $nu' = \frac{v'}{v}$.  $v' = n u' v$, so $v = (\exp u)^n$.
+\bigskip
+
+$\Leftarrow$
+Assume the contrary, that $a=\exp u$ exists in $K$, an algebraic extension of $k$.
+
+Then $a' = u' \exp u = u' a$, and $\frac{a'}{a} = u'$, so $u'$ is a logarithmic
+derivative in $K$, contradicting (Bronstein's theorem)
+that it is not a logarithmic derivative in $k$.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\int \frac{4^x+1}{2^x+1} {\rm d} x$}
+Three ways to represent $\frac{4^x+1}{2^x+1}$ in Liouvillian form
+\begin{itemize}
+\item The Easy Way
+
+$${\mathbb C}(x,\Psi = \exp(x \ln 2))$$
+
+$$ \frac{\Psi^2+1}{\Psi+1}$$
+
+\item The Hard Way
+
+$${\mathbb C}(x,\Psi = \exp(x \ln 4), \xi ) \qquad \xi^2=\Psi$$
+
+$$ \frac{\Psi+1}{\xi+1}$$
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\int \frac{4^x+1}{2^x+1} {\rm d} x$}
+%% Three ways to represent $\frac{4^x+1}{2^x+1}$ in Liouvillian form
+\begin{itemize}
+\item The Wrong Way
+
+$${\mathbb C}(x,\Psi,\Phi) \qquad \Psi = \exp(x \ln 4) \qquad \Phi = \exp(x \ln 2)$$
+
+$$ \frac{\Psi+1}{\Phi+1}$$
+
+$$ \frac{\Psi'}{\Psi} = \frac{(\ln 4) \Psi}{\Psi} = 2 \ln 2 = 2 (x \ln 2)'$$
+
+i.e, $(x \ln 2)$ is a logarithmic derivative in ${\mathbb C}(x,\Psi)$
+
+\bigskip
+Implies an algebraic relationship between $\Psi$ and $\Phi$
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\Huge
+\centerline{The Logarithmic Extension}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Logarithmic Integration Theorem}
+\small
+\Paste{LIT1}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Logarithmic Integration Theorem (cont)}
+\tiny
+\Paste{LIT2}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The \$50,000 integral}
+$$\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} dx$$
+\tiny
+\begin{sageblock}
+integrand = x                                           \
+   *((x^2*exp(2*x^2)-log(x+1)^2)^2                      \
+      +2*x*exp(3*x^2)*(x-(2*x^3+2*x^2+x+1)*log(x+1)))   \
+   / ((x+1)*(log(x+1)^2 - x^2*exp(2*x^2))^2)
+\end{sageblock}
+
+\end{frame}
+
+\tikzstyle{field} = [draw,drop shadow={opacity=.4,shadow xshift=0.04, shadow yshift=-0.04},rounded corners=3]
+
+\begin{frame}[fragile]
+\frametitle{The \$50,000 integral (cont)}
+
+\small
+\begin{tabular}{ m{.5\textwidth} m{.5\textwidth} }
+We put our integral into Liouvillian form, \break assigning $\psi = \exp(x^2)$ and $\theta = \ln (x+1)$.
+&
+  \begin{tikzpicture}
+    \small
+    
+    \node (log field) [field, minimum height=150, minimum width=150, fill=blue!45] {};
+    \node (log label) [below=5pt] at (log field.north) {$\CC(x,\psi,\theta) \qquad \theta = \log (x+1)$};
+
+    \node (exp field) [field, fill=blue!30, minimum height=100, minimum width=130] {};
+    \node (exp label) [below=5pt] at (exp field.north) {$\CC(x,\psi) \qquad \psi = \exp x^2$};
+
+    \node (rational field) [field, minimum height=40, minimum width=50, fill=white] {$\CC(x)$};
+
+  \end{tikzpicture}
+\\
+\end{tabular}
+
+\begin{sageblock}
+var('theta, psi');
+lintegrand = integrand.subs( {log(x+1) : theta, exp(x^2) : psi, exp(2*x^2) : psi^2, exp(3*x^2) : psi^3})
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The \$50,000 integral (cont)}
+
+\begin{sageblock}
+F.<x,psi> = FractionField(ZZ['x', 'psi']);
+R.<theta> = F['theta']
+
+D = Derivation(R, {x: 1, theta: 1/(x+1), psi: 2*x*psi})
+
+num = R(lintegrand.numerator(False))
+den = R(lintegrand.denominator(False))
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The \$50,000 integral (cont)}
+
+\begin{sageblock}
+(a,N) = num.quo_rem(den)
+A = integrate(SR(a), x)
+n = [f[0] for f in factor(den)]
+
+b = partfrac(N, den);
+displayarray(b);
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The \$50,000 integral (cont)}
+
+\begin{sagecode}
+R = {};
+B = {};
+Q = {};
+C = {};
+\end{sagecode}
+
+\begin{sageblock}
+R[0,1] = b[n[0],2]
+B[0,1] = - R[0,1] / D(n[0])
+Q[0,1] = -(R[0,1] + B[0,1] * D(n[0])) / n[0]
+C[0] = (b[n[0],1] - D(B[0,1]) - Q[0,1]) / D(n[0])
+\end{sageblock}
+
+\begin{sageblock}
+R[1,1] = b[n[1],2]
+B[1,1] = - R[1,1] / D(n[1])
+Q[1,1] = - (R[1,1] + B[1,1] * D(n[1])) / n[1]
+C[1] = (b[n[1],1] - D(B[1,1]) - Q[1,1]) / D(n[1])
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The \$50,000 integral (cont)}
+
+\begin{sageblock}
+lans = A + sum([B[i,1]/n[i] for i in range(2)]) \
+  + sum([2 * C[i] * log(n[i]) for i in range(2)]).simplify_log()/2
+\end{sageblock}
+
+\begin{sageblock}
+ans = lans.subs({theta : log(x+1), psi : exp(x^2)})
+\end{sageblock}
+
+\begin{sageblock}
+bool(diff(ans,x) == integrand)
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}
+\Huge
+\centerline{The Exponential Extension}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Exponential Integration Theorem}
+\small
+\Paste{EIT1}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Exponential Integration Theorem (cont)}
+\tiny
+\Paste{EIT2}
+\end{frame}
+
+\begin{frame}[fragile]
+\small
+\frametitle{Risch Equations over $\CC(x)$}
+\Paste{C(x) Risch Equation}
+
+Let's consider a single pole at
+$\gamma$ and expand $S$, $T$, and $r$ using partial fractions:
+
+$$r = \frac{a}{(x-\gamma)^j} + \cdots  \qquad  r' = \frac{-ja}{(x-\gamma)^{j+1}} + \cdots$$
+
+$$S = \frac{b}{(x-\gamma)^k} + \cdots \qquad T = \frac{c}{(x-\gamma)^l} + \cdots$$
+
+Combining everything into the Risch equation \eqref{eq: C(x) Risch}, we find:
+
+$$\frac{-ja}{(x-\gamma)^{j+1}} + \cdots + \frac{ba}{(x-\gamma)^{j+k}} + \cdots = \frac{c}{(x-\gamma)^l} + \cdots$$
+
+There are three cases to consider:
+
+\begin{enumerate}
+
+\item $k<1$.  The $\frac{-ja}{(x-\gamma)^{j+1}}$ term dominates the left hand side,
+and $j = l-1$
+
+\item $k=1$.  Either $j=l-1$ or $j=b$.
+
+\item $k>1$.  The $\frac{ba}{(x-\gamma)^{j+k}}$ term dominates the left hand side, so $j=l-k$
+
+\end{enumerate}
+
+By checking all of $S$'s and $T$'s poles, we can
+identify all the poles in $r$'s denominator and determine the
+multiplicity with which they appear.
+
+\bigskip
+
+This determines $r$'s denominator.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\small
+\frametitle{Risch Equations over $\CC(x)$ (cont)}
+
+We now have a polynomial Risch equation
+that must be satisfied by the numerator $p$:
+
+\Paste{C[x] Risch Equation}
+
+Our next aim is to upper bound the degree of $p$, and there are again three cases.
+
+\begin{enumerate}
+\item $p$ is a constant and $pB = C$
+\item $\deg p = \deg C - \max(\deg A - 1, \deg B)$
+\item $\deg A = \deg B + 1$ and $\deg p =-\frac{\lc B}{\lc A} $
+
+$$A = a_j x^j + \cdots \qquad B = b_{j-1} x^{j-1} + \cdots$$
+$$p = p_k x^k + \cdots \qquad p' = k p_k x^{k-1} + \cdots$$
+
+$$A p' + B p = (k a_j p_k + b_{j-1} p_k) x^{j+k-1} \cdots$$
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\tiny
+\frametitle{The Error Function}
+
+\begin{tabular}{ m{.5\textwidth} m{.5\textwidth} }
+$$\int e^{-x^2}\, {\rm d}x$$
+
+We'll use ${\mathbb C}(x, \psi = \exp\, -x^2)$, so $\psi' = -2x$ and
+study
+
+$$\int \psi \, {\rm d}x$$
+
+&
+\tikzstyle{field} = [draw,drop shadow={opacity=.4,shadow xshift=0.04, shadow yshift=-0.04},rounded corners=3]
+  \begin{tikzpicture}
+    
+    \node (log field) [field, minimum height=50, minimum width=100, fill=blue!45] {};
+    \node (log label) [below=5pt] at (log field.north) {$\CC(x,\psi) \qquad \psi = \exp\, (-x^2)$};
+
+    \node (rational field) [field, minimum height=20, minimum width=30, fill=white, below=1pt] {$\CC(x)$};
+
+  \end{tikzpicture}
+\\
+\end{tabular}
+
+\begin{comment}
+
+$$\int e^{-x^2}\, {\rm d}x$$
+
+We'll use ${\mathbb C}(x, \psi = \exp\, -x^2)$, so $\psi' = -2x$ and
+study
+
+$$\int \psi \, {\rm d}x$$
+
+\end{comment}
+
+We know from the Exponential Integration Theorem that our
+solution, if it exists, must have the form $A_1\psi$, where $A_1 \in
+{\mathbb C}(x)$, and $A_1$ must satisfy equation \eqref{eq: exponential An}:
+
+$$A_1' - 2x A_1 = 1$$
+
+This is already a polynomial Risch equation, and $A_1'$ has only a
+constant coefficient, so $A_1$ can not have a non-trivial denominator.
+
+\bigskip
+
+Identifying $A$ as $1$, $B$ as $-2x$, and $C$ as $1$, we see that
+$C$ is not a constant
+multiple of $B$, so a constant $A_1$ can't solve our equation (case 1).
+
+\bigskip
+
+We compute:
+
+$$\deg C - \max(\deg A - 1, \deg B) = 0 - 1 = -1$$
+
+so case 2 doesn't work.
+
+\bigskip
+
+Finally (case 3), we see that $\deg A \ne \deg B + 1$.
+
+\bigskip
+
+We conclude that no solution to this Risch equation exists in ${\mathbb C}(x)$,
+so the integral can not be expressed in elementary form.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Normal and Special Polynomials}
+
+Irreducible polynomials in a differential ring can be characterized as follows:
+
+\begin{itemize}
+\item {\bf Normal} irreducible polynomials do not divide their own derivatives
+\item {\bf Special} irreducible polynomials divide their own derivatives
+\end{itemize}
+
+In $\CC[x]$, or any $K[x]$ where all $k\in K$ are constant, all irreducible polynomials are {\bf normal}.
+
+\bigskip
+
+In a logarithmic transcendental extension, all irreducible polynomials are {\bf normal}.
+
+\begin{proof}
+In all of these cases,
+differentiation lowers the degree of the polynomial, and the original polynomial is {\it irreducible}
+\end{proof}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Normal and Special Polynomials (cont)}
+
+In an exponential transcendental extension $K[\psi]$, where $\psi = \exp \Psi$, $\psi$ is the
+only {\bf special} irreducible polynomial; all other irreducible polynomials are {\bf normal}.
+
+\begin{proof}
+\begin{enumerate}
+\item $\psi$ is special
+$$\psi' = \Psi' \psi \qquad \left(\Psi'\psi\right) | \psi$$
+\item All other irreducible polynomials are normal.  W.l.o.g. let $p$ be monic and special
+
+$$p = \psi^n + \cdots + p_0$$
+$$p' = n \Psi' \psi^n + \cdots + p_0' = n \Psi' p = (n \Psi') \psi^n + \cdots + n \Psi' p_0$$
+%%$$p_0' = n \Psi' p_0$$
+$$\frac{p_0'}{p_0} = n \Psi'$$
+...contradicting the assumption that $\Psi'$ is not a logarithmic derivative
+\end{enumerate}
+\end{proof}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Risch Equations over Fields with Normal Polynomials}
+\tiny
+Let $K$ be a differential field, and $K(\theta)$ be a
+non-constant transcendental extension of $K$.
+
+\begin{equation}
+\label{eq: transcendental polynomial Risch}
+r' + S r = T \qquad S,T,r \in K(\theta)
+\end{equation}
+
+What happens when our partial
+fractions decomposition yields normal polynomials
+in the denominators of $S$ or $T$?
+
+$$S = \frac{b(\theta)}{n(\theta)^k} + \cdots
+\qquad T = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
+
+$$r = \frac{a(\theta)}{n(\theta)^j} + \cdots  \qquad
+r' = \frac{a'(\theta)n(\theta)-ja(\theta)n'(\theta)}{n(\theta)^{j+1}} + \cdots = \frac{-ja(\theta)n'(\theta)}{n(\theta)^{j+1}} + \cdots$$
+
+Equation \ref{eq: transcendental polynomial Risch} becomes:
+
+$$\frac{-ja(\theta)n'(\theta)}{n(\theta)^{j+1}} + \cdots + \frac{a(\theta) b(\theta)}{n(\theta)^{j+k}} + \cdots = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
+
+Both of the numerators on the left hand side could have $\theta$-degree greater than $\deg_\theta n(\theta)$,
+so we divide them by $n(\theta)$:
+
+%% $$R_1(\theta) = -ja(\theta)n'(\theta) \mod n(\theta) \qquad R_2(\theta) = a(\theta)b(\theta) \mod n(\theta)$$
+
+%% $$\frac{R_1(\theta)}{n(\theta)^{j+1}} + \cdots + \frac{R_2(\theta)}{n(\theta)^{j+k}} + \cdots = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
+
+$$\frac{-ja(\theta)n'(\theta) \mod n(\theta)}{n(\theta)^{j+1}} + \cdots + \frac{a(\theta)b(\theta) \mod n(\theta)}{n(\theta)^{j+k}} + \cdots = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
+
+\begin{enumerate}
+
+\item $k=0$ and $j = l-1$.
+
+\item $k=1$ and either $j=l-1$ or $j = \frac{b(\theta)}{n'(\theta)} \mod n(\theta)$.
+
+\item $k>1$ and $j=l-k$.
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{comment}
+\begin{frame}[fragile]
+\tiny
+\frametitle{Risch Equations over Fields with Special Polynomials}
+Let $K$ be a differential field, and $\psi=\exp\Psi$ be an
+exponential extension of $K$.
+
+\begin{equation}
+\label{eq: general polynomial Risch}
+r' + S r = T \qquad S,T,r \in K(\psi)
+\end{equation}
+
+What happens when our partial
+fractions decomposition yields special polynomials
+in the denominators of $S$ or $T$?
+
+$$S = \frac{b}{\psi^k} + \cdots \qquad T = \frac{c}{\psi^l} + \cdots \qquad b,c \in K$$
+$$r = \frac{a}{\psi^j} + \cdots  \qquad  r' = \frac{-j \Psi' a + a'}{\psi^{j}} + \cdots \qquad a \in K$$
+
+Equation \ref{eq: general polynomial Risch} becomes:
+
+$$\frac{-j \Psi' a + a'}{\psi^{j}} + \cdots + \frac{a b }{\psi^{k+j}} + \cdots
+= \frac{c}{\psi^l} + \cdots$$
+
+We get two cases:
+
+\begin{enumerate}
+\item $k=0$ and either $j=l$ or
+$j = \frac{a' + a b}{a \Psi'}$.
+
+\smallskip
+Published algorithms exist to solve this equation (see Bronstein's {\it Symbolic Integration I}).
+%% (assuming that this fraction is an integer).
+\item $k>0$ and $j=l-k$.
+\end{enumerate}
+
+\end{frame}
+\end{comment}
+
+\begin{frame}[fragile]
+\frametitle{Risch Equations over Fields with Special Polynomials}
+\tiny
+We now have a polynomial Risch equation, though there can still be
+special factors in the denominator, i.e, negative powers of $\psi$:
+
+\begin{equation}
+\label{eq: special polynomial Risch}
+A r' + B r = C \qquad A,B,C \in K[\psi] \quad r \in K(\psi) \qquad \psi = \exp \Psi
+\end{equation}
+
+$$r = \frac{a}{\psi^j} + \cdots  \qquad  r' = \frac{-j \Psi' a + a'}{\psi^{j}} + \cdots$$
+
+If $A$ and $B$ have no $\psi$ factors, then their zeroth order coefficients will produce $j$-th order fractions:
+
+$$ A(0) \frac{-j \Psi' a + a'}{\psi^{j}} + \cdots
++ B(0) \frac{a}{\psi^j} + \cdots  = C$$
+
+Since $C$ is a polynomial, the fractions on the left must cancel, and we obtain:
+
+$$\left[ -ja \Psi' + a' \right] A(0) + a B(0) = 0$$
+
+$$ j\Psi' - \frac{a'}{a }  = \frac{B(0)}{A(0)}$$
+
+Integrating, we obtain:
+
+\begin{equation}
+\label{special risch equation - denominator bound}
+j \Psi - \ln a = \int \frac{B(0)}{A(0)} dx
+\end{equation}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Risch Equations over Fields with Special Polynomials (cont)}
+\tiny
+\begin{equation}
+\label{special risch polynomial equation}
+A r' + B r = C \qquad A,B,C \in K[\psi] \quad r \in K\hstretch{0.5}{<}\psi\hstretch{0.5}{>}
+\end{equation}
+
+Now we want to upper bound the $\psi$-degree of $r$.
+
+$$r = r_n \psi^n + \cdots \qquad r' = (r_n' + n r_n \Psi') \psi^n + \cdots$$
+
+If there is no cancellation between the $Ar'$ and $Br$ terms in equation \ref{special risch polynomial equation}, then
+
+$$\deg_\psi r = \deg_\psi C - \max(\deg_\psi A, \deg_\psi B)$$
+
+However, if $A$ and $B$ have equal $\psi$-degree, then the leading term on the left hand side is:
+
+$$\left(\lc A\, (r_n' + n r_n \Psi') + \lc B\, r_n\right)\psi^{n+\deg_\psi A} + \cdots$$
+
+Cancellation is achieved if the following condition is met:
+
+\begin{equation}
+\label{special risch equation - numerator bound}
+n \Psi' + \frac{r_n'}{r_n} = - \frac{\lc B}{\lc A}
+\end{equation}
+
+This equation has the same form as \ref{special risch equation - denominator bound}, so again, we integrate:
+
+\begin{equation}
+\label{special risch equation - numerator bound}
+n \Psi + \ln r_n = - \int \frac{\lc B}{\lc A} dx
+\end{equation}
+
+If $A$ and $B$ have equal $\psi$-degree, and this integral has this desired form, then cancellation
+is possible between the terms on the left hand side of
+\ref{special risch polynomial equation}, and
+
+$$\deg_\psi r = \max(n, \deg_\psi C - \max(\deg_\psi A, \deg_\psi B))$$
+
+
+
+This degree can be negative, so long as it is no lower than
+the lower degree bound determined earlier.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Bronstein's Integral}
+
+\begin{tabular}{ m{.4\textwidth} m{.6\textwidth} }
+$$\int \frac{e^x - x^2 + 2x}{(e^x + x)^2 x^2}e^{(x^2-1)/x+1/(e^x+x)} dx$$
+&
+  \begin{tikzpicture}
+    \small
+    
+    \node (log field) [field, minimum height=60, minimum width=220, fill=blue!45] {};
+%%    \node (log label) [below=5pt] at (log field.north) {$\CC(x,\psi,\theta) \qquad \theta = \log (x+1)$};
+    \node (log label) [below=5pt, align=left, right=3pt of log field.west] {$\CC(x,\psi,\theta)$ \\ $\theta = \exp \left(\frac{x^2-1}{x}+\frac{1}{\theta+x}\right)$};
+
+%%    \node (exp field) [field, fill=blue!30, minimum height=40, minimum width=100, anchor=east] at (log field.east) {};
+    \node (exp field) [field, fill=blue!30, minimum height=40, minimum width=100, anchor=east, left=3pt of log field.east] {};
+    \node (exp label) [below=5pt, align=left, right=3pt of exp field.west] {$\CC(x,\psi)$ \\ $\psi = \exp x^2$};
+
+    \node (rational field) [field, minimum height=20, minimum width=30, fill=white, anchor=east, left=3pt of exp field.east] {$\CC(x)$};
+
+  \end{tikzpicture}
+\\
+\end{tabular}
+
+\begin{sageblock}[bronstein]
+# First, we switch back to using the Symbolic Ring,
+# instead of the ring variables from the last example.
+
+var('x', 'theta', 'psi');
+
+integrand = (exp(x) - x^2 + 2*x) / ((exp(x) + x)^2 * x^2) * exp((x^2-1)/x + 1/(exp(x)+x))
+
+exponent = (x^2-1)/x + 1/(psi+x)
+
+lintegrand = integrand.subs( {exp(x) : psi, exp(exponent) : theta})
+\end{sageblock}
+
+\end{frame}
+
+\begin{sagecode}[bronstein]
+# Now create a proper ring and convert to using its variables.
+
+F.<x,psi> = FractionField(ZZ['x', 'psi']);
+R.<theta> = F[];
+
+D1 = Derivation(R, {x: 1, psi: psi});
+D = Derivation(R, {x: 1, psi: psi, theta: D1(R(exponent))*theta});
+
+A1f = function('A1', nargs=1);
+A1 = A1f(x);
+\end{sagecode}
+
+\begin{frame}[fragile]
+\frametitle{Bronstein's Integral (cont)}
+
+\begin{sageblock}[bronstein]
+a1 = lintegrand/theta
+eq = diff(A1,x) + D(theta)/theta * A1 - a1
+[BC, _], [A, _] = eq.numerator().coefficients(diff(A1,x));
+[C, _], [B, _] = BC.numerator().coefficients(A1);
+A
+B
+C
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Bronstein's Integral: $\deg_\psi A_1$ lower bound \hfill $\psi = \exp \Psi = \exp x$}
+\tiny
+
+\begin{sageblock}[bronstein]
+R2 = ZZ['x']['psi'];
+R2(A)
+R2(B)
+R2(C)
+\end{sageblock}
+
+\bigskip
+$$r = \frac{a}{\psi^j} + \cdots$$
+
+\begin{equation}
+\tag{\ref{special risch equation - denominator bound}}
+j \Psi - \ln a = \int \frac{B(0)}{A(0)} dx
+\end{equation}
+
+\begin{sageblock}[bronstein]
+(A/B).subs(psi=0)
+\end{sageblock}
+
+\bigskip
+Equation \ref{special risch equation - denominator bound}
+does have the desired form with $j=1$ and $a$ an arbitrary constant.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Bronstein's Integral: $\deg_\psi A_1$ upper bound \hfill $\psi = \exp \Psi = \exp x$}
+\tiny
+
+\begin{sageblock}[bronstein]
+R2(A)
+R2(B)
+R2(C)
+\end{sageblock}
+
+$$r = r_n \psi^n + \cdots$$
+
+\begin{equation}
+\tag{\ref{special risch equation - numerator bound}}
+n \Psi + \ln r_n = - \int \frac{\lc B}{\lc A} = - \int \frac{x^2+1}{x^2}
+\end{equation}
+
+\begin{sageblock}[bronstein]
+integrate(R2(B).lc() / R2(A).lc(), x)
+\end{sageblock}
+
+\bigskip
+Equation \ref{special risch equation - numerator bound}
+does {\it not} have the desired form, so
+$$\deg_\psi r = \deg_\psi C - \max(\deg_\psi A, \deg_\psi B) = -1$$
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Bronstein's Integral (cont)}
+\tiny
+
+$$A_1 = A_{1,-1} \psi^{-1} \qquad A_{1,-1} \in {\mathbb C}(x)$$
+
+\begin{sagecode}[bronstein]
+A1m1f = function('A1m1', latex_name='A_{1,-1}', nargs=1);
+A1m1 = A1m1f(x);
+\end{sagecode}
+
+\begin{sageblock}[bronstein]
+eq2 = eq.subs({A1 : A1m1/psi, diff(A1,x) : (diff(A1m1,x)*psi - A1m1*D(psi))/psi^2})
+
+eq2.numerator().degree(psi)
+eq2.numerator().coefficient(psi, 2)
+eq2.numerator().coefficient(psi, 1)
+eq2.numerator().coefficient(psi, 0)
+\end{sageblock}
+
+$$A_{1,-1} = 1 \qquad A_1 = \psi^{-1}$$
+
+\end{frame}
+
+\begin{sagecode}[bronstein]
+
+# BUG FIX - the polynomial subs() routine doesn't call subs
+# recursively, so only the top level polynomial var gets
+# replaced.  The difference is the nested call to subs()
+
+def bwbsubs(self, *x, **kwds):
+    if len(x) == 1 and isinstance(x[0], dict):
+        g = self.parent().gen()
+        if g in x[0]:
+            return self(x[0][g]).subs(x[0])
+        elif len(x[0]) > 0:
+            raise TypeError("keys do not match self's parent")
+        return self
+    return self(*x, **kwds)
+
+# Python insanity!  This changes the class's method to use my patched
+# version.
+
+type(theta).subs = bwbsubs;
+
+\end{sagecode}
+
+\begin{frame}[fragile]
+\frametitle{Bronstein's Integral (cont)}
+\tiny
+
+$$A_{1,-1} = 1 \qquad A_1 = \psi^{-1} \qquad F = A_1 \theta = \frac{\theta}{\psi}$$
+
+\begin{sageblock}[bronstein]
+lans = theta/psi
+ans = lans.subs({theta : exp(exponent), psi : exp(x)})
+bool(diff(ans,x) == integrand)
+\end{sageblock}
+
+\bigskip
+$$\int \sage[bronstein]{integrand} dx = \sage[bronstein]{ans}$$
+
+\end{frame}
+
+\begin{frame}
+\Huge
+\centerline{The Algebraic Extension}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The Algebraic Toolkit}
+\tiny
+There are four basic operations we perform on a rational
+function in order to integrate it:
+
+\begin{enumerate}
+\item We {\bf factor} its numerator and denominator
+\begin{sagecode}[ch7-intro]
+load("sagecommon.sage");
+import re
+R.<x> = QQ[];
+n = (x-1)^3*(x+3)*(x+1);
+d = (x-2)^2*(x-3);
+p = n/d;
+def partfrac2(n,d):
+    r = partfrac(n%d,d)
+    a = latex(n//d)
+    a += '&'
+    for k,v in sorted(r.items(), reverse=True):
+        if k[1] > 1:
+            denom = "({})^{}".format(latex(k[0]), k[1])
+        else:
+            denom = latex(k[0])
+        if v < 0:
+            a += "-\\frac{"+latex(-v)+"}{"+denom+"}"
+        else:
+            a += "+\\frac{"+latex(v)+"}{"+denom+"}"
+    return a
+def partfrac3(n,d):
+    r = partfrac(n%d,d)
+    #a = latex(n//d).replace("x", "\\frac{{1}}{{1/x}}")
+    #a = re.sub("x", "\\frac{{1}}{{1/x}}", latex(n//d))
+    a = re.sub("x(\^{[0-9]}|)", "\\\\frac{1}{1/x\\1}", latex(n//d))
+    a += '&'
+    for k,v in sorted(r.items(), reverse=True):
+        if k[1] > 1:
+            denom = "({})^{}".format(latex(k[0]), k[1])
+        else:
+            denom = latex(k[0])
+        if v < 0:
+            a += "-\\frac{"+latex(-v)+"}{"+denom+"}"
+        else:
+            a += "+\\frac{"+latex(v)+"}{"+denom+"}"
+    return a
+\end{sagecode}
+$$\sage[ch7-intro]{p} = \frac{\sage[ch7-intro]{n.factor()}}{\sage[ch7-intro]{d.factor()}}$$
+
+In an algebraic extension, we compute a {\bf divisor}.
+\item We construct a {\bf partial fractions expansion}
+\begin{IEEEeqnarray*}{rCCL}
+\sage[ch7-intro]{p} & = & \sage[ch7-intro]{partfrac2(n, d)} \\
+                    & = & \sage[ch7-intro]{partfrac3(n, d)}
+\end{IEEEeqnarray*}
+In an algebraic extension, we construct a {\bf principal parts expansion}.
+\item We {\bf reconstruct} a function given a {\bf factorization} of its numerator and denominator.
+
+\bigskip
+In an algebraic extension, we use a {\bf Riemann-Roch algorithm} to reconstruct a function from its divisor.
+\bigskip
+\item We {\bf reconstruct} a function given a {\bf partial fractions expansion}.
+
+\bigskip
+In an algebraic extension, we solve a {\bf Mittag-Leffler problem} to reconstruct a function from its principal parts expansion.
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The Algebraic Toolkit (cont)}
+
+\begin{sageblock}[ex1]
+R.<x> = FunctionField(QQ)
+f = (x^5 + x^4 - 6*x^3 + 2*x^2 + 5*x - 3)/(x^3 - 7*x^2 + 16*x - 12)
+f.divisor()
+
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The Algebraic Toolkit (cont)}
+
+Analyze the principal parts of $\frac{x}{y} \ud x$ on the curve $y^2 = 1 - x^2$
+
+\begin{sagecode}[ex1]
+QQbar.options.display_format = 'radical';
+\end{sagecode}
+
+\begin{sageblock}[ex1]
+R.<x> = FunctionField(QQbar, implementation='kash')
+L.<y> = R[]; F.<y> = R.extension(y^2 + x^2 - 1)
+
+v = x/y*x.differential()
+D = v.divisor()
+table([[p, F.completion(p, prec=0)(v)] for p,m in D.list() if m < 0])
+\end{sageblock}
+
+\bigskip
+There are two places at infinity because $lim_{x\to\infty} y = \pm i x$.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The Algebraic Toolkit (cont)}
+
+On the curve $y^2 = x^3 - x$, find a function with a third-order pole at the origin, and first-order zeros at $(1,0)$, $(-1,0)$, and infinity.
+
+\begin{sageblock}[ex1]
+R.<x> = FunctionField(QQbar, implementation='kash'); L.<y> = R[]; F.<y> = R.extension(y^2 - x^3 + x);
+
+F.places_infinite()
+
+O = F.maximal_order();
+
+zeros = [F.places_infinite()[0], O.ideal(x-1, y).place(), O.ideal(x+1, y).place()]
+
+pole = O.ideal(x,y).place()
+
+divisor = sum(map(lambda a: a.divisor(), zeros)) - 3 * pole
+
+divisor.basis_function_space()
+
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral}
+
+%%\centerline{$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}} \ud x$}
+
+\begin{tabular}{ p{.5\textwidth} p{.5\textwidth} }
+$$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}} dx$$
+
+&
+  \begin{tikzpicture}[baseline = (log field.north)]
+    \small    
+    \node (log field) [field, minimum height=50, minimum width=175, fill=blue!45] {};
+    \node (log label) [below=5pt] at (log field.north) {$\CC(x,y) \qquad y^2 = x^4+4 x^3+2 x^2+1$};
+
+    \node (rational field) [field, minimum height=20, minimum width=30, fill=white, below=1pt] {$\CC(x)$};
+
+  \end{tikzpicture}
+\\
+\end{tabular}
+
+\begin{sagecode}[chebyshev]
+QQbar.options.display_format = 'radical';
+\end{sagecode}
+
+\begin{sageblock}[chebyshev]
+R.<x> = FunctionField(QQbar, implementation='kash'); L.<y> = R[];
+root = x^4+4*x^3+2*x^2+1; F.<y> = R.extension(y^2 - root)
+num = 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8; den = (2*x^2-1)^2;
+integrand = num/(den*y) * x.differential()
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+\centerline{$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}} \ud x$}
+
+\begin{sageblock}[chebyshev]
+
+den.factor()
+table([[pl, F.completion(pl, prec=0)(integrand)] for pl in integrand.divisor_of_poles().support()])
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+
+\begin{sageblock}[chebyshev]
+from sage.rings.function_field.divisor import FunctionFieldDivisor
+Dpoles = integrand.divisor_of_poles();
+D = FunctionFieldDivisor(Dpoles.parent().function_field(), {p:m-1 for p,m in Dpoles.list()})
+basis = D.basis_function_space()
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+
+We now want to solve a matrix equation:
+
+$$M \cdot v = c$$
+
+\begin{itemize}
+\item $M$ are the principal parts coefficients of the basis elements
+\item $v$ is a vector of weights on the basis elements
+\item $c$ are the principal parts coefficients of the desired function
+\end{itemize}
+
+If $b$ is the vector of basis functions, then $v\cdot b$ will be the desired function.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+
+\begin{sageblock}[chebyshev]
+def principal_parts_matrix(div, basis):
+    F = div.parent().function_field()
+    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
+    return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
+
+M = principal_parts_matrix(D, basis);
+
+def solution_vector(div, differential):
+    F = differential.parent().function_field()
+    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
+    return matrix([[c[0](differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
+
+c = solution_vector(D, integrand);
+\end{sageblock}
+
+\bigskip
+\tiny
+\[ \sage[chebyshev]{M} \cdot v = \sage[chebyshev]{c} \]
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+
+\begin{sageblock}[chebyshev]
+M.is_invertible()
+pi = M.pseudoinverse()
+v = pi * c
+M * v == c
+sol1 = (matrix(basis) * v)[0,0]
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+
+\begin{sageblock}[chebyshev]
+fns = [sol1, integrand];
+table([[""] + fns] + [[pl] + [F.completion(pl, prec=0)(f) for f in fns] for pl in Dpoles.support()])
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+
+\begin{sageblock}[chebyshev]
+D2 = add([QQ(integrand.residue(pl)).sign() * pl for pl in Dpoles.support()])
+D2.basis_function_space()
+(2*D2).basis_function_space()
+(3*D2).basis_function_space()
+(4*D2).basis_function_space()
+sol2 = (5*D2).basis_function_space()
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+
+\begin{sageblock}[chebyshev]
+sol1.differential() - (1/2)*(1/sol2[0])*sol2[0].differential()
+integrand
+\end{sageblock}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Chebyshev's Integral (cont)}
+
+\begin{sagecode}[chebyshev]
+num2 = R._to_bivariate_polynomial(sol2[0])[0];
+den2 = R._to_bivariate_polynomial(sol2[0])[1];
+
+ld = lcm([QQ(c).denominator() for c in den2.coefficients()]);
+ln = lcm([QQ(c).denominator() for c in num2.coefficients()]);
+
+R2.<x> = QQ[];
+F2 = Frac(R2);
+R3.<y> = F2[];
+f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1);
+Q = R3.quo(ideal(f));
+
+R2.<x> = ZZ[];
+F2 = Frac(R2);
+R3.<y> = F2[];
+f = y^2 - (x^4 + 4*x^3 + 2*x^2 + 1);
+Q2 = R3.quo(ideal(f));
+
+sol2a = Q2(Q(sol2[0].element()*(ln/ld)));
+\end{sagecode}
+
+\begin{sageblock}[chebyshev]
+sol1a = R._to_bivariate_polynomial(sol1)
+sol1b =sol1a[0].subs({L.0:sqrt(root)})/sol1a[1]
+
+sol2a = R._to_bivariate_polynomial(sol2[0])
+sol2b = sol2a[0].subs({L.0:sqrt(root)})/sol2a[1]
+
+sol3 = sol1b - 1/2 * log(sol2b)
+
+\end{sageblock}
+
+\end{frame}
+
+\end{document}

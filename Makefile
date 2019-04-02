@@ -1,5 +1,5 @@
 
-all: ModernIntegration.pdf
+all: ModernIntegration.pdf slides.pdf
 
 export SAGE_ROOT = /home/baccala/src/sage
 
@@ -23,6 +23,11 @@ ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --interpreter maxima:/home/baccala/src/maxima-code/maxima-local --verbose ModernIntegration.tex --jobs 1
 	pdflatex ModernIntegration
 	rm sagecommon*.tex
+
+slides.pdf: slides.tex ModernIntegration.cpy
+	pdflatex slides || true
+	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --verbose slides.tex --jobs 1
+	pdflatex slides
 
 out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
 	pdftk A=slides.pdf B=toc.pdf C=ModernIntegration.pdf cat A B1 C46-49 C59-64 output out.pdf

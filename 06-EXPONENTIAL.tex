@@ -109,6 +109,7 @@ solving the Risch equation more generally.
 \section{The Exponential Integration Theorem}
 
 \theorem\label{exponential integration theorem}
+\Copy{EIT1}{
 Let $K$ be a differential field, let $K(\theta = \exp k)$ be a simple
 exponential extension of $K$, let $n_i(\theta)$ be
 normal irreducible polynomials in $K[\theta]$,
@@ -138,7 +139,8 @@ F = \sum_{i=0}^n A_i \theta^i + \sum_{j=1}^{l} \frac{B_{j}}{\theta^j}
 $$A_i, B_j \in K \qquad C_{i,j}(\theta),n_i(\theta) \in K[\theta] \qquad D_i' = 0$$
 
 and the following relationships hold:
-
+}
+\Copy{EIT2}{
 \begin{equation}
 \label{eq: exponential A0}
 A_0' = a_0 - \sum_{i=1}^\nu D_i \frac{\lc n_i'(\theta)}{\lc n_i(\theta)}
@@ -170,6 +172,7 @@ C_{i,j}(\theta) \equiv - \frac{R_{i,j}(\theta)}{jn_i'(\theta)} \mod n_i(\theta)
 \label{eq: exponential Ds}
 D_i = \frac{c_{i,1} - C_{i,1}'(\theta) - Q_{i,1}(\theta)}{n_i'(\theta) - \frac{\lc n_i'(\theta)}{\lc n_i(\theta)} n_i(\theta)}
 \end{equation}
+}
 
 \vfill\eject
 \proof
@@ -471,10 +474,12 @@ in this case, ${\mathbb C}(x)$.
 
 Consider such a Risch equation:
 
+\Copy{C(x) Risch Equation}{
 \begin{equation}
 \label{eq: C(x) Risch}
 r' + S r = T \qquad S,T,r \in {\mathbb C}(x)
 \end{equation}
+}
 
 Recall that in ${\mathbb C}[x]$, all irreducible factors have
 the form $(x-\gamma)$, since ${\mathbb C}$ is algebraically
@@ -544,10 +549,12 @@ $$(D d) p' + (S D d - D d')p = T D d^2$$
 Setting $A=Dd$, $B=D(Sd - d')$ and $C=TDd^2$, we now have a polynomial Risch equation
 that must be satisfied by the numerator $p$:
 
+\Copy{C[x] Risch Equation}{
 \begin{equation}
 \label{eq: C[x] Risch}
 A p' + B p = C \qquad A,B,C,p \in {\mathbb C}[x]
 \end{equation}
+}
 
 Our next aim is to upper bound the degree of $p$, and there are again three cases.
 
@@ -557,7 +564,7 @@ $\deg A = \deg B + 1$ (since $\deg p$ drops by one on differentiation),
 and we can determine $\deg p$ by looking at the leading
 coefficients in $A$ and $B$:
 
-$$A = a_j x^j + \cdots \qquad B = b_{j-1} x^{j-1} + \cdots \qquad p = p_k x^k \cdots$$
+$$A = a_j x^j + \cdots \qquad B = b_{j-1} x^{j-1} + \cdots \qquad p = p_k x^k + \cdots$$
 
 $$A p' + B p = (k a_j p_k + b_{j-1} p_k) x^{j+k-1} \cdots$$
 
@@ -925,7 +932,7 @@ $$R_2(\theta) = a(\theta)b(\theta) \mod n(\theta)$$
 
 % Plugging this all into the Risch equation, we obtain:
 
-$$\frac{R_1(\theta)}{n(\theta)^{j+1}} + \frac{R_2(\theta)}{n(\theta)^{j+k}} = \frac{c(\theta)}{n(\theta)^l}$$
+$$\frac{R_1(\theta)}{n(\theta)^{j+1}} + \cdots + \frac{R_2(\theta)}{n(\theta)^{j+k}} + \cdots = \frac{c(\theta)}{n(\theta)^l} + \cdots$$
 
 % $$R_2(\theta) = a(\theta)b(\theta) \mod n(\theta)$$
 
@@ -1273,9 +1280,6 @@ Since $C$ is a polynomial, the fractions on the left must cancel, and we obtain:
 
 $$\left[ -j a k' + a' \right] A(0) + a B(0) = 0$$
 
-%% $$j = \frac{a(\theta) B(0) - a'(\theta) A(0)}{a(\theta)k'}$$
-
-%%$$\left[ jk' + \frac{a'(\theta)}{a(\theta) } \right] = \frac{B(0)}{A(0)}$$
 $$ jk' - \frac{a'}{a }  = \frac{B(0)}{A(0)}$$
 
 Integrating, we obtain:
@@ -1336,9 +1340,7 @@ $\theta = \exp x$ and $\psi = \exp\left( \frac{x^2-1}{x}+\frac{1}{\theta+x}\righ
 # First, we switch back to using the Symbolic Ring,
 # instead of the ring variables from the last example.
 
-x = var('x');
-theta = var('theta');
-psi = var('psi');
+var('x', 'theta', 'psi');
 
 integrand =                         \
    (exp(x) - x^2 + 2*x)             \
@@ -1357,6 +1359,7 @@ R.<psi> = F[]
 
 D1 = Derivation(R, {x: 1, theta: theta})
 D = Derivation(R, {x: 1, theta: theta, psi: D1(R(exponent))*psi})
+
 \end{sageblock}
 
 The integrand has the form $a_1 \psi$, where

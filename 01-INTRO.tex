@@ -6,7 +6,12 @@
 \centerline{\Huge\bf Who Wants to be a Mathematician?}
 
 \vskip 0.5in
-\centerline{\Huge\bf \$50,000 Question\footnote{The instructor may not necessarily possess a \$50,000 prize fund.  The author most certainly does not.}}
+\def\QuestionFont{\Huge\bf}
+\def\AnswerFont{\Huge}
+\Copy{WWTBAM}{
+\centerline{\QuestionFont \$50,000 Question\footnote{The instructor may not necessarily possess a \$50,000 prize fund.
+% The author most certainly does not.
+}}
 
 \vskip 0.5in
 \begin{center}
@@ -14,18 +19,19 @@
 \end{center}
 
 \begin{center}
-{\Huge A. $\int \sin x \, \ud x$}
+{\AnswerFont A. $\int \sin x \, \ud x$}
 
 \vskip 12pt
-{\Huge B. $\int e^{-x^2} \ud x$}
+{\AnswerFont B. $\int e^{-x^2} \ud x$}
 
 \vskip 12pt
-{\Huge C.}\,\,{\huge $\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} \ud x$}
+{\AnswerFont C.}\,\,{\huge $\int{{x\{(x^2e^{2x^2}-\ln^2(x+1))^2+2xe^{3x^2}(x-(2x^3+2x^2+x+1)\ln(x+1))\}}\over{(x+1)(\ln^2(x+1) - x^2e^{2x^2})^2}} \ud x$}
 
 \vskip 12pt
-{\Huge D. $\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}} \ud x$}
+{\AnswerFont D. $\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}} \ud x$}
 
 \end{center}
+}
 
 \vfill\eject
 
@@ -546,7 +552,7 @@ This next function is convenient for displaying Sage arrays.
 Here's a Python trick\footnote{\tt https://stackoverflow.com/questions/2749796}
 to find out what variable name a caller uses:
 
-\begin{sageblock}
+\begin{sagecommon}
 import inspect
 
 def varName(var):
@@ -555,9 +561,7 @@ def varName(var):
         if id(var) == id(lcls[name]):
             return name
     return None
-\end{sageblock}
 
-\begin{sageblock}
 def displayarray(b):
    varname = varName(b)
    for k in sorted(b.keys()):
@@ -567,4 +571,4 @@ def displayarray(b):
      else:
        print latex(k)
      print '}=', latex(b[k]), '$$'
-\end{sageblock}
+\end{sagecommon}

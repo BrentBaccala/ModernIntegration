@@ -3,6 +3,9 @@ GRAPH*.pdf
 
 ModernIntegration.pdf
 
+# a slide deck
+slides.pdf
+
 # a copy of Chapter 1, page 1
 wwtbam.pdf
 
@@ -43,6 +46,16 @@ ModernIntegration.aux
 ModernIntegration.log
 ModernIntegration.out
 ModernIntegration.toc
+# clipboard data
+ModernIntegration.cpy
+slides.pytxcode
+slides.aux
+slides.log
+slides.out
+slides.toc
+slides.nav
+slides.vrb
+slides.snm
 qqbar.aux
 qqbar.log
 
