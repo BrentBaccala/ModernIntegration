@@ -543,6 +543,44 @@ class LatexObject(SageObject):
 
 def table(listOfLists):
     return LatexObject('\\begin{aligned}' + '\\\\'.join(['&\\quad&'.join([latex(e) for e in l]) for l in listOfLists]) + '\\end{aligned}')
+
+# table1() is an attempt to create a table that contains series
+# expansions aligned so that terms of the same power line up under
+# each other.  We also have to deal with header cells that won't have
+# any alignment chars at all.  It's got a lot of problems.
+#
+# I've modified LaurentSeries to accept a 'table' parameter that
+# causes TeX alignment characters to be inserted in the output.  We
+# assume that each series has the same absolute precision, so any
+# difference in the number of alignment characters is caused by the
+# valuation of the series (i.e, the power of the leading term)
+# being different, and we patch this up by inserting extra
+# alignment characters at the beginning of the cell.
+
+def table_latex(e):
+    if isinstance(e, LaurentSeries):
+       return e._latex_(table=True)
+    else:
+       return latex(e)
+
+def fill_amps(target_amp_count, e):
+    # If there are any TeX alignment characters in the cell,
+    # this is (probably) a series with a higher valuation, so
+    # pad it with enough &s to left-fill the cell.  Otherwise,
+    # pad it with enough \omit\span's to span the cell, since
+    # it's (probably) a header cell.  I don't use the suggested
+    # practice of dropping the trailing \span, because that
+    # seems to take us out of math mode and cause errors.
+    if e.count('&') > 0:
+        return (target_amp_count-e.count('&'))*'&' + e
+    else:
+        return (target_amp_count)*'\\omit\\span' + e
+
+def table1(listOfLists):
+    latex_listOfLists = [[table_latex(e) for e in l] for l in listOfLists]
+    ampcount = map(max, zip(*[[e.count('&') for e in l] for l in latex_listOfLists]))
+    latex_listOfLists_2 = [[fill_amps(ampcount[i], e) for i,e in enumerate(l)] for l in latex_listOfLists]
+    return LatexObject('\\begin{alignedat}{' + str(sum(ampcount)) + "}" + '\\\\'.join(['&\\qquad\\qquad&'.join(l) for l in latex_listOfLists_2]) + '\\end{alignedat}')
 \end{sagecommon}
 
 \subsection{Arrays}
