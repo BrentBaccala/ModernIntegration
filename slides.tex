@@ -1514,10 +1514,13 @@ table1([[pl, F.completion(pl, prec=0)(integrand)] for pl in integrand.divisor_of
 \begin{frame}[fragile]
 \frametitle{Chebyshev's Integral (cont)}
 
+The integration step lowers the order of the poles by one, so our
+solution is in the Riemann-Roch space with poles at the same places as
+the integrand differential, but with multiplicity one less.
+
 \begin{sageblock}[chebyshev]
-from sage.rings.function_field.divisor import FunctionFieldDivisor
 Dpoles = integrand.divisor_of_poles();
-D = FunctionFieldDivisor(Dpoles.parent().function_field(), {p:m-1 for p,m in Dpoles.list()})
+D = reduced_divisor(Dpoles)
 basis = D.basis_function_space()
 \end{sageblock}
 

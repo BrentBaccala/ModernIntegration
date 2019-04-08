@@ -328,15 +328,23 @@ Since these polar expansions have components at both $t^{-3}$ and
 $t^{-1}$, we'll get a result with both algebraic and logarithmic
 components.
 
-Let's start with the algebraic part.  We need a Riemann-Roch
-space with at most second order poles at infinity:
+Let's start with the algebraic part.  The integration step lowers the
+order of the poles by one, so we want a divisor at the same places
+as the divisor of the poles, but with multiplicity one less:
+
+\begin{sagecommon}
+def reduced_divisor(D):
+    return D - add([pl.divisor() for pl in D.support()])
+\end{sagecommon}
 
 \begin{sageblock}[ex8.7]
-from sage.rings.function_field.divisor import FunctionFieldDivisor
-def reduced_divisor(D):
-    return FunctionFieldDivisor(D.parent().function_field(),
-                                {p:m-1 for p,m in D.list()})
 D2 = reduced_divisor(D)
+\end{sageblock}
+
+We need a Riemann-Roch space with at most second order poles at
+infinity:
+
+\begin{sageblock}[ex8.7]
 basis = D2.basis_function_space()
 \end{sageblock}
 
@@ -456,8 +464,7 @@ poles at $(\pm i,\pm\sqrt{2})$, no other finite poles, and at most
 second order poles at infinity.
 
 \begin{sageblock}[riemannroch3]
-from sage.rings.function_field.divisor import FunctionFieldDivisor
-D = FunctionFieldDivisor(D.parent().function_field(), {p:m-1 for p,m in D.list()})
+D = reduced_divisor(D)
 \end{sageblock}
 
 We now wish to see if a linear combination of these basis functions will
