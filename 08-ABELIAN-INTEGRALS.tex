@@ -677,8 +677,67 @@ pi : pseudoinverse(m);
 \end{comment}
 
 \vfill\eject
-\mysection{Chebyshev's Integral}
+\mysection{Holliman's Integral}
 
+
+Compute: $$ \int \frac{1}{(x^2+1)^{3/4}}\,dx $$
+
+\begin{sageblock}[curtis]
+R.<x> = FunctionField(QQbar, implementation='kash')
+L.<y> = R[]
+root = x^2+1
+F.<y> = R.extension(y^4 - root)
+integrand = y/(x^2+1) * x.differential()
+D = integrand.divisor()
+\end{sageblock}
+
+Any non-constant function will have poles that will increase
+in order under derivation, and any constant function will
+have a zero differential, which has no divisor.
+
+Therefore, this integrand is not an exact differential
+(i.e, it is not the differential of a function), and
+the integral is non-elementary.
+
+\vfill\eject
+
+If we're not just going to take the computer's word
+that the integrand's divisor is zero, how can we
+compute it by hand?
+
+First, looking at the integrand, we see that it's only possible finite
+poles are over the ramification points of the root, and we know that
+$y$ is a uniformizing variable at those points.  So, changing
+variables to $y$, we see...
+
+\[ y^4=(x^2+1) \qquad\Longrightarrow\qquad 4y^3\,dy=2x\,dx \qquad\Longrightarrow\qquad dx = \frac{2y^3}{x} dy\]
+
+\[ \int \frac{y}{x^2+1} dx = \int \frac{y}{x^2+1} \frac{2y^3}{x} dy = \int \frac{2}{x} dy \]
+
+The ramification points are at $x=\pm i$, so the denominator ($x$) is finite and not zero,
+so there are no poles at the ramification points.
+
+What about infinity?  Here, $\frac{1}{y}$ is a uniformizing variable (WHY?), so
+let $v=\frac{1}{y}$, and
+
+\[ \int \frac{2}{x} \, dy = \int \frac{2}{x} \left(- \frac{1}{v^2} dv \right) = - \int \frac {2}{x v^2} \, dv \]
+\[ y^4=x^2+1 \qquad\Longrightarrow\qquad \frac{1}{v^4} = x^2+1 \qquad\Longrightarrow\qquad \frac{1}{x} = \frac{v^2}{\sqrt{v^4-1}} \]
+\[ \frac{1}{x} = \pm\, v^2 \left[ i + \frac{i}{2} v^4 + \cdots \right]
+\qquad\Longrightarrow\qquad
+\frac{2}{xv^2}\, dv = \pm \left[ 2i + iv^4 + \cdots \right] \,dv \]
+
+so we see that the differential has no pole at infinity, just as the computer reported.
+
+We've got a singularity at infinity with two places, $\frac{1}{x}$ being doubly ramified at both:
+
+\begin{sageblock}[curtis]
+pls = F.places_infinite()
+F.completion(pls[0], uvar=1/y)(1/x)
+F.completion(pls[1], uvar=1/y)(1/x)
+\end{sageblock}
+
+\vfill\eject
+\mysection{Chebyshev's Integral}
 
 \example
 \label{Chebyshev's Integral I}
