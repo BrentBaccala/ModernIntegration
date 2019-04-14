@@ -356,12 +356,16 @@ m = principal_parts_matrix(D2, basis)
 pi = m.pseudoinverse()
 \end{sageblock}
 
-\begin{sageblock}[ex8.7]
+Another Sage function will extract the principal parts of the
+differential, and divide them by the powers needed for term-wise
+integration:
+
+\begin{sagecommon}
 def solution_vector(div, differential):
     F = differential.parent().function_field()
     coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
     return matrix([[c[0](differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
-\end{sageblock}
+\end{sagecommon}
 
 \begin{sageblock}[ex8.7]
 b = solution_vector(D2, integrand)
@@ -478,17 +482,6 @@ basis = D.basis_function_space()
 
 \begin{sageblock}[riemannroch3]
 m = principal_parts_matrix(D, basis)
-\end{sageblock}
-
-Another Sage function will extract the principal parts of the
-differential, and divide them by the powers needed for term-wise
-integration:
-
-\begin{sageblock}[riemannroch3]
-def solution_vector(div, differential):
-    F = differential.parent().function_field()
-    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
-    return matrix([[c[0](differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
 \end{sageblock}
 
 \begin{sageblock}[riemannroch3]
