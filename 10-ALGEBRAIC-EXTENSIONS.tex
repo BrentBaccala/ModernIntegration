@@ -98,6 +98,78 @@ techniques of polynomial elimination.
 Integrate $\int \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{\sqrt{x^3+1}}\right) + \frac{x}{\sqrt{x^3+1}}\right)e^{x\sqrt{x^3+1}} dx$
 
 From \cite{bronstein algebraic curve}
+
+The integrand can be expressed using the tower $\CC(x) \subset \CC(x,y) \subset \CC(x,y,\psi)$,
+where $y^2=x^3+1$, $y' = \frac{3x^2}{2y}$, and $\psi = \exp xy$:
+
+Integrate $\int \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{y}\right) + \frac{x}{y}\right)\psi\, dx$
+
+Since the top-most extension is exponention, we apply Theorem 6.1, and
+see that $k=xy$, $k'=xy'+y=(\frac{3x^3}{2y}+y)$, and
+$a_1 = \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{y}\right) + \frac{x}{y}\right)$, so
+equation 6.4 reads:
+
+$$A_1' + (\frac{3x^3}{2y}+y) A_1 = \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{y}\right) + \frac{x}{y}\right)$$
+
+This equation is in an algebraic form of equation 6.8, so we want to analyse the poles of the $S$ and $R$ functions.
+
+\begin{sageblock}[ex10.1]
+R.<x> = FunctionField(QQbar)
+L.<y> = R[]
+F.<y> = R.extension(y^2 - (x^3+1))
+
+S = 3*x^3/(2*y) + y
+# S.divisor_of_poles()
+T = (5*x^4+2*x-2)/(x^2)*(1+1/y) + x/y
+# R.divisor_of_poles()
+\end{sageblock}
+
+We have two places at which $S$ and $T$ both have first-order poles, so we need to consider the ``$b$'' coefficient,
+which is a problem, because on an algebraic curve only the residue of a differential is well defined, so let's
+rewrite equation 6.8:
+
+$$dR + R (S dx) = T dx$$
+
+\begin{sageblock}[ex10.1]
+(S*x.differential()).divisor_of_poles()
+Tdp = (T*x.differential()).divisor_of_poles()
+\end{sageblock}
+
+These calculations are with respect to a local uniformizing variable, so the order of the pole
+always drops by one under derivation.
+
+\begin{verbatim}
+v(S dx) = 0,  v(T dx) = -2 implies v(R) = -1 so that v(dR) = -2
+v(S dx) = -6, v(T dx) = -7 at oo imples v(R) = -1 so that v(R S dx) = -7
+\end{verbatim}
+
+so our solution, if it exists, has two first-order poles at $(0,1)$ and $\infty$.
+
+\begin{sageblock}[ex10.1]
+sum(Tdp.support())
+BFS = sum(Tdp.support()).basis_function_space()
+\end{sageblock}
+
+Is there some linear combination of these basis functions that solves our Risch equation?
+
+\begin{sageblock}[ex10.1]
+R = 2 * BFS[1]
+R.differential() + R * S * x.differential() == T * x.differential()
+\end{sageblock}
+
+This solves the Risch equation (?), giving us the $A_1$ term in our solution.
+Since there's no term in the integrand of $\psi$-degree zero, the $A_1$
+term is the only term in our solution, and we conclude:
+
+\begin{sageblock}[ex10.1]
+var('x,y')
+integrand = eval(preparse(str(T))).subs({y:sqrt(x^3+1)}) * exp(x*sqrt(x^3+1))
+ans = eval(preparse(str(R))).subs({y:sqrt(x^3+1)}) * exp(x*sqrt(x^3+1))
+diff(ans,x)
+bool(diff(ans,x) == integrand)
+\end{sageblock}
+
+
 \endexample
 
 \cite{bronstein algebraic curve} gives a more sophisticated algorithm for attacking these
