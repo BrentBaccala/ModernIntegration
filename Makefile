@@ -24,7 +24,10 @@ ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	pdflatex ModernIntegration
 	rm sagecommon*.tex
 
-slides.pdf: slides.tex ModernIntegration.cpy
+%.md5: %
+	@md5sum $< | cmp -s $@ -; if test $$? -ne 0; then md5sum $< > $@; fi
+
+slides.pdf: slides.tex ModernIntegration.cpy.md5
 	pdflatex slides || true
 	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --verbose slides.tex --jobs 1
 	pdflatex slides
