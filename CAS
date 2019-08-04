@@ -295,3 +295,36 @@ puiseux(f, g, 3/g^2, 2)
 # except ValueError:
 #     pass
 \end{sageblock}
+
+
+
+This is one of the test cases from kash:
+
+sage: K.<x> = FunctionField(QQ, implementation='kash'); _.<t> = K[] # optional - kash
+sage: F.<y> = K.extension(t^3 - x^2*(x^2 + x + 1)^2) # optional - kash
+sage: Oinf = F.maximal_order_infinite()           # optional - kash
+sage: I = Oinf.ideal(x,y); I                      # optional - kash
+Ideal (y) of Maximal infinite order of Function field
+in y defined by y^3 - x^6 - 2*x^5 - 3*x^4 - 2*x^3 - x^2
+
+I don't see how x is in this ideal, but klee's code (it's the default; just remove implementation)
+confirms that it is, if we use GF(31).  GF(251) just hangs!  GF(2^16-15) overflows Singular.
+
+
+
+Another test case (why doesn't p just print as '(y)'):
+
+sage: K.<x>=FunctionField(GF(2)); _.<Y>=K[]
+sage: L.<y>=K.extension(Y^3+x+x^3*Y)
+sage: p = L.places_finite()[0]
+sage: p
+Place (x, y)
+sage: latex(p)
+\left(y\right)
+sage: p
+Place (x, y)
+sage: O = L.maximal_order()
+sage: O.ideal(y)
+Ideal (y) of Maximal order of Function field in y defined by y^3 + x^3*y + x
+sage: x in O.ideal(y)
+True
