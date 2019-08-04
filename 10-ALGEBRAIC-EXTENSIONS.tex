@@ -31,10 +31,11 @@ places over {\it irreducible polynomials}.  We've already looked
 now we wish to reformulate everything we've done in the past three
 chapters to adapt.
 
-\mysection{Risch Equations over Simple Algebraic Extensions}
+\mysection{Exponential Extensions over Simple Algebraic Extensions}
 
-As a bit of a warm-up exercise, let's revisit a linguring topic from
-Chapter 6: solving Risch equations.  We haven't yet developed the
+To analyze integrands formed from exponential extensions over algebraic
+extensions, we need to solve Risch equations in algebraic extensions.
+We haven't yet developed the
 tools to handle this problem in general algebraic extensions, but we
 can use the tools of Chapter 7 to solve Risch equations in a simple
 algebraic extension of $\CC(x)$.  This will allow us to solve integrals
@@ -53,7 +54,7 @@ extension of $\CC(x)$:
 
 \begin{equation}
 \label{eq: simple algebraic Risch}
-r' + S r = T \qquad S,T,r \in \CC(x) \mod p(x)
+\frac{dR}{dx} + S R = T \qquad S,T,r \in \CC(x)[y]/p(x,y)
 \end{equation}
 
 Our approach in Chapter 6 was to identify the poles in $S$ and $T$
@@ -61,38 +62,37 @@ and then use this information to restrict $r$ enough to solve it.
 
 This same approach works with algebraic extensions; we just need to
 work with places and principal parts expansions instead of denominator
-factors and partial fractions expansions.
+factors and partial fractions expansions.  Actually, working
+with respect to a local uniformizing variable simplies the
+theory, since we don't have to treat infinity separately.
 
-We know that differentiating an algebraic function (w.r.t what?)
-causes its finite poles to increase in order.  Therefore, we can't
-have any finite poles at places where there aren't poles in at least
-one of $S$ or $T$.  So, we find the poles of $S$ and $T$ and construct
-principle parts expansions there.  If the order of $S$'s pole equals
-the ramification index at the place, then the $r'$ and $S r$ terms
-could cancel, so we look at $S$'s residue (is that the right term?)
-to see if it's an integer.  If so, that gives us the strength
-of the pole in $r$.
+Multiplying through by $dx$, we obtain:
 
-Otherwise, if the order of $S$'s pole is greater than the ramification
-index, then $S r$ must cancel with $T$, and the difference between the
-order of $T$'s pole and $S$'s pole gives us the order of $r$'s pole.
-On the other hand, if the order of $S$'s pole is less than the
-ramification index, then $r'$ must cancel with $T$, and the difference
-between the order of $T$'s pole and the ramification index gives us
-the order of $r$'s pole.
+\begin{equation}
+dR + R(S dx) = T dx
+\end{equation}
 
-{\bf Summarize with a chart}
+Taking the differential of an algebraic function causes its
+poles to increase in order by exactly one, and introduces no new poles (Theorem ?).
+Therefore, we can't have any poles (finite or infinite) at places
+where there aren't poles in either $S\, dx$ or $T\, dx$ (the
+differentials, not the functions).
 
-We also need to apply a similar analysis to the places at infinity,
-the difference being that differentiating here can lower the order of
-an $r'$ pole.
+Once we find the poles of $S\,dx$ and $T\,dx$, there are three cases,
+as before:
 
-Once we've figured out the maximum orders of all of $r$'s poles, it's
+\refstepcounter{equation}
+\begin{enumerate}
+\item $\nu(S\, dx)>-1 \qquad\Longrightarrow\qquad \nu(R) \ge \nu(T\, dx)+1$. \eqnum{a}
+\item $\nu(S\, dx)=-1 \qquad\Longrightarrow\qquad \nu(R)=\nu(T\, dx)+1$ or $\nu(R)=-\pi(S\,dx)$. \eqnum{b}
+\item $\nu(S\, dx)<-1 \qquad\Longrightarrow\qquad \nu(R) \ge \nu(T\, dx) - \nu(S\, dx)$. \eqnum{c}
+\end{enumerate}
+
+Once we've figured out the maximum orders of all of $R$'s poles, it's
 then a straightforward matter to construct a suitable divisor and
-compute a basis for its Riemann-Roch space.  Because of the $S r$
-product, the resulting system of equations is not as simple as a
-matrix equation, but can still be solved using fairly straightfoward
-techniques of polynomial elimination.
+compute a basis for its Riemann-Roch space.  Then we can use fairly
+straightfoward techniques of linear algebra to find the coefficients
+of the solutions, {\it if} they exist.
 
 \example
 Integrate $\int \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{\sqrt{x^3+1}}\right) + \frac{x}{\sqrt{x^3+1}}\right)e^{x\sqrt{x^3+1}} dx$
@@ -104,7 +104,7 @@ where $y^2=x^3+1$, $y' = \frac{3x^2}{2y}$, and $\psi = \exp xy$:
 
 Integrate $\int \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{y}\right) + \frac{x}{y}\right)\psi\, dx$
 
-Since the top-most extension is exponention, we apply Theorem 6.1, and
+Since the top-most extension is exponential, we apply Theorem 6.1, and
 see that $k=xy$, $k'=xy'+y=(\frac{3x^3}{2y}+y)$, and
 $a_1 = \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{y}\right) + \frac{x}{y}\right)$, so
 equation 6.4 reads:
@@ -124,26 +124,18 @@ T = (5*x^4+2*x-2)/(x^2)*(1+1/y) + x/y
 # R.divisor_of_poles()
 \end{sageblock}
 
-We have two places at which $S$ and $T$ both have first-order poles, so we need to consider the ``$b$'' coefficient,
-which is a problem, because on an algebraic curve only the residue of a differential is well defined, so let's
-rewrite equation 6.8:
-
-$$dR + R (S dx) = T dx$$
-
 \begin{sageblock}[ex10.1]
 (S*x.differential()).divisor_of_poles()
 Tdp = (T*x.differential()).divisor_of_poles()
 \end{sageblock}
 
-These calculations are with respect to a local uniformizing variable, so the order of the pole
-always drops by one under derivation.
+We have two places at which either $S\,dx$ or $T\,dx$ have poles, so we need to consider them both.
 
-\begin{verbatim}
-v(S dx) = 0,  v(T dx) = -2 implies v(R) = -1 so that v(dR) = -2
-v(S dx) = -6, v(T dx) = -7 at oo imples v(R) = -1 so that v(R S dx) = -7
-\end{verbatim}
+At $(0,1)$, $\nu(S\,dx)=0$, so $\nu(R) >= \nu(T\,dx)+1 = -2 + 1 = -1$.
 
-so our solution, if it exists, has two first-order poles at $(0,1)$ and $\infty$.
+At infinity, $\nu(S\,dx)=-6$, so $\nu(R) >= \nu(T\,dx)-\nu(S\,dx) = -7 - (-6) = -1$.
+
+Our solution, if it exists, has at most first-order poles at $(0,1)$ and $\infty$.
 
 \begin{sageblock}[ex10.1]
 sum(Tdp.support())
@@ -165,7 +157,6 @@ term is the only term in our solution, and we conclude:
 var('x,y')
 integrand = eval(preparse(str(T))).subs({y:sqrt(x^3+1)}) * exp(x*sqrt(x^3+1))
 ans = eval(preparse(str(R))).subs({y:sqrt(x^3+1)}) * exp(x*sqrt(x^3+1))
-diff(ans,x)
 bool(diff(ans,x) == integrand)
 \end{sageblock}
 
