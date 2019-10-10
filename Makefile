@@ -1,5 +1,5 @@
 
-all: ModernIntegration.pdf slides.pdf
+all: ModernIntegration.pdf slides.pdf decomposition.pdf
 
 export SAGE_ROOT = /home/baccala/src/sage
 
@@ -31,6 +31,11 @@ slides.pdf: slides.tex ModernIntegration.cpy.md5
 	pdflatex slides || true
 	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --verbose slides.tex --jobs 1
 	pdflatex slides
+
+decomposition.pdf: decomposition.tex
+	pdflatex decomposition || true
+	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --verbose decomposition.tex --jobs 1
+	pdflatex decomposition
 
 out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
 	pdftk A=slides.pdf B=toc.pdf C=ModernIntegration.pdf cat A B1 C46-49 C59-64 output out.pdf

@@ -1,0 +1,415 @@
+
+\documentclass{article}
+
+\usepackage{nopageno}
+
+\usepackage{vmargin}
+\usepackage{times}
+\usepackage{graphics}
+\usepackage{amsmath, amscd, amsxtra, amsthm}
+\usepackage{amssymb}
+\usepackage{framed}
+\usepackage{mdframed}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[retainorgcmds]{IEEEtrantools}
+
+\newtheorem*{lemma}{Lemma}
+
+%% Suggested by http://tex.stackexchange.com/questions/349580
+\usepackage{array}
+
+%% Define a new column declaration
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+
+\usepackage[usefamily={maxima,sage},keeptemps=all,pygments=false]{pythontex}
+
+% These packages are used when embedding Maxima code
+
+\usepackage{breqn}      % auto-break long equations - has to come after pythontex
+\usepackage{listings}
+\usepackage{fancyvrb}
+
+\usepackage{comment}
+%% \usepackage{minted}
+
+% This package makes cut-and-paste of carets work right, so
+% we can cut-and-paste from the PDF document into Maxima.
+
+\usepackage[T1]{fontenc}
+
+
+
+\newcommand{\Bold}[1]{\mathbf{#1}}
+\newcommand{\FF}{\Bold{F}}
+\newcommand{\CC}{\Bold{C}}
+\newcommand{\QQ}{\Bold{Q}}
+\newcommand{\ZZ}{{\mathbb Z}}
+\newcommand{\PP}{{\mathbb P}}
+\newcommand{\Norm}{{\rm Norm}}
+\newcommand{\QQbar}{\overline{\QQ}}
+
+\parindent 0pt
+\parskip 12pt
+
+\begin{document}
+
+
+% Do similar formatting with Sage
+
+\newcommand{\sageinputcode}{}
+\newcommand{\sageoutputmath}[1]{#1}
+
+\newenvironment{sageblocksmall}{\small\sageblock}{\endsageblock}
+\newenvironment{sageblocktiny}{\tiny\sageblock}{\endsageblock}
+
+\renewenvironment{sageblock}{\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}{\setpythontexautoprint{true}\endsagecode
+
+% At end of sageblock, redefine Sage processing commands,
+% then call \printpythontex to include the Sage output,
+% which will call the Sage processing commands.
+
+% Command called by python code that processes maximacode input
+% Command number is in argument 1
+% Command text is saved in verbatim block MaximaCode
+%
+% We need a \break between two adjacent \sageinputcode's,
+% but we leave it out if there's an intervening \sageoutputmath.
+
+\def\sageinputcodebreak{}
+\renewcommand{\sageinputcode}{
+\sageinputcodebreak
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{L{1cm} L{10cm}}
+\textcolor{blue}{\ttfamily sage:} &
+\textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
+\end{tabular}
+\egroup
+\def\sageinputcodebreak{\break}
+}
+
+\renewcommand{\sageoutputmath}[1]{
+\def\sageinputcodebreak{}
+\setlength\abovedisplayskip{0pt}
+\setlength\belowdisplayskip{0pt}
+\setlength\abovedisplayshortskip{0pt}
+\setlength\belowdisplayshortskip{0pt}
+\begin{dmath*}
+##1
+\end{dmath*}
+}
+
+% Wrap everything in a nice colored frame and print it
+\begin{mdframed}[backgroundcolor=yellow!20]
+\printpythontex
+\end{mdframed}
+}
+
+\newenvironment{sagespacedblock}{\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}{\setpythontexautoprint{true}\endsagecode
+
+% At end of sageblock, redefine Sage processing commands,
+% then call \printpythontex to include the Sage output,
+% which will call the Sage processing commands.
+
+% Command called by python code that processes maximacode input
+% Command number is in argument 1
+% Command text is saved in verbatim block MaximaCode
+%
+% We need a \break between two adjacent \sageinputcode's,
+% but we leave it out if there's an intervening \sageoutputmath.
+
+\def\sageinputcodebreak{}
+\renewcommand{\sageinputcode}{
+\sageinputcodebreak
+\bgroup
+\def\arraystretch{1.5}
+\begin{tabular}{L{1cm} L{10cm}}
+\textcolor{blue}{\ttfamily sage:} &
+\textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
+\end{tabular}
+\egroup
+\def\sageinputcodebreak{\break}
+}
+
+\renewcommand{\sageoutputmath}[1]{
+\def\sageinputcodebreak{}
+\begin{dmath*}
+##1
+\end{dmath*}
+}
+
+% Wrap everything in a nice colored frame and print it
+\begin{mdframed}[backgroundcolor=yellow!20]
+\printpythontex
+\end{mdframed}
+}
+
+
+
+
+
+\title{Decomposition of ideals in function fields}
+\author{Brent Baccala}
+\date{October 2, 2019}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+The {\tt decomposition} method in Sage's {\tt
+  FunctionFieldMaximalOrder\_global} class uses the ``Buchman-Lenstra''
+algorithm described in \cite{cohen} section 6.2.  Buchman-Lenstra,
+however, depends on operations in prime characteristic, and is thus
+only suitable for number fields and function fields over $\FF_p$.
+
+To perform decomposition in characteristic zero, I've developed
+the alternate algorithm described in this paper, and implemented
+in the {\tt decomposition} method of Sage's {\tt FunctionFieldMaximalOrder\_rational} class.
+
+Given a function field $F$ with a maximal order $O$ and an
+algebraic field extension $F'/F$ with maximal order $O' \supset O$.
+We consider a prime ideal $P$ of $O$, and we wish to find the prime
+ideals $P'_1,...,P'_k$ of $O'$ that lie over $P$, in the sense that
+$P^e \subset P'_i$, in fact, $P^e = \cap_i P'_i$, i.e, we seek the
+primary decomposition of $P^e$.
+
+$P^e$ is the extension of $P$ in $O'$, i.e, the ideal of $O'$
+generated by the elements of $P$.  It is not necessarily prime, so the
+quotient ring $O' \bmod P^e$ is not necessarily either a field or an
+integral domain.  It is, however, an Artinian ring and a
+finite-dimensional algebra over the field $O \bmod P$.  Sage's
+finite-dimensional algebra subsystem implements\footnote{Johan Bosman,
+  personal email, June 19, 2019} the algorithm from Section 7 of
+\cite{khuri} to find all of the algebra's maximal ideals (all
+prime ideals of an Artinian ring are also maximal).
+
+$$O \stackrel{\phi}{\rightarrow} O' \stackrel{\psi}{\rightarrow} O'\bmod P^e$$
+
+Thus, we can easily find all maximal ideals of the ring $O' \bmod P^e$.  Since
+the contraction of a maximal ideal is maximal, the maximal ideals of
+$O'\bmod P^e$ are maximal in $O'$ (via contraction along $\psi$).  Since
+$\psi$ is surjective, any maximal ideal in $O'$ that contains $P^e$ maps
+to a maximal ideal in $O'\bmod P^e$ (wikipedia Ideal), so there is a one-to-one
+relationship between the maximal ideals in $O'\bmod P^e$ and the maximal ideals in $O'$
+that contain $P^e$ -- exactly what we're looking for.
+
+So, given a maximal ideal $P_1$ of $O'\bmod P^e$, how can we extract the
+pertinent information (generators, ramification index, relative
+degree, $\beta$) for its corresponding maximal ideal in $O'$?
+
+\begin{enumerate}
+\item {\bf Generators}
+
+The contraction of $P_1$ is its preimage
+under $\psi$, so a set of generators of the contraction can be formed
+just by lifting $P_1$'s generators from $O'\bmod P^e$ to $O'$ and
+appending the generators of $P^e$.
+
+\item {\bf Ramification Index}
+
+To see how to compute the ramification
+index, let's begin by studying how to characterize the ideals
+of $O'\bmod P^e$
+
+\begin{lemma}
+$P^e$ consists of all elements in $O'$ with valuation greater than or
+equal to the ramification index at {\it all} places lying over $P$.
+\end{lemma}
+\begin{proof}
+$O'$ consists of all elements with valuation greater than or equal to
+zero at every finite place.
+$P$ contains at least one element $u$ (any uniformizing variable will do) with valuation equal
+to the ramification index at {\it all} places lying over $P$.
+
+Therefore, given {\it any} element $e \in O'$ with valuation greater than or
+equal to the ramification index at {\it all} places lying over $P$,
+we can use the Strong Approximation Theorem to find an element in $f \in O'$
+such that $fu$ has the same valuation as $e$ at all places lying over $P$.
+Then $\frac{e}{fu} \in O'$ and $e = \frac{e}{fu} f u$ shows that $e \in P^e$.
+\end{proof}
+
+\begin{mdframed}
+{\bf\cite{stich} Theorem 1.6.5 (Strong Approximation Theorem).}
+Let $S \varsubsetneqq \PP_F$ be
+a proper subset of $\PP_F$ and $P_1 , ... , P_r \in S$. Suppose there are given elements
+$x_1 , ... , x_r \in F$ and integers $n_1 , ... , n_r \in \ZZ$. Then there exists an element
+$x \in F$ such that
+$$\nu_{P_i} (x - x_i ) = n_i \qquad (i=1,...,r), \quad{\rm and}$$
+$$\nu_P (x) \ge 0 \qquad \forall P \in S \backslash \{P_1 , ... , P_r\}.$$
+\end{mdframed}
+
+If a function $f$ has valuation greater than or equal to the
+ramification index at a place $P_1$, it can be reduced $\bmod P^e$ by
+using the Strong Approximation Theorem to construct a function in
+$P^e$ with valuation equal to the ramification index at $P_1$ and
+valuation greater than $f$'s valuation at all other places over $P$
+and adding it to $f$.  Thus $O' \bmod P^e$ contains no functions with
+valuations greater than the ramification indices.
+
+So, $O' \bmod P^e$ consists of equivalence classes of functions
+characterized by a tuple of valuations at each place over $P$, with
+each valuation no larger than the ramification index at that place.
+The functions with valuation equal to the ramification index
+at all places over $P$ are in $P^e$, and therefore correspond
+to the zero ideal.
+
+Each prime ideal in $O' \bmod P^e$ is characterized by a tuple like
+$(1,0,...,0)$ (i.e, a single one and the rest of its elements zero).
+Squaring it will produce an ideal characterized by $(2,0,...,0)$.
+Continue raising the prime ideal to higher and higher powers until
+we've obtained an ideal characterized by $(r,0,...,0)$ ($r$ being the
+ramification index).  Raising the ideal to higher powers will continue
+producing this same ideal, a manifestation of the Artinian condition
+guaranteeing that the descending chain of power ideals will stablize.
+
+Thus, we can find the ramification index by raising a prime ideal
+in $O'\bmod P^e$ to successively higher powers until it stabilizes.
+
+{\bf Ex:} $y^2=x$; $P=(x-1)$.
+
+$P^e = (y^2-x, x-1)$ decomposes into $P_1=(x-1,y-1)$
+and $P_2=(x-1,y+1)$ with ramification one at both places.
+Ideals in $O'\bmod P^e$ are characterized by tuples $(0,0)$, $(1,0)$, $(0,1)$, and $(1,1)$.
+$(0,0)$ corresponds to the unit ideal $(1)$, $(1,0)$ is $(y-1)$,
+$(0,1)$ is $(y+1)$, and $(1,1)$ is the zero ideal $(0)$.  Our theory
+suggests that squaring $(y-1)$ will stabilize it, and we verify
+that $(y-1)^2 \equiv -2(y-1) \bmod P^e$.
+
+{\bf Ex:} $y^2=x$; $P=(x)$.
+
+$P^e=(y^2-x,x)$ decomposes into a single ideal $P_1=(y)$
+with ramification two.
+Ideals in $O'\bmod P^e$ are characterized by tuples $(0)$, $(1)$, and $(2)$,
+with $(0)$ corresponding to the unit ideal $(1)$, $(1)$ corresponding to
+the ideal $(y)$, and $(2)$ corresponding to the zero ideal $(0)$.  Our
+theory leads us to believe that squaring $(y)$ will produce the zero
+ideal and, indeed, $y^2 \equiv 0 \bmod P^e$.
+
+\item {\bf Relative Degree}
+
+\cite{stich} Definition 3.1.5 defines the relative degree
+of $P'$ over $P$ as $[F'_{P'}:F_P]$, where $F_P$ (the {\it residue
+  class field} of P) is defined (\cite{stich} Definition 1.1.14) as
+$O_P/P$ where $O_P$ is the valuation ring associated with $P$.
+
+In our notation, $F_P$ is $O \bmod P$ and $F'_{P'}$ is $O' \bmod P_1$.
+Remember that $O' \bmod P^e$ is a finite-dimensional algebra over
+$F_P$.  Since
+
+$$F'_{P'} = O' \bmod P_1^c \cong O' \bmod P_e \bmod P_1$$
+
+and we have an $F_P$-basis for $P_1$ in $O' \bmod P_e$, we see that the
+dimension of $F'_{P'}$ over $F_P$ is simply the $F_P$-dimension of $O' \bmod P_e$
+minus the $F_P$-dimension of $P_1$.  Our finite dimensional algebra
+code gives us an $F_P$-basis for $P_1$, so its dimension is just
+the length of that basis.
+
+\item $\boldsymbol{\beta}$
+
+Finally, for computing valuations using \cite{cohen} Algorithm 4.8.17,
+we wish to compute $\beta$, an element in $O'$ but not in $P^e$, and
+with $\beta P_1 \subseteq P^e$.  Working again in $O' \bmod P^e$,
+we see that $\beta$'s image is not zero, but multiplying it
+by each of $P_1$'s generators produces zero.
+
+Since $\beta$ is in $O'$ (an $O$-module), we regard $\beta$ as
+a vector in k[x] w.r.t. the basis of $O'$.  As long as
+at least one element in this vector is not zero,
+$\beta$ will not be in $P^e$.  To ensure that
+$\beta P_1 \subseteq P^e$, multiplying $\beta$ by each of $P_1$'s
+generators must produce a vector whose elements are all zero.
+We can ensure that all this
+occurs by constructing a matrix in $O \bmod P^e$,
+and finding a non-zero vector in
+the matrix's kernel.
+
+\end{enumerate}
+
+\begin{comment}
+
+\vfill\eject
+\section*{Field Extensions}
+
+Constructing field extensions is currently somewhat problematic in Sage,
+which creates issues when the function field code builds residue fields.
+
+For example, consider the following sequence:
+
+\begin{sageblock}
+A.<a> = GF(5)[]
+B.<b> = GF(5).extension(modulus=a^2-2)
+b^2
+C.<c> = B[]
+D.<d> = B.extension(modulus=c^2-b)
+d^2
+d^4
+\end{sageblock}
+
+{\tt d} behaves the way we would expect, but {\tt D} isn't constructed
+as $\FF_{5^4}$, as we might expect.  Yet we can get $\FF_{5^4}$ in
+a more roundabout way, as follows:
+
+\begin{sageblock}
+E.<e> = B.extension(2)
+F.<f> = E[]
+r = (f^2-b).roots()
+d = r[0][0]
+d^2
+d^2 == b
+d^4
+\end{sageblock}
+
+This is the method used in {\tt FunctionFieldMaximalOrder\_rational}'s {\tt \_residue\_field\_global}.
+
+We can attempt to do something similar with number fields:
+
+\begin{sageblock}
+A.<a> = QQ[]
+B.<b> = QQ.extension(a^3 - 2)
+C.<c> = B[]
+D.<d> = B.extension(c^2-b)
+d^2
+E = D.absolute_field('e')
+e = E.0
+hom = E.structure()[1]
+hom(d) == e
+e^2
+d^2 == e^2
+e^2 == b
+\end{sageblock}
+
+\section*{}
+
+Why are a lot of the test cases failing?
+
+The basis calculation in {\tt FunctionFieldIdeal\_global}.
+
+When we ask for {\tt gens()}, the code checks for a cached result from
+{\tt \_gens\_two} and returns it if it exists, others it gives us
+(more or less) the generators it was created with.
+
+A problem with this is that the print representation of the ideal can
+change after you call {\tt gens\_two()} on it.
+
+\end{comment}
+
+\begin{thebibliography}{9}
+
+\bibitem[Coh1993]{cohen} Henri Cohen, {\it A Course in Computational
+  Algebraic Number Theory}. Graduate Texts in Mathematics
+  138. Springer, 1993.
+
+\bibitem[Stich2009]{stich} Stichtenoth, Henning, {\it Algebraic
+  function fields and codes}.  Vol. 254. Springer Science \& Business
+  Media, 2009.
+
+\bibitem[Khuri2004]{khuri} Khuri-Makdisi,
+{\it Asymptotically Fast Group Operations on
+Jacobians of General Curves}, 2004.
+
+{\tt https://arxiv.org/pdf/math/0409209v2.pdf}
+
+\end{thebibliography}
+
+\end{document}
