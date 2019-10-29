@@ -21,9 +21,6 @@
 %% Define a new column declaration
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
-
-\usepackage[usefamily={maxima,sage},keeptemps=all,pygments=false]{pythontex}
-
 % These packages are used when embedding Maxima code
 
 \usepackage{breqn}      % auto-break long equations - has to come after pythontex
@@ -55,103 +52,11 @@
 \begin{document}
 
 
-% Do similar formatting with Sage
-
-\newcommand{\sageinputcode}{}
-\newcommand{\sageoutputmath}[1]{#1}
-
-\newenvironment{sageblocksmall}{\small\sageblock}{\endsageblock}
-\newenvironment{sageblocktiny}{\tiny\sageblock}{\endsageblock}
-
-\renewenvironment{sageblock}{\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}{\setpythontexautoprint{true}\endsagecode
-
-% At end of sageblock, redefine Sage processing commands,
-% then call \printpythontex to include the Sage output,
-% which will call the Sage processing commands.
-
-% Command called by python code that processes maximacode input
-% Command number is in argument 1
-% Command text is saved in verbatim block MaximaCode
-%
-% We need a \break between two adjacent \sageinputcode's,
-% but we leave it out if there's an intervening \sageoutputmath.
-
-\def\sageinputcodebreak{}
-\renewcommand{\sageinputcode}{
-\sageinputcodebreak
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{L{1cm} L{10cm}}
-\textcolor{blue}{\ttfamily sage:} &
-\textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
-\end{tabular}
-\egroup
-\def\sageinputcodebreak{\break}
-}
-
-\renewcommand{\sageoutputmath}[1]{
-\def\sageinputcodebreak{}
-\setlength\abovedisplayskip{0pt}
-\setlength\belowdisplayskip{0pt}
-\setlength\abovedisplayshortskip{0pt}
-\setlength\belowdisplayshortskip{0pt}
-\begin{dmath*}
-##1
-\end{dmath*}
-}
-
-% Wrap everything in a nice colored frame and print it
-\begin{mdframed}[backgroundcolor=yellow!20]
-\printpythontex
-\end{mdframed}
-}
-
-\newenvironment{sagespacedblock}{\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}{\setpythontexautoprint{true}\endsagecode
-
-% At end of sageblock, redefine Sage processing commands,
-% then call \printpythontex to include the Sage output,
-% which will call the Sage processing commands.
-
-% Command called by python code that processes maximacode input
-% Command number is in argument 1
-% Command text is saved in verbatim block MaximaCode
-%
-% We need a \break between two adjacent \sageinputcode's,
-% but we leave it out if there's an intervening \sageoutputmath.
-
-\def\sageinputcodebreak{}
-\renewcommand{\sageinputcode}{
-\sageinputcodebreak
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{L{1cm} L{10cm}}
-\textcolor{blue}{\ttfamily sage:} &
-\textcolor{Brown}{\BUseVerbatim[baseline=t]{SageCode}}
-\end{tabular}
-\egroup
-\def\sageinputcodebreak{\break}
-}
-
-\renewcommand{\sageoutputmath}[1]{
-\def\sageinputcodebreak{}
-\begin{dmath*}
-##1
-\end{dmath*}
-}
-
-% Wrap everything in a nice colored frame and print it
-\begin{mdframed}[backgroundcolor=yellow!20]
-\printpythontex
-\end{mdframed}
-}
-
-
-
 
 
 \title{Decomposition of ideals in function fields}
 \author{Brent Baccala}
-\date{October 2, 2019}
+\date{October 9, 2019}
 \maketitle
 
 %\begin{abstract}
