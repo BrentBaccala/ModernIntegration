@@ -193,22 +193,26 @@ theories devoted to low-order special cases --- {\it linear equations}
 (all terms first degree or constant), the {\it conic sections} (all
 terms second degree or less), and the {\it elliptic curves} (one term
 third degree; all others second degree or less).  In the general case,
-$\sum a_{ij} x^i y^j = 0$ is called an {\it algebraic curve}, and a
-rational function in $x$ and $y$ is called an {\it algebraic
-function}.  These will be our main focus of attention in this chapter.
-Note that an algebraic curve's rational functions form a field, the
-{\it function field} of the curve.
+$\sum a_{ij} x^i y^j = 0$ is called an {\it algebraic curve},
+and will be our main focus of attention in this chapter.
+
+% , and a
+% rational function in $x$ and $y$ is called an {\it algebraic
+% function}.  These will
+% Note that an algebraic curve's rational functions form a field, the
+% {\it function field} of the curve.
 
 One of the first problems we face when dealing with algebraic curves
 is the multi-valued nature of their solutions.  Consider the algebraic
-function $y$ defined on the algebraic curve $y^2 = x^2 - 1$.  There
-are, in fact, two seperate algebraic functions that solve this
-equation --- both $y$ and $-y$ are solutions.  Conventionally, we
+algebraic curve $y^2 = x^2 - 1$.  For almost any given $x$,
+there are two seperate $y$ values that solve this equation.
+Conventionally, we
 express this by writing something like $y = \pm\sqrt{x-1}$, but for
 higher degree curves this kind of notation becomes unsuitable.  How,
 for example, do you express the three possible solutions to a cube
 root, and how do you deal with the general case where $y$ appears
-multiple times in the curve's defining polynomial?
+multiple times in the curve's defining polynomial, something
+like $y^3 + x^2y^2 - x + 4y=0$?
 
 Our solution to this problem is to regard the entire algebraic curve
 as a two-dimensional surface in a four-dimensional space.  Why four
@@ -221,109 +225,27 @@ an equation like $x^2 + y^2 = 1$ defines a circle, an algebraic curve
 defines a surface, the loci of $x$ and $y$ that satisfy the defining
 polynomial.
 
-The defining polynomial can be regarded as a polynomial in $y$, whose
-coefficients are polynomials in $x$, simply by collecting terms with
-like powers of $y$.  If we fix a given complex value of $x$, we have a
-polynomial in $y$ with complex coefficients that can be solved as a
-univariate polynomial and yields at most $n$ solutions for $y$.  We
-can be more specific.  For any given value of $x$, we have {\it
-exactly} $n$ solutions for $y$ {\it unless} one of two things happen.
-Either the leading ($y^n$) coefficient is zero, in which case we have
-less than $n$ solutions due to having a polynomial of degree less than
-$n$, or the polynomial has multiple identical roots.
+% TODO: clarify algebraic geometry conventions w.r.t dimension
 
-There are only a finite number of these special points, as can be seen
-by considering the {\it discriminant} of the defining polynomial,
-which is the resultant of the polynomial with its partial derivative
-with respect to one of its variables.  The discriminant will be zero
-at special points, so these points can be located by computing the
-zeros of a univariate polynomial.
+% We'd like to construct a series expansion at each point.
 
-These points are further classified according to whether or not the
-curve is locally Euclidean in their neighborhood.  Geometrically, this
-corresponds to looping around the point until you return to your
-starting point.  If a single such {\it cycle} covers all the sheets of
-the curve, the curve is locally Euclidean, and we have an {\it
-ordinary point} of the curve, albeit one with {\it ramification}, the
-{\it ramification index} being how many times we had to circle the
-point.  Otherwise, multiple cycles are required to cover all of the
-sheets, and we have a {\it singular point}.  Analytically, both
-partial derivatives of the curve's polynomial are zero at a singular
-point, while at least one is non-zero at ordinary points.
+Our solution to this problem is to regard the entire algebraic curve
+as a surface in $x$-$y$ space, instead of regarding it as a function
+of $x$.  How then, do we construct series expansions of rational
+functions that involve both $x$ and $y$?  At each point of the
+surface, we seek to find a single {\it uniformizing variable} that is
+suitable for constructing power series expansions that converge in
+an open neighborhood of the point.  This is also
+called a {\it local uniformizer}, since no one function is a suitable
+uniformizing variable at all points of an algebraic curve.
 
-Now, the coefficient of $y^n$ in the defining polynomial will be a
-polynomial in $x$, which has a finite number of roots at which it is
-zero, so there are only a finite number of points where the defining
-polynomial is of degree less than $n$ in $y$.  As $x$ approaches one
-of these points, the value of the $y^n$ coefficient approaches zero,
-which causes at least one of the roots to approach infinity.  We'll
-deal with these points by introducing a line at infinity, forming
-{\it projective space} and creating a {\it compact} surface.
+% A {\it Riemann surface} is a one dimensional connected complex manifold.
 
-There are several crucial theorems that depend on the topological
-property of {\it compactness}.  The complex plane is not compact; we
-remedy this by adding a point at infinity.  Likewise, two-dimensional
-complex space is not compact, either; we remedy this by adding a
-line at infinity and obtaining {\it projective space}.
+Is this possible?
 
-Projective space.  Compactness.
-
-Another highly desirable property is to be locally isomorphic to
-Euclidean space.  A differentiable surface that is everywhere locally
-Euclidean is called a {\it manifold}.
-
-By adding a line at infinity and resolving our singularities, we can
-coax our algebraic curve into a compact, connected, complex manifold.
-The primary utility of this construction is embodied in the following
-theorems.
-
-\theorem
-\label{holomorphic functions on compact manifolds are constant}
-
-Every holomorphic function $M \to C$ on a compact, connected, complex manifold $M$ is constant.
-
-\proof
-
-{\tt https://math.stackexchange.com/questions/881742}
-
-\cite{guillemin} Lecture 2 contains a proof of the Maximum Modulus Priciple.
-
-\endtheorem
-
-\theorem
-\label{algebraic functions are characterized by their principal parts}
-
-An algebraic function on an algebraic curve is completely characterized, up to an additive
-constant, by its principal parts.
-
-\proof
-
-Consider two algebraic functions $f$ and $g$ with identical principal
-parts.  Taking the difference between them, we obtain a function $f-g$
-with no principal parts, i.e, a holomorphic function.  By
-Theorem \ref{holomorphic functions on compact manifolds are constant},
-$f-g$ must be constant.
-
-\endtheorem
-
-Given the importance of an algebraic function's principal parts, we will
-now develop tools to calculate them.
-
-\vfill\eject
-
-\mysection{Puiseux Expansions}
-
-Given an algebraic function on an algebraic curve, we wish to compute
-its principal parts by locating its poles and computing series
-expansions there.  Since the powers of $y$ form a ${\cal C}(x)$ basis
-for the curve's function field (PROOF), our primary goal is to compute
-series expansions for $y$ at arbitrary points on the curve.  With such
-expansions in hand, it is straightforward to construct expansions for
-any algebraic function.
-
-At any point where the discriminant is non-zero, a series expansion
-for $y$ exists as a power series in $(x-\alpha)$, which is a
-straightforward application of the Implicit Function Theorem.
+The answer is a qualified ``yes''.  At most points on an algebraic
+curve, the answer is an unqualified ``yes'' as a result of the
+Implicit Function Theorem:
 
 \theorem
 {\bf Implicit Function Theorem}
@@ -342,6 +264,26 @@ mapping of an open set $E \in {\mathbb C}^2$ into ${\mathbb C}$, such
 that $f(x,y)=0$ and $\frac{df}{dy} \ne 0$, then an analytic
 function $g(x)$ exists such that $f(x,g(x))=0$.
 \endtheorem
+
+This theorem applies everywhere on the curve that $\frac{df}{dy} \ne 0$,
+which is everywhere except a finite number of points.  Where does it
+fail?  Those points at which both $f(x,y)=0$ and $\frac{df}{dy}$
+equals zero.  In other words, points at which the defining function
+and its derivative with respect to one of its variables share
+a zero.  At these points, the curve exhibits a behavior
+called {\it ramification}.
+
+If the derivative with respect to one variable is zero, could we try
+to apply the theorem using the derivative with respect to the other
+variable?  The answer is often yes, but not always.  Ramification thus
+occurs with respect to a specific variable, more generally with
+respect to a mapping that in this case is a restriction map from the
+curve to one of its coordinate variables.
+
+On some curves, however, there are points, called {\it singularities},
+at which the derivative with respect to both variables is zero.
+
+
 
 % For infinity and/or poles, substitute z=1/x or v=1/y.
 
@@ -362,15 +304,269 @@ the roots shows that $y$ is continuous at $t=0$.  Then use existence
 of the Laurent series (Silverman 11.2) and continuity of the roots
 (HOW?) to establish analyticity at the ramification point.
 
-Singular points will admit multiple Puiseux series, each one
-corresponding to a single cycle.
+The defining polynomial can be regarded as a polynomial in $y$, whose
+coefficients are polynomials in $x$, simply by collecting terms with
+like powers of $y$.  If we fix a given complex value of $x$, we have a
+polynomial in $y$ with complex coefficients that can be solved as a
+univariate polynomial and yields at most $n$ solutions for $y$.  We
+can be more specific.  For any given value of $x$, we have {\it
+exactly} $n$ solutions for $y$ {\it unless} one of two things happen.
+Either the leading ($y^n$) coefficient is zero, in which case we have
+less than $n$ solutions due to having a polynomial of degree less than
+$n$ and the curve has a point at infinity, or the polynomial has
+multiple identical roots at a {\it multiple point} of the curve.
 
-% This analysis is facilitated by Newton polygons.
+% add a box of examples
 
-The most straightforward way to compute Puiseux series is to use {\it Newton
-polygons} to determine ramification, then setup a trial series with
-the correct ramification and substitute it into the curve's defining
-equation.
+A curve has only a finite number of multiple points, as can be seen
+by considering the {\it discriminant} of the defining polynomial,
+which is the resultant of the polynomial with its partial derivative
+with respect to one of its variables.  The discriminant will be zero
+at multiple points, so these points can be located by computing the
+zeros of a univariate polynomial.
+
+Multiple points are further classified according to whether or not the
+curve is locally Euclidean in their neighborhood.  Geometrically, this
+corresponds to looping around the point until you return to your
+starting point.  If a single such {\it cycle} covers all the sheets of
+the curve, the curve is locally Euclidean, and we have an {\it
+ordinary point} of the curve, albeit one with {\it ramification}, the
+{\it ramification index} being how many times we had to circle the
+point.  Otherwise, multiple cycles are required to cover all of the
+sheets, and we have a {\it singular point} or {\it singularity}.
+
+Is the curve holomorphic at a ramification point?  Yes,
+according to Riemann's theorem on removable singularities.
+Wikipedia's statement of this theorem reads as follows:
+
+\theorem
+\label{Riemann removable singularity theorem}
+Let $D \subset \mathbb{C}$ be an open subset of the complex plane,
+$a \in D$ a point of $D$ and $f$ a holomorphic function defined on
+the set $D \setminus \{a\}$.  The following are equivalent:
+
+\begin{enumerate}
+\item $f$ is holomorphically extendable over $a$.
+\item $f$ is continuously extendable over $a$.
+\item There exists a neighborhood of $a$ on which $f$ is bounded.
+\item $\lim_{z\to a}(z - a) f(z) = 0$.
+\end{enumerate}
+
+\endtheorem
+
+The function $y$ is bounded (3), which implies (1), that it can
+be holomorphically extended to $a$.
+
+In short, we already know that to obtain a Riemann surface,
+we need to modify our curve slightly by adding additional
+points at singularities.
+Theorem \ref{Riemann removable singularity theorem}
+tells us that no additional information is need to specify
+the behavior of meromorphic functions at those additional
+points -- their behavior at an isolated point is completely determined by
+their behavior in an open neighborhood surrounding that point.
+
+What about functions with poles?
+
+Interestingly enough, a rational function can have different values
+at the same points over a singularity.
+
+Example: $y^2 = x^3 + x^2$ has a singularity at the origin.
+The function $y/x$ has the value $1$ on one branch and $-1$
+on the other.  It is also possible, straightforward even, to construct functions
+with a zero on only one branch ($y/x - 1$) or the other
+($y/x + 1$), or a pole on only one branch ($x/(y-x)$),
+or a pole on one branch and zero on the other ($x/(y-x) + 1/2$).
+
+
+Analytically, both partial derivatives of the curve's polynomial are
+zero at a singular point, while at least one is non-zero at ordinary
+points. (PROOF)
+
+
+
+Resolving our singularities in this manner creates a complex
+manifold, but it lacks a crucial property: topological compactness.
+In order to apply Theorem \ref{holomorphic functions on compact
+manifolds are constant}, we need a {\it compact} manifold.
+We fix this problem by embedding our algebraic curve
+in projective space, using a standard construction.
+
+
+Now, the coefficient of $y^n$ in the defining polynomial will be a
+polynomial in $x$, which has a finite number of roots at which it is
+zero, so there are only a finite number of points where the defining
+polynomial is of degree less than $n$ in $y$.  As $x$ approaches one
+of these points, the value of the $y^n$ coefficient approaches zero,
+which causes at least one of the roots to approach infinity.  We'll
+deal with these points by introducing a line at infinity, forming
+{\it projective space} and creating a {\it compact} surface.
+
+\definition
+A topological space $X$ is {\it compact} if any open covering
+of $X$ admits a finite subset that covers $X$.
+\enddefinition
+
+There are several crucial theorems that depend on the topological
+property of {\it compactness}.  The complex plane is not compact; we
+remedy this by adding a point at infinity to obtain the {\it Riemann
+sphere}.  Likewise, two-dimensional complex space is not compact,
+either; we remedy this by adding a line at infinity and obtaining {\it
+projective space}.
+
+Theorem: Projective space is compact
+
+Munkres Theorem 26.2: Every closed subspace of a compact space is compact.
+
+Theorem: The Zariski topology is the coursest topology in which
+singletons are closed.
+
+Varieties are closed in the Zariski topology.
+
+Standard topology is finer than Zariksi, so all open sets in Zariski
+are open in standard, and all Zariki-closed sets are closed in standard.
+
+So, varieties are closed in the standard topology, and are therefore
+compact in projective space.
+
+
+
+Projective space.  Compactness.
+
+Another highly desirable property is to be locally isomorphic to
+Euclidean space.  A differentiable surface that is everywhere locally
+Euclidean is called a {\it manifold}.
+
+By adding a line at infinity and resolving our singularities, we can
+coax our algebraic curve into a compact, connected, complex manifold.
+The primary utility of this construction is embodied in the following
+theorems.
+
+Regular functions.  Holomorphic functions.  Identical on complex
+projective varieties.
+
+\theorem
+\label{holomorphic functions on compact manifolds are constant}
+
+Every holomorphic function $M \to C$ on a compact, connected, complex manifold $M$ is constant.
+\footnote{
+In fact, we don't need the complex structure and can make the stronger
+statement that the only regular functions on any projective variety are the constants.
+See Proposition 4.2 in
+{\tt https://www.math.utah.edu/~bertram/6030/Projective.pdf},
+or Hartshorne Theorem (I, 3.4a),
+or {\tt https://math.stackexchange.com/questions/56236}.
+If the base field is not algebraically closed, however,
+new constants may appear as algebraic functions.
+For example, the polynomial $(x+y)^2+1$ is
+irreducible in the ring $\QQ[x,y]$, so we can use it to construct
+an algebraic curve, but $x+y$ is a constant on this
+curve, a square root of $-1$, in fact.
+}
+
+\proof
+
+{\tt https://math.stackexchange.com/questions/881742}
+
+\cite{guillemin} Lecture 2 contains a proof of the Maximum Modulus Priciple.
+
+\endtheorem
+
+\definition
+The {\it principal part} of an algebraic function at a pole is the
+portion of its corresponding Laurent series with negative exponents.
+\enddefinition
+
+\theorem
+\label{algebraic functions are characterized by their principal parts}
+
+An algebraic function on an algebraic curve is completely characterized, up to an additive
+constant, by its principal parts.
+
+\proof
+
+Consider two algebraic functions $f$ and $g$ with identical principal
+parts.  Taking the difference between them, we obtain a function $f-g$
+with no principal parts, i.e, a holomorphic function.  By
+Theorem \ref{holomorphic functions on compact manifolds are constant},
+$f-g$ must be constant.
+
+\endtheorem
+
+\theorem
+\label{algebraic functions are characterized by their divisors}
+
+An algebraic function on an algebraic curve is completely characterized, up to a multiplicative
+constant, by its divisor.
+
+\proof
+
+Consider two algebraic functions $f$ and $g$ with identical divisors.
+Dividing $f/g$ we obtain a function with no poles (or zeros),
+a holomorphic function.  By
+Theorem \ref{holomorphic functions on compact manifolds are constant},
+$f/g$ must be constant.
+
+\endtheorem
+
+Related: Hartshorne Corollary 6.10. A principle divisor on a complete
+nonsingular curve has degree zero.
+
+Given the importance of an algebraic function's principal parts, we will
+now develop tools to calculate them.
+
+\vfill\eject
+
+\mysection{Puiseux Expansions}
+
+The previous section showed that, in complex projective space,
+a covering surface can be constructed for an algebraic curve,
+which is isomorphic to the curve except at singularities
+(where additional points must be introduced), such that:
+\begin{itemize}
+\item the covering surface is a complex manifold (a {\it Riemann surface}),
+\item the curve's rational functions are meromorphic functions
+on that manifold, and
+\item the rational functions admit series expansions at
+every point of the manifold.
+\end{itemize}
+
+Our next task is to compute those series expansions.
+
+Since the rational functions in the curve's function field are
+formed as rational functions in $x$ and $y$ (or whatever our
+variables are named), our primary goal is to compute
+series expansions for $x$ and $y$ at arbitrary points on the curve.  With such
+expansions in hand, it is straightforward to construct expansions for
+any algebraic function, simply by substituting in the $x$ and $y$ expansions.
+
+% Given an algebraic function on an algebraic curve, we wish to compute
+% its principal parts by locating its poles and computing series
+% expansions there.
+
+At any point where the discriminant is non-zero and $y$ obtains a
+finite value, a series expansion for $y$ exists as a power series in
+$(x-\alpha)$, which, as we have seen, is a straightforward application
+of the Implicit Function Theorem.  At these {\it ordinary} points, we
+need only postulate a Taylor series for $y$ in powers of $(x-\alpha)$,
+substitute this into the curve's defining polynomial, and equate like
+powers to obtain a set of equations to be solved simultaneously.
+Multiple solutions will typically be found, corresponding to multiple
+branches of the curve.
+
+% EXAMPLE
+
+At ramification points, the series expansion exists in terms
+of fractional powers of $(x-\alpha)$, where the denominator
+of the fractions is the ramification index.  Issac Newton,
+in 1676, first proposed a method of computing the ramification index
+using what are now called {\it Newton polygons}.
+
+% Uniformizing elements.  Show that they exist, and uniquely
+% define the order of a function, and the residue of a differential.
+
+% Singular points will admit multiple Puiseux series, each one
+% corresponding to a single cycle.
 
 Let's assume that we're expanding around the point $(0,0)$, as this
 simplifies the analysis with no loss of generality.  Consider
@@ -817,6 +1013,7 @@ the seven roots of $4x^7+27=0$.  Infinity also needs to be
 examined.  We begin with $x=0$:
 
 \begin{sageblock}[ch7-2]
+
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^3 + x^3*y + x)
@@ -852,6 +1049,7 @@ yseries((xseries-g).reverse())
 \end{sageblock}
 
 \begin{sageblock}[ch7-3]
+
 R1.<g> = QQ[]
 S.<g> = NumberField(4*g^7+27)
 
@@ -1008,6 +1206,9 @@ at $x=1$, $\frac{x}{y} \ud x$ does not!
 Its behavior at infinity also requires analysis.
 
 \begin{sageblock}[ch7-5]
+# this is here to manually introduce i into our number field
+F.maximal_order().ideal(x - sqrt(QQbar(-1)));
+
 Pinf = F.places_infinite()
 F.completion(Pinf[0], prec=2)(x)
 F.completion(Pinf[0], prec=2)(y)
@@ -1193,6 +1394,7 @@ four roots, not two.  Let's look at some examples of limiting values
 using some numerical examples:
 
 \begin{sageblock}[lemniscate]
+set_verbose(-1)
 R.<u,v> = CC[]
 ideal(((u^2+v^2)^2 - (u^2-v^2)), (u-.0001))
 ideal(((u^2+v^2)^2 - (u^2-v^2)), (u-.0001)).variety()
@@ -1323,6 +1525,29 @@ is the dimension of the vector space minus the dimension of the
 ideal's basis matrix's kernel, or the nullity of this matrix.
 
 \vfill\eject
+\mysection{Normalization}
+
+Given: a rational function $f$ and a prime ideal $I$ in a maximal order $O$.
+
+Goal: compute the value of $f \bmod I$.
+
+Step 0: Precompute a $k[x]$-module basis for $I$ in Hermite normal form (doable since $I$ is finitely generated over $O$ and $O$ is finitely generated over $k[x]$) and $\alpha$, a rational function with a simple pole at the place corresponding to $I$ and no other finite poles.
+
+Step 1: Compute the valuation of $f$'s denominator; call it $\nu$.  Multiply both $f$'s numerator and denominator by $\alpha^\nu$.  Now both the numerator and denominator are in $O$, and the denominator is not in $I$ (i.e, it has a finite value).  So we've reduced to the case of computing the residue of an element of $O$, as we now can divide by the denominator's residue, since we know it's not zero.
+
+Step 2: Find a primitive element of the residue field; call it $g$.
+
+Step 3: Compute $g$'s minimal polynomial and use it to construct the residue field as an algebraic extension of the constant base field.
+
+Reducing an element $f \in O$ modulo the HNF basis of $I$ gives a $k[x]$-vector that represents $f \bmod I$, i.e, when this $k[x]$-vector is multiplied by the HNF basis vector, we obtain an element of $O$ equivalent (mod $I$) to $f$.
+
+We can represent $g$ and its powers in this form, and construct a matrix that converts from $g$-basis to HNF basis, then invert it to obtain a matrix that converts from HNF basis to $g$-basis.
+
+Use reduction mod $I$'s HNF basis, then multiply by this inverse matrix to obtain an element in the residue field.
+
+
+
+\vfill\eject
 \mysection{Divisors}
 
 Given a function on an algebraic curve, we can ask at which places it
@@ -1342,7 +1567,6 @@ suitable for working in {\it intersection theory}.
 For singular curves, the situation is more complicated.  A divisor
 needs to be associated with places, not points.  Such a divisor is
 called a {\it Cartier divisor}, and is more suitable for our purposes.
-
 
 \vfill\eject
 \mysection{Riemann-Roch spaces}
@@ -1404,6 +1628,7 @@ R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
 F.<y> = R.extension(y^2 - x^3 + x)
 
+
 O = F.maximal_order()
 P = O.ideal(x,y)
 D = P.divisor()
@@ -1442,9 +1667,15 @@ Dinf = Pinf.divisor()
 \vfill\eject
 \mysection{Mittag-Leffler Problems}
 
-Theorem ? tells us that a rational function on an algebraic
+Theorem \ref{algebraic functions are characterized by their principal parts}
+tells us that a rational function on an algebraic
 curve is completely characterized, up to an additive constant,
 by the principal parts of the Puiseux expansions at its poles.
+Note that Theorem \ref{algebraic functions are characterized by their principal parts}
+does not guarantee the existence of a function with
+specified principal parts.  It only shows that any
+two such functions, {\it if they exist}, differ
+by at most a constant.
 
 A {\it Mittag-Leffler problem} is the practical application of this
 theorem -- given a set of principal parts, find a function that
