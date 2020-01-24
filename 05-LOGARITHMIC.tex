@@ -49,7 +49,7 @@ in the base field.
 
 \theorem\label{logarithmic integration theorem}
 \Copy{LIT1}{
-Let $K$ be a differential field, let $K(\theta = \ln k)$ be a simple
+Let $K$ be a differential field with $k \in K$, let $K(\theta = \ln k)$ be a simple
 logarithmic extension of $K$, let $n_i(\theta)$ be
 irreducible polynomials in $K[\theta]$,
 and let $f$ be an element of $K(\theta)$
@@ -66,7 +66,7 @@ $$a_i \in K \qquad b_{i,j}(\theta),n_i(\theta) \in K[\theta]$$
 If $f$ has
 an elementary anti-derivative $F$, then $F \in K(\theta, \Psi)$,
 where $K(\theta, \Psi)$ is a finite logarithmic extension
-of $K(\theta)$, $F$ has a partial fractions expansion of the form:
+of $K(\theta)$ and $F$ has a partial fractions expansion of the form:
 
 % Needed to squeeze this theorem onto one page
 % \vskip -10pt
@@ -94,9 +94,9 @@ and the following relationships hold:
 \begin{subequations}
 \begin{eqnarray}
 \label{eq: logarithmic An}
-\left[ A_n + (n+1) c_{n+1} \theta \right]' &=& a_n \\
+\left( A_n + (n+1) c_{n+1} \theta \right)' &=& a_n \\
 \label{eq: logarithmic Ai's}
-\left[ A_i + (i+1) c_{i+1} \theta \right]' &=& a_i - (i+1) \frac{k'}{k} A_{i+1} \qquad {}_{0\le i<n}
+\left( A_i + (i+1) c_{i+1} \theta \right)' &=& a_i - (i+1) \frac{k'}{k} A_{i+1} \qquad {}_{0\le i<n}
 \end{eqnarray}
 \end{subequations}
 
@@ -134,14 +134,14 @@ C_i &=& \frac{b_{i,1}(\theta)}{n_i'(\theta)} & {}_{m_i = 1}
 \proof
 
 By Theorem \ref{weak Liouville theorem}, an elementary antiderivative
-of $f$ can only exist in a finite logarithm extension $K(\theta, \Psi)$
+of $f$ can only exist in a finite logarithmic extension $K(\theta, \Psi)$
 of $K(\theta)$ and therefore must have the form:
 
 $$F = R + \sum_{i=1}^\eta C_i \Psi_i$$
 
 where $R \in K(\theta)$, the $C_i$ are constants, and the $\Psi_i$ are logarithms.
 
-We can perform a partial fractions expansion on $R$:
+We can perform a partial fractions expansion on $R$, then $F$ becomes:
 
 $$F = \sum_{i=0}^N A_i \theta^i
 + \sum_{i=1}^\nu \sum_{j=1}^{M_i} \frac{B_{i,j}(\theta)}{n_i(\theta)^j}
