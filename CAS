@@ -328,3 +328,156 @@ sage: O.ideal(y)
 Ideal (y) of Maximal order of Function field in y defined by y^3 + x^3*y + x
 sage: x in O.ideal(y)
 True
+
+
+TODO on SAGE FUNCTION FIELD CODE
+
+- specify uniformizing variables to completion()
+- compute series expansions of differentials
+- what do FunctionField methods constant_field() and exact_constant_field() really do,
+  because they don't compute the "algebraic closure", and implement for QQ/QQbar
+- integrate with QQ[x]
+- integrate with ProjectiveSpace
+
+
+FACEBOOK AI EXAMPLE
+
+root = -16*x^8 + 112*x^7 - 204*x^6 + 28*x^5 - x^4 + 1
+num = 16*x^3 - 42*x^2 + 2*x
+integrate(num/sqrt(root), x)
+
+
+TRYING TO GET SAGE TO PRODUCE 04-RATIONALS-EXAMPLE1c:
+
+(not sure if I want raytracing to produce these graphics, but a clear
+advantage of using HTML5 over PDF is the ability to include
+interactive graphics that can be rotated by the reader)
+
+var('u,v')
+Surface_parameters = {
+    'mesh':          True,
+    'opacity':       0.2,
+    'plot_points':   [10, 10]
+}
+
+A = parametric_plot3d((u, v, atan2(v,u)), (u,0,5), (v,0,5), **Surface_parameters)
+B = parametric_plot3d((5+u, v, atan2(v,5+u)), (u,0,5), (v,0,5), **Surface_parameters)
+C = parametric_plot3d((-u, v, atan2(v,-u)), (u,0,5), (v,0,5), **Surface_parameters)
+D = parametric_plot3d((-5-u, v, atan2(v,-5-u)), (u,0,5), (v,0,5), **Surface_parameters)
+E = parametric_plot3d((u, -v, atan2(-v,u)), (u,0,5), (v,0,5), **Surface_parameters)
+F = parametric_plot3d((u+5, -v, atan2(-v,u+5)), (u,0,5), (v,0,5), **Surface_parameters)
+   # note v starts at 0.1, not 0
+G = parametric_plot3d((-u, -v, atan2(-v,-u)), (u,0,5), (v,0.1,5), **Surface_parameters)
+   # note v starts at 0.1, not 0
+H = parametric_plot3d((-u-5, -v, atan2(-v,-u-5)), (u,0,5), (v,0.1,5), **Surface_parameters)
+Surface = (A+B+C+D+E+F+G+H)
+
+func = (lambda u: u^3-3*u, lambda u: u^2-2, lambda u: atan2(u^2-2, u^3-3*u))
+Func1 = parametric_plot3d(func, (-2.5,sqrt(2)-0.1), color='red', thickness=5)   # stop short of sqrt(2)
+Func2 = parametric_plot3d(func, (sqrt(2),2.5), color='red', thickness=5)
+Func = Func1+Func2
+
+# from sage.plot.plot3d.shapes import Cylinder
+# Grid1 = Cylinder(0.01, 20,color='black').translate((0,0,-10)).rotateX(pi/2)
+# Grid2 = Cylinder(0.01, 20,color='black').translate((0,0,-10)).rotateY(pi/2)
+# Grid = Grid1.translate((10,0,0)) + Grid1.translate((-10,0,0)) + Grid2.translate((0,10,0)) + Grid2.translate((0,-10,0))
+
+from sage.plot.plot3d.shapes2 import *
+#Rulerx = ruler((-10,-10,0), (10,-10,0), absolute=True)
+#Rulery = ruler((10,-10,0), (10,10,0), absolute=True)
+#Rulerxy = line3d([(-10,-10,0), (-10,10,0), (10,10,0)])
+#Ruler = Rulerx+Rulery+Rulerxy
+
+Rulerx = ruler((-5,-10,0), (5,-10,0), ticks=2, sub_ticks=0, absolute=True, color='black')
+Rulery = ruler((10,-5,0), (10,5,0), ticks=2, sub_ticks=0, absolute=True, color='black')
+#Rulerxy = line3d([(10,-10,0), (-10,-10,0), (-10,10,0), (10,10,0), (10,-10,0)], color='black')
+Rulerxy = line3d([(-5,-10,0), (-10,-10,0), (-10,10,0), (10,10,0), (10,-10,0), (5,-10,0)], color='black')
+Ruler = Rulerx+Rulery+Rulerxy
+
+Axisx = line3d([(-10,0,0), (10,0,0)], color='black')
+Axisy = line3d([(0,-10,0), (0,10,0)], color='black')
+Axes = Axisx+Axisy
+
+jmol_options = {
+    'viewer'             : 'jmol',
+    'frame_aspect_ratio' : [1,1,.1],
+    'frame'              : None,
+    'zoom'               : 1.5,
+    'orientation'        : (-957, -245, -156, 50),
+    'center'             : (-2, 0, 0)
+}
+
+(Surface+Func+Ruler+Axes).show(**jmol_options)
+
+
+
+Why can't Sage solve this system?
+
+sage: solve([x^2==R^2, (x-2*R)^2 == R^2], x)
+[[x == R]]
+sage: solve([x^2+y^2==R^2, (x-2*R)^2 +y^2== R^2], x)
+[]
+
+sage: var('x,y,R,r1,r2,D,d')
+(x, y, R, r1, r2, D, d)
+sage: eq1 = (x-D)^2+(y-d/2-R)^2==R^2
+sage: eq2 = (x/r1)^2 + (y/r2)^2 ==1
+sage: eq3 = (x-D)/(y-d/2-R) == (x/y)*(r2/r1)^2
+sage: solve([eq1, eq2, eq3, r1==1.1, r2==.7, d==.15, D==2], R)
+[]
+sage: solve([eq1, eq2, eq3, r1==1.1, r2==.7, d==.15, D==2], [R,x,y])
+[]
+sage: solve([eq1, eq2, eq3], [R,x,y])
+# runs forever
+sage: solve([eq1, eq2, eq3], [R,x,y], algorithm='sympy')
+[]
+sage: solve([eq1, eq2, eq3], [R], algorithm='sympy')
+[]
+sage: solve([eq1, eq2, eq3, r1==1.1, r2==.7, d==.15, D==2], [R,x,y], algorithm='sympy')
+[]
+sage: solve([eq1, eq2, eq3, r1==QQ(1.1), r2==QQ(.7), d==QQ(.15), D==2], [R,x,y], algorithm='sympy')
+[]
+sage: solve([eq1, eq2, eq3, r1==QQ(1.1), r2==QQ(.7), d==QQ(.15), D==2], [R,x,y])
+[]
+
+# This doesn't work because Singular can't handle QQbar
+sage: AR.<r1,r2,D,d> = QQbar[]
+sage: AF = Frac(AR)
+sage: B.<x,y,R> = AF[]
+sage: I = ideal(list(map(B, [eq1, eq2, eq3*product(map(denominator, eq3.operands()))])))
+
+# this works!
+sage: AR.<r1,r2,D,d> = QQ[]
+sage: AF = Frac(AR)
+sage: B.<R,x,y> = PolynomialRing(AF, order='lex')
+sage: I = ideal(list(map(B, [eq1, eq2, eq3*product(map(denominator, eq3.operands()))])))
+sage: Rans = I.groebner_basis()[0]
+sage: yans = I.groebner_basis()[2]
+sage: Rans.map_coefficients(lambda c: c.subs({r1:1.1, r2:.7, d:.15, D:2}))
+sage: C.<y> = QQbar[]
+sage: yeq = eval(preparse(repr(yans.map_coefficients(lambda c: c.subs({r1:1.1, r2:.7, d:.15, D:2})))))
+sage: yeq.roots()
+sage: Rans.map_coefficients(lambda c: c.subs({r1:1.1, r2:.7, d:.15, D:2})).subs({B.2: yeq.roots()[1][0]})
+
+
+# this works better!
+sage: AR.<r1,r2,D,d> = QQ[]
+sage: AF = Frac(AR)
+sage: B.<x,y,R> = PolynomialRing(AF, order='lex')
+sage: I = ideal(list(map(B, [eq1, eq2, eq3*product(map(denominator, eq3.operands()))])))
+sage: Rans = I.groebner_basis()[2]
+sage: C.<R> = QQbar[]
+sage: Req = eval(preparse(repr(Rans.map_coefficients(lambda c: c.subs({r1:1.1, r2:.7, d:.15, D:2})))))
+sage: [r for r in Req.roots(multiplicities=False) if r>0]
+
+
+# better still!
+sage: var('x,y,R,r1,r2,D,d')
+sage: eq1 = (x-D)^2+(y-d/2-R)^2==R^2
+sage: eq2 = (x/r1)^2 + (y/r2)^2 ==1
+sage: eq3 = (x-D)/(y-d/2-R) == (x/y)*(r2/r1)^2
+sage: B.<x,y,R> = QQbar[]
+sage: vals = {r1:QQ(1.1), r2:QQ(.7), d:QQ(.15), D:2}
+sage: eqs = [B((eq.lhs() - eq.rhs()).numerator().subs(vals)) for eq in [eq1, eq2, eq3]]
+sage: I = ideal(eqs)
+sage: [solution for solution in I.variety() if solution[R] > 0]
