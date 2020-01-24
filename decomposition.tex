@@ -214,10 +214,20 @@ the length of that basis.
 
 Finally, for computing valuations using \cite{cohen} Algorithm 4.8.17,
 we wish to compute $\beta$, an element in $O'$ but not in $P^e$, and
-with $\beta P_1 \subseteq P^e$.  Working again in $O' \bmod P^e$,
+with $\beta P_1 \subseteq P^e$.
+
+Another way of characterizing $\beta$ is that its valuation is
+non-negative at all finite places, $r-1$ at $P_1$, and $r$ at all of
+$P_1$'s conjugates, where $r$ is the (local) ramification index.
+
+Proof: Use the Strong Approximation Theorem to construct an element in
+$P_1$ with valuation one at $P_1$ and valuation zero at all of its
+conjugates.  Multiplying this element by $\beta$ must produce an
+element in $P^e$, so $\beta$ must have the stated properties.
+
+Working again in $O' \bmod P^e$,
 we see that $\beta$'s image is not zero, but multiplying it
 by each of $P_1$'s generators produces zero.
-
 Since $\beta$ is in $O'$ (an $O$-module), we regard $\beta$ as
 a vector in k[x] w.r.t. the basis of $O'$.  As long as
 at least one element in this vector is not zero,
