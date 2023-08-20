@@ -65,6 +65,7 @@ function in order to integrate it:
 \begin{enumerate}
 \item We {\bf factor} its numerator and denominator
 \begin{sagecode}[ch7-intro]
+
 load("sagecommon.sage");
 R.<x> = QQ[];
 n = (x-1)^2*(x+3);
@@ -257,6 +258,9 @@ Implicit Function Theorem:
 
 See {\tt https://math.stackexchange.com/questions/489789}
 
+{\tt https://math.stackexchange.com/a/289640/71520} discusses the
+difficulty of moving along the transition $R \to R^n \to C \to C^n$.
+
 The two-dimensional complex analytic version:
 
 Let f be an analytic
@@ -277,68 +281,125 @@ If the derivative with respect to one variable is zero, could we try
 to apply the theorem using the derivative with respect to the other
 variable?  The answer is often yes, but not always.  Ramification thus
 occurs with respect to a specific variable, more generally with
-respect to a mapping that in this case is a restriction map from the
-curve to one of its coordinate variables.
+respect to a specific mapping.
 
-On some curves, however, there are points, called {\it singularities},
-at which the derivative with respect to both variables is zero.
-
-
-
-% For infinity and/or poles, substitute z=1/x or v=1/y.
-
-For ramification points, we'll use a substitution of the form
-$x=t^r+\alpha$, where $r$ is the {\it ramification index}, and
-construct a power series, not in $(x-\alpha)$, but in
-$t=(x-\alpha)^{1/r}$, a {\it Puiseux series}.
-
-As a function of $t$, both $x$ and $y$ are analytic in an open
-neighborhood of $t=0$.  $x$ is analytic as a function of $t$ because
-of the I.F.T. applied to $x=t^r+\alpha$.  $y$ is analytic as a
-function of $x$ because of the I.F.T. applied to the defining equation
-of the curve.  Composition of analytic functions are analytic,
-showing that $y$ is analytic as function of $t$.
-
-These arguments hold in an open neighborhood of $t=0$.  Continuity of
-the roots shows that $y$ is continuous at $t=0$.  Then use existence
-of the Laurent series (Silverman 11.2) and continuity of the roots
-(HOW?) to establish analyticity at the ramification point.
-
-The defining polynomial can be regarded as a polynomial in $y$, whose
-coefficients are polynomials in $x$, simply by collecting terms with
-like powers of $y$.  If we fix a given complex value of $x$, we have a
-polynomial in $y$ with complex coefficients that can be solved as a
-univariate polynomial and yields at most $n$ solutions for $y$.  We
-can be more specific.  For any given value of $x$, we have {\it
-exactly} $n$ solutions for $y$ {\it unless} one of two things happen.
-Either the leading ($y^n$) coefficient is zero, in which case we have
-less than $n$ solutions due to having a polynomial of degree less than
-$n$ and the curve has a point at infinity, or the polynomial has
-multiple identical roots at a {\it multiple point} of the curve.
+% The defining polynomial can be regarded as a polynomial in $y$, whose
+% coefficients are polynomials in $x$, simply by collecting terms with
+% like powers of $y$.  If we fix a given complex value of $x$, we have a
+% polynomial in $y$ with complex coefficients that can be solved as a
+% univariate polynomial and yields at most $n$ solutions for $y$.  We
+% can be more specific.  For any given value of $x$, we have {\it
+% exactly} $n$ solutions for $y$ {\it unless} one of two things happen.
+% Either the leading ($y^n$) coefficient is zero, in which case we have
+% less than $n$ solutions due to having a polynomial of degree less than
+% $n$ and the curve has a point at infinity, or the polynomial has
+% multiple identical roots at a {\it multiple point} of the curve.
 
 % add a box of examples
 
-A curve has only a finite number of multiple points, as can be seen
-by considering the {\it discriminant} of the defining polynomial,
-which is the resultant of the polynomial with its partial derivative
-with respect to one of its variables.  The discriminant will be zero
-at multiple points, so these points can be located by computing the
-zeros of a univariate polynomial.
+% A curve has only a finite number of multiple points, as can be seen
+% by considering the {\it discriminant} of the defining polynomial,
+% which is the resultant of the polynomial with its partial derivative
+% with respect to one of its variables.  The discriminant will be zero
+% at multiple points, so these points can be located by computing the
+% zeros of a univariate polynomial.
 
-Multiple points are further classified according to whether or not the
-curve is locally Euclidean in their neighborhood.  Geometrically, this
-corresponds to looping around the point until you return to your
-starting point.  If a single such {\it cycle} covers all the sheets of
-the curve, the curve is locally Euclidean, and we have an {\it
-ordinary point} of the curve, albeit one with {\it ramification}, the
-{\it ramification index} being how many times we had to circle the
-point.  Otherwise, multiple cycles are required to cover all of the
-sheets, and we have a {\it singular point} or {\it singularity}.
+% Multiple points are further classified according to whether or not the
+% curve is locally Euclidean in their neighborhood.  Geometrically, this
+% corresponds to looping around the point until you return to your
+% starting point.  If a single such {\it cycle} covers all the sheets of
+% the curve, the curve is locally Euclidean, and we have an {\it
+% ordinary point} of the curve, albeit one with {\it ramification}, the
+% {\it ramification index} being how many times we had to circle the
+% point.  Otherwise, multiple cycles are required to cover all of the
+% sheets, and we have a {\it singular point} or {\it singularity}.
 
-Is the curve holomorphic at a ramification point?  Yes,
+On some curves, however, there are points, called {\it singularities},
+at which the derivative with respect to both variables is zero.
+One might hope to pick a uniformizing variable different
+from either coordinate variable that would allow the IFT
+to be applied, but this turns out to be impossible.  The
+derivative with respect to any algebraic function could
+be expanded using partial derivatives with respect to
+the coordinate variables, and the resulting derivative
+would necessarily be zero:
+
+$$\frac{df}{dz} = \frac{df}{dx}\frac{dx}{dz} + \frac{df}{dy}\frac{dy}{dz} = 0\frac{dx}{dz} + 0\frac{dy}{dz} = 0$$
+
+Something more is required.
+
+Since both $f$ and $\frac{df}{dy}$ share a zero at
+a given value of $x$, $f$'s zero must be at least
+second order, so singularities are necessarily
+multiple points of the curve.
+
+% For infinity and/or poles, substitute z=1/x or v=1/y.
+
+Consider a specific multiple point where $n$ sheets of the curve meet
+at a single point $P$.  A small circle at distance $\epsilon$ from $P$
+will map to $n$ values of the curve.  Without loss of generality,
+let's assume that $P$ is the origin.
+
+[Silverman] Theorem 10.13: If a function is analytic on every point of
+a open disk $K: |z-a| < R$, then it has a power series expansion
+centered on $a$ that converges everywhere in $K$.
+
+By this theorem, we see that we can surround $P$ with disks of radius
+$\epsilon$; a finite number of them will circle around $P$.  These
+disks don't have to cover every point in a neighborhood of $P$; they
+need only circle $P$ so that we cleanly identify a permutation
+of the sheets.
+
+Label the $r$ values of $y$ at $(x+\epsilon)$
+as $y_1(x),\ldots,y_n(x)$.  As we trace along the circle
+defined by $x=\epsilon e^{i\theta}$ these values
+deform continuously as $\theta$ goes from $0$ to $2\pi$.
+Once we reach $2\pi$, we have come full circle
+and the $y$ values match up, but permuted.
+Call the permutation $\sigma$,
+so $y_1(x),\ldots,y_n(x)$ map to $y_{\sigma 1}(x),\ldots,y_{\sigma n}(x)$.
+The permutation $\sigma$ of the $n$
+sheets can decomposed into $k$ disjoint cycles.  We seek to
+show that a Riemann surface can be obtained by replacing the singular
+point with $k$ distinct points.
+
+Consider a single cycle of length $r$, the {\it ramification index},
+and an open disk in the $t$-plane, $\Delta=\{t:|t|<\epsilon\}$.
+We wish to exhibit an bihomomorphism from $\Delta$ to the
+cycle.  Set $x(t)=t^r$, which is clearly holomorphic in $\Delta$
+(in fact, everywhere on the $t$-plane).  The function
+
+$$y(t) = y_{\sigma^{\lfloor (r \, \arg t)/(2 \pi) \rfloor}}(t^r)$$
+
+where $\arg t$ is the complex argument, with range $[0, 2\pi)$,
+$\lfloor \cdot \rfloor$ is the integer floor function, and powering
+$\sigma$ by an integer applies the permutation that many times.  The
+permutation ensures continuity of the function at each transition
+between the various $y_n$ functions.  $y(t)$ is obviously holomorphic
+away from the origin, but is it also holomorphic at the origin?  Yes,
 according to Riemann's theorem on removable singularities.
-Wikipedia's statement of this theorem reads as follows:
 
+% where $r$ is the {\it ramification index}, and
+% construct a power series, not in $(x-\alpha)$, but in
+% $t=(x-\alpha)^{1/r}$, a {\it Puiseux series}.
+
+% As a function of $t$, both $x$ and $y$ are analytic in an open
+% neighborhood of $t=0$.  $x$ is analytic as a function of $t$ because
+% of the I.F.T. applied to $x=t^r+\alpha$.  $y$ is analytic as a
+% function of $x$ because of the I.F.T. applied to the defining equation
+% of the curve.  Composition of analytic functions are analytic,
+% showing that $y$ is analytic as function of $t$.
+
+% These arguments hold in an open neighborhood of $t=0$.  Continuity of
+% the roots shows that $y$ is continuous at $t=0$.  Then use existence
+% of the Laurent series (Silverman 11.2) and continuity of the roots
+% (HOW?) to establish analyticity at the ramification point.
+
+
+\begin{mdframed}[backgroundcolor=yellow!20]
+\begin{center}
+{\bf Riemann removable singularity theorem}
+\end{center}
 \theorem
 \label{Riemann removable singularity theorem}
 Let $D \subset \mathbb{C}$ be an open subset of the complex plane,
@@ -352,31 +413,100 @@ the set $D \setminus \{a\}$.  The following are equivalent:
 \item $\lim_{z\to a}(z - a) f(z) = 0$.
 \end{enumerate}
 
+\proof
+
+The implications $1 \Rightarrow 2 \Rightarrow 3 \Rightarrow 4$ are
+trivial. To prove $4 \Rightarrow 1$, we first recall that the
+holomorphy of a function at $a$ is equivalent to it being analytic at
+$a$, i.e. having a power series representation. Define
+
+$$
+h(z) = \left\{
+\begin{array}{rl}
+(z - a)^2 f(z) &  z \ne a ,\\
+0              &  z = a .
+\end{array} \right.
+$$
+
+Clearly, $h$ is holomorphic on $D\backslash\{a\}$, and there exists
+$h'(a)=\lim_{z\to a}\frac{(z - a)^2f(z)-0}{z-a}=\lim_{z\to a}(z - a) f(z)=0$
+by 4, hence $h$ is holomorphic on $D$ and has a Taylor series about $a$:
+
+$$h(z) = c_0 + c_1(z-a) + c_2 (z - a)^2 + c_3 (z - a)^3 + \cdots \, .$$
+
+We have $c_0 = h(a) = 0$ and $c_1 = h'(a) = 0$; therefore
+
+$$h(z) = c_2 (z - a)^2 + c_3 (z - a)^3 + \cdots \, .$$
+
+Hence, where $z \ne a$, we have:
+
+$$f(z) = \frac{h(z)}{(z - a)^2} = c_2 + c_3 (z - a) + \cdots \, .$$
+
+However,
+
+$$g(z) = c_2 + c_3 (z - a) + \cdots \, .$$
+
+is holomorphic on $D$, thus an extension of $f$.
+
 \endtheorem
+Source: copied verbatim from Wikipedia
+\end{mdframed}
 
-The function $y$ is bounded (3), which implies (1), that it can
-be holomorphically extended to $a$.
+To see that function $y(t)$ is bounded on $\Delta$, pick a $\delta$ so
+that $f(0,\delta)$ is $G$, then ensure that $\epsilon$ is small enough
+to ensure that $f(x,\delta) \ne 0 \forall x \in \Delta_\epsilon$.
+Since $y(t)$ is continuous on $\Delta_\epsilon$, if it were not
+bounded, then $f(t^r,y(t)) = \delta$ for some value $t$, contridicting
+our assumption.  Thus, $y(t)$ is bounded on $\Delta$, so it can be
+holomorphically extended to the origin by the previous theorem.
 
-In short, we already know that to obtain a Riemann surface,
+{\bf Lemma.}  Given a polynomial $f(x,y)$,
+then at any given point $(x_0,y_0)$ and any given real number $\delta>0$,
+there exists a real number $\epsilon$ such that
+$$f(x,y)\ne f(x_0,y_0) \quad\forall x,y; |x-x_0| < \epsilon; |y-y_0| = \delta$$
+
+{\bf Proof.}  Consider $g(y) = f(x_0,y) - f(x_0,y_0)$, a polynomial in $y$ with
+a zero at $y_0$.  Pick a number $a$ such that no other zero is within $\pm a$
+of $y_0$.  Consider the complex circle of radius $a$ centered at $y_0$.
+$g(y)$ on this circle must have a minimum value that is not zero;
+call this minimum value $m$.  Now, at any point $y_0+a$,
+$f(x_0, y_0+a)$ by {\bf complex} continuity will have a value $\epsilon$ such that
+$x_0$ can be varied up to $\epsilon$ without changing the function by
+more than $m$.  But do all of these values have a minimum
+greater than zero?
+
+In short, to obtain a complex manifold,
 we need to modify our curve slightly by adding additional
 points at singularities.
 Theorem \ref{Riemann removable singularity theorem}
 tells us that no additional information is need to specify
-the behavior of meromorphic functions at those additional
+the behavior of holomorphic functions at those additional
 points -- their behavior at an isolated point is completely determined by
 their behavior in an open neighborhood surrounding that point.
 
-What about functions with poles?
+What about meromorphic functions?  They can just be promoted
+to holomorphic functions by multiplying them by a suitable
+power of the uniformizing variable ($t$, in the above treatment),
+and Theorem \ref{Riemann removable singularity theorem} again
+tells us that their behavior is completely specified.
 
 Interestingly enough, a rational function can have different values
 at the same points over a singularity.
 
-Example: $y^2 = x^3 + x^2$ has a singularity at the origin.
+\example
+Example: $y^2 = x^3 + x^2$ has a singularity at the origin,
+since $f(x,y) = y^2 - x^3 - x^2$, $\frac{df}{dx} = -3x^2-2x$,
+$\frac{df}{dy} = 2y$, and $\frac{df}{dx}(0,0) = 0$
+and $\frac{df}{dy}(0,0) = 0$.
+
+% INSERT GRAPHIC
+
 The function $y/x$ has the value $1$ on one branch and $-1$
 on the other.  It is also possible, straightforward even, to construct functions
 with a zero on only one branch ($y/x - 1$) or the other
 ($y/x + 1$), or a pole on only one branch ($x/(y-x)$),
 or a pole on one branch and zero on the other ($x/(y-x) + 1/2$).
+\endexample
 
 
 Analytically, both partial derivatives of the curve's polynomial are
