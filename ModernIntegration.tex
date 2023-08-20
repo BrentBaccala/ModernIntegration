@@ -28,42 +28,31 @@
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 % This package makes cut-and-paste of carets work right, so
-% we can cut-and-paste from the PDF document into Maxima.
+% we can cut-and-paste from the PDF document into Sage.
 
 \usepackage[T1]{fontenc}
 
-% embed Python and Maxima code into LaTeX
+% embed Python and Sage code into LaTeX
 %
 % need TeX package pythontex (fetch from CTAN, put in a subdirectory, and symlink pythontex.sty)
 % need TeX package fvextra (fetch from CTAN, put in a subdirectory, and symlink fvextra.sty)
 % need python package pygments (apt-get install python-pygments)
 
-\usepackage[usefamily={maxima,sage},keeptemps=all,pygments=false]{pythontex}
+\usepackage[usefamily=sage,keeptemps=all,pygments=false]{pythontex}
 
-% These packages are used when embedding Maxima code
+% These packages are used when embedding Sage code
 
 \usepackage{breqn}      % auto-break long equations - has to come after pythontex
 \usepackage{listings}
 \usepackage{fancyvrb}
 
-% Default listing style for Maxima input
+% Default listing style for Sage input
 
 \lstset{basicstyle=\ttfamily\color{blue},
 breaklines=true,
 breakatwhitespace=true,
 boxpos=t,
 resetmargins=true}
-
-% Color used to label Maxima output
-\definecolor{darkred}{RGB}{200,0,0}
-
-% default maxima output handling
-
-\newcommand{\maximainputlabel}[1]{}
-\newcommand{\maximaoutputlabel}[1]{}
-\newcommand{\maximaoutputmath}[1]{#1}
-\newcommand{\maximaoutputstring}{\UseVerbatim{MaximaString}}
-
 
 \usepackage{tikz}
 \usetikzlibrary{positioning, fit}
@@ -147,69 +136,10 @@ resetmargins=true}
 
 \begin{document}
 
-% I want my maxima code to be nicely typeset, so I redefine
-% maximablock (the environment to both typeset and execute) to call
-% maximacode (the environment to only execute) and then print the
+% I want my Sage code to be nicely typeset, so I redefine
+% sageblock (the environment to both typeset and execute) to call
+% sagecode (the environment to only execute) and then print the
 % output using some new macros, instead of the default behavior.
-
-\newenvironment{maximablocksmall}{\small\maximablock}{\endmaximablock}
-\newenvironment{maximablocktiny}{\tiny\maximablock}{\endmaximablock}
-
-\let\origmaximacode\maximacode
-\let\endorigmaximacode\endmaximacode
-
-\renewenvironment{maximablock}{\renewcommand{\maximaoutputmath}[1]{}\renewcommand{\maximaoutputstring}{}\origmaximacode}{\endorigmaximacode
-
-% At end of maximablock, redefine Maxima processing commands,
-% then call \printpythontex to include the Maxima output,
-% which will call the Maxima processing commands.
-
-% Command called by python code that processes maximacode input
-% Command number is in argument 1
-% Command text is saved in verbatim block MaximaCode
-
-\renewcommand{\maximainputlabel}[1]{
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{L{1.5cm} L{10cm}}
-\textcolor{red}{\ttfamily (\%i##1)} &
-\textcolor{blue}{\BUseVerbatim[baseline=t]{MaximaCode}}
-\end{tabular}
-\egroup\break
-}
-
-% Command called by python code that processes maximacode output
-% Command number and math mode TeX are passed in separate
-% commands to allow unlabled outputs (i.e, 'display' command)
-
-\def\maximalabeltext{}
-\renewcommand{\maximaoutputlabel}[1]{
-\def\maximalabeltext{(\%o##1)}}
-
-\renewcommand{\maximaoutputstring}{
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{L{1.5cm} L{10cm}}
-\textcolor{darkred}{\ttfamily\maximalabeltext} &
-\BUseVerbatim{MaximaString}
-\end{tabular}
-\egroup\break
-\def\maximalabeltext{}
-}
-\renewcommand{\maximaoutputmath}[1]{
-\begin{tabular}{L{1.5cm} L{10cm}}
-\textcolor{darkred}{\ttfamily\maximalabeltext} &
-\end{tabular}
-\begin{dmath*}
-##1
-\end{dmath*}
-\def\maximalabeltext{}
-}
-% Wrap everything in a nice colored frame and print it
-\begin{mdframed}[backgroundcolor=yellow!20]
-\printpythontex
-\end{mdframed}
-}
 
 % Do similar formatting with Sage
 
@@ -248,9 +178,9 @@ resetmargins=true}
 % then call \printpythontex to include the Sage output,
 % which will call the Sage processing commands.
 
-% Command called by python code that processes maximacode input
+% Command called by python code that processes sagecode input
 % Command number is in argument 1
-% Command text is saved in verbatim block MaximaCode
+% Command text is saved in verbatim block SageCode
 %
 % We need a \break between two adjacent \sageinputcode's,
 % but we leave it out if there's an intervening \sageoutputmath.
@@ -291,9 +221,9 @@ resetmargins=true}
 % then call \printpythontex to include the Sage output,
 % which will call the Sage processing commands.
 
-% Command called by python code that processes maximacode input
+% Command called by python code that processes sagecode input
 % Command number is in argument 1
-% Command text is saved in verbatim block MaximaCode
+% Command text is saved in verbatim block SageCode
 %
 % We need a \break between two adjacent \sageinputcode's,
 % but we leave it out if there's an intervening \sageoutputmath.
@@ -344,29 +274,10 @@ resetmargins=true}
 % pythontex allows us to use multiple sessions, which speeds up
 % processing since most code changes only affect one session.
 %
-% This environment is used for Maxima code that is common to all
+% This environment is used for Sage code that is common to all
 % sessions.  It works by writing code out to a file, then reading
 % it back in for typesetting.  All of the common-*.tex are then
-% concatenated together to form common.mac
-
-\newcounter{maximacommoncounter}
-\setcounter{maximacommoncounter}{0}
-
-\newenvironment{maximacommon}
-  {\stepcounter{maximacommoncounter}\VerbatimOut{common-\themaximacommoncounter}}
-  {\endVerbatimOut
-\begin{mdframed}[backgroundcolor=yellow!20,fontcolor=blue]
-\VerbatimInput{common-\themaximacommoncounter}
-\end{mdframed}
-}
-
-\newenvironment{maximacommonsmall}{\small\maximacommon}{\endmaximacommon}
-\newenvironment{maximacommontiny}{\tiny\maximacommon}{\endmaximacommon}
-
-% maximacode environment doesn't output anything
-% Our default \maximaoutputmath outputs the results (for \maximac statements),
-%   so we need to change it here
-\renewenvironment{maximacode}{\renewcommand{\maximaoutputmath}[1]{}\origmaximacode}{\endorigmaximacode}
+% concatenated together to form sagecommon.sage
 
 % sagecommon.sage was generated by the Makefile after a LaTeX run.
 % Now we insert a load command at beginning of every sage session
@@ -413,8 +324,6 @@ load("sagecommon.sage");
 
 \newcommand{\N}{{\rm N\,}}
 \newcommand{\lc}{{\rm lc\,}}
-
-\excludecomment{computer-maxima}
 
 \title{Modern Integration}
 \author{Brent Baccala}
