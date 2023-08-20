@@ -603,10 +603,10 @@ def varName(var):
 def displayarray(b):
    varname = varName(b)
    for k in sorted(b.keys()):
-     print '$$', varname, '_{'
+     print('$$', varname, '_{')
      if isinstance(k, tuple):
-       print ','.join([latex(kk) for kk in k])
+       print(','.join([latex(kk) for kk in k]))
      else:
-       print latex(k)
-     print '}=', latex(b[k]), '$$'
+       print(latex(k))
+     print('}=', latex(b[k]), '$$')
 \end{sagecommon}
