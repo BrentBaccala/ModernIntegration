@@ -1480,6 +1480,7 @@ normal form with the desired result.\footnote{This is also somewhat
 painful with Sage, requiring us to convert $\theta$ into a
 ``function'' so that we can take its derivative.}
 
+\begin{comment}
 \begin{sageblock}
 function('thetaf', latex_name='\\theta', nargs=1);
 eq2a = eq.subs({theta: thetaf(x)});
@@ -1496,6 +1497,7 @@ ideal[0].normal_form(eq2a)
 ideal[0].normal_form(eq2a).simplify()
 eq2b = ideal[0].normal_form(eq2a).numerator()
 \end{sageblock}
+\end{comment}
 
 % Returning to equation \eqref{eq: exponential An}, I'll collect all the
 % terms over a common denominator using {\tt ratsimp}, then pull out the
@@ -1509,10 +1511,12 @@ ${\mathbb C}(x)$.  In particular, it does not involve $\theta$, so
 each power of $\theta$ in this equation must be zero.
 Let's extract the leading $\theta$ coefficient and set it equal to zero.
 
+\begin{comment}
 \begin{sageblock}
 eq2.numerator().coefficient(theta, 2)
 eq2b.coefficient(thetaf(x)^2)
 \end{sageblock}
+\end{comment}
 
 This Risch equation has an obvious solution.  Now we're solving
 in ${\mathbb C}(x)$, so if it were difficult, we could use the theory
