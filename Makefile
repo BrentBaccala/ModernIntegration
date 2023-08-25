@@ -1,7 +1,7 @@
 
 all: ModernIntegration.pdf slides.pdf decomposition.pdf
 
-export SAGE_ROOT = /home/baccala/src/sage
+SAGE=/usr/bin/sage
 
 clean:
 	rm *.inc *.ps *.pdf
@@ -20,7 +20,7 @@ ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	pdflatex ModernIntegration || true
 	ls -v sagecommon*.tex | xargs cat > sagecommon.sage
 	rm sagecommon*.tex
-	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --interpreter maxima:/home/baccala/src/maxima-code/maxima-local --verbose ModernIntegration.tex --jobs 1
+	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE) --verbose ModernIntegration.tex --jobs 1
 	pdflatex ModernIntegration
 	rm sagecommon*.tex
 
@@ -29,12 +29,12 @@ ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 
 slides.pdf: slides.tex ModernIntegration.cpy.md5
 	pdflatex slides || true
-	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --verbose slides.tex --jobs 1
+	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE) --verbose slides.tex --jobs 1
 	pdflatex slides
 
 decomposition.pdf: decomposition.tex
 	pdflatex decomposition || true
-	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE_ROOT)/local/bin/sage --verbose decomposition.tex --jobs 1
+	./pythontex/pythontex/pythontex.py --interpreter sage:$(SAGE) --verbose decomposition.tex --jobs 1
 	pdflatex decomposition
 
 out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
