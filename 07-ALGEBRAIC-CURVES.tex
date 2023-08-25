@@ -848,6 +848,7 @@ to graph the lower convex hull.
 
 \end{comment}
 
+\begin{comment}
 \begin{maximacode}
 /* in_namespace(puiseux)$ */
 
@@ -864,12 +865,16 @@ recenter_curve(f,x,y,x0,y0) := block([xcoeff, newf:0],
    newf
 );
 \end{maximacode}
+\end{comment}
 
+\begin{comment}
 \begin{maximacode}
 /* why doesn't this produce cdots? */
 taylor(sin(x),x,0,3);
 \end{maximacode}
+\end{comment}
 
+\begin{comment}
 \begin{maximacode}
 monomial_powers(f,x,y,x0,y0) := block(
   [result: [], xcoeff],
@@ -885,7 +890,9 @@ monomial_powers(f,x,y,x0,y0) := block(
   result
 );
 \end{maximacode}
+\end{comment}
 
+\begin{comment}
 \begin{maximacode}
 /* list is a list of pairs, like [[0,1], [0,2], [2,0]] */
 /* this function returns the points on the lower convex hull */
@@ -962,6 +969,7 @@ newton_polygon(f, x, y, x0, y0) := block(
 );
 
 \end{maximacode}
+\end{comment}
 
 \vfill\eject
 
@@ -1002,7 +1010,7 @@ $(x-1)$ exponents on the vertical:
 
 \begin{figure}[H]
 \begin{center}
-\maximac{newton_polygon(y^2+x^2-1, x, y, 1, 0)$}
+%% \maximac{newton_polygon(y^2+x^2-1, x, y, 1, 0)$}
 \end{center}
 \end{figure}
 
@@ -1046,6 +1054,7 @@ in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
 x-series unchanged.  Let's confirm this result with Sage:
 
+\begin{comment}
 \begin{sageblock}[ch7]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -1054,6 +1063,7 @@ O = F.maximal_order()
 pl = O.ideal(x-1, y).place()
 F.completion(pl, prec=4)(y)
 \end{sageblock}
+\end{comment}
 
 This answer differs from the one we computed by hand because the
 choice of uniformizing variable is not unique, and because the
@@ -1062,9 +1072,11 @@ was roughly $\sqrt{x-1}$.  Even though square roots don't exist {\it
 per se} in this field, we can use this notation to express
 the desired uniformizing variable and confirm our calculation:
 
+\begin{comment}
 \begin{sageblock}[ch7]
 F.completion(pl, uvar=sqrt(x-1), prec=4)(y)
 \end{sageblock}
+\end{comment}
 
 Now, let's analyze the point at infinity.  We move infinity to a
 finite point (0) with the substitution $x=u^{-1}$, then combine all of
@@ -1075,7 +1087,7 @@ $$y^2 u^2 + 1 - u^2 = 0$$
 
 \begin{figure}[H]
 \begin{center}
-\maximac{newton_polygon(y^2+x^2-1, x, y, inf, 0)$}
+%%\maximac{newton_polygon(y^2+x^2-1, x, y, inf, 0)$}
 \end{center}
 \end{figure}
 
@@ -1110,10 +1122,12 @@ yield two different values of $y$ for each value of $u$.
 Geometrically, we have two sheets that approach each other and touch
 at a singular point where the curve is not locally Euclidean.
 
+\begin{comment}
 \begin{sageblock}[ch7]
 Pinf = F.places_infinite()
 [F.completion(pl, prec=4, uvar=1/x)(y) for pl in Pinf]
 \end{sageblock}
+\end{comment}
 
 \endexample
 
@@ -1142,6 +1156,7 @@ The multiple points lie over the roots of this equation: $x=0$ and
 the seven roots of $4x^7+27=0$.  Infinity also needs to be
 examined.  We begin with $x=0$:
 
+\begin{comment}
 \begin{sageblock}[ch7-2]
 
 R.<x> = FunctionField(QQbar, implementation='kash')
@@ -1154,6 +1169,7 @@ xseries = F.completion(pl, prec=30)(x)
 yseries = F.completion(pl, prec=10)(y)
 yseries((xseries^(1/3)).reverse())
 \end{sageblock}
+\end{comment}
 
 This result shows that we have a single cycle at $(x,y)=(0,0)$ with
 three sheets.  Now, let's look at a specimen root
@@ -1165,6 +1181,7 @@ puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
 puiseux(y^3 + x^3*y +x, x, y, g, -(3/8)^(1/7), 1);
 \end{comment}
 
+\begin{comment}
 \begin{sageblock}[ch7-2]
 g = QQbar(-27/4)^(1/7)
 pl = O.ideal(x-g, y+3/(2*g^2)).place()
@@ -1177,7 +1194,9 @@ xseries = F.completion(pl, prec=3)(x)
 yseries = F.completion(pl, prec=2)(y)
 yseries((xseries-g).reverse())
 \end{sageblock}
+\end{comment}
 
+\begin{comment}
 \begin{sageblock}[ch7-3]
 
 R1.<g> = QQ[]
@@ -1201,12 +1220,14 @@ xseries = F.completion(pl, prec=2)(x)
 yseries = F.completion(pl, prec=2)(y)
 yseries((xseries-g).reverse())
 \end{sageblock}
+\end{comment}
 
 We have one sheet of two cycles at $(g,-3/(2g^2))$
 and an ordinary point at $(g,3/g^2)$.
 
 Finally, let's look at what happens when $x$ goes to infinity:
 
+\begin{comment}
 \begin{sageblock}[ch7-2]
 Pinf = F.places_infinite()
 xseries = F.completion(Pinf[0], prec=3)(x)
@@ -1215,6 +1236,7 @@ yseries = F.completion(Pinf[0], prec=10)(y)
 xseries = F.completion(Pinf[1], prec=3)(x)
 yseries = F.completion(Pinf[1], prec=10)(y)
 \end{sageblock}
+\end{comment}
 
 Here we have an ordinary point at $(\infty,0)$ and
 a single cycle of two sheets at $(\infty,\infty)$.
@@ -1292,6 +1314,7 @@ simply the places where the denominator is zero, and that's just
 $x=\pm 1$.  Now, if we use {\tt puiseux}, we can just request a series
 truncated at the $-1$ term:
 
+\begin{comment}
 \begin{sageblock}[ch7-4]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -1300,6 +1323,7 @@ D = (1/y).divisor()
 table([[p, F.completion(p, prec=0)(1/y)] \
     for p,m in D.list() if m < 0])
 \end{sageblock}
+\end{comment}
 
 \endexample
 
@@ -1312,6 +1336,7 @@ differential, which must be adjusted at ramification points.
 
 Let's expand $\frac{x}{y}$ at $x=1$:
 
+\begin{comment}
 \begin{sageblock}[ch7-5]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -1321,20 +1346,24 @@ pl = O.ideal(x-1, y).place()
 F.completion(pl, prec=6)(x)
 F.completion(pl, prec=6)(x/y)
 \end{sageblock}
+\end{comment}
 
 Now $x=t^2+1$, so $\ud x=2t\ud t$.  Thus, multiplying $\frac{x}{y}$
 by $\ud x$ and changing our variable to $t$ will multiply
 all of the terms in our expansion by $2t$:
 
+\begin{comment}
 \begin{sageblock}[ch7-5]
 F.completion(pl, prec=6)(x/y*x.differential())
 \end{sageblock}
+\end{comment}
 
 Even though $\frac{x}{y}$ has a pole
 at $x=1$, $\frac{x}{y} \ud x$ does not!
 
 Its behavior at infinity also requires analysis.
 
+\begin{comment}
 \begin{sageblock}[ch7-5]
 # this is here to manually introduce i into our number field
 F.maximal_order().ideal(x - sqrt(QQbar(-1)));
@@ -1345,6 +1374,7 @@ F.completion(Pinf[0], prec=2)(y)
 F.completion(Pinf[0], prec=2)(x/y)
 F.completion(Pinf[0], prec=2)(x/y*x.differential())
 \end{sageblock}
+\end{comment}
 
 $\frac{x}{y}$ has no poles at infinity, and approaches
 the limiting values $\pm i$ as $x$ and $y$ approach
@@ -1355,11 +1385,13 @@ and since $x=\frac{1}{t}$, $\ud x = - \frac{1}{t^2} \ud t$.
 In short, while $\frac{x}{y}$ has poles only at $(\pm 1,0)$,
 $\frac{x}{y} \ud x$ has poles only at infinity.
 
+\begin{comment}
 \begin{sageblock}[ch7-5]
 v = x/y*x.differential()
 D = v.divisor()
 table([[p, F.completion(p, prec=0)(v)] for p,m in D.list() if m < 0])
 \end{sageblock}
+\end{comment}
 
 \endexample
 
@@ -1495,6 +1527,7 @@ Consider, for example the lemniscate of Bernoulli, defined by the equation
 
 $$ (x^2+y^2)^2 - (x^2-y^2) = 0$$
 
+\begin{comment}
 \begin{sageblock}[lemniscate]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -1504,25 +1537,31 @@ O = F.maximal_order()
 I = O.ideal(x,y)
 I.factor()
 \end{sageblock}
+\end{comment}
 
+\begin{comment}
 \begin{sageblock}[lemniscate]
 O.basis()
 \end{sageblock}
+\end{comment}
 
 One characterization of the maximal finite order $O$ is that it contains
 all functions with no poles at finite places.  The first three elements
 in the basis are obvious, but why is the fourth so complicated?
 Isn't $\frac{y}{x}$ in $O$?
 
+\begin{comment}
 \begin{sageblock}[lemniscate]
 y/x in O
 \end{sageblock}
+\end{comment}
 
 Doesn't $\frac{y}{x}$ approach either $1$ or $-1$ as it approaches the
 origin?  Remember that we're working in complex space.  We've got
 four roots, not two.  Let's look at some examples of limiting values
 using some numerical examples:
 
+\begin{comment}
 \begin{sageblock}[lemniscate]
 set_verbose(-1)
 R.<u,v> = CC[]
@@ -1533,7 +1572,9 @@ ideal(((u^2+v^2)^2 - (u^2-v^2)), (u-.0001)).variety()
 [d[v]/.00001 for d in ideal(((u^2+v^2)^2 - (u^2-v^2)), (u-.00001)).variety()]
 [(d[v]^3+d[v])/.00001 for d in ideal(((u^2+v^2)^2 - (u^2-v^2)), (u-.00001)).variety()]
 \end{sageblock}
+\end{comment}
 
+\begin{comment}
 \begin{sageblock}[lemniscate]
 Fs = O.ideal(x).factor()
 F.completion(Fs[0][0].place(), uvar=x, prec=7)(y)
@@ -1541,13 +1582,16 @@ F.completion(Fs[1][0].place(), uvar=x, prec=7)(y)
 F.completion(Fs[2][0].place(), uvar=x, prec=7)(y)
 F.completion(Fs[3][0].place(), uvar=x, prec=7)(y)
 \end{sageblock}
+\end{comment}
 
 How does one of these ideal generators factor?
 
+\begin{comment}
 \begin{sageblock}[lemniscate]
 A.<a> = QQbar[]
 (1/2*a^2+1/2*sqrt(QQbar(-1))*a+1).factor()
 \end{sageblock}
+\end{comment}
 
 
 [SwansonHuneke] Proposition 6.8.14 Let $R$ be an integral domain. Then
@@ -1753,6 +1797,7 @@ Here's a simple example\footnote{From
 {\tt https://math.stackexchange.com/questions/294644}}
 of a Riemann-Roch space calculation:
 
+\begin{comment}
 \begin{sageblock}[riemannroch]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -1768,9 +1813,11 @@ D.basis_function_space()
 (3*D).basis_function_space()
 (4*D).basis_function_space()
 \end{sageblock}
+\end{comment}
 
 Here are the examples from \cite{alvanos} \S6.3:
 
+\begin{comment}
 \begin{sageblock}[riemannroch]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -1793,6 +1840,7 @@ Dinf = Pinf.divisor()
 (2*Dinf).basis_function_space()
 (3*Dinf).basis_function_space()
 \end{sageblock}
+\end{comment}
 
 \vfill\eject
 \mysection{Mittag-Leffler Problems}
@@ -1861,6 +1909,7 @@ curve (example \ref{an integral Maxima can't solve}):
 
 We now compute its principal parts matrix:
 
+\begin{comment}
 \begin{sageblock}[riemannroch]
 R.<x> = FunctionField(QQbar, implementation='kash')
 L.<y> = R[]
@@ -1883,6 +1932,7 @@ D1.basis_function_space()
 
 principal_parts_matrix(D1, basis)
 \end{sageblock}
+\end{comment}
 
 {\bf TODO}
 

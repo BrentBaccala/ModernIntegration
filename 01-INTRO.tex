@@ -116,6 +116,7 @@ then $f$ is integrable on $[a,b]$.
 So, $E(x) = \int_0^x e^{-t^2} dt$ is {\it integrable} on $[0,x]$ if $e^{-t^2}$ is continuous on $[0,x]$,
 and $e^{-t^2}$ is continuous everywhere on the real line.  We can easily plot $e^{-t^2}$:
 
+\begin{comment}
 \begin{maximacode}
 /* This code autogenerates filenames for pdf graphics so they */
 /* can be easily embedded into LaTeX. */
@@ -142,14 +143,17 @@ pdfplot3d([args]) := block(
    embed_latex_graphic(filename)
 )$
 \end{maximacode}
+\end{comment}
 
 \begin{figure}[H]
 \begin{center}
+\begin{comment}
 \begin{maximacode}
 pdfplot2d (exp(-x^2),
            [x, -6, 6], [ylabel, false], [grid2d, true], [legend, false],
            [color, red])$
 \end{maximacode}
+\end{comment}
 \end{center}
 \caption{$e^{-t^2}$}
 \end{figure}
@@ -162,6 +166,7 @@ point of the graph:
 
 \begin{figure}[H]
 \begin{center}
+\begin{comment}
 \begin{maximacode}
 assume(x > 0)$
 f(x) := exp(-x^2)$
@@ -170,6 +175,7 @@ pdfplot2d (F(x),
           [x, -6, 6], [ylabel, false], [grid2d, true], [legend, false],
           [color, red])$
 \end{maximacode}
+\end{comment}
 \end{center}
 \caption{$\int_0^x e^{-t^2} dt$}
 \end{figure}
@@ -182,12 +188,14 @@ that it {\it might} be...
 
 \begin{figure}[H]
 \begin{center}
+\begin{comment}
 \begin{maximacode}
 line(x,x0,l) := if abs(x-x0) < l then F(x0) + f(x0)*(x-x0) else %nan$
 pdfplot2d ([F(x), 'line(x,-1.5,1), 'line(x,1,1)],
            [x, -6, 6], [y, -1, 1], [ylabel, false], [grid2d, true], [legend, false],
            [color, red, blue, blue], [xtics, 20], [ytics, 2])$
 \end{maximacode}
+\end{comment}
 \end{center}
 \caption{$\int_0^x e^{-t^2} dt$ (with tangent lines at $x_0=-1.5$ and $x_0=1$)}
 \end{figure}
@@ -269,12 +277,14 @@ This is the cardinal sine, or {\it sinc} function, and it's easy to plot:
 
 \begin{figure}[H]
 \begin{center}
+\begin{comment}
 \begin{maximacode}
 sinc(x) := if x = 0 then 1 else sin(x)/x$
 pdfplot2d (sinc(x),
            [x, -20, 20], [ylabel, false], [grid2d, true], [legend, false],
            [color, red])$
 \end{maximacode}
+\end{comment}
 \end{center}
 \caption{${\rm sinc\,} t = \frac{\sin t}{t}$}
 \end{figure}
@@ -287,12 +297,14 @@ $${\rm Si}(x) = \int_0^x \frac{\sin(t)}{t} dt$$
 
 \begin{figure}[H]
 \begin{center}
+\begin{comment}
 \begin{maximacode}
 Si(x) := (quad_qag(sinc, t, 0, x, 1)[1])$
 pdfplot2d (Si(x),
           [x, -20, 20], [ylabel, false], [grid2d, true], [legend, false],
           [color, red])$
 \end{maximacode}
+\end{comment}
 \end{center}
 \caption{$\int_0^x \frac{\sin t}{t} dt$}
 \end{figure}
@@ -303,12 +315,14 @@ $$ y(x) = {\rm Si}(x_0) + \frac{\sin x_0}{x_0}(x-x_0)$$
 
 \begin{figure}[H]
 \begin{center}
+\begin{comment}
 \begin{maximacode}
 line(x,x0,l) := if abs(x-x0) < l then Si(x0) + sinc(x0)*(x-x0) else %nan$
 pdfplot2d ([Si(x), 'line(x,-9,3), 'line(x,5,3)],
            [x, -20, 20], [y, -2, 2], [ylabel, false], [grid2d, true], [legend, false],
            [color, red, blue, blue], [xtics, 20], [ytics, 2])$
 \end{maximacode}
+\end{comment}
 \end{center}
 \caption{$\int_0^x \frac{\sin t}{t} dt$ (with tangent lines at $x_0=-9$ and $x_0=5$)}
 \end{figure}

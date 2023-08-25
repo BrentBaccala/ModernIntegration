@@ -113,6 +113,7 @@ $$A_1' + (\frac{3x^3}{2y}+y) A_1 = \left(\frac{5x^4+2x-2}{x^2}\left(1+\frac{1}{y
 
 This equation is in an algebraic form of equation 6.8, so we want to analyse the poles of the $S$ and $R$ functions.
 
+\begin{comment}
 \begin{sageblock}[ex10.1]
 R.<x> = FunctionField(QQbar)
 L.<y> = R[]
@@ -123,11 +124,14 @@ S = 3*x^3/(2*y) + y
 T = (5*x^4+2*x-2)/(x^2)*(1+1/y) + x/y
 # R.divisor_of_poles()
 \end{sageblock}
+\end{comment}
 
+\begin{comment}
 \begin{sageblock}[ex10.1]
 (S*x.differential()).divisor_of_poles()
 Tdp = (T*x.differential()).divisor_of_poles()
 \end{sageblock}
+\end{comment}
 
 We have two places at which either $S\,dx$ or $T\,dx$ have poles, so we need to consider them both.
 
@@ -137,29 +141,34 @@ At infinity, $\nu(S\,dx)=-6$, so $\nu(R) >= \nu(T\,dx)-\nu(S\,dx) = -7 - (-6) = 
 
 Our solution, if it exists, has at most first-order poles at $(0,1)$ and $\infty$.
 
+\begin{comment}
 \begin{sageblock}[ex10.1]
 sum(Tdp.support())
 BFS = sum(Tdp.support()).basis_function_space()
 \end{sageblock}
+\end{comment}
 
 Is there some linear combination of these basis functions that solves our Risch equation?
 
+\begin{comment}
 \begin{sageblock}[ex10.1]
 R = 2 * BFS[1]
 R.differential() + R * S * x.differential() == T * x.differential()
 \end{sageblock}
+\end{comment}
 
 This solves the Risch equation (?), giving us the $A_1$ term in our solution.
 Since there's no term in the integrand of $\psi$-degree zero, the $A_1$
 term is the only term in our solution, and we conclude:
 
+\begin{comment}
 \begin{sageblock}[ex10.1]
 var('x,y')
 integrand = eval(preparse(str(T))).subs({y:sqrt(x^3+1)}) * exp(x*sqrt(x^3+1))
 ans = eval(preparse(str(R))).subs({y:sqrt(x^3+1)}) * exp(x*sqrt(x^3+1))
 bool(diff(ans,x) == integrand)
 \end{sageblock}
-
+\end{comment}
 
 \endexample
 

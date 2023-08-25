@@ -989,9 +989,6 @@ def diophantine(a,b,c):
 \end{sagecommon}
 
 \begin{sageblock}
-\end{sageblock}
-
-\begin{sageblock}
 (s,t) = diophantine(c,a,b)
 c == a*s + b*t
 \end{sageblock}
@@ -1141,12 +1138,11 @@ and no such expansion can exist.
 
 \example
 
-\begin{maximacode}
-pf: (3*x**2-4*x+2)/(x**3-3*x**2+4) $
-/* pf: (x**2+3*x+2)/(x**3-3*x**2+4) $ */
-\end{maximacode}
+\begin{sagecommon}
+pf = (3*x**2-4*x+2)/(x**3-3*x**2+4);
+\end{sagecommon}
 
-Compute the partial fractions expansion of $$\maximac{pf;}$$
+Compute the partial fractions expansion of $\sage{pf}$
 
 We begin by factoring the denominator.  While factoring can be quite
 complicated in practice, in this case we need only try some small
@@ -1174,11 +1170,11 @@ it can only be the second square-free factor.  In any event, we conclude that:
 
 \end{comment}
 
-$$\maximac{pf;} = \maximac{factor(pf);}$$
+%% $$\maximac{pf;} = \maximac{factor(pf);}$$
 
 Next, we solve the polynomial Diophantine equation:
 
-$$\maximac{num(pf);} = s(x-2)^2 + t(x+1) = sa+tb$$
+%% $$\maximac{num(pf);} = s(x-2)^2 + t(x+1) = sa+tb$$
 
 First, we compute the GCD of $a=(x-2)^2=x^2-4x+4$ and $b=x+1$.
 The actual result is obvious, but now we're interested
@@ -1194,18 +1190,18 @@ have no common factor between them.
 $$a=(x-5)b+9$$
 $$9=a-(x-5)b$$
 $$1={1\over9}[a-(x-5)b]$$
-$$\maximac{num(pf);} = {1\over9}(\maximac{num(pf);})[a-(x-5)b]$$
-$$\maximac{num(pf);} = {1\over9}(\maximac{num(pf);})a-{1\over9}(\maximac{expand(num(pf)*(x-5));})b$$
+%% $$\maximac{num(pf);} = {1\over9}(\maximac{num(pf);})[a-(x-5)b]$$
+%% $$\maximac{num(pf);} = {1\over9}(\maximac{num(pf);})a-{1\over9}(\maximac{expand(num(pf)*(x-5));})b$$
 
-Our degree bounds aren't met yet, so we divide $b=x+1$ into $a$'s coefficient $\maximac{num(pf);}$:
+Our degree bounds aren't met yet, so we divide $b=x+1$ into $a$'s coefficient %% $\maximac{num(pf);}$:
 
 \sympyc{long_division(3*x**2-4*x+2, x+1, x)}
 
-The remainder becomes our new $a$ coefficient,
-and after subtracting $(3x-7)a=\maximac{expand((3*x-7)*(x-2)**2);}$ from the $b$ coefficient,
-we conclude that:
+%% The remainder becomes our new $a$ coefficient,
+%% and after subtracting $(3x-7)a=\maximac{expand((3*x-7)*(x-2)**2);}$ from the $b$ coefficient,
+%% we conclude that:
 
-$$x^2 + 3x + 2 = a - (\maximac{expand((num(pf)*(x-5) - (3*x-7)*(x-2)**2)/9);})b$$
+%% $$x^2 + 3x + 2 = a - (\maximac{expand((num(pf)*(x-5) - (3*x-7)*(x-2)**2)/9);})b$$
 
 In other words (remember that $a=(x-2)^2$ and $b=x+1$),
 
@@ -2144,6 +2140,7 @@ Factor the following polynomials in ${\bf Z}[x]$, ${\bf Q}[x]$, ${\bf R}[x]$, an
 
 Write a computer program to factor the following polynomials:
 
+\begin{comment}
 \begin{maximacode}
 declare(x,mainvar)$
 factorization_problem(p) := block(
@@ -2154,28 +2151,29 @@ factorization_problem(p) := block(
    ?princ(concat("{Ans: $", tex1(factor(p)), "$}"))
 )$
 \end{maximacode}
+\end{comment}
 
-\begin{enumerate}[resume]
+%% \begin{enumerate}[resume]
 
-\item \maximac{factorization_problem((x^2+x+1)*(x^3+x^2-1))$}
+%% \item \maximac{factorization_problem((x^2+x+1)*(x^3+x^2-1))$}
 
-\item \maximac{factorization_problem(34*x^5+51*x^4+60*x^3+25*x^2+8*x-1)$}
+%% \item \maximac{factorization_problem(34*x^5+51*x^4+60*x^3+25*x^2+8*x-1)$}
 
-\item \maximac{factorization_problem((x^2+x+1)*(x^3+x^2-1))$}
+%% \item \maximac{factorization_problem((x^2+x+1)*(x^3+x^2-1))$}
 
 
-\end{enumerate}
+%% \end{enumerate}
 
 Write a computer program to factor the following polynomials:\hfil\break
 \-\hspace{1cm} (Hint: You'll need a 2 dimensional grid)
 
-\begin{enumerate}[resume]
+%% \begin{enumerate}[resume]
 
-\item \maximac{factorization_problem((3*y+2*x-7)*(7*y+x**2+11))$}
+%% \item \maximac{factorization_problem((3*y+2*x-7)*(7*y+x**2+11))$}
 
-\item \maximac{factorization_problem((y**3+2*x**2-3)*(y+x**2+1))$}
+%% \item \maximac{factorization_problem((y**3+2*x**2-3)*(y+x**2+1))$}
 
-\end{enumerate}
+%% \end{enumerate}
 
 
 
