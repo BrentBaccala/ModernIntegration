@@ -138,14 +138,12 @@ sophisticated techniques of this chapter.
 First, we convert the the integrand into
 a rational function on an algebraic curve:
 
-\begin{comment}
 \begin{sageblock}[riemannroch2]
-R.<x> = FunctionField(QQbar, implementation='kash')
+R.<x> = FunctionField(QQbar)
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^2+1))
 
 \end{sageblock}
-\end{comment}
 
 Next, we identify the poles of the integrand.  The finite
 poles can only be located where the denominator is zero,
@@ -155,35 +153,29 @@ Let's compute the principal parts of $\frac{x}{y}$
 at $x=i$.  Calling {\tt puiseux} with {\tt deg=-1} computes just
 the principal part of the differential:
 
-\begin{comment}
 \begin{sageblock}[riemannroch2]
 D = (x/y).divisor()
 p = D.support()[0]
-m = F.completion(p, prec=0)
+m = F.completion(p, prec=4)
 m(x/y)
 \end{sageblock}
-\end{comment}
 
 There appears to be a pole here, but appearances are deceptive.
 We need to expand the {\it differential}, not the {\it integrand}:
 
-\begin{comment}
 \begin{sageblock}[riemannroch2]
-m(x/y * x.differential())
+m(x/y) * m(x).derivative()
 \end{sageblock}
-\end{comment}
 
 So, even though the {\it integrand} has a pole at $(i,0)$, the {\it
 differential} does not... and the differential is what matters!
 
 The only other place we might have a pole is infinity.
 
-\begin{comment}
 \begin{sageblock}[riemannroch2]
-D2 = (x/y * x.differential()).divisor()
+D2 = (x/y).divisor() + F(x).differential().divisor()
 F.maximal_order_infinite().decomposition()
 \end{sageblock}
-\end{comment}
 
 Now it appears that we have two sheets with no poles, the expansions indicating simply
 that $\lim_{x\to\infty}\frac{x}{\sqrt{x^2+1}} = \pm 1$, depending
@@ -193,14 +185,12 @@ we have to take the differential into account.  Since $x=\frac{1}{t}$,
 $dx=-\frac{1}{t^2} dt$, and we actually have second order poles
 at infinity.
 
-\begin{comment}
 \begin{sageblock}[riemannroch2]
-m2 = F.completion(D2.support()[0], prec=0)
-m3 = F.completion(D2.support()[1], prec=0)
-m2(x/y * x.differential())
-m3(x/y * x.differential())
+m2 = F.completion(D2.support()[0], prec=2)
+m3 = F.completion(D2.support()[1], prec=2)
+m2(x/y) * m2(x).derivative()
+m3(x/y) * m2(x).derivative()
 \end{sageblock}
-\end{comment}
 
 Integrating termwise, we see that since our differential has second
 order poles at infinity, our integral must have first order poles
@@ -212,12 +202,10 @@ characterizes the integral.
 
 What functions have first order poles at infinity and nowhere else?
 
-\begin{comment}
 \begin{sageblock}[riemannroch2]
 D3 = add([-(m+1)*p for p,m in D2.list() if m < 0])
 D3.basis_function_space()
 \end{sageblock}
-\end{comment}
 
 Our solution, if it exists, is in the vector space spanned by these
 three basis elements.  $1$ is in the list, and we expect it to be
@@ -231,12 +219,10 @@ our differential.
 
 Let's expand them:
 
-\begin{comment}
 \begin{sageblock}[riemannroch2]
 [m2(x), m3(x)]
 [m2(y), m3(y)]
 \end{sageblock}
-\end{comment}
 
 No linear algebra games are required to see that $y$ will match the
 principal parts of the differential if it is itself differentiated.
@@ -255,20 +241,27 @@ approach it using the techniques of this book.  We'll
 use the algebraic extension $y^2=1-x^2$ and integrate ${1\over
 y}\,dx$.
 
-\begin{comment}
 \begin{sageblock}[arcsin]
-R.<x> = FunctionField(QQbar, implementation='kash')
+R.<x> = FunctionField(QQbar)
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (1-x^2))
 
 integrand = 1/y * x.differential()
 
-D = integrand.divisor_of_poles()
+# We'd like to do something like this (but this isn't supported):
+#
+# D = integrand.divisor_of_poles()
+#
+# and this, with absolute instead of relative precision:
+#
+# table([[pl, F.completion(pl)(integrand, prec=0)] \
+#     for pl in D.support()])
 
-table([[pl, F.completion(pl)(integrand, prec=0)] \
-    for pl in D.support()])
+D = (1/y).divisor() + F(x).differential().divisor()
+
+table([[pl, F.completion(pl)(1/y, prec=2) * F.completion(pl)(x).derivative()] \
+    for pl,m in D.list() if m < 0])
 \end{sageblock}
-\end{comment}
 
 Our only poles are at infinity, and they're first order poles,
 so this solution will be a logarithm.
@@ -285,19 +278,15 @@ a simple zero on one cycle and a simple pole on the other.
 The basis will have either one element or no elements, depending
 on whether an algebraic function exists with the desired properties.
 
-\begin{comment}
 \begin{sageblock}[arcsin]
 def logarithmic_divisor(differential, component):
-    return add([- ZZ(differential.residue(pl) / component) * pl.divisor() for pl in differential.divisor_of_poles().support()])
+    return add([- ZZ(differential.residue(pl) / component) * pl.divisor() for pl,m in differential.divisor().list() if m == -1])
 \end{sageblock}
-\end{comment}
 
-\begin{comment}
 \begin{sageblock}[arcsin]
 D = logarithmic_divisor(integrand, QQbar(-1).sqrt())
 D.basis_function_space()
 \end{sageblock}
-\end{comment}
 
 Yes, it does exist.
 Remembering that our residues came multiplied by a factor of $i$, we
@@ -327,27 +316,30 @@ chapter.
 
 First, transform the problem into an algebraic curve:
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
-R.<x> = FunctionField(QQbar, implementation='kash')
+R.<x> = FunctionField(QQbar)
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (4-x^2))
 \end{sageblock}
-\end{comment}
 
 With no denominator, there can be no poles at finite points, so we
 just need to check infinity:
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 integrand = y * x.differential()
 
-D = integrand.divisor_of_poles()
+# this is divisor_of_poles(), which isn't defined for differentials
+D = sum([-m * pl.divisor() for pl,m in integrand.divisor().list() if m < 0])
 
-table([[pl, F.completion(pl)(integrand, prec=0)] \
+# D = integrand.divisor_of_poles()
+# table([[pl, F.completion(pl)(integrand, prec=0)] \
+#     for pl in D.support()])
+
+#table([[pl, F.completion(pl)(y, prec=2) * F.completion(pl)(x).derivative() ] \
+#    for pl,m in integrand.divisor().list() if m < 0])
+table([[pl, F.completion(pl)(y, prec=2) * F.completion(pl)(x).derivative() ] \
     for pl in D.support()])
 \end{sageblock}
-\end{comment}
 
 Since these polar expansions have components at both $t^{-3}$ and
 $t^{-1}$, we'll get a result with both algebraic and logarithmic
@@ -362,88 +354,75 @@ def reduced_divisor(D):
     return D - add([pl.divisor() for pl in D.support()])
 \end{sagecommon}
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 D2 = reduced_divisor(D)
 \end{sageblock}
-\end{comment}
 
 We need a Riemann-Roch space with at most second order poles at
 infinity:
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 basis = D2.basis_function_space()
 \end{sageblock}
-\end{comment}
 
 Now let's construct a matrix of principal parts
 and its pseudoinverse:
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 m = principal_parts_matrix(D2, basis)
 pi = m.pseudoinverse()
 \end{sageblock}
-\end{comment}
 
 Another Sage function will extract the principal parts of the
 differential, and divide them by the powers needed for term-wise
 integration:
 
 \begin{sagecommon}
+def differential_completion(map, differential):
+    F = differential.parent().function_field()
+    return map(differential/F.gen().differential()) * map(F.gen()).derivative()
 def solution_vector(div, differential):
     F = differential.parent().function_field()
-    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
-    return matrix([[c[0](differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
+    coeffs = [(F.completion(p, prec=3), i) for p,m in div.list() for i in range(-m,0)]
+    return matrix([[differential_completion(c[0], differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
 \end{sagecommon}
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 b = solution_vector(D2, integrand)
 \end{sageblock}
-\end{comment}
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 v = pi * b
 m * v == b
 algebraic_solution = (matrix(basis) * v)[0,0]
 \end{sageblock}
-\end{comment}
 
 We expect an infinity of solutions, of course.
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 m2 = 1 - (pi * m)
 m2.rank()
 m2 * matrix([basis]).transpose()
 \end{sageblock}
-\end{comment}
 
 This is the rational part of our answer.  To find the logarithmic
 part, let's return to the series expansion of the differential,
 note that the residues are $-2i$ and $2i$, which can be placed
 in the $Z$-module $\{2i\}$, and search for:
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 pls = D.support()
 basis2 = (pls[0].divisor() - pls[1].divisor()).basis_function_space()
 log_solution = basis2[0]
 \end{sageblock}
-\end{comment}
 
 The logarithmic component of our solution is thus:
 
-\begin{comment}
 \begin{sageblock}[ex8.7]
 var('x')
 F = FractionField(PolynomialRing(QQbar, x))
 log_solution.element().change_ring(F).subs({y:sqrt(4-x^2)})
 \end{sageblock}
-\end{comment}
 
 Remembering from the previous example that $i \ln(ix-\sqrt{1-x^2}) = \arcsin x$,
 and that logarithmic components are only specified up
@@ -477,24 +456,25 @@ integrate(integrand,x)
 
 Now let's attack the problem using the techniques of this book.
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
-R.<x> = FunctionField(QQbar, implementation='kash')
+R.<x> = FunctionField(QQbar)
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^8+1))
 
 integrand = (x^9+2*x^7-x)/((x^4+2*x^2+1)*y)
 \end{sageblock}
-\end{comment}
 
 Where are our poles?
 
-\begin{comment}
+\begin{sagecommon}
+def differential_divisor_of_poles(differential):
+    return sum([-m * pl.divisor() for pl,m in differential.divisor().list() if m < 0])
+\end{sagecommon}
+
 \begin{sageblock}[riemannroch3]
-D = (integrand * x.differential()).divisor_of_poles()
-table([[pl, F.completion(pl, prec=0)(integrand * x.differential())] for pl in D.support()])
+D = differential_divisor_of_poles(integrand * x.differential())
+table([[pl, differential_completion(F.completion(pl, prec=5), (integrand * x.differential()))] for pl in D.support()])
 \end{sageblock}
-\end{comment}
 
 We've found four second order poles at the ordinary points $(\pm i, \pm\sqrt{2})$,
 as well as two third order poles at a singular point with two sheets at infinity.
@@ -512,94 +492,74 @@ i.e, all the functions on our algebraic curve with at most first order
 poles at $(\pm i,\pm\sqrt{2})$, no other finite poles, and at most
 second order poles at infinity.
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 D = reduced_divisor(D)
 \end{sageblock}
-\end{comment}
 
 We now wish to see if a linear combination of these basis functions will
 match the poles in the differential.  This problem is a bit more complicated
 than the last one, so let's use the tools we developed in the
 last chapter for solving Mittag-Leffler problems:
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 basis = D.basis_function_space()
 \end{sageblock}
-\end{comment}
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 m = principal_parts_matrix(D, basis)
 \end{sageblock}
-\end{comment}
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 b = solution_vector(D, integrand * x.differential())
 \end{sageblock}
-\end{comment}
 
 Now we have a matrix equation that we want to solve:
 
-%% $$\sage[riemannroch3]{m} \cdot v = \sage[riemannroch3]{b}$$
+$$\sage[riemannroch3]{m} \cdot v = \sage[riemannroch3]{b}$$
 
 Now let's compute the pseudoinverse:
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 pi = m.pseudoinverse()
 \end{sageblock}
-\end{comment}
 
 To find out if there actually is a solution, we simply have to check:
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 v = pi * b
 m * v == b
 \end{sageblock}
-\end{comment}
 
 The equation has a non-trivial null space, which we expect because
 of the presence of the constant of integration.
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 m2 = 1 - (pi * m)
 m2.rank()
 m2 * matrix([basis]).transpose()
 \end{sageblock}
-\end{comment}
 
 So, yes, this system does have a solution.  Now let's multiply our
 solution vector by the original basis:
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 solution = (matrix(basis) * v)[0,0]
 \end{sageblock}
-\end{comment}
 
 ...and convert back to our original form:
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 var('x')
 F = FractionField(PolynomialRing(QQbar, x))
 solution = solution.element().change_ring(F).subs({y:sqrt(x^8+1)})
 \end{sageblock}
-\end{comment}
 
 Now we can verify the solution:
 
-\begin{comment}
 \begin{sageblock}[riemannroch3]
 integrand = integrand.element().change_ring(F).subs({y:sqrt(x^8+1)})
 bool(solution.diff(x) == integrand)
 \end{sageblock}
-\end{comment}
 
 % https://ocw.mit.edu/courses/mathematics/18-782-introduction-to-arithmetic-geometry-fall-2013/lecture-notes/MIT18_782F13_lec21.pdf
 % Theorem 21.9. For any divisor D we have dim L(D) ≤ deg D0 + 1.
@@ -620,46 +580,38 @@ leads to a rational function and a partial fractions expansion.
 
 We'll use ${\bf C}(x,y); y^2=x^4+1$ and integrate ${1\over{xy}}$.
 
-\begin{comment}
 \begin{sageblock}[geddes]
-R.<x> = FunctionField(QQbar, implementation='kash')
+R.<x> = FunctionField(QQbar)
 L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^4+1))
 integrand = 1/(x*y) * x.differential()
-D = integrand.divisor_of_poles()
-table([[pl, F.completion(pl, prec=0)(integrand)] for pl in D.support()])
+D = differential_divisor_of_poles(integrand)
+table([[pl, differential_completion(F.completion(pl, prec=10), integrand)] for pl in D.support()])
 \end{sageblock}
-\end{comment}
 
 Our only poles are a pair of first order poles at $x=0$.  This will give rise to
 a logarithmic term; can we find a function that matches?
 
-\begin{comment}
 \begin{sageblock}[geddes]
 pls = D.support()
 D2 = (pls[0].divisor() - pls[1].divisor())
 D2.basis_function_space()
 \end{sageblock}
-\end{comment}
 
 Since we can't find a function that matches that divisor; let's try
 doubling the strength of the poles.
 
-\begin{comment}
 \begin{sageblock}[geddes]
 log_solution = (2*D2).basis_function_space()[0]
 \end{sageblock}
-\end{comment}
 
 This is the function we are looking for inside our logarithm.
 
-\begin{comment}
 \begin{sageblock}[geddes]
 var('x')
 F = FractionField(PolynomialRing(QQbar, x))
 1/2*log(log_solution.element().change_ring(F).subs({y:sqrt(x^4+1)}))
 \end{sageblock}
-\end{comment}
 
 \begin{comment}
 $$\int {1\over{x\sqrt{x^4+1}}} \, dx
@@ -668,20 +620,16 @@ $$\int {1\over{x\sqrt{x^4+1}}} \, dx
 
 Sage's built-in integrator produces the result in a different form:
 
-\begin{comment}
 \begin{sageblock}[geddes]
 integrate(1/(x*sqrt(x^4+1)),x)
 \end{sageblock}
-\end{comment}
 
 We can obtain this result from our algorithm by factoring $\frac{1}{4}$ out
 of the residues and using fourth-order poles:
 
-\begin{comment}
 \begin{sageblock}[geddes]
 (4*D2).basis_function_space()
 \end{sageblock}
-\end{comment}
 
 which is another way of writing $\frac{y-1}{y+1}$ (remember
 that $y^2 = x^4+1$).
@@ -759,16 +707,14 @@ pi : pseudoinverse(m);
 
 Compute: $$ \int \frac{1}{(x^2+1)^{3/4}}\,dx $$
 
-\begin{comment}
 \begin{sageblock}[curtis]
-R.<x> = FunctionField(QQbar, implementation='kash')
+R.<x> = FunctionField(QQbar)
 L.<y> = R[]
 root = x^2+1
 F.<y> = R.extension(y^4 - root)
 integrand = y/(x^2+1) * x.differential()
 D = integrand.divisor()
 \end{sageblock}
-\end{comment}
 
 Any non-constant function will have poles that will increase
 in order under derivation, and any constant function will
@@ -809,13 +755,22 @@ so we see that the differential has no pole at infinity, just as the computer re
 
 We've got a singularity at infinity with two places, $\frac{1}{x}$ being doubly ramified at both:
 
-\begin{comment}
 \begin{sageblock}[curtis]
-pls = F.places_infinite()
-F.completion(pls[0], uvar=1/y)(1/x)
-F.completion(pls[1], uvar=1/y)(1/x)
+Rinf = R.maximal_order_infinite().ideal(1/x).place()
+pls = [pl for pl in F.places_above(Rinf)]
+Dinf = add([pl.divisor() for pl in F.places_above(Rinf)])
+
+# originaly this was "F.completion(pls[0], uvar=1/y)(1/x)", but we don't have uvar
+F.completion(pls[0])(1/x)
+F.completion(pls[1])(1/x)
 \end{sageblock}
-\end{comment}
+
+Just checking that we've got the same result as from the kash code:
+
+\begin{sageblock}[curtis]
+F.completion(pls[0])(1/x)(F.completion(pls[0])(1/y).reverse())
+F.completion(pls[1])(1/x)(F.completion(pls[1])(1/y).reverse())
+\end{sageblock}
 
 \vfill\eject
 \mysection{Chebyshev's Integral}
@@ -831,9 +786,8 @@ den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1;
 
 Compute: $$ \sage[chebyshev1]{integrate(sqrt(root)*num/den, x, hold=True)}$$
 
-\begin{comment}
 \begin{sageblock}[chebyshev]
-R.<x> = FunctionField(QQbar, implementation='kash')
+R.<x> = FunctionField(QQbar)
 L.<y> = R[]
 root = x^4+4*x^3+2*x^2+1
 F.<y> = R.extension(y^2 - root)
@@ -843,10 +797,9 @@ F.<y> = R.extension(y^2 - root)
 num = 6*x^2 + 5*x +7
 den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1
 integrand = y*num/den * x.differential();
-D = integrand.divisor_of_poles()
-table([[pl, F.completion(pl, prec=0)(integrand)] for pl in D.support()])
+D = differential_divisor_of_poles(integrand)
+table([[pl, differential_completion(F.completion(pl, prec=10), integrand)] for pl in D.support()])
 \end{sageblock}
-\end{comment}
 
 We have poles at $x=\pm \frac{1}{\sqrt{2}}$
 and nowhere else.
@@ -857,25 +810,21 @@ coordinates we just calculated, and the obvious choice is for each of
 these poles and zero to have degree one.  Let's use our Riemann-Roch
 basis space algorithm to see if such a function exists:
 
-\begin{comment}
 \begin{sageblock}[chebyshev]
 D2 = add([QQ(integrand.residue(pl)).sign() * pl for pl in D.support()])
 D2.basis_function_space()
 \end{sageblock}
-\end{comment}
 
 No such function exists.  However, a function may exist with
 higher degree poles and zero.  Let's see... how about a
 function with second degree poles and zeros?  Third degree?
 
-\begin{comment}
 \begin{sageblock}[chebyshev]
 (2*D2).basis_function_space()
 (3*D2).basis_function_space()
 (4*D2).basis_function_space()
 res = (5*D2).basis_function_space()
 \end{sageblock}
-\end{comment}
 
 Turns out that fifth degree poles and zeros give us our
 solution.  Leaving aside for a moment the question of
@@ -885,7 +834,6 @@ the degree of the divisor by every larger integers
 continue with the problem by coaxing our result
 into a more reasonable form:
 
-\begin{comment}
 \begin{sageblock}[chebyshev]
 num2 = R._to_bivariate_polynomial(res[0])[0]
 den2 = R._to_bivariate_polynomial(res[0])[1]
@@ -907,7 +855,6 @@ Q2 = R3.quo(ideal(f))
 
 Q2(Q(res[0].element()*(ln/ld)))
 \end{sageblock}
-\end{comment}
 
 \begin{comment}
 \begin{sageblock}[chebyshev]
@@ -970,6 +917,8 @@ macaulay2('MI = ideal(x-z*1/sqrt2, y+z*gamma/2)')
 
 %%\vfill\eject
 %%\bigskip
+
+This is a lot more complicated than what Geddes found:
 
 $$A(x) = 1023x^8+4104x^7+5048x^6+2182x^5+805x^4+624x^3+10x^2+28x$$
 $$B(x) = 1025x^{10} + 6138x^9 + 12307x^8 + 10188x^7 + 4503x^6 + 3134x^5 + 1598x^4 + 140x^3 + 176x^2 +2$$
@@ -1046,14 +995,12 @@ for now let's just see how to use these theorems to fix the degree
 of the divisor in the last section.  First, let's determine the
 genus of the curve over $\QQ$ (what about $\QQbar$?):
 
-\begin{comment}
-\begin{sageblock}[chebyshev]
+\begin{sageblock}[chebyshev3]
 PP.<x,y,z> = ProjectiveSpace(QQ, 2)
 root = x^4+4*x^3+2*x^2+1
 C = Curve((y^2-root).homogenize(z))
 C.geometric_genus()
 \end{sageblock}
-\end{comment}
 
 \begin{comment}
 x,y,z = PolynomialRing(QQ,3,'xyz').gens()
@@ -1069,21 +1016,18 @@ X.genus()
 
 Now, let's check reduction mod 2:
 
-\begin{comment}
-\begin{sageblock}[chebyshev]
+\begin{sageblock}[chebyshev3]
 PP.<x,y,z> = ProjectiveSpace(GF(2), 2)
 root = x^4+4*x^3+2*x^2+1
 C = Curve((y^2-root).homogenize(z))
 C.geometric_genus()
 \end{sageblock}
-\end{comment}
 
 The genus changed, so we don't have good reduction mod 2.
 
 What about mod 3 and mod 5?
 
-\begin{comment}
-\begin{sageblock}[chebyshev]
+\begin{sageblock}[chebyshev3]
 PP.<x,y,z> = ProjectiveSpace(GF(3), 2)
 root = x^4+4*x^3+2*x^2+1
 C = Curve((y^2-root).homogenize(z))
@@ -1094,7 +1038,6 @@ root = x^4+4*x^3+2*x^2+1
 C = Curve((y^2-root).homogenize(z))
 C.geometric_genus()
 \end{sageblock}
-\end{comment}
 
 Since the genus is unchanged, both of these primes exhibit
 good reduction.  Let's do the divisor calculation, first
@@ -1104,8 +1047,7 @@ modulo 3:
 %\printpythontex
 %\end{mdframed}
 
-\begin{comment}
-\begin{sageblock}[chebyshev]
+\begin{sageblock}[chebyshev4]
 A.<a> = GF(3)[]
 B.<b> = GF(3^2, modulus=a^2-2)
 #PP.<x,y,z> = ProjectiveSpace(B, 2)
@@ -1128,15 +1070,13 @@ D2.basis_function_space()
 (4*D2).basis_function_space()
 (5*D2).basis_function_space()
 \end{sageblock}
-\end{comment}
 
 So, we see that the divisor has order 5, mod 3.  This means
 that the original divisor's order is 5 times some multiple of 3.
 
 Again, let's find the divisor's order mod 5:
 
-\begin{comment}
-\begin{sageblock}[chebyshev]
+\begin{sageblock}[chebyshev4]
 A.<a> = GF(5)[]
 B.<b> = GF(5^2, modulus=a^2-2)
 R.<x> = FunctionField(B)
@@ -1155,14 +1095,12 @@ D = integrand.divisor()
 # (4*D2).basis_function_space()
 # (5*D2).basis_function_space()
 \end{sageblock}
-\end{comment}
 
 What does this mean?  Let's take a look at how this
 function behaves over $\QQ$:
 
-\begin{comment}
 \begin{sageblock}[chebyshevQ]
-R.<x> = FunctionField(QQ, implementation='kash')
+R.<x> = FunctionField(QQ)
 L.<y> = R[]
 root = x^4+4*x^3+2*x^2+1
 F.<y> = R.extension(y^2 - root)
@@ -1171,19 +1109,19 @@ den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1
 integrand = y*num/den * x.differential()
 D = integrand.divisor()
 \end{sageblock}
-\end{comment}
 
-\begin{comment}
-\begin{sagecode}[chebyshevQ]
+\begin{sageblock}[chebyshevQ]
 ppoly = [pl.prime_ideal().gens()[0] for pl,m in D.list() if m < 0][0];
 zpoly = [pl.prime_ideal().gens()[0] for pl,m in D.list() if m > 0][0];
-\end{sagecode}
-\end{comment}
+R2.<x> = QQ[]
+zpoly5 = R2(str(zpoly)).numerator().change_ring(GF(5))
+ppoly5 = R2(str(ppoly)).numerator().change_ring(GF(5))
+\end{sageblock}
 
 Pay attention to how the ideals' polynomials behaves when reduced mod 5.
-%% $\sage[chebyshevQ]{zpoly} \mod 5 = \sage[chebyshevQ]{zpoly.numerator().change_ring(GF(5))}$,
+$\sage[chebyshevQ]{zpoly} \mod 5 = \sage[chebyshevQ]{zpoly5}$,
 and
-%% $\sage[chebyshevQ]{ppoly} \mod 5 = \sage[chebyshevQ]{ppoly.numerator().change_ring(GF(5))}$,
+$\sage[chebyshevQ]{ppoly} \mod 5 = \sage[chebyshevQ]{ppoly5}$,
 so the pole set and the zero set collapse together mod 5,
 and we get a zero divisor.
 
@@ -1196,14 +1134,12 @@ divisor we actually need to check over $\QQbar$.
 
 Let's take a look at mod 7:
 
-\begin{comment}
-\begin{sageblock}[chebyshev]
+\begin{sageblock}[chebyshev3]
 PP.<x,y,z> = ProjectiveSpace(GF(7), 2)
 root = x^4+4*x^3+2*x^2+1
 C = Curve((y^2-root).homogenize(z))
 C.geometric_genus()
 \end{sageblock}
-\end{comment}
 
 So, we have good reduction mod 7, as well as the interesting
 property that $\sqrt{2}$ already exists in this field, since
