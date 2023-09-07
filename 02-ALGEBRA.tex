@@ -2140,79 +2140,33 @@ Factor the following polynomials in ${\bf Z}[x]$, ${\bf Q}[x]$, ${\bf R}[x]$, an
 
 Write a computer program to factor the following polynomials:
 
-\begin{comment}
-\begin{maximacode}
-declare(x,mainvar)$
-factorization_problem(p) := block(
-   ?princ(concat("$", tex1(expand(p)), "$")),
-   ?format(true, "~%~%"),
-   ?princ(concat("\\textcolor{blue}{\\tt factor(", string(expand(p)), ")}")),
-   ?format(true, "~%~%"),
-   ?princ(concat("{Ans: $", tex1(factor(p)), "$}"))
-)$
-\end{maximacode}
-\end{comment}
+%% I'd like to do this with \sagec instead of \sage and use print instead of returning a string,
+%% but that doesn't work, for some reason
 
-%% \begin{enumerate}[resume]
+\begin{sagecode}
+# semicolon at the end of this line to suppress the output, which would screw up the LaTeX
+R.<x,y> = ZZ[];
+def factorization_problem(p):
+    return '$' + latex(p) + '$' + '\\\\' + '\\textcolor{blue}{\\tt factor(' + str(p).replace(' ','') + ')}' + '\\\\' + '{Ans: $' + latex(p.factor()) + '$}'
+\end{sagecode}
 
-%% \item \maximac{factorization_problem((x^2+x+1)*(x^3+x^2-1))$}
+\begin{enumerate}[resume]
 
-%% \item \maximac{factorization_problem(34*x^5+51*x^4+60*x^3+25*x^2+8*x-1)$}
+\item \sage{factorization_problem((x^2+x+1)*(x^3+x^2-1))}
 
-%% \item \maximac{factorization_problem((x^2+x+1)*(x^3+x^2-1))$}
+\item \sage{factorization_problem(34*x^5+51*x^4+60*x^3+25*x^2+8*x-1)}
 
+\item \sage{factorization_problem((x^2+x+1)*(x^3+x^2-1))}
 
-%% \end{enumerate}
+\end{enumerate}
 
 Write a computer program to factor the following polynomials:\hfil\break
 \-\hspace{1cm} (Hint: You'll need a 2 dimensional grid)
 
-%% \begin{enumerate}[resume]
+\begin{enumerate}[resume]
 
-%% \item \maximac{factorization_problem((3*y+2*x-7)*(7*y+x**2+11))$}
+\item \sage{factorization_problem((3*y+2*x-7)*(7*y+x**2+11))}
 
-%% \item \maximac{factorization_problem((y**3+2*x**2-3)*(y+x**2+1))$}
+\item \sage{factorization_problem((y**3+2*x**2-3)*(y+x**2+1))}
 
-%% \end{enumerate}
-
-
-
-
-\begin{comment}
-
-% This is some older code that uses tricks with labels[]
-
-\begin{maximacode}
-grind: true$
-\end{maximacode}
-
-\item $\maximac{expand((x^2+x+1)*(x^3+x^2-1));}$
-
-% labels[1] is the current input label
-% labels[2] is the previous output label
-% labels[3] is the previous input label
-
-% labels[3] is the previous input label (something like %i31).  We
-% convert it to a string (something like '%i31'), evaluate it to get
-% the previous input, and output it as a string.
-
-% The net result is to typeset the previous Maxima input command in a
-% verbatim block
-
-\textcolor{blue}{\maximac{string(eval_string(string(labels[3])));}}
-
-Ans: $\maximac{eval_string(\%);}$
-
-\item $\maximac{expand((x^2+x+1)*(x^3+x^2-1));}$
-
-% This prints the factored polynomial as TeX
-% $\maximac{factor(eval_string(string(labels[2])));}$
-
-% This typesets the previous OUTPUT as grind verbatim
-\maximac{string(eval_string(string(labels[2])));}
-
-\maximac{concat("factor(", eval_string(string(labels[2])), ");");}
-
-$\maximac{eval_string(eval_string(string(labels[2])));}$
-
-\end{comment}
+\end{enumerate}
