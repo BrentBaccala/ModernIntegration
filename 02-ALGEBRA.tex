@@ -1142,7 +1142,7 @@ and no such expansion can exist.
 pf = (3*x**2-4*x+2)/(x**3-3*x**2+4);
 \end{sagecode}
 
-Compute the partial fractions expansion of $\sage{pf}$
+Compute the partial fractions expansion of $$\sage{pf}$$
 
 We begin by factoring the denominator.  While factoring can be quite
 complicated in practice, in this case we need only try some small
@@ -1170,7 +1170,7 @@ it can only be the second square-free factor.  In any event, we conclude that:
 
 \end{comment}
 
-$$ \sage{pf.denominator().factor()} $$
+$$ \sage{pf} = \frac{\sage{pf.numerator()}}{\sage{pf.denominator().factor()}} $$
 
 Next, we solve the polynomial Diophantine equation:
 
