@@ -345,7 +345,7 @@ it's based not on analysis, but rather algebra.
 \section{Algebra}
 
 In high school, we study what the Arabs called ``al-jabr'', or what
-the Encyclopaedia Britanncia calls ``a generalization and extension of
+the Encyclopaedia Britannica calls ``a generalization and extension of
 arithmetic''.  ``Elementary algebra," the encyclopedia goes on, ``is
 concerned with properties of arbitrary numbers,'' and cites the
 commutative law of addition $(a+b=b+a)$ as an example of such a
@@ -499,6 +499,89 @@ for sure.  Three hundred years after the development of calculus, one
 of its most basic and elusive problems has finally yielded not to
 limits, sums, and series, but to rings, fields and polynomials.  Quite a
 triumph for ``al-jabr''.
+
+%% \vfill\eject
+%% \section{Algebra vs. Analysis}
+
+%% How is it possible that a problem like integration, which is seemingly
+%% totally analytic in nature, can be solved using algebra?
+
+\vfill\eject
+\section{Richardson's Theorem}
+
+The absolute value function presents a serious obstacle to any attempt
+to develop an comprehensive algorithm for symbolic integration,
+as has been known since Richardson's proof of the following theorem in 1968:
+
+\begin{mdframed}[backgroundcolor=yellow!20]
+\begin{center}
+{\bf Richardson's Theorem}
+\end{center}
+
+
+Let $E$ be a set of expressions representing real, single valued,
+partially defined functions of one real variable. $E*$ will be the set of functions
+represented by expressions in $E$.
+
+If $A$ is an expression in $E$, $A(x)$ is the function denoted by $A$.
+
+It is assumed that $E*$ contains the identity function and the rational numbers as
+constant functions and that $E*$ is closed under addition, subtraction, multiplication and composition.
+In every case it is also supposed that given A and B in E
+there is an effective procedure for finding expressions in E to represent:
+
+$$A(x) + B(x)$$
+$$A(x) - B(x)$$
+$$A(x) \cdot B(x)$$
+$$A(B(x))$$
+
+$A(x) \equiv B(x)$ will mean that $A(x)$ and $B(x)$ are defined at the same points and equal wherever they are defined.
+
+The integration problem for $(E, E*)$ is the problem of deciding, given $A$ in $E$,
+whether there is a function $f(x)$ in $E*$ so that $f'(x) \equiv A(x)$.
+
+If $E*$ satisfies conditions 1,2, and 3, the integration problem for $(E, E*)$ will be unsolvable.
+(1) $E*$ contains $\ln 2$, $\pi$, $e^x$, $\sin x$.
+(2) There is a function, $\mu(x)$, in $E*$ so that $\mu(x)= |x|$ for $x \ne 0$.
+(3) There is a totally defined function, $B(x)$, in $E*$ so that for no function, $f(x)$,
+in $E*$ and no interval $I$, is $f'(x) = \mathcal{B}(x)$ on $I$.
+
+There are simple pairs $(E, E*)$ satisfying all the above conditions. For example
+we could take E to be the smallest class of expressions obtained by iteration of
+addition, subtraction, multiplication and composition starting from $x$, $e^x$, $\sin x$,
+$\sqrt{x}$, $\ln 2$, and expressions for the rational numbers. $E*$ would be the class of
+functions of a real variable usually represented by these expressions. $\mathcal{B}(x)$ could be
+$e^{x^2}$. $\mu(x)$ could be $\sqrt{x}$.
+
+Daniel Richardson,
+{\it Some Undecidable Problems involving Elementary Functions of a Real Variable},
+The Journal of Symbolic Logic, Volume 33, Number 4, Dec. 1968
+
+\end{mdframed}
+
+\vfill\eject
+
+Obviously, any algorithm purporting to work over real or complex numbers as its coefficient
+field will include $\pi$ and $\ln 2$.  Furthermore, we will see later in this text that
+$\sin x$ and $e^x$ don't present any serious problem.  The presence of the absolute
+value function is the critical component that leads to the undecidability of the problem.
+
+Not only is the absolute value function non-differentiable at the origin, but its
+obvious generalization to complex numbers, the modulus function, fails to be
+analytic {\it anywhere}.  It also introduces an ordering on our field of constants,
+and allows the two square roots of a positive integer to be distinguished from
+each other.
+
+Richardson's proof strategy is not based on differential algebra, but rather is
+developed from the undecidability proof of Hilbert's Tenth Problem, the so-called
+MRDP theorem, named after the surnames of its four principal contributors.
+
+No attempt will be made to prove Richardson's Theorem here, as the proof of the MRDP theorem
+is notoriously difficult.  I don't know it, and it would take us too far astray.
+
+My approach in this textbook is simply to note the significance of Richardson's
+Theorem, discard absolute value and complex modulus from our menu of elementary
+operations, and move on.
 
 \vfill\eject
 \section{Sage}
