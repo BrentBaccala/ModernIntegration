@@ -973,14 +973,14 @@ newton_polygon(f, x, y, x0, y0) := block(
 
 \vfill\eject
 
-\begin{sageblock}
+\begin{sagecode}
 from sage.geometry.newton_polygon import NewtonPolygon
 
 def newton_polygon(f, x, y, x0, y0):
     return NewtonPolygon((b,a) for a,b in f.subs({x:x-x0, y:y-y0}).exponents())
 
 R.<x,y> = QQ[];
-\end{sageblock}
+\end{sagecode}
 
 \example Construct Puiseux expansions of $y$ at the multiple points of the
 curve $y^2 = 1 - x^2$
