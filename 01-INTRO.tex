@@ -130,9 +130,9 @@ def next_pdf_filename():
 def embed_latex_graphic(filename):
    print("\\optionalgraphics[width=0.7\\textwidth]{" + filename + "}")
 
-def pdf(p):
+def pdf(p, **kwargs):
    filename = next_pdf_filename()
-   p.save(filename)
+   p.save(filename, **kwargs)
    embed_latex_graphic(filename)
    return ''
 

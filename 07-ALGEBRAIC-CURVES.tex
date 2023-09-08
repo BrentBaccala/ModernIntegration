@@ -973,14 +973,14 @@ newton_polygon(f, x, y, x0, y0) := block(
 
 \vfill\eject
 
-\begin{comment}
 \begin{sageblock}
 from sage.geometry.newton_polygon import NewtonPolygon
 
-def newton_polygon(f):
-    return NewtonPolygon(f.exponents())
+def newton_polygon(f, x, y, x0, y0):
+    return NewtonPolygon((b,a) for a,b in f.subs({x:x-x0, y:y-y0}).exponents())
+
+R.<x,y> = QQ[];
 \end{sageblock}
-\end{comment}
 
 \example Construct Puiseux expansions of $y$ at the multiple points of the
 curve $y^2 = 1 - x^2$
@@ -1010,7 +1010,16 @@ $(x-1)$ exponents on the vertical:
 
 \begin{figure}[H]
 \begin{center}
-%% \maximac{newton_polygon(y^2+x^2-1, x, y, 1, 0)$}
+\begin{sagecode}
+f = y^2+x^2-1;
+x0 = 1;
+y0 = 0;
+np_vertices = [(b,a) for a,b in f.subs({x:x-x0, y:y-y0}).exponents()];
+np = NewtonPolygon(np_vertices);
+p1 = plot(np, thickness=2, aspect_ratio=1, frame=True);
+p2 = points(np_vertices, size=50);
+pdf(p1+p2, axes=False, gridlines=[[], []], xmax=3, ymax=3, ticks=[[0,1,2,3],[0,1,2,3]])
+\end{sagecode}
 \end{center}
 \end{figure}
 
@@ -1086,7 +1095,17 @@ $$y^2 u^2 + 1 - u^2 = 0$$
 
 \begin{figure}[H]
 \begin{center}
-%%\maximac{newton_polygon(y^2+x^2-1, x, y, inf, 0)$}
+\begin{sagecode}
+R.<u,v> = QQ[];
+f = v^2 * u^2 + 1 - u^2;
+u0 = 0;
+v0 = 0;
+np_vertices = [(b,a) for a,b in f.subs({u:u-u0, v:v-v0}).exponents()];
+np = NewtonPolygon(np_vertices);
+p1 = plot(np, thickness=2, aspect_ratio=1, frame=True);
+p2 = points(np_vertices, size=50);
+pdf(p1+p2, axes=False, gridlines=[[], []], xmax=3, ymax=3, ticks=[[0,1,2,3],[0,1,2,3]])
+\end{sagecode}
 \end{center}
 \end{figure}
 
