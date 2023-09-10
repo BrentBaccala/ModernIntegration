@@ -509,9 +509,10 @@ triumph for ``al-jabr''.
 \vfill\eject
 \section{Richardson's Theorem}
 
-The absolute value function presents a serious obstacle to any attempt
+The absolute value function (in real analysis) or modulus function (in complex analysis)
+presents a serious obstacle to any attempt
 to develop an comprehensive algorithm for symbolic integration,
-as has been known since Richardson's proof of the following theorem in 1968:
+as has been known since Daniel Richardson's proof of the following theorem in 1968:
 
 \begin{mdframed}[backgroundcolor=yellow!20]
 \begin{center}
@@ -520,41 +521,46 @@ as has been known since Richardson's proof of the following theorem in 1968:
 
 
 Let $E$ be a set of expressions representing real, single valued,
-partially defined functions of one real variable. $E*$ will be the set of functions
+partially defined functions of one real variable. $E^*$ will be the set of functions
 represented by expressions in $E$.
 
 If $A$ is an expression in $E$, $A(x)$ is the function denoted by $A$.
 
-It is assumed that $E*$ contains the identity function and the rational numbers as
-constant functions and that $E*$ is closed under addition, subtraction, multiplication and composition.
-In every case it is also supposed that given A and B in E
-there is an effective procedure for finding expressions in E to represent:
+It is assumed that $E^*$ contains the identity function and the rational numbers as
+constant functions and that $E^*$ is closed under addition, subtraction, multiplication and composition.
+In every case it is also supposed that given $A$ and $B$ in $E$
+there is an effective procedure for finding expressions in $E$ to represent:
 
 $$A(x) + B(x)$$
 $$A(x) - B(x)$$
 $$A(x) \cdot B(x)$$
 $$A(B(x))$$
 
-$A(x) \equiv B(x)$ will mean that $A(x)$ and $B(x)$ are defined at the same points and equal wherever they are defined.
+$A(x) \equiv B(x)$ will mean that $A(x)$ and $B(x)$ are defined at the same points and are equal wherever they are defined.
 
-The integration problem for $(E, E*)$ is the problem of deciding, given $A$ in $E$,
-whether there is a function $f(x)$ in $E*$ so that $f'(x) \equiv A(x)$.
+The integration problem for $(E, E^*)$ is the problem of deciding, given $A$ in $E$,
+whether there is a function $f(x)$ in $E^*$ so that $f'(x) \equiv A(x)$.
 
-If $E*$ satisfies conditions 1,2, and 3, the integration problem for $(E, E*)$ will be unsolvable.
-(1) $E*$ contains $\ln 2$, $\pi$, $e^x$, $\sin x$.
-(2) There is a function, $\mu(x)$, in $E*$ so that $\mu(x)= |x|$ for $x \ne 0$.
-(3) There is a totally defined function, $B(x)$, in $E*$ so that for no function, $f(x)$,
-in $E*$ and no interval $I$, is $f'(x) = \mathcal{B}(x)$ on $I$.
+If $E^*$ satisfies conditions 1, 2, and 3, the integration problem for $(E, E^*)$ will be unsolvable.
+\begin{enumerate}
+\item $E^*$ contains $\ln 2$, $\pi$, $e^x$, $\sin x$.
+\item There is a function, $\mu(x)$, in $E^*$ so that $\mu(x)= |x|$ for $x \ne 0$.
+\item There is a totally defined function, $\mathcal{B}(x)$, in $E^*$ so that for no function, $f(x)$,
+in $E^*$ and no interval $I$, is $f'(x) = \mathcal{B}(x)$ on $I$.
+\end{enumerate}
 
-There are simple pairs $(E, E*)$ satisfying all the above conditions. For example
+\begin{comment}
+There are simple pairs $(E, E^*)$ satisfying all the above conditions. For example
 we could take E to be the smallest class of expressions obtained by iteration of
 addition, subtraction, multiplication and composition starting from $x$, $e^x$, $\sin x$,
-$\sqrt{x}$, $\ln 2$, and expressions for the rational numbers. $E*$ would be the class of
+$\sqrt{x}$, $\ln 2$, and expressions for the rational numbers. $E^*$ would be the class of
 functions of a real variable usually represented by these expressions. $\mathcal{B}(x)$ could be
 $e^{x^2}$. $\mu(x)$ could be $\sqrt{x}$.
+\end{comment}
 
-Daniel Richardson,
+Daniel Richardson,\\
 {\it Some Undecidable Problems involving Elementary Functions of a Real Variable},
+\\
 The Journal of Symbolic Logic, Volume 33, Number 4, Dec. 1968
 
 \end{mdframed}
@@ -565,6 +571,7 @@ Obviously, any algorithm purporting to work over real or complex numbers as its 
 field will include $\pi$ and $\ln 2$.  Furthermore, we will see later in this text that
 $\sin x$ and $e^x$ don't present any serious problem.  The presence of the absolute
 value function is the critical component that leads to the undecidability of the problem.
+Why?
 
 Not only is the absolute value function non-differentiable at the origin, but its
 obvious generalization to complex numbers, the modulus function, fails to be
