@@ -132,7 +132,7 @@ expansion for the integral.  At first this doesn't seem terribly
 useful, because series expansions are infinite and we're trying to
 construct closed-form solutions, but it turns out that only a finite
 number of places will have negative exponents in their series
-expansions and that the function is completely specified, up to an
+expansions and that an algebraic function is completely specified, up to an
 additive constant, by the coefficients of the negative powers.
 
 Thus, the basic strategy is first to identify the function's {\it
@@ -1055,20 +1055,51 @@ third equation tells us that $a_3 = \pm \frac{\sqrt{2}}{4} i$, so
 
 % $$a_0=0; \qquad a_1 = \pm\sqrt{2}i; \qquad a_2 = 0; \qquad a_3 = \pm \frac{\sqrt{2}}{4} i$$
 
-$$x = t^2 +1; \qquad y = \pm\left[ \sqrt{2}it + \frac{\sqrt{2}}{4} it^3 + \cdots \right]$$
+\begin{equation}
+\label{(1,0) expansion}
+x = t^2 +1; \qquad y = \pm\left[ \sqrt{2}it + \frac{\sqrt{2}}{4} it^3 + \cdots \right]
+\end{equation}
 
 It would seem that we have two different series to chose from.  This
 is not really the case, as they differ by only a $180^\circ$ rotation
 in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
-x-series unchanged.  Let's confirm this result with Sage:
+x-series unchanged.
+
+Sage has built-in routines to compute Puiseux expansions without having to
+construct Newton polygons and substitute trial expansions, although a
+different syntax is required.  First we create a function field
+in one variable with coefficients in $\QQbar$:
 
 \begin{sageblock}[ch7]
 R.<x> = FunctionField(QQbar)
+\end{sageblock}
+
+Next we create a ring of polynomials in $y$ with coefficients in the function field,
+which allows us to write the minimal polynomial of the algebraic curve.  We then
+create a new function field that is an extension of the rational function field:
+
+\begin{sageblock}[ch7]
 L.<y> = R[]
 F.<y> = R.extension(y^2 + x^2 - 1)
+\end{sageblock}
+
+The function fields have two maximal orders (DEFINE), one finite and the other infinite.
+Since we wish to construct our series expansion at a point with finite coordinates
+(remember that this is projective space, so we also have points at infinity),
+we use the finite maximal order, construct the ideal corresponding the desired
+point, then construct the unique place (DEFINE) at that point:
+
+\begin{sageblock}[ch7]
 O = F.maximal_order()
 pl = O.ideal(x-1, y).place()
+\end{sageblock}
+
+Finally, we construct the completion map at the place, which maps from the function
+field to a Laurent series, specified the desired precision of the expansion,
+and apply the map to the function field element ($y$) that we wish to expand:
+
+\begin{sageblock}[ch7]
 F.completion(pl, prec=4)(y)
 \end{sageblock}
 
@@ -1077,14 +1108,25 @@ choice of uniformizing variable is not unique, and because the
 computer made a different choice than we did.  Our ``$t$'' variable
 was roughly $\sqrt{x-1}$.  Even though square roots don't exist {\it
 per se} in this field, we can construct a series expansion of $x-1$,
-construct the square root of the series expansions (as another series expansion),
-reverse it (explain this step), and substitute the reversed series
-to change the uniformizing variable and confirm our calculation:
+construct the square root of the series expansion as another series expansion.
+This only works if the series for $x-1$ has valuation 2, which it does:
 
 \begin{sageblock}[ch7]
-t = F.completion(pl, prec=4)(x-1)^(1/2)
+xminus1 = F.completion(pl, prec=4)(x-1)
+t = xminus1^(1/2)
+\end{sageblock}
+
+This series gives us $\sqrt{x-1}$ in powers of $s$.
+We reverse the series, which only works if the series has valuation 1,
+giving us a new series that expresses $s$ in powers of $\sqrt{x-1}$.
+We substitute the reversed series into the original $s$-expansion of $y$,
+which gives us an expansion of $y$ in powers of $\sqrt{x-1}$:
+
+\begin{sageblock}[ch7]
 F.completion(pl, prec=4)(y)(t.reverse())
 \end{sageblock}
+
+Comparing this to equation \ref{(1,0) expansion}, we see that they're the same.
 
 Now, let's analyze the point at infinity.  We move infinity to a
 finite point (0) with the substitution $x=u^{-1}$, then combine all of
