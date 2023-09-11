@@ -975,14 +975,19 @@ newton_polygon(f, x, y, x0, y0) := block(
 
 \begin{sagecode}
 from sage.geometry.newton_polygon import NewtonPolygon
+from sage.geometry.polyhedron.constructor import Polyhedron
 
 def newton_polygon(f, x, y, x0, y0):
-    return NewtonPolygon((b,a) for a,b in f.subs({x:x-x0, y:y-y0}).exponents())
+    vertices = [(b,a) for a,b in f.subs({x:x-x0, y:y-y0}).exponents()]
+    vertices.sort(key=lambda a: (a[0], -a[1]))
+    polyhedron = Polyhedron(base_ring=QQ, vertices=vertices)
+    return NewtonPolygon(polyhedron)
 
 R.<x,y> = QQ[];
 \end{sagecode}
 
-\example Construct Puiseux expansions of $y$ at the multiple points of the
+\example\label{y^2 = 1 - x^2}
+Construct Puiseux expansions of $y$ at the multiple points of the
 curve $y^2 = 1 - x^2$
 
 We normalize the defining polynomial by writing it as
@@ -1015,7 +1020,9 @@ f = y^2+x^2-1;
 x0 = 1;
 y0 = 0;
 np_vertices = [(b,a) for a,b in f.subs({x:x-x0, y:y-y0}).exponents()];
+np_vertices.sort(key=lambda a: (a[0], -a[1]));
 np = NewtonPolygon(np_vertices);
+#np = newton_polygon(f, x, y, x0, y0)
 p1 = plot(np, thickness=2, aspect_ratio=1, frame=True);
 p2 = points(np_vertices, size=50);
 pdf(p1+p2, axes=False, gridlines=[[], []], xmax=3, ymax=3, ticks=[[0,1,2,3],[0,1,2,3]])
@@ -1065,6 +1072,93 @@ is not really the case, as they differ by only a $180^\circ$ rotation
 in the t-plane, as can been seen by substituting $t=-t$, which
 transforms one of the y-series into the other, while leaving the
 x-series unchanged.
+
+
+Now, let's analyze the point at infinity.  We move infinity to a
+finite point (0) with the substitution $x=u^{-1}$, then combine all of
+our terms over a common denominator and discard the denominator.  Our
+curve becomes:
+
+$$y^2 u^2 + 1 - u^2 = 0$$
+
+\begin{figure}[H]
+\begin{center}
+\begin{sagecode}
+R.<u,v> = QQ[];
+f = v^2 * u^2 + 1 - u^2;
+u0 = 0;
+v0 = 0;
+np_vertices = [(b,a) for a,b in f.subs({u:u-u0, v:v-v0}).exponents()];
+np = NewtonPolygon(np_vertices);
+p1 = plot(np, thickness=2, aspect_ratio=1, frame=True);
+p2 = points(np_vertices, size=50);
+pdf(p1+p2, axes=False, gridlines=[[], []], xmax=3, ymax=3, ticks=[[0,1,2,3],[0,1,2,3]])
+\end{sagecode}
+\end{center}
+\end{figure}
+
+The Newton polygon's lower convex hull has a single line segment,
+slope $1$, length $2$, telling us that we'll have two separate
+poles, each with ramification index 1.  Thus, $u$ can be used
+directly as a uniformizing variable, and we postulate an expansion for
+$y$ in the form:
+
+$$y = a_{-1} \frac{1}{u} + a_0 + a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
+
+Plugging this into $y^2 u^2 + 1 - u^2$ and setting all the resulting
+coefficients to zero, we conclude:
+
+\begin{sageblock}
+var('u, y, t, a0, a1, a2, a3');
+var('an1', latex_name='a_{-1}');
+f = y^2*u^2 + 1 - u^2
+exp = f.subs({y: an1*(1/u) + a0 + a1*u + a2*u^2 + a3*u^3});
+exp.collect(u)
+\end{sageblock}
+
+%% $$a_{-1}^2 + 1 = 0; \qquad 2 a_{-1} a_0 = 0 \qquad (2a_{-1}a_1+a_0^2-1)=0$$
+
+$$a_{-1} = \pm i; \qquad a_0 = 0; \qquad a_1 = \mp \frac{1}{2}i; \qquad a_2 = 0; \qquad a_3 = \mp \frac{1}{8}i$$
+
+$$y = \pm i \frac{1}{u} \mp \frac{1}{2} i u \mp \frac{1}{8} i u^3 + \cdots$$
+
+This time, there is no ramification, since $u$, and not a power of
+$u$, is $\frac{1}{x}$.  We actually have two distinct series that will
+yield two different values of $y$ for each value of $u$.
+Geometrically, we have two sheets that approach each other and touch
+at a singular point where the curve is not locally Euclidean.
+
+\endexample
+
+\vfill\eject
+\mysection{Orders and Places}
+
+Driven in no small part by the difficulty in visualizing higher dimensional geometric shapes,
+mathematicians have developed increasingly algebraic techniques to manipulate geometric objects.
+In particular, the techniques of the previous section were presented largely for educational purposes,
+as they are now considered obsolete.
+The current state of the art is to use the tools of abstract algebra developed in the early
+twentieth century, such as rings, ideals, and fields.
+
+We can't use ideals directly in a function field, or any field for that matter, because
+there are only two ideals in any field -- the zero ideal and the entire field.  This
+follows directly from the invertability of field elements.  As all field element possess
+inverses, any non-zero ideal generator can be multiplied by its multiplicative inverse
+to generate 1, which then generates the entire field.
+
+To solve this problem, we decompose the function field into maximal orders, of which
+there are two of primary interest: the maximal order and the infinite order.
+The ideals of the maximal order correspond to
+finite places, and the ideals of the infinite order correspond to infinite places.
+Using one or the other, we obtain ideals that represent all places in the function field.
+
+%\renewcommand{\theexample}{\ref{y^2 = 1 - x^2} cont}
+\newtheorem*{examplecont}{Example \ref{y^2 = 1 - x^2} cont}
+\begin{examplecont}
+\begin{quote}\rm
+%\hfil\break
+Construct Puiseux expansions of $y$ at the multiple points of the
+curve $y^2 = 1 - x^2$
 
 Sage has built-in routines to compute Puiseux expansions without having to
 construct Newton polygons and substitute trial expansions, although a
@@ -1128,67 +1222,35 @@ F.completion(pl, prec=4)(y)(t.reverse())
 
 Comparing this to equation \ref{(1,0) expansion}, we see that they're the same.
 
-Now, let's analyze the point at infinity.  We move infinity to a
-finite point (0) with the substitution $x=u^{-1}$, then combine all of
-our terms over a common denominator and discard the denominator.  Our
-curve becomes:
-
-$$y^2 u^2 + 1 - u^2 = 0$$
-
-\begin{figure}[H]
-\begin{center}
-\begin{sagecode}
-R.<u,v> = QQ[];
-f = v^2 * u^2 + 1 - u^2;
-u0 = 0;
-v0 = 0;
-np_vertices = [(b,a) for a,b in f.subs({u:u-u0, v:v-v0}).exponents()];
-np = NewtonPolygon(np_vertices);
-p1 = plot(np, thickness=2, aspect_ratio=1, frame=True);
-p2 = points(np_vertices, size=50);
-pdf(p1+p2, axes=False, gridlines=[[], []], xmax=3, ymax=3, ticks=[[0,1,2,3],[0,1,2,3]])
-\end{sagecode}
-\end{center}
-\end{figure}
-
-The Newton polygon's lower convex hull has a single line segment,
-slope $1$, length $2$, telling us that we'll have two separate
-poles, each with ramification index 1.  Thus, $u$ can be used
-directly as a uniformizing variable, and we postulate an expansion for
-$y$ in the form:
-
-$$y = a_{-1} \frac{1}{u} + a_0 + a_1 u + a_2 u^2 + a_3 u^3 + \cdots$$
-
-Plugging this into $y^2 u^2 + 1 - u^2$ and setting all the resulting
-coefficients to zero, we conclude:
-
-\begin{sageblock}
-var('u, y, t, a0, a1, a2, a3');
-var('an1', latex_name='a_{-1}');
-f = y^2*u^2 + 1 - u^2
-exp = f.subs({y: an1*(1/u) + a0 + a1*u + a2*u^2 + a3*u^3});
-exp.collect(u)
-\end{sageblock}
-
-%% $$a_{-1}^2 + 1 = 0; \qquad 2 a_{-1} a_0 = 0 \qquad (2a_{-1}a_1+a_0^2-1)=0$$
-
-$$a_{-1} = \pm i; \qquad a_0 = 0; \qquad a_1 = \mp \frac{1}{2}i; \qquad a_2 = 0; \qquad a_3 = \mp \frac{1}{8}i$$
-
-$$y = \pm i \frac{1}{u} \mp \frac{1}{2} i u \mp \frac{1}{8} i u^3 + \cdots$$
-
-This time, there is no ramification, since $u$, and not a power of
-$u$, is $\frac{1}{x}$.  We actually have two distinct series that will
-yield two different values of $y$ for each value of $u$.
-Geometrically, we have two sheets that approach each other and touch
-at a singular point where the curve is not locally Euclidean.
+Now let us turn to the point at infinity.  We begin by constructing the
+maximal infinite order of the underlying rational function field $C(x)$,
+because its structure is quite simple and we know that it will only have a single point,
+and a single place, at infinity.
 
 \begin{sageblock}[ch7]
 Rinf = R.maximal_order_infinite().ideal(1/x).place()
+\end{sageblock}
+
+Sage function fields come equipped with a {\tt places\_above} method that
+allow us to obtain a list of all places in an extension field that lie
+over a given place in the underlying function field.  Having obtained
+these places, represented as ideals in the maximal infinite order,
+it is straightforward to use the {\tt completion} method, as before,
+to construct Puiseux series.
+
+\begin{sageblock}[ch7]
 Pinf = F.places_above(Rinf)
 [F.completion(pl, prec=6)(y) for pl in Pinf]
 \end{sageblock}
 
-\endexample
+\begin{sageblock}[ch7]
+[F.completion(pl, prec=6)(1/x) for pl in Pinf]
+\end{sageblock}
+
+\hfill$\Box$\end{quote}
+\end{examplecont}
+
+%\renewcommand{\theexample}{\thesection.\arabic{example}}
 
 \example \cite{bliss} \S 68
 Compute expansions at all multiple points of
