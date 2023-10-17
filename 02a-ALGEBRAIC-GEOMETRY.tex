@@ -1,0 +1,29 @@
+
+\mychapter{Algebraic Geometry}
+
+In pure algebra, such as we've studied in the last chapter, $x$ is just $x$.  It does not
+``take a value'' and has no other interpretation.  Everything we did in the last chapter
+is based solely on the axioms of a commutative ring or field.
+
+We next want to consider what happens when we let $x$ take a value, say a real number,
+and then conclude that the equation $x^2-1=0$ is true if $x$ is either $-1$ or $1$.
+
+This is now {\it algebraic geometry}.
+
+\mysection{Solving systems of equations}
+
+Probably the most basic application of primary decomposition is solving systems of equations.
+
+An ideal in a polynomial ring has an associated {\it variety}, which is the set of points that
+zero all of the polynomials in the ideal.  A variety can be expressed as the intersection of
+its irreducible components, each of which corresponds precisely with a primary ideal in
+the primary decomposition.
+
+If the underlying field of constants has no zero divisors (as is the case with ordinary real
+or complex numbers), then we are justified in taking the radical of the ideal, and then
+the primary decomposition is just the prime decomposition because our primary ideals
+are all prime ideals.
+
+Returning to the $(xy,xz)$ example, we found that this ideal's primary decomposition
+is $(x) \cap (y,z)$.  In other words, the solution variety of the system
+of equations $xy=0$, $xz=0$ is formed by the $z$-axis $y=0$ $z=0$ and the $x-y$ plane $x=0$.
