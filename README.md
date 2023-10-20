@@ -66,31 +66,34 @@ and should be useful to anyone studying Risch integration,
 but are not yet suitable for publication.  The remaining chapters are
 still woefully inadequate.
 
-Chapter 1 is an introduction.
+Chapter 1 is an introduction, including a statement of Richardson's Theorem, which motivates
+excluding the absolute value function.
 
 Chapter 2 is a review of basic commutative algebra.
 
-Chapter 3 introduces differential algebra, gives a precise definition of
+Chapter 3 is a brief discussion of algebraic geometry.
+
+Chapter 4 introduces differential algebra, gives a precise definition of
 the term "elementary function", shows how symbolic integration can be
 reduced to three basic cases, and finally states and proves Liouville's theorem.
 
-Chapter 4 covers integration of rational functions, a topic mostly addressed in elementary
+Chapter 5 covers integration of rational functions, a topic mostly addressed in elementary
 calculus classes, but the focus here is on an outlying case, generally skipped, that
 can lead to discontinuous integrals even when the integrand is continuous.
 
-Chapter 5 covers the logarithmic extension.
+Chapter 6 covers the logarithmic extension.
 
-Chapter 6 covers the exponential extension.
+Chapter 7 covers the exponential extension.
 
-Chapter 7 begins discussion of the algebraic extension by introducing classical algebraic curve theory
+Chapter 8 begins discussion of the algebraic extension by introducing classical algebraic curve theory
 
-Chapter 8 covers the integration of Abelian integrals, stating the Risch theorem without proof.
+Chapter 9 covers the integration of Abelian integrals, stating the Risch theorem without proof.
 
-Chapter 9 proofs the Risch Theorem (currently only a sketch).
+Chapter 10 proofs the Risch Theorem (currently only a sketch).
 
-Chapter 10, covering algebraic extensions in general, is also only a sketch.
+Chapter 11, covering algebraic extensions in general, is also only a sketch.
 
-Chapter 11 is a loose collection of notes that won't be a chapter in the final edit
+Chapter 12 is a loose collection of notes that won't be a chapter in the final edit
 
 ## Building from source
 
