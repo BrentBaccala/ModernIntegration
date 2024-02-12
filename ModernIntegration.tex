@@ -171,6 +171,9 @@ resetmargins=true}
 \newenvironment{sageblocktiny}{\tiny\sageblock}{\endsageblock}
 
 %% XXX - check if we can turn autoprint off and leave it turned off
+%%
+%% An immediate problem with turning off autoprint is that the plot functions
+%% break because they depend on being able to print LaTeX commands from Sage.
 
 \renewenvironment{sageblock}{\renewcommand{\sageoutputmath}[1]{}\setpythontexautoprint{false}\sagecode}{\setpythontexautoprint{true}\endsagecode
 
