@@ -1874,15 +1874,6 @@ integrals have no elementary form, this doesn't represent a limitation
 in our theory.  Failure to solve this matrix equation would only show
 that no function exists on this curve with the coefficients {\tt b}.
 
-To proceed, we'll use the
-{\it Moore-Penrose pseudoinverse}\footnote{\tt https://en.wikipedia.org/wiki/System_of_linear_equations\#Matrix_solution},
-which has the property that if a solution exists, it can
-be found by multiplying the $b$ vector by the pseudoinverse.
-
-To find out if there actually is a solution, we first compute a trial
-solution by multiplying the pseudoinverse by {\tt b}, then checking
-to see if the trial solution actual solves the original equation.
-
 \example
 Let's say that we've identified a divisor on an algebraic
 curve (example \ref{an integral Maxima can't solve}):
