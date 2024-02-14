@@ -174,7 +174,7 @@ until the 1960s.  Before heading into such {\it modern algebraic
 geometry}, however, let's see how far we can get with the classical
 algebraic geometry of the nineteenth century.
 
-\mysection{Classical Algebraic Geometry}
+\mysection{The Topology of an Algebraic Curve}
 
 The roots of algebraic geometry lie in studying the zeros of
 polynomial equations.  We began with a single polynomial in a single
@@ -215,26 +215,40 @@ root, and how do you deal with the general case where $y$ appears
 multiple times in the curve's defining polynomial, something
 like $y^3 + x^2y^2 - x + 4y=0$?
 
+% TODO: clarify algebraic geometry conventions w.r.t dimension
+
 Our solution to this problem is to regard the entire algebraic curve
-as a two-dimensional surface in a four-dimensional space.  Why four
+as a two-dimensional surface in a four-dimensional $x$-$y$ space.  Why four
 dimensions?  Well, just as in the univariate case, we find it
-convenient to work with complex numbers, so as to deal easily with
-roots of negative numbers.  Regarding both $x$ and $y$ as complex
+convenient to work with complex numbers because of their property
+of algebraic closure.
+Most algebraic geometers talk about
+dimension with respect to the coefficient field, so we can
+consistently say that an algebraic curve is a one dimensional
+curve in two dimensional space.
+Regarding both $x$ and $y$ as complex
 numbers (two dimensions each), and plotting them against each other,
 we obtain a four dimensional space.  Just as in the real case, where
 an equation like $x^2 + y^2 = 1$ defines a circle, an algebraic curve
 defines a surface, the loci of $x$ and $y$ that satisfy the defining
 polynomial.
 
-% TODO: clarify algebraic geometry conventions w.r.t dimension
+Once we have defined an algebraic curve, we will want to consider
+{\it algebraic functions} on the curve, which are simply rational
+functions (ratios of polynomials) in the two variables $x$ and $y$.
+We will only be interested the values of these functions on the
+curve; the curve acts as a restriction on the possible values
+of $x$ and $y$.  If this seems at all puzzling, consider an integrand involving both $x$ and $\sqrt{x^2+1}$.
+We'll define $y^2 = x^2+1$ and replace all instances of the square root
+with $y$.  Then we'll have an integrand involving both $x$ and $y$ (the algebraic function),
+but $y$ is always the square root of $x^2+1$, so it makes no sense to consider values of the algebraic
+function where $y^2 = x^2+1$ is not satisfied.
 
-% We'd like to construct a series expansion at each point.
-
-Our solution to this problem is to regard the entire algebraic curve
-as a surface in $x$-$y$ space, instead of regarding it as a function
-of $x$.  How then, do we construct series expansions of rational
+Given an algebraic curve and an algebraic function, we'd like to construct a series expansion
+of the algebraic function at each point of the curve.
+How can we construct series expansions of rational
 functions that involve both $x$ and $y$?  At each point of the
-surface, we seek to find a single {\it uniformizing variable} that is
+curve, we seek to find a single {\it uniformizing variable} that is
 suitable for constructing power series expansions that converge in
 an open neighborhood of the point.  This is also
 called a {\it local uniformizer}, since no one function is a suitable
@@ -242,7 +256,7 @@ uniformizing variable at all points of an algebraic curve.
 
 % A {\it Riemann surface} is a one dimensional connected complex manifold.
 
-Is this possible?
+Do local uniformizing variables always exist at every point of an algebraic curve?
 
 The answer is a qualified ``yes''.  At most points on an algebraic
 curve, the answer is an unqualified ``yes'' as a result of the
@@ -252,7 +266,28 @@ Implicit Function Theorem:
 {\bf Implicit Function Theorem}
 \label{implicit function theorem}
 
-\cite{baby rudin} Theorem 9.28 is a real version of the theorem.
+The two-dimensional complex analytic version:
+
+Let $f(x,y)$ be an analytic
+mapping of an open set $E \in {\mathbb C}^2$ into ${\mathbb C}$, such
+that $f(a,b)=0$ and $\frac{df}{dy}(a,b) \ne 0$, then open sets $U$ and $V$
+exist in ${\mathbb C}$ such that $a \in U$, $b \in V$, and
+an analytic function $g(x)$ exists that maps $U$ into $V$ such that $f(x,g(x))=0$.
+
+What does it mean for a ${\mathbb C}^2 \to {\mathbb C}$ function
+to be analytic?
+
+\cite{baby rudin} Theorem 9.28 is a real version of the theorem
+that is based on the inverse function theorem, but only
+establishes that the implicit function is continuously differentiable,
+whereas we want to show that it's analytic.  Of course, for a complex
+version of this proof, differentiable would immediately imply analytic.
+
+The Wikipedia article on the implicit function theorem includes a
+proof for the two-dimensional case (they only case we care about here)
+that derives a differential equation that the implicit function
+must satisfy and uses the Picard-Lindel\"of theorem to show its existence,
+but this also only establishes continuous differentiability.
 
 \cite{guillemin} Lecture 7 starts with a complex version of the theorem.
 
@@ -261,12 +296,6 @@ See {\tt https://math.stackexchange.com/questions/489789}
 {\tt https://math.stackexchange.com/a/289640/71520} discusses the
 difficulty of moving along the transition $R \to R^n \to C \to C^n$.
 
-The two-dimensional complex analytic version:
-
-Let f be an analytic
-mapping of an open set $E \in {\mathbb C}^2$ into ${\mathbb C}$, such
-that $f(x,y)=0$ and $\frac{df}{dy} \ne 0$, then an analytic
-function $g(x)$ exists such that $f(x,g(x))=0$.
 \endtheorem
 
 This theorem applies everywhere on the curve that $\frac{df}{dy} \ne 0$,
@@ -317,7 +346,7 @@ respect to a specific mapping.
 On some curves, however, there are points, called {\it singularities},
 at which the derivative with respect to both variables is zero.
 One might hope to pick a uniformizing variable different
-from either coordinate variable that would allow the IFT
+from either coordinate variable that would allow the Implicit Function Theorem
 to be applied, but this turns out to be impossible.  The
 derivative with respect to any algebraic function could
 be expanded using partial derivatives with respect to
@@ -326,7 +355,8 @@ would necessarily be zero:
 
 $$\frac{df}{dz} = \frac{df}{dx}\frac{dx}{dz} + \frac{df}{dy}\frac{dy}{dz} = 0\frac{dx}{dz} + 0\frac{dy}{dz} = 0$$
 
-Something more is required.
+So there is no variable at a singularity that meets the requirements
+of the Implicit Function Theorem.  Something more is required.
 
 Since both $f$ and $\frac{df}{dy}$ share a zero at
 a given value of $x$, $f$'s zero must be at least
