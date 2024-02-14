@@ -499,7 +499,16 @@ since $f(x,y) = y^2 - x^3 - x^2$, $\frac{df}{dx} = -3x^2-2x$,
 $\frac{df}{dy} = 2y$, and $\frac{df}{dx}(0,0) = 0$
 and $\frac{df}{dy}(0,0) = 0$.
 
-% INSERT GRAPHIC
+\begin{figure}[H]
+\begin{center}
+\begin{sagecode}
+gray20 = (0.8,0.8,0.8);
+var('x,y');
+implicit_pdfplot(y^2 == x^3 + x^2, (-2,2), (-2,2), color='red', frame=True, axes=False, gridlines=True, gridlinesstyle={'color':gray20})
+\end{sagecode}
+\end{center}
+\caption{$y^2 = x^3 + x^2$}
+\end{figure}
 
 The function $y/x$ has the value $1$ on one branch and $-1$
 on the other.  It is also possible, straightforward even, to construct functions

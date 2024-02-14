@@ -142,6 +142,13 @@ def pdfplot(*args, **kwargs):
    p.save(filename)
    embed_latex_graphic(filename)
    return ''
+
+def implicit_pdfplot(*args, **kwargs):
+   filename = next_pdf_filename()
+   p = implicit_plot(*args, **kwargs)
+   p.save(filename)
+   embed_latex_graphic(filename)
+   return ''
 \end{sagecode}
 
 \begin{figure}[H]
