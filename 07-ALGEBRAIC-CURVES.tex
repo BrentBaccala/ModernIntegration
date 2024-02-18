@@ -809,7 +809,15 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 
 \vfill\eject
 
-\begin{sagecommon}
+Sage's stock {\tt FunctionField} {\tt completion} method has some limitations.  It doesn't work on
+differentials (only on functions), doesn't allow a uniformizing parameter to be
+specified, and doesn't allow absolute precision to be specified (only relative precision).
+To overcome this problems, I've written the following function that's basically just
+a wrapper around {\tt completion}.  The main thing I don't like about it is that
+when you pass it a differential, it returns a {\tt LaurentSeries}, when it should actually
+return a {\tt LaurentSeries} times $ds$, where $s$ is the uniformizing variable.
+
+\begin{sagecommonsmall}
 def puiseux(F, pl, uvar=None, absprec=0):
     def puiseux2(f):
        if isinstance(f, sage.rings.function_field.differential.FunctionFieldDifferential):
@@ -834,7 +842,7 @@ def puiseux(F, pl, uvar=None, absprec=0):
              f_series *= series(base_differential).derivative()
        return f_series
     return puiseux2
-\end{sagecommon}
+\end{sagecommonsmall}
 
 \begin{sagecode}
 from sage.geometry.newton_polygon import NewtonPolygon
