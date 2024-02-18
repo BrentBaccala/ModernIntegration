@@ -15,6 +15,11 @@ clean:
 
 .DELETE_ON_ERROR:
 
+# sagecommon.sage is created here, but it is also used in the slides,
+# so it's important that this build step runs before the slides
+# are created.  There's really not much in the Makefile to enforce
+# that requirement.
+
 ModernIntegration.pdf: [0-9]*.tex BIBLIOGRAPHY.tex ModernIntegration.tex
 	#rm -f pythontex-files-ModernIntegration/*
 	pdflatex ModernIntegration || true
