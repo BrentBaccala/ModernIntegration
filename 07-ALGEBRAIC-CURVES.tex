@@ -809,6 +809,43 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 
 \vfill\eject
 
+\begin{sagecommon}
+def puiseux(F, f, pl, uvar):
+    if isinstance(f, sage.rings.function_field.differential.FunctionFieldDifferential):
+       f = f._f
+       is_differential = True
+    else:
+       is_differential = False
+    series = F.completion(pl, prec=4)
+    uvar_series = series(uvar).reverse()
+    f_series = series(f)(uvar_series)
+    if is_differential:
+       f_series *= series(f.parent()._gen_base_differential).derivative()(uvar_series)
+    return f_series
+
+def puiseux2(F, pl, uvar=None):
+    def puiseux3(f):
+       if isinstance(f, sage.rings.function_field.differential.FunctionFieldDifferential):
+          base_differential = f.parent()._gen_base_differential
+          f = f._f
+          is_differential = True
+       else:
+          is_differential = False
+       series = F.completion(pl, prec=4)
+       if uvar:
+          uvar_series = series(uvar).reverse()
+          f_series = series(f)(uvar_series)
+       else:
+          f_series = series(f)
+       if is_differential:
+          if uvar:
+             f_series *= series(base_differential).derivative()(uvar_series)
+          else:
+             f_series *= series(base_differential).derivative()
+       return f_series
+    return puiseux3
+\end{sagecommon}
+
 \begin{sagecode}
 from sage.geometry.newton_polygon import NewtonPolygon
 from sage.geometry.polyhedron.constructor import Polyhedron
