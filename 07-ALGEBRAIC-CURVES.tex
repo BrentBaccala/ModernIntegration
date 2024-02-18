@@ -812,6 +812,7 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 \begin{sagecommon}
 def puiseux(F, f, pl, uvar):
     if isinstance(f, sage.rings.function_field.differential.FunctionFieldDifferential):
+       base_differential = f.parent()._gen_base_differential
        f = f._f
        is_differential = True
     else:
@@ -820,18 +821,21 @@ def puiseux(F, f, pl, uvar):
     uvar_series = series(uvar).reverse()
     f_series = series(f)(uvar_series)
     if is_differential:
-       f_series *= series(f.parent()._gen_base_differential).derivative()(uvar_series)
+       f_series *= series(base_differential).derivative()(uvar_series)
     return f_series
 
-def puiseux2(F, pl, uvar=None):
+def puiseux2(F, pl, uvar=None, absprec=0):
     def puiseux3(f):
        if isinstance(f, sage.rings.function_field.differential.FunctionFieldDifferential):
           base_differential = f.parent()._gen_base_differential
           f = f._f
           is_differential = True
+          valuation = f.valuation(pl) + base_differential.valuation(pl) - 1
        else:
           is_differential = False
-       series = F.completion(pl, prec=4)
+          valuation = f.valuation(pl)
+       # relative precision is (absolute precision - valuation)
+       series = F.completion(pl, prec=max(0, absprec-valuation))
        if uvar:
           uvar_series = series(uvar).reverse()
           f_series = series(f)(uvar_series)

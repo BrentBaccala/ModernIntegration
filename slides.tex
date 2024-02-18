@@ -1356,7 +1356,7 @@ L.<y> = R[]; F.<y> = R.extension(y^2 + x^2 - 1)
 
 v = x/y*x.differential()
 D = (x/y).divisor() + F(x).differential().divisor()
-table([[p, F.completion(p, prec=2)(x/y) * F.completion(p, prec=2)(x).derivative()] for p,m in D.list() if m < 0])
+table([[p, puiseux2(F,p)(v)] for p,m in D.list() if m < 0])
 \end{sageblock}
 
 \bigskip
@@ -1378,7 +1378,7 @@ def myuvar(pl):
         return 1/x
     else:
         return x
-table([[""] + fns] + [[pl] + [puiseux(F, f, pl, myuvar(pl)) for f in fns] \
+table([[""] + fns] + [[pl] + [puiseux2(F, pl, uvar=myuvar(pl), absprec=5)(f) for f in fns] \
                       for pl in reversed(D.support())])
 \end{sageblock}
 
@@ -1570,7 +1570,7 @@ If $b$ is the vector of basis functions, then $v\cdot b$ will be the desired fun
 # prec=4 is arbitrary.  I really want to specify absolute and not relative precision
 def principal_parts_matrix(div, basis):
     F = div.parent().function_field()
-    coeffs = [(F.completion(p, prec=4), i) for p,m in div.list() for i in range(-m,0)]
+    coeffs = [(puiseux2(F,p), i) for p,m in div.list() for i in range(-m,0)]
     return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
 
 M = principal_parts_matrix(D, basis);
