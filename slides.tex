@@ -1334,13 +1334,29 @@ Analyze the principal parts of $\frac{x}{y} \, dx$ on the curve $y^2 = 1 - x^2$
 QQbar.options.display_format = 'radical';
 \end{sagecode}
 
+% We'd like to do this:
+%    v = x/y*x.differential()
+%    D = v.divisor()
+% but computing the divisor of a differential isn't supported.
+
+% Also, we'd like to do this:
+%    table([[p, F.completion(p, prec=0)(v)] for p,m in D.list() if m < 0])
+% but neither is computing a series expansion (completion) of a differential supported,
+% so I have to split it apart (like below) and take the derivative of the series.
+
+% I had written a 'table1' function (it's still in 01-INTRO, at the moment) to line up
+% series expansions in a table so that their powers all align together vertically,
+% but it depends on a modification to LaurentSeries that isn't present in a stock Sage.
+
+% This slide looks fine without 'table1'.
+
 \begin{sageblock}[ex1]
-R.<x> = FunctionField(QQbar, implementation='kash')
+R.<x> = FunctionField(QQbar)
 L.<y> = R[]; F.<y> = R.extension(y^2 + x^2 - 1)
 
 v = x/y*x.differential()
-D = v.divisor()
-table1([[p, F.completion(p, prec=0)(v)] for p,m in D.list() if m < 0])
+D = (x/y).divisor() + F(x).differential().divisor()
+table([[p, F.completion(p, prec=2)(x/y) * F.completion(p, prec=2)(x).derivative()] for p,m in D.list() if m < 0])
 \end{sageblock}
 
 \bigskip
@@ -1353,6 +1369,8 @@ There are two places at infinity because $lim_{x\to\infty} y = \pm i x$.
 
 \[ f\, dx = f(s) \, \frac{dx(s)}{ds} \, ds \]
 
+This table illustrates how differentials interact with points at infinity.
+
 \begin{sageblock}[ex1]
 fns = [x/y, x, x.differential(), x/y*x.differential()];
 def myuvar(pl):
@@ -1360,8 +1378,8 @@ def myuvar(pl):
         return 1/x
     else:
         return x
-table1([[""] + fns] + [[pl] + [F.completion(pl, uvar=myuvar(pl), prec=4)(f) for f in fns] \
-                       for pl in reversed(D.support())])
+table([[""] + fns] + [[pl] + [puiseux(F, f, pl, myuvar(pl)) for f in fns] \
+                      for pl in reversed(D.support())])
 \end{sageblock}
 
 \end{frame}
@@ -1372,13 +1390,14 @@ table1([[""] + fns] + [[pl] + [F.completion(pl, uvar=myuvar(pl), prec=4)(f) for 
 On the curve $y^2 = x^3 - x$, find a function with a third-order pole at the origin, and first-order zeros at $(1,0)$, $(-1,0)$, and infinity.
 
 \begin{sageblock}[ex1]
-R.<x> = FunctionField(QQbar, implementation='kash'); L.<y> = R[]; F.<y> = R.extension(y^2 - x^3 + x);
+R.<x> = FunctionField(QQbar); L.<y> = R[]; F.<y> = R.extension(y^2 - x^3 + x);
 
-F.places_infinite()
+Rinf = R.maximal_order_infinite().ideal(1/x).place()
+Finf = F.places_above(Rinf)
 
 O = F.maximal_order();
 
-zeros = [F.places_infinite()[0], O.ideal(x-1, y).place(), O.ideal(x+1, y).place()]
+zeros = [Finf[0], O.ideal(x-1, y).place(), O.ideal(x+1, y).place()]
 
 pole = O.ideal(x,y).place()
 
@@ -1391,8 +1410,6 @@ divisor.basis_function_space()
 \end{frame}
 
 %%% BEGIN GEDDES' INTEGRAL
-
-\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{Geddes's Integral}
@@ -1419,7 +1436,7 @@ QQbar.options.display_format = 'radical';
 \end{sagecode}
 
 \begin{sageblock}[geddes]
-R.<x> = FunctionField(QQbar, implementation='kash'); L.<y> = R[];
+R.<x> = FunctionField(QQbar); L.<y> = R[];
 root = x^4+1; F.<y> = R.extension(y^2 - root)
 integrand = 1/(x*y) * x.differential()
 \end{sageblock}
@@ -1431,7 +1448,9 @@ integrand = 1/(x*y) * x.differential()
 \centerline{$\int \frac{1}{x\sqrt{x^4+1}} dx$}
 
 \begin{sageblock}[geddes]
-table1([[pl, F.completion(pl, prec=0)(integrand)] for pl in integrand.divisor_of_poles().support()])
+D = (1/(x*y)).divisor() + F(x).differential().divisor()
+Dpoles = sum(-multiplicity*place for place,multiplicity in D.list() if multiplicity < 0);
+table([[pl, puiseux2(F, pl)(integrand)] for pl in Dpoles.support()])
 \end{sageblock}
 
 \end{frame}
@@ -1440,7 +1459,6 @@ table1([[pl, F.completion(pl, prec=0)(integrand)] for pl in integrand.divisor_of
 \frametitle{Geddes's Integral (cont)}
 
 \begin{sageblock}[geddes]
-Dpoles = integrand.divisor_of_poles();
 D2 = add([ZZ(integrand.residue(pl)) * pl.divisor() for pl in Dpoles.support()])
 D2.basis_function_space()
 (2*D2).basis_function_space()
@@ -1462,8 +1480,6 @@ bool(diff(sol3,x) == 1/(x*sqrt(x^4+1)))
 \end{sageblock}
 
 \end{frame}
-
-\end{comment}
 
 %%% BEGIN CHEBYSHEV'S INTEGRAL
 
@@ -1492,7 +1508,7 @@ QQbar.options.display_format = 'radical';
 \end{sagecode}
 
 \begin{sageblock}[chebyshev]
-R.<x> = FunctionField(QQbar, implementation='kash'); L.<y> = R[];
+R.<x> = FunctionField(QQbar); L.<y> = R[];
 root = x^4+4*x^3+2*x^2+1; F.<y> = R.extension(y^2 - root)
 num = 2*x^6 + 4*x^5 + 7*x^4-3*x^3-x^2-8*x-8; den = (2*x^2-1)^2;
 integrand = num/(den*y) * x.differential()
@@ -1504,9 +1520,14 @@ integrand = num/(den*y) * x.differential()
 \frametitle{Chebyshev's Integral (cont)}
 \centerline{$\int {{2x^6+4x^5+7x^4-3x^3-x^2-8x-8}\over{(2x^2-1)^2\sqrt{x^4+4 x^3+2 x^2+1}}} \ud x$}
 
+% We'd like to do this:
+% Dpoles = integrand.divisor_of_poles()
+% but it isn't supported
 \begin{sageblock}[chebyshev]
-den.factor()
-table1([[pl, F.completion(pl, prec=0)(integrand)] for pl in integrand.divisor_of_poles().support()])
+# den.factor()
+D = (num/(den*y)).divisor() + F(x).differential().divisor();
+Dpoles = sum(-multiplicity*place for place,multiplicity in D.list() if multiplicity < 0);
+table([[pl, puiseux2(F,pl)(integrand)] for pl in Dpoles.support()])
 \end{sageblock}
 
 \end{frame}
@@ -1519,7 +1540,6 @@ solution is in the Riemann-Roch space with poles at the same places as
 the integrand differential, but with multiplicity one less.
 
 \begin{sageblock}[chebyshev]
-Dpoles = integrand.divisor_of_poles();
 D = reduced_divisor(Dpoles)
 basis = D.basis_function_space()
 \end{sageblock}
@@ -1547,16 +1567,17 @@ If $b$ is the vector of basis functions, then $v\cdot b$ will be the desired fun
 \frametitle{Chebyshev's Integral (cont)}
 
 \begin{sageblock}[chebyshev]
+# prec=4 is arbitrary.  I really want to specify absolute and not relative precision
 def principal_parts_matrix(div, basis):
     F = div.parent().function_field()
-    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
+    coeffs = [(F.completion(p, prec=4), i) for p,m in div.list() for i in range(-m,0)]
     return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
 
 M = principal_parts_matrix(D, basis);
 
 def solution_vector(div, differential):
     F = differential.parent().function_field()
-    coeffs = [(F.completion(p, prec=0), i) for p,m in div.list() for i in range(-m,0)]
+    coeffs = [(puiseux2(F, p), i) for p,m in div.list() for i in range(-m,0)]
     return matrix([[c[0](differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
 
 c = solution_vector(D, integrand);
@@ -1586,7 +1607,7 @@ sol1 = (matrix(basis) * v)[0,0]
 
 \begin{sageblock}[chebyshev]
 fns = [sol1, integrand];
-table1([[""] + fns] + [[pl] + [F.completion(pl, prec=0)(f) for f in fns] for pl in Dpoles.support()])
+table([[""] + fns] + [[pl] + [puiseux2(F, pl)(f) for f in fns] for pl in Dpoles.support()])
 \end{sageblock}
 
 \end{frame}
