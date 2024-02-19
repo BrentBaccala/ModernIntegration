@@ -809,41 +809,6 @@ are not simple, then we can repeat this procedure for $g(t,u)$.  It can be shown
 
 \vfill\eject
 
-Sage's stock {\tt FunctionField} {\tt completion} method has some limitations.  It doesn't work on
-differentials (only on functions), doesn't allow a uniformizing parameter to be
-specified, and doesn't allow absolute precision to be specified (only relative precision).
-To overcome this problems, I've written the following function that's basically just
-a wrapper around {\tt completion}.  The main thing I don't like about it is that
-when you pass it a differential, it returns a {\tt LaurentSeries}, when it should actually
-return a {\tt LaurentSeries} times $ds$, where $s$ is the uniformizing variable.
-
-\begin{sagecommonsmall}
-def puiseux(F, pl, uvar=None, absprec=0):
-    def puiseux2(f):
-       if isinstance(f, sage.rings.function_field.differential.FunctionFieldDifferential):
-          base_differential = f.parent()._gen_base_differential
-          f = f._f
-          is_differential = True
-          valuation = f.valuation(pl) + base_differential.valuation(pl) - 1
-       else:
-          is_differential = False
-          valuation = f.valuation(pl)
-       # relative precision is (absolute precision - valuation)
-       series = F.completion(pl, prec=max(0, absprec-valuation))
-       if uvar:
-          uvar_series = series(uvar).reverse()
-          f_series = series(f)(uvar_series)
-       else:
-          f_series = series(f)
-       if is_differential:
-          if uvar:
-             f_series *= series(base_differential).derivative()(uvar_series)
-          else:
-             f_series *= series(base_differential).derivative()
-       return f_series
-    return puiseux2
-\end{sagecommonsmall}
-
 \begin{sagecode}
 from sage.geometry.newton_polygon import NewtonPolygon
 from sage.geometry.polyhedron.constructor import Polyhedron
@@ -1051,6 +1016,338 @@ How do we relate this to extension of ideals?
 
 How do we relate this to integral closure?  Maximal orders?
 
+
+%\mysection{meromorphic functions are analytic}
+%
+%first, trace of a meromorphic function is meromorphic on C(x), and is
+%thus a rational function
+%
+%Liouville's theorem: a bounded entire function is constant
+%
+%Proof A: (Silverman) use a Taylor series expansion around z=0, which
+%is valid in the entire plane (since the function is entire).  Cauchy's
+%inequality $|f| \le M ==> |c_n| \le M/{R^n}$ (eq. 10.8') as R->infty
+%implies that the function is constant.
+%
+%Lemma: A entire function with no singularities, even at infinity, is
+%constant.
+%
+%Proof: We can do a Taylor series expansion at the origin, whose
+%non-zero terms will correspond to the principal part of the expansion
+%at infinity, which must therefore be zero.
+%
+%Next: A entire function with only a pole at infinity is a polynomial.
+%The principal part at infinity will be a polynomial.  Subtract it out
+%to get a function with no singularities, which must be constant.
+%
+%Next: Given a function with only a finite number of finite poles,
+%multiply it by a polynomial (the denominator) matching the poles with
+%zeros.  Now we've got a function with only a pole at infinity, which
+%must be a polynomial (the numerator).
+
+\begin{comment}
+
+\example
+Compute expansions at all multiple points of
+the exercises in \cite{bliss} \S 68.
+
+To facilitate this example, let's define an
+auxiliary function to perform the analysis:
+
+\begin{sageblocksmall}
+def analyze_multiple_points(f, pr=False):
+   P = f.parent()
+   Base = P.base_ring()
+   x,y = P.gens()
+   # This next code is here to avoid Trac #25271, though it assumes
+   # that the curve's polynomial has only rational coefficients.
+   # (which is true for all of our test cases)
+   if False:
+      disc = f.discriminant(y)
+   else:
+      QQR = QQ[x,y]
+      disc = P(QQR(f).discriminant(QQR(y)))
+   if pr: print '$$', latex(disc.factor()), '$$'
+
+   for x0 in Base[x](disc).roots(multiplicities=False):
+      sheets = 0
+      for y0 in Base[y](f.subs({x: x0})).roots(multiplicities=False):
+          p = puiseux(f, x0, y0, 3)
+          for cycle in p:
+             assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+             if cycle[0] == x0:
+                sheets = sheets + 1
+             else:
+                sheets = sheets + (cycle[0] - x0).valuation()
+          if pr: print '$$', latex((x0,y0)), '$$'
+          if pr: print '$$', latex(p), '$$'
+      if f.subs({x: x0}).degree(y) != f.degree(y):
+          p = puiseux(f, x0, oo, 3)
+          for cycle in p:
+             assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+             if cycle[0] == x0:
+                sheets = sheets + 1
+             else:
+                sheets = sheets + (cycle[0] - x0).valuation()
+          if pr: print '$$', latex((x0,oo)), '$$'
+          if pr: print '$$', latex(p), '$$'
+      assert(sheets == f.degree(y))
+
+   finf = Base[y](f.subs({x: 1/x}).numerator().subs({x:0}))
+   for y0 in finf.roots(multiplicities=False):
+      p = puiseux(f, oo, y0, 3)
+      for cycle in p:
+         assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+      if pr: print '$$', latex((oo,y0)), '$$'
+      if pr: print '$$', latex(p), '$$'
+   if finf.degree() < f.degree(y):
+      p = puiseux(f, oo, oo, 3)
+      for cycle in p:
+         assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
+      if pr: print '$$', latex((oo,oo)), '$$'
+      if pr: print '$$', latex(p), '$$'
+\end{sageblocksmall}
+
+\begin{sageblock}
+test_curves = [
+    y^3 - 3*y + 2*x,
+    y^3 + 3*y - x,
+    y^3 - 3*y^2 - x,
+    y^4 - 4*y - x,
+    y^4+2*(1-2*x)*y^2+1,
+    y^3-3*y^2+x^6,
+    y^3-3*y+2*x^2*(2-x^2),
+    y^3-3*y+2*x^3*(2-x^3),
+    3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4,
+    y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1),
+    y^3 - x*y - x^2,
+    y^3 - 3*x^2*y + 2*x,
+    y^3 - 3*x*y + 2*x^2,
+    y^3 - 3*y + x^6];
+
+# for f in test_curves:
+#     analyze_multiple_points(f)
+\end{sageblock}
+
+%\begin{sageblocksmall}
+%analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3), True);
+%\end{sageblocksmall}
+
+$$y^3 - 3axy + x^3$$
+
+This function contains an extra variable and is, in fact, a family of
+algebraic curves.
+
+\endexample
+
+\end{comment}
+
+% A {\it Riemann surface}, more precisely, is a two-dimensional manifold
+% with a {\it complex analytic structure}.
+
+\vfill\eject
+\mysection{Places and Valuations}
+
+We've seen how to construct Puiseux expansions at arbitrary points of
+an algebraic curve, but some points have multiple expansions,
+corresponding to multiple cycles on their corresponding surfaces.
+
+We now seek some mechanism for distinguishing between multiple cycles
+at a single point.  To this end, we introduce the concept of a {\it
+place}.  Intuitively speaking, a place is a cycle, and places are in
+one-to-one correspondence with Puiseux expansions.  Therefore, we
+can handle singularities by thinking in terms of places.
+Non-singular points have a unique place associated
+with them, while there are multiple places (and multiple cycles)
+associated with a singular point.
+
+We can characterize places algebraically, both to formalize this
+concept and also to analyze them in a manner that will generalize
+in Chapter \ref{chap:Algebraic Extensions} to arbitrary algebraic extensions.
+
+While points correspond to ideals of the curve's coordinate ring,
+places correspond to ideals of maximal orders of the curve's
+function field.  These maximal orders can be constructed
+using the algebraic process of {\it normalization}.
+
+To establish this connection, we introduce the concept of a
+{\it valuation ring}.
+
+
+[SwansonHuneke] Proposition 6.8.14 Let $R$ be an integral domain. Then
+the integral closure of the ring $R$ equals $\cap_V V$ , where $V$
+varies over all the valuation domains between $R$ and its field of
+fractions. If $R$ is Noetherian, all the $V$ may be taken to be
+Noetherian.
+
+[Kollar] Definition 1.23
+Let $S$ be an integral domain with quotient field $Q(S)$.
+The {\it normalization} of $S$ in $Q(S)$, denoted by $\overline{S}$,
+is the unique largest subring $\overline{S} \subset Q(S)$
+such that every homomorphism $\phi: S \to R$ to a DVR
+extends to a homomorphism $\overline{\phi}: \overline{S} \to R$.
+
+[Kollar] Lemma 1.24
+A unique factorization domain is normal.  In particular,
+any polynomial ring over a field is normal.
+
+[Kollar] Lemma 1.25.
+Assume that $t \in Q(S)$ satisfies a monic equation
+with coefficients in $S$ (i.e, $t$ is integral).
+Then $t \in \overline{S}$.
+
+[Kollar] Defintion 1.27.
+Let $S$ be an integral domain.  The {\it normalization} of $S$
+is its integral closure in its quotient field
+
+Kollar: ``The easy argument that every normal integral domain $S$
+is the intersection of all the valuation rings sitting between
+it and its quotient field is given in [AM69, 5.22].  Working
+only with discrete valuation rings is a bit harder.  The strongest
+theorem in this direction is Serre's condition for normality;
+see [Mat70, 17.1] or [Mat89, 23.8].''
+
+[Mat89]:
+
+$R_i$ condition: $A_p$ is regular for all $P \in {\rm Spec } A$ with ${\rm ht } P \le i$
+
+$S_i$ condition: depth $A_p \ge {\rm min}({\rm ht } P, i)$ for all $P \in {\rm Spec } A$
+
+$(S_0)$ always holds. $(S_1)$ says that all the associated primes of $A$ are minimal.
+$(R_0)+(S_1)$ is n.a.s.c. for $A$ to be reduced.
+
+Theorem 23.8: $(R_1)+(S_2)$ are n.a.s.c. for a Notherian ring $A$ to be normal.
+
+A {\bf Dedekind domain} is a integral domain in which all ideals factor into a product of prime ideals.
+
+Theorem: such a factorization is necessarily unique.
+
+[Wiki Dedekind domain] Theorem: Let R be a Dedekind domain with
+fraction field K. Let L be a finite degree field extension of K and
+denote by S the integral closure of R in L. Then S is itself a
+Dedekind domain.
+
+Theorem (Kummer): If $\{1,y,...,y^{n-1}\}$ is a local integral basis
+at some prime polynomial $\mathfrak{p}$ in $x$, then we can factor
+the ideal $\mathfrak{p}^e$ by factoring the field's defining
+polynomial mod $\mathfrak{p}$. [Stichnoch Theorem 3.3.7]
+
+An {\bf Artinian ring} satisfied the descending chain condition on ideals.
+
+Theorem: the modulo ring constructed from a Dedekind domain and a proper ideal is an Artinian ring.
+
+[Wiki Ideal] Theorem: if $f: A \to B$ is surjective and $ \mathfrak {a}\supseteq \ker f$ then:
+
+\begin{itemize}
+\item $\mathfrak {a}^{ec}={\mathfrak {a}}$ and ${\mathfrak {b}}^{ce}={\mathfrak {b}}$
+\item ${\mathfrak {a}}$ is a prime ideal in $A \Leftrightarrow {\mathfrak  {a}}^{e}$ is a prime ideal in $B$.
+\item ${\mathfrak {a}}$ is a maximal ideal in $A \Leftrightarrow  {\mathfrak  {a}}^{e}$ is a maximal ideal in $B$.
+\end{itemize}
+
+So, to factor $\mathfrak{p}$, we need to find all of the prime/maximal ideals
+in $R \mod \mathfrak{p}$.
+
+Constructing $R \mod \mathfrak{p}$ as a finite dimensional algebra,
+we have an algorithm to enumerate all of the algebra's maximal ideals.
+
+We also want to find each ideal's ramification index and relative degree.
+
+The ramification indices are the powers of the prime ideals.  Cohen Theorem 4.8.3:
+
+$$p {\mathbb Z}_K = \prod_{i=1}^{g} {\mathfrak p}_i^{e_i}$$
+
+Stichnoch defines the ramification index as the integer such
+that $\nu_{P'}(x) = e \nu_P(x)$ for all $x$ in the base field.
+($P'$ lies over $P$)
+
+We can find the ramification index in the modulo ring by raising each maximal
+ideal to successive powers and determining when it stabilizes.  The Artinian
+condition guarantees that it will eventually stabalize.
+
+The relative (or residual) degree of ${\mathfrak p}$ is defined (Cohen Definition 4.8.4):
+
+$$f_i = [{\mathbb Z}_K/{\mathfrak p}_i : {\mathbb Z}/p{\mathbb Z}]$$
+
+This seems to be the nullity of the matrix that defines the ideal in the algebra.
+
+Why?  The dimension of the algebra (over ${\mathbb Z}/p{\mathbb Z}$)
+is the dimension of ${\mathbb Z}_K$.  The number of basis elements in
+the ideal is the dimension of ${\mathfrak p}_i$.  The dimension of
+${\mathbb Z}_K/{\mathfrak p}_i$ is the difference of these two numbers
+(the dimension of the algebra minus the dimension of the ideal), which
+is the dimension of the vector space minus the dimension of the
+ideal's basis matrix's kernel, or the nullity of this matrix.
+
+\vfill\eject
+\mysection{Normalization}
+
+Given: a rational function $f$ and a prime ideal $I$ in a maximal order $O$.
+
+Goal: compute the value of $f \bmod I$.
+
+Step 0: Precompute a $k[x]$-module basis for $I$ in Hermite normal form (doable since $I$ is finitely generated over $O$ and $O$ is finitely generated over $k[x]$) and $\alpha$, a rational function with a simple pole at the place corresponding to $I$ and no other finite poles.
+
+Step 1: Compute the valuation of $f$'s denominator; call it $\nu$.  Multiply both $f$'s numerator and denominator by $\alpha^\nu$.  Now both the numerator and denominator are in $O$, and the denominator is not in $I$ (i.e, it has a finite value).  So we've reduced to the case of computing the residue of an element of $O$, as we now can divide by the denominator's residue, since we know it's not zero.
+
+Step 2: Find a primitive element of the residue field; call it $g$.
+
+Step 3: Compute $g$'s minimal polynomial and use it to construct the residue field as an algebraic extension of the constant base field.
+
+Reducing an element $f \in O$ modulo the HNF basis of $I$ gives a $k[x]$-vector that represents $f \bmod I$, i.e, when this $k[x]$-vector is multiplied by the HNF basis vector, we obtain an element of $O$ equivalent (mod $I$) to $f$.
+
+We can represent $g$ and its powers in this form, and construct a matrix that converts from $g$-basis to HNF basis, then invert it to obtain a matrix that converts from HNF basis to $g$-basis.
+
+Use reduction mod $I$'s HNF basis, then multiply by this inverse matrix to obtain an element in the residue field.
+
+
+
+\vfill\eject
+\mysection{Sage's FunctionField code}
+
+Sage has built-in routines to compute Puiseux expansions without having to
+construct Newton polygons and substitute trial expansions, although a
+different syntax is required.  In fact, there are three different
+constructions in Sage for algebraic curves -- polynomial rings
+modulo an ideal, function fields, and curves in projective space.
+We'll mostly use the {\tt FunctionField} code.
+
+The standard way to construct Puiseux expansions in Sage is the {\tt completion} method,
+defined on {\tt FunctionField}'s,
+but this method has some limitations.  It doesn't work on
+differentials (only on functions), doesn't allow a uniformizing parameter to be
+specified, and doesn't allow absolute precision to be specified (only relative precision).
+To overcome this problems, I've written the following function that's basically just
+a wrapper around {\tt completion}.  The main thing I don't like about it is that
+when you pass it a differential, it returns a {\tt LaurentSeries}, when it should actually
+return a {\tt LaurentSeries} times $ds$, where $s$ is the uniformizing variable.
+
+\begin{sagecommonsmall}
+def puiseux(F, pl, uvar=None, absprec=0):
+    def puiseux2(f):
+       if isinstance(f, sage.rings.function_field.differential.FunctionFieldDifferential):
+          base_differential = f.parent()._gen_base_differential
+          f = f._f
+          is_differential = True
+          valuation = f.valuation(pl) + base_differential.valuation(pl) - 1
+       else:
+          is_differential = False
+          valuation = f.valuation(pl)
+       # relative precision is (absolute precision - valuation), minimum 1 (at least a single term is computed)
+       series = F.completion(pl, prec=max(1, absprec-valuation))
+       if uvar:
+          uvar_series = series(uvar).reverse()
+          f_series = series(f)(uvar_series)
+       else:
+          f_series = series(f)
+       if is_differential:
+          if uvar:
+             f_series *= series(base_differential).derivative()(uvar_series)
+          else:
+             f_series *= series(base_differential).derivative()
+       return f_series
+    return puiseux2
+\end{sagecommonsmall}
+
 %\renewcommand{\theexample}{\ref{y^2 = 1 - x^2} cont}
 \newtheorem*{examplecont}{Example \ref{y^2 = 1 - x^2} cont}
 \begin{examplecont}
@@ -1059,9 +1356,7 @@ How do we relate this to integral closure?  Maximal orders?
 Construct Puiseux expansions of $y$ at the multiple points of the
 curve $y^2 = 1 - x^2$
 
-Sage has built-in routines to compute Puiseux expansions without having to
-construct Newton polygons and substitute trial expansions, although a
-different syntax is required.  First we create a function field
+First we create a function field
 in one variable with coefficients in $\QQbar$:
 
 \begin{sageblock}[ch7]
@@ -1299,34 +1594,6 @@ C.geometric_genus()
 
 \endexample
 
-%\mysection{meromorphic functions are analytic}
-%
-%first, trace of a meromorphic function is meromorphic on C(x), and is
-%thus a rational function
-%
-%Liouville's theorem: a bounded entire function is constant
-%
-%Proof A: (Silverman) use a Taylor series expansion around z=0, which
-%is valid in the entire plane (since the function is entire).  Cauchy's
-%inequality $|f| \le M ==> |c_n| \le M/{R^n}$ (eq. 10.8') as R->infty
-%implies that the function is constant.
-%
-%Lemma: A entire function with no singularities, even at infinity, is
-%constant.
-%
-%Proof: We can do a Taylor series expansion at the origin, whose
-%non-zero terms will correspond to the principal part of the expansion
-%at infinity, which must therefore be zero.
-%
-%Next: A entire function with only a pole at infinity is a polynomial.
-%The principal part at infinity will be a polynomial.  Subtract it out
-%to get a function with no singularities, which must be constant.
-%
-%Next: Given a function with only a finite number of finite poles,
-%multiply it by a polynomial (the denominator) matching the poles with
-%zeros.  Now we've got a function with only a pole at infinity, which
-%must be a polynomial (the numerator).
-
 \example Find the principal parts of $\frac{1}{y}$ on the curve
 $y^2 = 1 - x^2$
 
@@ -1419,134 +1686,6 @@ table([[p, F.completion(p, prec=2)(x/y) * F.completion(p)(x).derivative()] for p
 
 \endexample
 
-\begin{comment}
-
-\example
-Compute expansions at all multiple points of
-the exercises in \cite{bliss} \S 68.
-
-To facilitate this example, let's define an
-auxiliary function to perform the analysis:
-
-\begin{sageblocksmall}
-def analyze_multiple_points(f, pr=False):
-   P = f.parent()
-   Base = P.base_ring()
-   x,y = P.gens()
-   # This next code is here to avoid Trac #25271, though it assumes
-   # that the curve's polynomial has only rational coefficients.
-   # (which is true for all of our test cases)
-   if False:
-      disc = f.discriminant(y)
-   else:
-      QQR = QQ[x,y]
-      disc = P(QQR(f).discriminant(QQR(y)))
-   if pr: print '$$', latex(disc.factor()), '$$'
-
-   for x0 in Base[x](disc).roots(multiplicities=False):
-      sheets = 0
-      for y0 in Base[y](f.subs({x: x0})).roots(multiplicities=False):
-          p = puiseux(f, x0, y0, 3)
-          for cycle in p:
-             assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
-             if cycle[0] == x0:
-                sheets = sheets + 1
-             else:
-                sheets = sheets + (cycle[0] - x0).valuation()
-          if pr: print '$$', latex((x0,y0)), '$$'
-          if pr: print '$$', latex(p), '$$'
-      if f.subs({x: x0}).degree(y) != f.degree(y):
-          p = puiseux(f, x0, oo, 3)
-          for cycle in p:
-             assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
-             if cycle[0] == x0:
-                sheets = sheets + 1
-             else:
-                sheets = sheets + (cycle[0] - x0).valuation()
-          if pr: print '$$', latex((x0,oo)), '$$'
-          if pr: print '$$', latex(p), '$$'
-      assert(sheets == f.degree(y))
-
-   finf = Base[y](f.subs({x: 1/x}).numerator().subs({x:0}))
-   for y0 in finf.roots(multiplicities=False):
-      p = puiseux(f, oo, y0, 3)
-      for cycle in p:
-         assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
-      if pr: print '$$', latex((oo,y0)), '$$'
-      if pr: print '$$', latex(p), '$$'
-   if finf.degree() < f.degree(y):
-      p = puiseux(f, oo, oo, 3)
-      for cycle in p:
-         assert(f.subs({x : cycle[0], y : cycle[1]}) == 0)
-      if pr: print '$$', latex((oo,oo)), '$$'
-      if pr: print '$$', latex(p), '$$'
-\end{sageblocksmall}
-
-\begin{sageblock}
-test_curves = [
-    y^3 - 3*y + 2*x,
-    y^3 + 3*y - x,
-    y^3 - 3*y^2 - x,
-    y^4 - 4*y - x,
-    y^4+2*(1-2*x)*y^2+1,
-    y^3-3*y^2+x^6,
-    y^3-3*y+2*x^2*(2-x^2),
-    y^3-3*y+2*x^3*(2-x^3),
-    3*x*(x-1)*y^4 -4*(x-1)*(x-2)*y^3 + (4/27)*(x-2)^4,
-    y^5 + (x^2-1)*y^4 - (4^4)/(5^5)*x^2*(x^2-1),
-    y^3 - x*y - x^2,
-    y^3 - 3*x^2*y + 2*x,
-    y^3 - 3*x*y + 2*x^2,
-    y^3 - 3*y + x^6];
-
-# for f in test_curves:
-#     analyze_multiple_points(f)
-\end{sageblock}
-
-%\begin{sageblocksmall}
-%analyze_multiple_points(y^3-3*y+2*x^3*(2-x^3), True);
-%\end{sageblocksmall}
-
-$$y^3 - 3axy + x^3$$
-
-This function contains an extra variable and is, in fact, a family of
-algebraic curves.
-
-\endexample
-
-\end{comment}
-
-% A {\it Riemann surface}, more precisely, is a two-dimensional manifold
-% with a {\it complex analytic structure}.
-
-\vfill\eject
-\mysection{Places and Valuations}
-
-We've seen how to construct Puiseux expansions at arbitrary points of
-an algebraic curve, but some points have multiple expansions,
-corresponding to multiple cycles on their corresponding surfaces.
-
-We now seek some mechanism for distinguishing between multiple cycles
-at a single point.  To this end, we introduce the concept of a {\it
-place}.  Intuitively speaking, a place is a cycle, and places are in
-one-to-one correspondence with Puiseux expansions.  Therefore, we
-can handle singularities by thinking in terms of places.
-Non-singular points have a unique place associated
-with them, while there are multiple places (and multiple cycles)
-associated with a singular point.
-
-We can characterize places algebraically, both to formalize this
-concept and also to analyze them in a manner that will generalize
-in Chapter \ref{chap:Algebraic Extensions} to arbitrary algebraic extensions.
-
-While points correspond to ideals of the curve's coordinate ring,
-places correspond to ideals of maximal orders of the curve's
-function field.  These maximal orders can be constructed
-using the algebraic process of {\it normalization}.
-
-To establish this connection, we introduce the concept of a
-{\it valuation ring}.
-
 Consider, for example the lemniscate of Bernoulli, defined by the equation
 
 $$ (x^2+y^2)^2 - (x^2-y^2) = 0$$
@@ -1604,134 +1743,6 @@ How does one of these ideal generators factor?
 A.<a> = QQbar[]
 (1/2*a^2+1/2*sqrt(QQbar(-1))*a+1).factor()
 \end{sageblock}
-
-
-[SwansonHuneke] Proposition 6.8.14 Let $R$ be an integral domain. Then
-the integral closure of the ring $R$ equals $\cap_V V$ , where $V$
-varies over all the valuation domains between $R$ and its field of
-fractions. If $R$ is Noetherian, all the $V$ may be taken to be
-Noetherian.
-
-[Kollar] Definition 1.23
-Let $S$ be an integral domain with quotient field $Q(S)$.
-The {\it normalization} of $S$ in $Q(S)$, denoted by $\overline{S}$,
-is the unique largest subring $\overline{S} \subset Q(S)$
-such that every homomorphism $\phi: S \to R$ to a DVR
-extends to a homomorphism $\overline{\phi}: \overline{S} \to R$.
-
-[Kollar] Lemma 1.24
-A unique factorization domain is normal.  In particular,
-any polynomial ring over a field is normal.
-
-[Kollar] Lemma 1.25.
-Assume that $t \in Q(S)$ satisfies a monic equation
-with coefficients in $S$ (i.e, $t$ is integral).
-Then $t \in \overline{S}$.
-
-[Kollar] Defintion 1.27.
-Let $S$ be an integral domain.  The {\it normalization} of $S$
-is its integral closure in its quotient field
-
-Kollar: ``The easy argument that every normal integral domain $S$
-is the intersection of all the valuation rings sitting between
-it and its quotient field is given in [AM69, 5.22].  Working
-only with discrete valuation rings is a bit harder.  The strongest
-theorem in this direction is Serre's condition for normality;
-see [Mat70, 17.1] or [Mat89, 23.8].''
-
-[Mat89]:
-
-$R_i$ condition: $A_p$ is regular for all $P \in {\rm Spec } A$ with ${\rm ht } P \le i$
-
-$S_i$ condition: depth $A_p \ge {\rm min}({\rm ht } P, i)$ for all $P \in {\rm Spec } A$
-
-$(S_0)$ always holds. $(S_1)$ says that all the associated primes of $A$ are minimal.
-$(R_0)+(S_1)$ is n.a.s.c. for $A$ to be reduced.
-
-Theorem 23.8: $(R_1)+(S_2)$ are n.a.s.c. for a Notherian ring $A$ to be normal.
-
-A {\bf Dedekind domain} is a integral domain in which all ideals factor into a product of prime ideals.
-
-Theorem: such a factorization is necessarily unique.
-
-[Wiki Dedekind domain] Theorem: Let R be a Dedekind domain with
-fraction field K. Let L be a finite degree field extension of K and
-denote by S the integral closure of R in L. Then S is itself a
-Dedekind domain.
-
-Theorem (Kummer): If $\{1,y,...,y^{n-1}\}$ is a local integral basis
-at some prime polynomial $\mathfrak{p}$ in $x$, then we can factor
-the ideal $\mathfrak{p}^e$ by factoring the field's defining
-polynomial mod $\mathfrak{p}$. [Stichnoch Theorem 3.3.7]
-
-An {\bf Artinian ring} satisfied the descending chain condition on ideals.
-
-Theorem: the modulo ring constructed from a Dedekind domain and a proper ideal is an Artinian ring.
-
-[Wiki Ideal] Theorem: if $f: A \to B$ is surjective and $ \mathfrak {a}\supseteq \ker f$ then:
-
-\begin{itemize}
-\item $\mathfrak {a}^{ec}={\mathfrak {a}}$ and ${\mathfrak {b}}^{ce}={\mathfrak {b}}$
-\item ${\mathfrak {a}}$ is a prime ideal in $A \Leftrightarrow {\mathfrak  {a}}^{e}$ is a prime ideal in $B$.
-\item ${\mathfrak {a}}$ is a maximal ideal in $A \Leftrightarrow  {\mathfrak  {a}}^{e}$ is a maximal ideal in $B$.
-\end{itemize}
-
-So, to factor $\mathfrak{p}$, we need to find all of the prime/maximal ideals
-in $R \mod \mathfrak{p}$.
-
-Constructing $R \mod \mathfrak{p}$ as a finite dimensional algebra,
-we have an algorithm to enumerate all of the algebra's maximal ideals.
-
-We also want to find each ideal's ramification index and relative degree.
-
-The ramification indices are the powers of the prime ideals.  Cohen Theorem 4.8.3:
-
-$$p {\mathbb Z}_K = \prod_{i=1}^{g} {\mathfrak p}_i^{e_i}$$
-
-Stichnoch defines the ramification index as the integer such
-that $\nu_{P'}(x) = e \nu_P(x)$ for all $x$ in the base field.
-($P'$ lies over $P$)
-
-We can find the ramification index in the modulo ring by raising each maximal
-ideal to successive powers and determining when it stabilizes.  The Artinian
-condition guarantees that it will eventually stabalize.
-
-The relative (or residual) degree of ${\mathfrak p}$ is defined (Cohen Definition 4.8.4):
-
-$$f_i = [{\mathbb Z}_K/{\mathfrak p}_i : {\mathbb Z}/p{\mathbb Z}]$$
-
-This seems to be the nullity of the matrix that defines the ideal in the algebra.
-
-Why?  The dimension of the algebra (over ${\mathbb Z}/p{\mathbb Z}$)
-is the dimension of ${\mathbb Z}_K$.  The number of basis elements in
-the ideal is the dimension of ${\mathfrak p}_i$.  The dimension of
-${\mathbb Z}_K/{\mathfrak p}_i$ is the difference of these two numbers
-(the dimension of the algebra minus the dimension of the ideal), which
-is the dimension of the vector space minus the dimension of the
-ideal's basis matrix's kernel, or the nullity of this matrix.
-
-\vfill\eject
-\mysection{Normalization}
-
-Given: a rational function $f$ and a prime ideal $I$ in a maximal order $O$.
-
-Goal: compute the value of $f \bmod I$.
-
-Step 0: Precompute a $k[x]$-module basis for $I$ in Hermite normal form (doable since $I$ is finitely generated over $O$ and $O$ is finitely generated over $k[x]$) and $\alpha$, a rational function with a simple pole at the place corresponding to $I$ and no other finite poles.
-
-Step 1: Compute the valuation of $f$'s denominator; call it $\nu$.  Multiply both $f$'s numerator and denominator by $\alpha^\nu$.  Now both the numerator and denominator are in $O$, and the denominator is not in $I$ (i.e, it has a finite value).  So we've reduced to the case of computing the residue of an element of $O$, as we now can divide by the denominator's residue, since we know it's not zero.
-
-Step 2: Find a primitive element of the residue field; call it $g$.
-
-Step 3: Compute $g$'s minimal polynomial and use it to construct the residue field as an algebraic extension of the constant base field.
-
-Reducing an element $f \in O$ modulo the HNF basis of $I$ gives a $k[x]$-vector that represents $f \bmod I$, i.e, when this $k[x]$-vector is multiplied by the HNF basis vector, we obtain an element of $O$ equivalent (mod $I$) to $f$.
-
-We can represent $g$ and its powers in this form, and construct a matrix that converts from $g$-basis to HNF basis, then invert it to obtain a matrix that converts from HNF basis to $g$-basis.
-
-Use reduction mod $I$'s HNF basis, then multiply by this inverse matrix to obtain an element in the residue field.
-
-
 
 \vfill\eject
 \mysection{Divisors}
