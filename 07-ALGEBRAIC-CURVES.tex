@@ -1134,16 +1134,13 @@ Sage function fields come equipped with a {\tt places\_above} method that
 allow us to obtain a list of all places in an extension field that lie
 over a given place in the underlying function field.  Having obtained
 these places, represented as ideals in the maximal infinite order,
-it is straightforward to use the {\tt completion} method, as before,
+it is straightforward to use the {\tt puiseux} function
 to construct Puiseux series.
 
 \begin{sageblock}[ch7]
 Pinf = F.places_above(Rinf)
-[F.completion(pl, prec=6)(y) for pl in Pinf]
-\end{sageblock}
-
-\begin{sageblock}[ch7]
-[F.completion(pl, prec=6)(1/x) for pl in Pinf]
+[puiseux(F, pl, absprec=5)(y) for pl in Pinf]
+[puiseux(F, pl, absprec=5)(x) for pl in Pinf]
 \end{sageblock}
 
 \hfill$\Box$\end{quote}
@@ -1181,10 +1178,11 @@ R.<x> = FunctionField(QQbar)
 L.<y> = R[]
 F.<y> = R.extension(y^3 + x^3*y + x)
 O = F.maximal_order()
+F.places_above(R.maximal_order().ideal(x).place())
 O.ideal(x).factor()
 pl = O.ideal(x, y).place()
-xseries = F.completion(pl, prec=8)(x)
-yseries = F.completion(pl, prec=10)(y)
+xseries = puiseux(F, pl)(x)
+yseries = puiseux(F, pl)(y)
 yseries((xseries^(1/3)).reverse())
 \end{sageblock}
 
@@ -1198,6 +1196,9 @@ puiseux(y^3 + x^3*y +x, x, y, g, -3/(2*g^2), 1);
 puiseux(y^3 + x^3*y +x, x, y, g, 3/g^2, 1);
 puiseux(y^3 + x^3*y +x, x, y, g, -(3/8)^(1/7), 1);
 \end{comment}
+
+%% 7min43s with this
+%% 8min14s with it commented out
 
 \begin{sageblock}[ch7-2]
 g = QQbar(-27/4)^(1/7)
@@ -1240,14 +1241,28 @@ and an ordinary point at $(g,3/g^2)$.
 
 Finally, let's look at what happens when $x$ goes to infinity:
 
+%% 12s with both this and the previous ch7-2 block commented out
+%% 31s with this commented out; 7min43s with it in
+%%\begin{sageblock}[ch7-2]
+%%Rinf = R.maximal_order_infinite().ideal(1/x).place()
+%%Pinf = F.places_above(Rinf)
+%%xseries = F.completion(Pinf[0], prec=3)(x)
+%%yseries = F.completion(Pinf[0], prec=10)(y)
+%%
+%%xseries = F.completion(Pinf[1], prec=3)(x)
+%%yseries = F.completion(Pinf[1], prec=10)(y)
+%%\end{sageblock}
+
+%% 42s with this reduced precision version of it
 \begin{sageblock}[ch7-2]
+
 Rinf = R.maximal_order_infinite().ideal(1/x).place()
 Pinf = F.places_above(Rinf)
-xseries = F.completion(Pinf[0], prec=3)(x)
-yseries = F.completion(Pinf[0], prec=10)(y)
+xseries = puiseux(F, Pinf[0])(x)
+yseries = puiseux(F, Pinf[0])(y)
 
-xseries = F.completion(Pinf[1], prec=3)(x)
-yseries = F.completion(Pinf[1], prec=10)(y)
+xseries = puiseux(F, Pinf[1])(x)
+yseries = puiseux(F, Pinf[1])(y)
 \end{sageblock}
 
 Here we have an ordinary point at $(\infty,0)$ and
