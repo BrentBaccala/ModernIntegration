@@ -966,10 +966,27 @@ at a singular point where the curve is not locally Euclidean,
 in a manner somewhat like this:
 
 \begin{center}
-\includegraphics[width=\textwidth]{07-ALGEBRAIC-CURVES-EXAMPLE1.pdf}
+\includegraphics[width=0.5\textwidth]{07-ALGEBRAIC-CURVES-EXAMPLE1.pdf}
 \end{center}
 
 \endexample
+
+We've seen how to construct Puiseux expansions at arbitrary points of
+an algebraic curve, but some points have multiple expansions,
+corresponding to multiple cycles on their corresponding surfaces.
+These points are the curve's {\it singularities}, which are the
+only points where the curve is not locally Euclidean, and behaves
+instead like in the graphic above, where several Euclidean sheets
+touch at a single point.
+
+We now seek some mechanisms for distinguishing between multiple cycles
+at a single point.  To this end, we introduce the concept of a {\it
+place}.  Intuitively speaking, a place is a cycle, and places are in
+one-to-one correspondence with Puiseux expansions.  Therefore, we
+can handle singularities by thinking in terms of places.
+Non-singular points have a unique place associated
+with them, while there are multiple places (and multiple cycles)
+associated with a singular point.
 
 \vfill\eject
 \mysection{Orders and Places}
@@ -987,7 +1004,12 @@ follows directly from the invertability of field elements.  As all field element
 inverses, any non-zero ideal generator can be multiplied by its multiplicative inverse
 to generate 1, which then generates the entire field.
 
-To solve this problem, we decompose the function field into maximal orders, of which
+The obvious choice would be to use ideals of the {\it coordinate ring}, which is simply
+the polynomial ring modulo the defining polynomial of the curve, but these ideals
+are in one-to-one correspondence with the {\it points} of the curve, and we need
+some way to represent {\it places}.
+
+To solve this problem, we decompose the function field into {\it orders}, of which
 there are two of primary interest: the maximal order and the infinite order.
 The ideals of the maximal order correspond to
 finite places, and the ideals of the infinite order correspond to infinite places.
@@ -1147,19 +1169,6 @@ algebraic curves.
 
 \vfill\eject
 \mysection{Places and Valuations}
-
-We've seen how to construct Puiseux expansions at arbitrary points of
-an algebraic curve, but some points have multiple expansions,
-corresponding to multiple cycles on their corresponding surfaces.
-
-We now seek some mechanism for distinguishing between multiple cycles
-at a single point.  To this end, we introduce the concept of a {\it
-place}.  Intuitively speaking, a place is a cycle, and places are in
-one-to-one correspondence with Puiseux expansions.  Therefore, we
-can handle singularities by thinking in terms of places.
-Non-singular points have a unique place associated
-with them, while there are multiple places (and multiple cycles)
-associated with a singular point.
 
 We can characterize places algebraically, both to formalize this
 concept and also to analyze them in a manner that will generalize

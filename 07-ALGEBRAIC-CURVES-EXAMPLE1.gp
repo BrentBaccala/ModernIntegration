@@ -8,6 +8,11 @@ define(\`comment', \`')
 
 set terminal postscript color
 
+set size ratio -1
+set size 2,2
+set margins 0,0,0,0
+set origin -0.5,-0.5
+
 set isosamples 20,20
 
 set parametric
