@@ -1872,11 +1872,9 @@ Now let's construct a Sage function to extract the principal parts
 of the basis functions and form them into a matrix:
 
 \begin{sagecommon}
-# the prec=3 is a problem, because we want absolute precision but can't specify it,
-# so I just use a high enough precision to work for the problems in the book
 def principal_parts_matrix(div, basis):
     F = div.parent().function_field()
-    coeffs = [(F.completion(p, prec=3), i) for p,m in div.list() for i in range(-m,0)]
+    coeffs = [(puiseux(F,p), i) for p,m in div.list() for i in range(-m,0)]
     return matrix([[c[0](b)[c[1]] for c in coeffs] for b in basis]).transpose()
 \end{sagecommon}
 

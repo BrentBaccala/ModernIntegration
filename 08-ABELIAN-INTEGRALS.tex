@@ -365,12 +365,10 @@ infinity:
 basis = D2.basis_function_space()
 \end{sageblock}
 
-Now let's construct a matrix of principal parts
-and its pseudoinverse:
+Now let's construct a matrix of principal parts:
 
 \begin{sageblock}[ex8.7]
 m = principal_parts_matrix(D2, basis)
-pi = m.pseudoinverse()
 \end{sageblock}
 
 Another Sage function will extract the principal parts of the
@@ -378,13 +376,10 @@ differential, and divide them by the powers needed for term-wise
 integration:
 
 \begin{sagecommon}
-def differential_completion(map, differential):
-    F = differential.parent().function_field()
-    return map(differential/F.gen().differential()) * map(F.gen()).derivative()
 def solution_vector(div, differential):
     F = differential.parent().function_field()
-    coeffs = [(F.completion(p, prec=3), i) for p,m in div.list() for i in range(-m,0)]
-    return matrix([[differential_completion(c[0], differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
+    coeffs = [(puiseux(F, p), i) for p,m in div.list() for i in range(-m,0)]
+    return matrix([[c[0](differential)[c[1]-1]/c[1] for c in coeffs]]).transpose()
 \end{sagecommon}
 
 \begin{sageblock}[ex8.7]
@@ -392,18 +387,18 @@ b = solution_vector(D2, integrand)
 \end{sageblock}
 
 \begin{sageblock}[ex8.7]
-v = pi * b
+v = m.solve_right(b)
 m * v == b
 algebraic_solution = (matrix(basis) * v)[0,0]
 \end{sageblock}
 
-We expect an infinity of solutions, of course.
+%% We expect an infinity of solutions, of course.
 
-\begin{sageblock}[ex8.7]
-m2 = 1 - (pi * m)
-m2.rank()
-m2 * matrix([basis]).transpose()
-\end{sageblock}
+%% \begin{sageblock}[ex8.7]
+%% m2 = 1 - (pi * m)
+%% m2.rank()
+%% m2 * matrix([basis]).transpose()
+%% \end{sageblock}
 
 This is the rational part of our answer.  To find the logarithmic
 part, let's return to the series expansion of the differential,
@@ -473,7 +468,7 @@ def differential_divisor_of_poles(differential):
 
 \begin{sageblock}[riemannroch3]
 D = differential_divisor_of_poles(integrand * x.differential())
-table([[pl, differential_completion(F.completion(pl, prec=5), (integrand * x.differential()))] for pl in D.support()])
+table([[pl, puiseux(F, pl)(integrand * x.differential())] for pl in D.support()])
 \end{sageblock}
 
 We've found four second order poles at the ordinary points $(\pm i, \pm\sqrt{2})$,
@@ -517,27 +512,21 @@ Now we have a matrix equation that we want to solve:
 
 $$\sage[riemannroch3]{m} \cdot v = \sage[riemannroch3]{b}$$
 
-Now let's compute the pseudoinverse:
-
-\begin{sageblock}[riemannroch3]
-pi = m.pseudoinverse()
-\end{sageblock}
-
 To find out if there actually is a solution, we simply have to check:
 
 \begin{sageblock}[riemannroch3]
-v = pi * b
+v = m.solve_right(b)
 m * v == b
 \end{sageblock}
 
-The equation has a non-trivial null space, which we expect because
-of the presence of the constant of integration.
+%% The equation has a non-trivial null space, which we expect because
+%% of the presence of the constant of integration.
 
-\begin{sageblock}[riemannroch3]
-m2 = 1 - (pi * m)
-m2.rank()
-m2 * matrix([basis]).transpose()
-\end{sageblock}
+%% \begin{sageblock}[riemannroch3]
+%% m2 = 1 - (pi * m)
+%% m2.rank()
+%% m2 * matrix([basis]).transpose()
+%% \end{sageblock}
 
 So, yes, this system does have a solution.  Now let's multiply our
 solution vector by the original basis:
@@ -586,7 +575,7 @@ L.<y> = R[]
 F.<y> = R.extension(y^2 - (x^4+1))
 integrand = 1/(x*y) * x.differential()
 D = differential_divisor_of_poles(integrand)
-table([[pl, differential_completion(F.completion(pl, prec=10), integrand)] for pl in D.support()])
+table([[pl, puiseux(F, pl)(integrand)] for pl in D.support()])
 \end{sageblock}
 
 Our only poles are a pair of first order poles at $x=0$.  This will give rise to
@@ -798,7 +787,7 @@ num = 6*x^2 + 5*x +7
 den = 2*x^6 + 8*x^5 + 3*x^4 + - 4*x^3 - 1
 integrand = y*num/den * x.differential();
 D = differential_divisor_of_poles(integrand)
-table([[pl, differential_completion(F.completion(pl, prec=10), integrand)] for pl in D.support()])
+table([[pl, puiseux(F,pl)(integrand)] for pl in D.support()])
 \end{sageblock}
 
 We have poles at $x=\pm \frac{1}{\sqrt{2}}$

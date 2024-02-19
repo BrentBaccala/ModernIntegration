@@ -1566,8 +1566,10 @@ If $b$ is the vector of basis functions, then $v\cdot b$ will be the desired fun
 \begin{frame}[fragile]
 \frametitle{Chebyshev's Integral (cont)}
 
+% principal_parts_matrix is from the Algebraic Curves chapter
+% solution_vector is from the Abelian Integrals chapter
+% they're in sagecommon, we only have them here to show their definitions on a slide
 \begin{sageblock}[chebyshev]
-# prec=4 is arbitrary.  I really want to specify absolute and not relative precision
 def principal_parts_matrix(div, basis):
     F = div.parent().function_field()
     coeffs = [(puiseux(F,p), i) for p,m in div.list() for i in range(-m,0)]
@@ -1593,9 +1595,7 @@ c = solution_vector(D, integrand);
 \frametitle{Chebyshev's Integral (cont)}
 
 \begin{sageblock}[chebyshev]
-M.is_invertible()
-pi = M.pseudoinverse()
-v = pi * c
+v = M.solve_right(c)
 M * v == c
 sol1 = (matrix(basis) * v)[0,0]
 \end{sageblock}
