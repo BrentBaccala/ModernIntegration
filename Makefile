@@ -47,7 +47,7 @@ out.pdf: slides.pdf toc.pdf ModernIntegration.pdf
 
 
 publish: ModernIntegration.pdf slides.pdf
-	scp ModernIntegration.pdf slides.pdf www:/var/www/ModernIntegration
+	scp ModernIntegration.pdf slides.pdf u20:/var/www/html/ModernIntegration/
 
 dep depend .depend: [0-9]*.tex
 	grep -e \\\\includegraphics -e \\\\input [0-9]*.tex | sed 's/^[^{]*{/ModernIntegration.pdf:/' | sed 's/}.*//' > .depend
