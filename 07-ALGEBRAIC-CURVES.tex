@@ -1047,9 +1047,95 @@ Extensions
 
 How do we relate this to the geometric picture?
 
-How do we relate this to extension of ideals?
+\begin{enumerate}
+\item The coordinate ring is $R[x,y] \mod p(x,y)$
+\item All points correspond to maximal ideals in the coordinate ring.
 
-How do we relate this to integral closure?  Maximal orders?
+For points, our ideal generators are just $x-x_0$ and $y-y_0$, and this ideal is maximal in the {\it coordinate ring}.
+
+If $(x_0, y_0)$ was {\it not} on the curve, then the ideal would be $(x-x_0, y-y_0, p(x,y))$, which
+would simplify to $p(x,y)$ being a non-zero constant, and this would generate the unit ideal.
+
+\item All places correspond to a maximal ideal in the ring of integral elements
+
+That ideal consists of all algebraic functions which are zero at that place and have no finite poles.
+Equivalently, it consists of all integral elements (that satisify a monic polynomial) which are
+zero at that place.
+
+Let $(x-x_0)$'s ramification index be $r$, so $x=x_0+t^r$ and let $(y-y_0)$'s valuation be $s$, which must be positive
+if $(x_0,y_0)$ is a finite point on the curve, so $y=y_0 + y_s t^s + \cdots$
+.  Consider $\frac{(y-y_0)^r}{(x-x_0)^s}$, an algebraic
+function with valuation zero.  $r$ will be less than or equal to the degree of the defining
+polynomial, but if it is equal, then the numerator could simplify, right?  Construct
+$\frac{(y-y_0)^r}{(x-x_0)^s} - v_0$ where $v_0$ is the value of the function, and we've
+got an algebraic function, zero at the place, whose only poles are at $x_0$.
+What about other points over $x_0$? (it has poles)
+
+\item Two different places (at the same point) correspond to two distinct maximal ideals.
+\end{enumerate}
+
+or
+\begin{enumerate}
+
+\item A place corresponds to a valuation ring
+
+\item A valuation ring of a function field $F/K$ is a ring $O \in F$ such that
+   $K \in O \in F$ (both proper inclusions)
+   for every $z \in F$, either $z \in O$ or $z^{-1} \in O$
+
+$z \in O$ if $z$ is finite (could be zero) at the place.
+
+\item Need to show that every cycle induces a place
+
+Pretty easy - use the Puiseux expansion of each function to compute its valuation.
+
+Show that valuation of the Puiseux expansion is independent of the choice of uniformizing variable
+
+Show compatibility of the Puiseux expansions -- inverting one inverts the valuation
+
+\item Need to show that every place induces a cycle
+
+How to compute a Puiseux expansion from a place?  Show that a valuation ring $O$ is a local ring
+with a unique maximal ideal $P$.  Every element $t \in P$ such that $P=tO$ is a uniformizing parameter.
+
+Show that $O \mod P$ is isomorphic to the constants.  $x \mod P$ and $y \mod P$ give us the coordinates
+of the point corresponding to the place.
+
+Given an element in $O$, mod out by $P$ to find its value.  Subtract this value to get an element in $P$.
+Divide by a uniformizing parameter.  Repeat to construct a Puiseux expansion.
+
+Show that all elements have a well-defined valuation ($P^v$ contains them but $P^{v+1}$ does not).
+
+If the element is not in $O$, its inverse must be, show that its inverse respects valuation and we can
+multiply by $t^{-v}$, where $t$ is a uniformizing parameter, to move the inverse into $O$.
+
+\item Need to show that different cycles yield different places
+
+If the coordinates of the cycles are different, $x-x_0$ (or $y-y_0$) will have valuation zero at
+one cycle, but positive valuation at the other.
+
+Otherwise, if the coordinate of the cycle is the same, then at least one of $x$ or $y$ must have
+different Puiseux expansions.  Subtract the common prefix and the first differing term from $y$,
+i.e, $y-y_0-c_1 t-c^2 t^2-\cdots-c_v t^v$ to obtain a function that has positive valuation
+on the one cycle but zero valuation on the other.
+
+\item Definition: A place $O$ is finite if $x \in O$.
+
+\item The maximal finite order is the intersection of all finite places.
+
+Show that it's an order.
+
+Show that it's identical to the integral closure of the coordinate ring.
+
+\item The infinite order is the intersection of all non-finite places.
+
+Show that it's an order.
+
+\end{enumerate}
+
+How do we relate this to extension of ideals?  We embed the coordinate ring in its integral closure.
+
+How do we relate this to integral closure?  Maximal orders?  The integral closure is the maximal finite order.
 
 
 %\mysection{meromorphic functions are analytic}
