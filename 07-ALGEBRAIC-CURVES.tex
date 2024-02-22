@@ -1154,33 +1154,33 @@ Theorem: Every element of an $R$-order is integral over $R$.
 Theorem: The integral closure of an integral domain $R$ in its field of fractions is an $R$-order,
 and in fact is maximal (due to the last theorem).
 
-[SwansonHuneke] Proposition 6.8.14 Let $R$ be an integral domain. Then
+\cite{Swanson Huneke} Proposition 6.8.14 Let $R$ be an integral domain. Then
 the integral closure of the ring $R$ equals $\cap_V V$ , where $V$
 varies over all the valuation domains between $R$ and its field of
 fractions. If $R$ is Noetherian, all the $V$ may be taken to be
 Noetherian.
 
-[Kollar] Definition 1.23
+\cite{kollar} Definition 1.23
 Let $S$ be an integral domain with quotient field $Q(S)$.
 The {\it normalization} of $S$ in $Q(S)$, denoted by $\overline{S}$,
 is the unique largest subring $\overline{S} \subset Q(S)$
 such that every homomorphism $\phi: S \to R$ to a DVR
 extends to a homomorphism $\overline{\phi}: \overline{S} \to R$.
 
-[Kollar] Lemma 1.24
+\cite{kollar} Lemma 1.24
 A unique factorization domain is normal.  In particular,
 any polynomial ring over a field is normal.
 
-[Kollar] Lemma 1.25.
+\cite{kollar} Lemma 1.25.
 Assume that $t \in Q(S)$ satisfies a monic equation
 with coefficients in $S$ (i.e, $t$ is integral).
 Then $t \in \overline{S}$.
 
-[Kollar] Defintion 1.27.
+\cite{kollar} Defintion 1.27.
 Let $S$ be an integral domain.  The {\it normalization} of $S$
 is its integral closure in its quotient field
 
-Kollar: ``The easy argument that every normal integral domain $S$
+\cite{kollar}: ``The easy argument that every normal integral domain $S$
 is the intersection of all the valuation rings sitting between
 it and its quotient field is given in [AM69, 5.22].  Working
 only with discrete valuation rings is a bit harder.  The strongest
@@ -1473,20 +1473,37 @@ constructions in Sage for algebraic curves -- polynomial rings
 modulo an ideal, function fields, and curves in projective space.
 We'll mostly use the {\tt FunctionField} code.
 
+Instead of constructing a polynomial ring the usual way (which is?), we'll
+construct a {\tt FunctionField} over a single variable, specifying its
+constant field, then form its {\tt extension} modulo the curve's defining polynomial,
+which will also be a {\tt FunctionField}.
+
+A Sage {\tt FunctionField} has methods to construct both the maximal finite order
+and the infinite order (is it maximal?  I guess it is, in the sense that it contains
+all infinite places).  We can construct ideals of these orders, and from them
+construct the corresponding places.  Given a place in the underlying univariate
+{\tt FunctionField}, we have a method that will extend the corresponding ideal
+to the bivariate {\tt FunctionField}, factor (decompose) it, and return a list
+of all {\tt places\_above} the original place.
+
 The standard way to construct Puiseux expansions in Sage is the {\tt completion} method,
 defined on {\tt FunctionField}'s,
 but this method has some limitations.  It doesn't work on
 differentials (only on functions), doesn't allow a uniformizing parameter to be
 specified, and doesn't allow absolute precision to be specified (only relative precision).
 To overcome this problems, I've written the following function that's basically just
-a wrapper around {\tt completion}.  The main thing I don't like about it is that
+a wrapper around {\tt completion}.  Its default behavior is to compute either
+the principal part of a Puiseux expansion for poles, or a single term of the Puiseux
+expansion for finite values.
+The main thing I don't like about it is that
 when you pass it a differential, it returns a {\tt LaurentSeries}, when it should actually
 return a {\tt LaurentSeries} times $ds$, where $s$ is the uniformizing variable.
 
 \begin{sagecommonsmall}
+from sage.rings.function_field.differential import FunctionFieldDifferential
 def puiseux(F, pl, uvar=None, absprec=0):
     def puiseux2(f):
-       if isinstance(f, sage.rings.function_field.differential.FunctionFieldDifferential):
+       if isinstance(f, FunctionFieldDifferential):
           base_differential = f.parent()._gen_base_differential
           f = f._f
           is_differential = True
@@ -1494,7 +1511,6 @@ def puiseux(F, pl, uvar=None, absprec=0):
        else:
           is_differential = False
           valuation = f.valuation(pl)
-       # relative precision is (absolute precision - valuation), minimum 1 (at least a single term is computed)
        series = F.completion(pl, prec=max(1, absprec-valuation))
        if uvar:
           uvar_series = series(uvar).reverse()
