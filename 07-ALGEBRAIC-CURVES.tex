@@ -999,7 +999,8 @@ The current state of the art is to use the tools of abstract algebra developed i
 twentieth century, such as rings, ideals, and fields.
 
 We can't use ideals directly in a function field, or any field for that matter, because
-there are only two ideals in any field -- the zero ideal and the entire field.  This
+there are only two ideals in any field -- the zero ideal, which is the ideal containing
+only the zero element, and the unit ideal, which is the entire field.  This
 follows directly from the invertability of field elements.  As all field element possess
 inverses, any non-zero ideal generator can be multiplied by its multiplicative inverse
 to generate 1, which then generates the entire field.
@@ -1010,24 +1011,12 @@ are in one-to-one correspondence with the {\it points} of the curve, and we need
 some way to represent {\it places}.
 
 To solve this problem, we decompose the function field into {\it orders}, of which
-there are two of primary interest: the maximal order and the infinite order.
-The ideals of the maximal order correspond to
-finite places, and the ideals of the infinite order correspond to infinite places.
-Using one or the other, we obtain ideals that represent all places in the function field.
-
-\begin{quotation}
-We can characterize places algebraically, both to formalize this
-concept and also to analyze them in a manner that will generalize
-in Chapter \ref{chap:Algebraic Extensions} to arbitrary algebraic extensions.
-
-While points correspond to ideals of the curve's coordinate ring,
-places correspond to ideals of maximal orders of the curve's
-function field.  These maximal orders can be constructed
+there are two of primary interest: the maximal finite order and the maximal infinite order.
+The ideals of the maximal finite order correspond to
+finite places, and the ideals of the maximal infinite order correspond to infinite places.
+These maximal orders can be constructed
 using the algebraic process of {\it normalization}.
-
-To establish this connection, we introduce the concept of a
-{\it valuation ring}.
-\end{quotation}
+Using one or the other, we obtain ideals that represent all places in the function field.
 
 \begin{definition}
 The {\bf coordinate ring} of the algebraic curve is the ring $R[x,y] \mod p(x,y)$.
@@ -1036,7 +1025,7 @@ ring is an integral domain.  (what is $R$?)
 \end{definition}
 
 What do we do if $p(x,y)$ is not irreducible?  In this case, we're trying something
-like computing the integral of a polynomial that can be factored.  We factor the
+like computing an integral with a root of a polynomial that can be factored.  We factor the
 polynomial, producing two separate roots.  We then use the theorem of the
 primitive element (NEED TO PUT IT IN CHAPTER 2) to construct a single algebraic
 extension defined by a single irreducible polynomial in which we can construct
@@ -1057,6 +1046,9 @@ A {\bf valuation ring} of a function field $F$ is a subring $O \in F$ such that
    %% $K \in O \in F$ (both proper inclusions)
    for every $z \in F$, either $z \in O$ or $z^{-1} \in O$
 \end{definition}
+
+{\bf Note:} A valuation ring might not be {\bf discrete valuation ring}, which is
+a valuation ring with value group isomorphic to the integers under addition.
 
 Both ideals and valuation rings are subrings, but there are two different conditions
 that they must satisfy.  Fields admit only two ideals (the unit ideal and the trivial ideal),
@@ -1092,6 +1084,11 @@ Show compatibility of the Puiseux expansions -- inverting one inverts the valuat
 How to compute a Puiseux expansion from a place?  Show that a valuation ring $O$ is a local ring
 with a unique maximal ideal $P$.  Every element $t \in P$ such that $P=tO$ is a uniformizing parameter.
 
+This is where we need to have a {\it discrete} valuation ring.  \cite{Swanson Huneke} proposition 6.3.4
+shows that a DVR is a principal ideal domain (and other equivalences).
+\cite{Stichtenoch} theorem 1.1.6 is relevant, as it shows that the valuation ring of a function
+field is a DVR.
+
 Show that $O \mod P$ is isomorphic to the constants.  $x \mod P$ and $y \mod P$ give us the coordinates
 of the point corresponding to the place.
 
@@ -1125,7 +1122,13 @@ A valuation ring $O$ is {\bf finite} if both $x \in O$ and $y \in O$.  Otherwise
 \end{definition}
 
 \begin{definition}
-An {\bf order} $O$ of a ring $R$ (also called an $R$-order) is a subring of $R$ such that...
+An {\bf order} $\mathcal {O}$ of a ring $R$ (also called an $R$-order) is a subring of $R$ such that
+\begin{enumerate}
+\item $\mathcal {O}$ is a finite-dimensional algebra over the field $\mathbb {Q}$ of rational numbers
+\item $\mathcal {O}$ spans $R$ over $\mathbb {Q}$, and
+\item $\mathcal {O}$ is a $\mathbb {Z}$-lattice in $R$.
+\end{enumerate}
+[wikipedia]
 \end{definition}
 
 \begin{definition}
@@ -1153,6 +1156,10 @@ Theorem: Every element of an $R$-order is integral over $R$.
 
 Theorem: The integral closure of an integral domain $R$ in its field of fractions is an $R$-order,
 and in fact is maximal (due to the last theorem).
+
+\begin{mdframed}[backgroundcolor=yellow!20]
+We might need all this stuff to show that integral closure is the same as the intersection
+of all the finite valuation rings.
 
 \cite{Swanson Huneke} Proposition 6.8.14 Let $R$ be an integral domain. Then
 the integral closure of the ring $R$ equals $\cap_V V$ , where $V$
@@ -1197,6 +1204,10 @@ $(S_0)$ always holds. $(S_1)$ says that all the associated primes of $A$ are min
 $(R_0)+(S_1)$ is n.a.s.c. for $A$ to be reduced.
 
 Theorem 23.8: $(R_1)+(S_2)$ are n.a.s.c. for a Notherian ring $A$ to be normal.
+\end{mdframed}
+
+\begin{mdframed}[backgroundcolor=cyan!20]
+What do we need this for?
 
 A {\bf Dedekind domain} is a integral domain in which all ideals factor into a product of prime ideals.
 
@@ -1210,11 +1221,12 @@ Dedekind domain.
 Theorem (Kummer): If $\{1,y,...,y^{n-1}\}$ is a local integral basis
 at some prime polynomial $\mathfrak{p}$ in $x$, then we can factor
 the ideal $\mathfrak{p}^e$ by factoring the field's defining
-polynomial mod $\mathfrak{p}$. [Stichnoch Theorem 3.3.7]
+polynomial mod $\mathfrak{p}$. [Stichtenoch Theorem 3.3.7]
 
 An {\bf Artinian ring} satisfied the descending chain condition on ideals.
 
 Theorem: the modulo ring constructed from a Dedekind domain and a proper ideal is an Artinian ring.
+\end{mdframed}
 
 Show that the maximal finite order is a finitely generated $R[x]$-module.
 
@@ -1234,6 +1246,11 @@ That ideal consists of all algebraic functions which are zero at that place and 
 Equivalently, it consists of all integral elements (that satisify a monic polynomial) which are
 zero at that place.
 Two different places, even if they're at the same point, correspond to two distinct maximal ideals of the order.
+
+Given a valuation ring $O$ and its maximal prime ideal $P$, we define the {\bf residue class field} of
+the valuation as $F_P := O/P$.  Given any element of $O$, its value at the corresponding place is its
+image in $F_P$.  The easy case in when the field of constants is algebraically closed.  Otherwise,
+we can have non-rational places whose residue fields have degree (over the constants) greater than one.
 
 As a basic (and important) example of the technique, I'll show how to evaluate an algebraic function
 at a place, given a representation of the place as an ideal of an order.
@@ -1269,26 +1286,23 @@ would simplify to $p(x,y)$ being a non-zero constant, and this would generate th
 At a singularity, we can construct a function that takes on different values on each cycle.
 How does this lead to multiple ideals in the integral closure?
 
-Stichnoch
+\cite{Stichtenoth} Corollary 1.2.3 shows that
+all places of $C(x)$ (the rational function field) are in 1-to-1 correspondence with $C \cup \inf$ (as places).
 
-\begin{enumerate}
-\item Define a valuation ring of a field
-\item Prove that valuation rings have a unique maximal ideal (or by definition)
-\item Define a place as the maximal ideal of a valuation ring
-\item Define residue class field of a place.
-\item Enumerate all places of $C(x)$ and show how they're in 1-to-1 correspondence with $C \cup \inf$
-\end{enumerate}
-
-Extensions
+We have the function field $C(x)$ and its places, and also the function field defined by the curve,
+and its places.  Since all the rational functions in $C(x)$ are also rational
+functions in $C(x,y) \mod p(x,y)$ (the coordinate ring), it follows that
+the function field defined by the curve is a field extension of the rational function field.
 
 \begin{enumerate}
 \item All places of an extension are ``over'' a place of the underlying field
 \item $v_{P'}(x) = e\cdot v_P(x)$, so $e$ is the ramification index (and is a finite integer)
 \end{enumerate}
 
-How do we relate this to the geometric picture?
+How do we relate this to the geometric picture?  We've already seen ramification in the previous section.
 
-How do we relate this to extension of ideals?  We embed the coordinate ring in its integral closure.
+\begin{mdframed}[backgroundcolor=cyan!20]
+Do we need this discussion here?  Only if we need to compute ramification indices, I think.
 
 [Wiki Ideal] Theorem: if $f: A \to B$ is surjective and $ \mathfrak {a}\supseteq \ker f$ then:
 
@@ -1303,8 +1317,10 @@ in $R \mod \mathfrak{p}$.
 
 Constructing $R \mod \mathfrak{p}$ as a finite dimensional algebra,
 we have an algorithm to enumerate all of the algebra's maximal ideals.
+This is the same as the ideal decomposition algorithm.
 
 We also want to find each ideal's ramification index and relative degree.
+I wrote a paper on this.
 
 The ramification indices are the powers of the prime ideals.  Cohen Theorem 4.8.3:
 
@@ -1331,8 +1347,7 @@ ${\mathbb Z}_K/{\mathfrak p}_i$ is the difference of these two numbers
 (the dimension of the algebra minus the dimension of the ideal), which
 is the dimension of the vector space minus the dimension of the
 ideal's basis matrix's kernel, or the nullity of this matrix.
-
-How do we relate this to integral closure?  Maximal orders?  The integral closure is the maximal finite order.
+\end{mdframed}
 
 
 %\mysection{meromorphic functions are analytic}
