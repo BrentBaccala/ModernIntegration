@@ -982,14 +982,14 @@ touch at a single point.
 We now seek some mechanisms for distinguishing between multiple cycles
 at a single point.  To this end, we introduce the concept of a {\it
 place}.  Intuitively speaking, a place is a cycle, and places are in
-one-to-one correspondence with Puiseux expansions.  Therefore, we
+one-to-one correspondence with cycles.  Therefore, we
 can handle singularities by thinking in terms of places.
 Non-singular points have a unique place associated
 with them, while there are multiple places (and multiple cycles)
 associated with a singular point.
 
 \vfill\eject
-\mysection{Orders and Places}
+\mysection{Valuation Rings and Orders}
 
 Driven in no small part by the difficulty in visualizing higher dimensional geometric shapes,
 mathematicians have developed increasingly algebraic techniques to manipulate geometric objects.
@@ -1015,15 +1015,256 @@ The ideals of the maximal order correspond to
 finite places, and the ideals of the infinite order correspond to infinite places.
 Using one or the other, we obtain ideals that represent all places in the function field.
 
-Definition: An order $O$ of a ring $R$ (also called an $R$-order) is a subring of $R$ such that...
+\begin{quotation}
+We can characterize places algebraically, both to formalize this
+concept and also to analyze them in a manner that will generalize
+in Chapter \ref{chap:Algebraic Extensions} to arbitrary algebraic extensions.
+
+While points correspond to ideals of the curve's coordinate ring,
+places correspond to ideals of maximal orders of the curve's
+function field.  These maximal orders can be constructed
+using the algebraic process of {\it normalization}.
+
+To establish this connection, we introduce the concept of a
+{\it valuation ring}.
+\end{quotation}
+
+\begin{definition}
+The {\bf coordinate ring} of the algebraic curve is the ring $R[x,y] \mod p(x,y)$.
+If $p(x,y)$ is irreducible, then the coordinate
+ring is an integral domain.  (what is $R$?)
+\end{definition}
+
+What do we do if $p(x,y)$ is not irreducible?  In this case, we're trying something
+like computing the integral of a polynomial that can be factored.  We factor the
+polynomial, producing two separate roots.  We then use the theorem of the
+primitive element (NEED TO PUT IT IN CHAPTER 2) to construct a single algebraic
+extension defined by a single irreducible polynomial in which we can construct
+both roots.  So, for the remainder of this discussion, we need only consider the case
+where $p(x,y)$ is irreducible.
+
+\begin{definition}
+The fraction field of the coordinate ring is called the curve's {\bf function field},
+and its elements are called {\bf algebraic functions}.
+\end{definition}
+
+A curve's function field contains all rational functions in $x$ and $y$, grouped together into equivalence
+classes by the relation $p(x,y)=0$.
+
+\begin{definition}
+A {\bf valuation ring} of a function field $F$ is a subring $O \in F$ such that
+   %% we don't need this in the definition (I think)
+   %% $K \in O \in F$ (both proper inclusions)
+   for every $z \in F$, either $z \in O$ or $z^{-1} \in O$
+\end{definition}
+
+Both ideals and valuation rings are subrings, but there are two different conditions
+that they must satisfy.  Fields admit only two ideals (the unit ideal and the trivial ideal),
+but there are typically an infinite number of valuation rings within a given function field.
+
+We now wish to show that valuation rings are in one-to-one correspondence with places.
+The key observation is that an element $z$ in is a valuation ring $O$ only if $z$ has
+non-negative valuation (i.e, is finite) at the corresponding place.
+
+The condition that either $z$ or $z^{-1}$ must be in the valuation ring does not preclude
+the possibility that both will be in the valuation ring.  In fact, these are precisely
+the elements of valuation zero, that have neither a zero nor a pole at the place
+in question.  The elements of $O$ whose inverses are not in $O$ are the elements of positive
+valuation, that have a zero at the place in question.  They form an ideal $P$ of the
+valuation ring.  $O$ is, in fact, a {\it local ring}, and $P$ is its unique maximal ideal.
+
+\begin{theorem}
+The valuation rings of a curve's function field are in one-to-one correspondence with its places.
+
+\proof
+\begin{enumerate}
+\item Every cycle induces a valuation ring
+
+To do this, we just use the Puiseux expansion of a function field element to compute its valuation.
+If it is finite, it is in the valuation ring; if it is a pole, it is not in the valuation ring.
+
+Show that valuation of the Puiseux expansion is independent of the choice of uniformizing variable
+
+Show compatibility of the Puiseux expansions -- inverting one inverts the valuation
+
+\item Every valuation ring induces a cycle
+
+How to compute a Puiseux expansion from a place?  Show that a valuation ring $O$ is a local ring
+with a unique maximal ideal $P$.  Every element $t \in P$ such that $P=tO$ is a uniformizing parameter.
+
+Show that $O \mod P$ is isomorphic to the constants.  $x \mod P$ and $y \mod P$ give us the coordinates
+of the point corresponding to the place.
+
+Given an element in $O$, mod out by $P$ to find its value.  Subtract this value to get an element in $P$.
+Divide by a uniformizing parameter.  Repeat to construct a Puiseux expansion.
+
+Show that all elements have a well-defined valuation ($P^v$ contains them but $P^{v+1}$ does not).
+
+If the element is not in $O$, its inverse must be, show that its inverse respects valuation and we can
+multiply by $t^{-v}$, where $t$ is a uniformizing parameter, to move the inverse into $O$.
+
+\item Need to show that different cycles yield different valuation rings
+
+If the coordinates of the cycles are different, $x-x_0$ (or $y-y_0$) will have valuation zero at
+one cycle, but positive valuation at the other.
+
+Otherwise, if the coordinate of the cycle is the same, then at least one of $x$ or $y$ must have
+different Puiseux expansions.  Subtract the common prefix and the first differing term from $y$,
+i.e, $y-y_0-c_1 t-c^2 t^2-\cdots-c_v t^v$ to obtain a function that has positive valuation
+on the one cycle but zero valuation on the other.
+
+\end{enumerate}
+\end{theorem}
+
+Since there are an infinite number of valuation rings, it is most convenient to separate them
+into two sets (the finite and the infinite), each of which can be represented as ideals
+of a particular subring (an order).
+
+\begin{definition}
+A valuation ring $O$ is {\bf finite} if both $x \in O$ and $y \in O$.  Otherwise, it is {\bf infinite}.
+\end{definition}
+
+\begin{definition}
+An {\bf order} $O$ of a ring $R$ (also called an $R$-order) is a subring of $R$ such that...
+\end{definition}
+
+\begin{definition}
+The {\bf maximal finite order} of a function field $F$ is the intersection of all its finite valuation rings.
+\end{definition}
+
+Show that it's an order.
+
+Show that valuation rings are maximal ideals of the order.  (are there other maximal ideals?)
+
+Show that it's identical to the integral closure of the coordinate ring.
+
+\begin{definition}
+The {\bf infinite order} of a function field $F$ is the intersection of all its infinite valuation rings.
+\end{definition}
+
+Show that it's an order.
+
+\begin{definition}
+The {\bf integral closure} of an integral domain $R$ in its field of fractions $F$
+are the elements of $F$ with no finite poles, or that admit monic defining polynomials.
+\end{definition}
 
 Theorem: Every element of an $R$-order is integral over $R$.
 
 Theorem: The integral closure of an integral domain $R$ in its field of fractions is an $R$-order,
 and in fact is maximal (due to the last theorem).
 
+[SwansonHuneke] Proposition 6.8.14 Let $R$ be an integral domain. Then
+the integral closure of the ring $R$ equals $\cap_V V$ , where $V$
+varies over all the valuation domains between $R$ and its field of
+fractions. If $R$ is Noetherian, all the $V$ may be taken to be
+Noetherian.
+
+[Kollar] Definition 1.23
+Let $S$ be an integral domain with quotient field $Q(S)$.
+The {\it normalization} of $S$ in $Q(S)$, denoted by $\overline{S}$,
+is the unique largest subring $\overline{S} \subset Q(S)$
+such that every homomorphism $\phi: S \to R$ to a DVR
+extends to a homomorphism $\overline{\phi}: \overline{S} \to R$.
+
+[Kollar] Lemma 1.24
+A unique factorization domain is normal.  In particular,
+any polynomial ring over a field is normal.
+
+[Kollar] Lemma 1.25.
+Assume that $t \in Q(S)$ satisfies a monic equation
+with coefficients in $S$ (i.e, $t$ is integral).
+Then $t \in \overline{S}$.
+
+[Kollar] Defintion 1.27.
+Let $S$ be an integral domain.  The {\it normalization} of $S$
+is its integral closure in its quotient field
+
+Kollar: ``The easy argument that every normal integral domain $S$
+is the intersection of all the valuation rings sitting between
+it and its quotient field is given in [AM69, 5.22].  Working
+only with discrete valuation rings is a bit harder.  The strongest
+theorem in this direction is Serre's condition for normality;
+see [Mat70, 17.1] or [Mat89, 23.8].''
+
+[Mat89]:
+
+$R_i$ condition: $A_p$ is regular for all $P \in {\rm Spec } A$ with ${\rm ht } P \le i$
+
+$S_i$ condition: depth $A_p \ge {\rm min}({\rm ht } P, i)$ for all $P \in {\rm Spec } A$
+
+$(S_0)$ always holds. $(S_1)$ says that all the associated primes of $A$ are minimal.
+$(R_0)+(S_1)$ is n.a.s.c. for $A$ to be reduced.
+
+Theorem 23.8: $(R_1)+(S_2)$ are n.a.s.c. for a Notherian ring $A$ to be normal.
+
+A {\bf Dedekind domain} is a integral domain in which all ideals factor into a product of prime ideals.
+
+Theorem: such a factorization is necessarily unique.
+
+[Wiki Dedekind domain] Theorem: Let R be a Dedekind domain with
+fraction field K. Let L be a finite degree field extension of K and
+denote by S the integral closure of R in L. Then S is itself a
+Dedekind domain.
+
+Theorem (Kummer): If $\{1,y,...,y^{n-1}\}$ is a local integral basis
+at some prime polynomial $\mathfrak{p}$ in $x$, then we can factor
+the ideal $\mathfrak{p}^e$ by factoring the field's defining
+polynomial mod $\mathfrak{p}$. [Stichnoch Theorem 3.3.7]
+
+An {\bf Artinian ring} satisfied the descending chain condition on ideals.
+
+Theorem: the modulo ring constructed from a Dedekind domain and a proper ideal is an Artinian ring.
+
+Show that the maximal finite order is a finitely generated $R[x]$-module.
+
+To work with the maximal finite order of an algebraic curve, or the integral closure of the coordinate
+ring (it's same thing), we'd like to compute a basis for the order as an $R[x]$-module, since
+the basis is finite.  Computing the integral closure of a curve's coordinate ring is not
+trivial, but algorithms to do this have been known for over a hundred years.  The state
+of the art today is Hess' algorithm, which was published twenty years ago and is the
+subject of a book (REFERENCE).
+
+Once we have a basis for the maximal finite order, we can represent places as ideals within the order
+using their ideal generators, of which there are also a finite number.  This gives us the most convenient
+way of working with places on an algebraic curve.
+
+All places correspond to a maximal ideal in the ring of integral elements
+That ideal consists of all algebraic functions which are zero at that place and have no finite poles.
+Equivalently, it consists of all integral elements (that satisify a monic polynomial) which are
+zero at that place.
+Two different places, even if they're at the same point, correspond to two distinct maximal ideals of the order.
+
+As a basic (and important) example of the technique, I'll show how to evaluate an algebraic function
+at a place, given a representation of the place as an ideal of an order.
+
+\begin{mdframed}[backgroundcolor=yellow!20]
+Given: a rational function $f$ and a prime ideal $I$ in a maximal order $O$.
+
+Goal: compute the value of $f \bmod I$.
+
+Step 0: Precompute a $k[x]$-module basis for $I$ in Hermite normal form (doable since $I$ is finitely generated over $O$ and $O$ is finitely generated over $k[x]$) and $\alpha$, a rational function with a simple pole at the place corresponding to $I$ and no other finite poles.
+
+Step 1: Compute the valuation of $f$'s denominator; call it $\nu$.  Multiply both $f$'s numerator and denominator by $\alpha^\nu$.  Now both the numerator and denominator are in $O$, and the denominator is not in $I$ (i.e, it has a finite value).  So we've reduced to the case of computing the residue of an element of $O$, as we now can divide by the denominator's residue, since we know it's not zero.
+
+Step 2: Find a primitive element of the residue field; call it $g$.
+
+Step 3: Compute $g$'s minimal polynomial and use it to construct the residue field as an algebraic extension of the constant base field.
+
+Reducing an element $f \in O$ modulo the HNF basis of $I$ gives a $k[x]$-vector that represents $f \bmod I$, i.e, when this $k[x]$-vector is multiplied by the HNF basis vector, we obtain an element of $O$ equivalent (mod $I$) to $f$.
+
+We can represent $g$ and its powers in this form, and construct a matrix that converts from $g$-basis to HNF basis, then invert it to obtain a matrix that converts from HNF basis to $g$-basis.
+
+Use reduction mod $I$'s HNF basis, then multiply by this inverse matrix to obtain an element in the residue field.
+\end{mdframed}
+
 At a non-singular point, the (x-a, y-b) ideal exists in the coordinate ring.  How can we
 show that it is prime in the integral closure?
+
+All points correspond to maximal ideals in the coordinate ring.
+For points, our ideal generators are just $x-x_0$ and $y-y_0$, and this ideal is maximal in the {\it coordinate ring}.
+If $(x_0, y_0)$ was {\it not} on the curve, then the ideal would be $(x-x_0, y-y_0, p(x,y))$, which
+would simplify to $p(x,y)$ being a non-zero constant, and this would generate the unit ideal.
 
 At a singularity, we can construct a function that takes on different values on each cycle.
 How does this lead to multiple ideals in the integral closure?
@@ -1047,93 +1288,49 @@ Extensions
 
 How do we relate this to the geometric picture?
 
-\begin{enumerate}
-\item The coordinate ring is $R[x,y] \mod p(x,y)$
-\item All points correspond to maximal ideals in the coordinate ring.
-
-For points, our ideal generators are just $x-x_0$ and $y-y_0$, and this ideal is maximal in the {\it coordinate ring}.
-
-If $(x_0, y_0)$ was {\it not} on the curve, then the ideal would be $(x-x_0, y-y_0, p(x,y))$, which
-would simplify to $p(x,y)$ being a non-zero constant, and this would generate the unit ideal.
-
-\item All places correspond to a maximal ideal in the ring of integral elements
-
-That ideal consists of all algebraic functions which are zero at that place and have no finite poles.
-Equivalently, it consists of all integral elements (that satisify a monic polynomial) which are
-zero at that place.
-
-Let $(x-x_0)$'s ramification index be $r$, so $x=x_0+t^r$ and let $(y-y_0)$'s valuation be $s$, which must be positive
-if $(x_0,y_0)$ is a finite point on the curve, so $y=y_0 + y_s t^s + \cdots$
-.  Consider $\frac{(y-y_0)^r}{(x-x_0)^s}$, an algebraic
-function with valuation zero.  $r$ will be less than or equal to the degree of the defining
-polynomial, but if it is equal, then the numerator could simplify, right?  Construct
-$\frac{(y-y_0)^r}{(x-x_0)^s} - v_0$ where $v_0$ is the value of the function, and we've
-got an algebraic function, zero at the place, whose only poles are at $x_0$.
-What about other points over $x_0$? (it has poles)
-
-\item Two different places (at the same point) correspond to two distinct maximal ideals.
-\end{enumerate}
-
-or
-\begin{enumerate}
-
-\item A place corresponds to a valuation ring
-
-\item A valuation ring of a function field $F/K$ is a ring $O \in F$ such that
-   $K \in O \in F$ (both proper inclusions)
-   for every $z \in F$, either $z \in O$ or $z^{-1} \in O$
-
-$z \in O$ if $z$ is finite (could be zero) at the place.
-
-\item Need to show that every cycle induces a place
-
-Pretty easy - use the Puiseux expansion of each function to compute its valuation.
-
-Show that valuation of the Puiseux expansion is independent of the choice of uniformizing variable
-
-Show compatibility of the Puiseux expansions -- inverting one inverts the valuation
-
-\item Need to show that every place induces a cycle
-
-How to compute a Puiseux expansion from a place?  Show that a valuation ring $O$ is a local ring
-with a unique maximal ideal $P$.  Every element $t \in P$ such that $P=tO$ is a uniformizing parameter.
-
-Show that $O \mod P$ is isomorphic to the constants.  $x \mod P$ and $y \mod P$ give us the coordinates
-of the point corresponding to the place.
-
-Given an element in $O$, mod out by $P$ to find its value.  Subtract this value to get an element in $P$.
-Divide by a uniformizing parameter.  Repeat to construct a Puiseux expansion.
-
-Show that all elements have a well-defined valuation ($P^v$ contains them but $P^{v+1}$ does not).
-
-If the element is not in $O$, its inverse must be, show that its inverse respects valuation and we can
-multiply by $t^{-v}$, where $t$ is a uniformizing parameter, to move the inverse into $O$.
-
-\item Need to show that different cycles yield different places
-
-If the coordinates of the cycles are different, $x-x_0$ (or $y-y_0$) will have valuation zero at
-one cycle, but positive valuation at the other.
-
-Otherwise, if the coordinate of the cycle is the same, then at least one of $x$ or $y$ must have
-different Puiseux expansions.  Subtract the common prefix and the first differing term from $y$,
-i.e, $y-y_0-c_1 t-c^2 t^2-\cdots-c_v t^v$ to obtain a function that has positive valuation
-on the one cycle but zero valuation on the other.
-
-\item Definition: A place $O$ is finite if $x \in O$.
-
-\item The maximal finite order is the intersection of all finite places.
-
-Show that it's an order.
-
-Show that it's identical to the integral closure of the coordinate ring.
-
-\item The infinite order is the intersection of all non-finite places.
-
-Show that it's an order.
-
-\end{enumerate}
-
 How do we relate this to extension of ideals?  We embed the coordinate ring in its integral closure.
+
+[Wiki Ideal] Theorem: if $f: A \to B$ is surjective and $ \mathfrak {a}\supseteq \ker f$ then:
+
+\begin{itemize}
+\item $\mathfrak {a}^{ec}={\mathfrak {a}}$ and ${\mathfrak {b}}^{ce}={\mathfrak {b}}$
+\item ${\mathfrak {a}}$ is a prime ideal in $A \Leftrightarrow {\mathfrak  {a}}^{e}$ is a prime ideal in $B$.
+\item ${\mathfrak {a}}$ is a maximal ideal in $A \Leftrightarrow  {\mathfrak  {a}}^{e}$ is a maximal ideal in $B$.
+\end{itemize}
+
+So, to factor $\mathfrak{p}$, we need to find all of the prime/maximal ideals
+in $R \mod \mathfrak{p}$.
+
+Constructing $R \mod \mathfrak{p}$ as a finite dimensional algebra,
+we have an algorithm to enumerate all of the algebra's maximal ideals.
+
+We also want to find each ideal's ramification index and relative degree.
+
+The ramification indices are the powers of the prime ideals.  Cohen Theorem 4.8.3:
+
+$$p {\mathbb Z}_K = \prod_{i=1}^{g} {\mathfrak p}_i^{e_i}$$
+
+Stichnoch defines the ramification index as the integer such
+that $\nu_{P'}(x) = e \nu_P(x)$ for all $x$ in the base field.
+($P'$ lies over $P$)
+
+We can find the ramification index in the modulo ring by raising each maximal
+ideal to successive powers and determining when it stabilizes.  The Artinian
+condition guarantees that it will eventually stabalize.
+
+The relative (or residual) degree of ${\mathfrak p}$ is defined (Cohen Definition 4.8.4):
+
+$$f_i = [{\mathbb Z}_K/{\mathfrak p}_i : {\mathbb Z}/p{\mathbb Z}]$$
+
+This seems to be the nullity of the matrix that defines the ideal in the algebra.
+
+Why?  The dimension of the algebra (over ${\mathbb Z}/p{\mathbb Z}$)
+is the dimension of ${\mathbb Z}_K$.  The number of basis elements in
+the ideal is the dimension of ${\mathfrak p}_i$.  The dimension of
+${\mathbb Z}_K/{\mathfrak p}_i$ is the difference of these two numbers
+(the dimension of the algebra minus the dimension of the ideal), which
+is the dimension of the vector space minus the dimension of the
+ideal's basis matrix's kernel, or the nullity of this matrix.
 
 How do we relate this to integral closure?  Maximal orders?  The integral closure is the maximal finite order.
 
@@ -1265,149 +1462,6 @@ algebraic curves.
 
 % A {\it Riemann surface}, more precisely, is a two-dimensional manifold
 % with a {\it complex analytic structure}.
-
-\vfill\eject
-\mysection{Places and Valuations}
-
-We can characterize places algebraically, both to formalize this
-concept and also to analyze them in a manner that will generalize
-in Chapter \ref{chap:Algebraic Extensions} to arbitrary algebraic extensions.
-
-While points correspond to ideals of the curve's coordinate ring,
-places correspond to ideals of maximal orders of the curve's
-function field.  These maximal orders can be constructed
-using the algebraic process of {\it normalization}.
-
-To establish this connection, we introduce the concept of a
-{\it valuation ring}.
-
-
-[SwansonHuneke] Proposition 6.8.14 Let $R$ be an integral domain. Then
-the integral closure of the ring $R$ equals $\cap_V V$ , where $V$
-varies over all the valuation domains between $R$ and its field of
-fractions. If $R$ is Noetherian, all the $V$ may be taken to be
-Noetherian.
-
-[Kollar] Definition 1.23
-Let $S$ be an integral domain with quotient field $Q(S)$.
-The {\it normalization} of $S$ in $Q(S)$, denoted by $\overline{S}$,
-is the unique largest subring $\overline{S} \subset Q(S)$
-such that every homomorphism $\phi: S \to R$ to a DVR
-extends to a homomorphism $\overline{\phi}: \overline{S} \to R$.
-
-[Kollar] Lemma 1.24
-A unique factorization domain is normal.  In particular,
-any polynomial ring over a field is normal.
-
-[Kollar] Lemma 1.25.
-Assume that $t \in Q(S)$ satisfies a monic equation
-with coefficients in $S$ (i.e, $t$ is integral).
-Then $t \in \overline{S}$.
-
-[Kollar] Defintion 1.27.
-Let $S$ be an integral domain.  The {\it normalization} of $S$
-is its integral closure in its quotient field
-
-Kollar: ``The easy argument that every normal integral domain $S$
-is the intersection of all the valuation rings sitting between
-it and its quotient field is given in [AM69, 5.22].  Working
-only with discrete valuation rings is a bit harder.  The strongest
-theorem in this direction is Serre's condition for normality;
-see [Mat70, 17.1] or [Mat89, 23.8].''
-
-[Mat89]:
-
-$R_i$ condition: $A_p$ is regular for all $P \in {\rm Spec } A$ with ${\rm ht } P \le i$
-
-$S_i$ condition: depth $A_p \ge {\rm min}({\rm ht } P, i)$ for all $P \in {\rm Spec } A$
-
-$(S_0)$ always holds. $(S_1)$ says that all the associated primes of $A$ are minimal.
-$(R_0)+(S_1)$ is n.a.s.c. for $A$ to be reduced.
-
-Theorem 23.8: $(R_1)+(S_2)$ are n.a.s.c. for a Notherian ring $A$ to be normal.
-
-A {\bf Dedekind domain} is a integral domain in which all ideals factor into a product of prime ideals.
-
-Theorem: such a factorization is necessarily unique.
-
-[Wiki Dedekind domain] Theorem: Let R be a Dedekind domain with
-fraction field K. Let L be a finite degree field extension of K and
-denote by S the integral closure of R in L. Then S is itself a
-Dedekind domain.
-
-Theorem (Kummer): If $\{1,y,...,y^{n-1}\}$ is a local integral basis
-at some prime polynomial $\mathfrak{p}$ in $x$, then we can factor
-the ideal $\mathfrak{p}^e$ by factoring the field's defining
-polynomial mod $\mathfrak{p}$. [Stichnoch Theorem 3.3.7]
-
-An {\bf Artinian ring} satisfied the descending chain condition on ideals.
-
-Theorem: the modulo ring constructed from a Dedekind domain and a proper ideal is an Artinian ring.
-
-[Wiki Ideal] Theorem: if $f: A \to B$ is surjective and $ \mathfrak {a}\supseteq \ker f$ then:
-
-\begin{itemize}
-\item $\mathfrak {a}^{ec}={\mathfrak {a}}$ and ${\mathfrak {b}}^{ce}={\mathfrak {b}}$
-\item ${\mathfrak {a}}$ is a prime ideal in $A \Leftrightarrow {\mathfrak  {a}}^{e}$ is a prime ideal in $B$.
-\item ${\mathfrak {a}}$ is a maximal ideal in $A \Leftrightarrow  {\mathfrak  {a}}^{e}$ is a maximal ideal in $B$.
-\end{itemize}
-
-So, to factor $\mathfrak{p}$, we need to find all of the prime/maximal ideals
-in $R \mod \mathfrak{p}$.
-
-Constructing $R \mod \mathfrak{p}$ as a finite dimensional algebra,
-we have an algorithm to enumerate all of the algebra's maximal ideals.
-
-We also want to find each ideal's ramification index and relative degree.
-
-The ramification indices are the powers of the prime ideals.  Cohen Theorem 4.8.3:
-
-$$p {\mathbb Z}_K = \prod_{i=1}^{g} {\mathfrak p}_i^{e_i}$$
-
-Stichnoch defines the ramification index as the integer such
-that $\nu_{P'}(x) = e \nu_P(x)$ for all $x$ in the base field.
-($P'$ lies over $P$)
-
-We can find the ramification index in the modulo ring by raising each maximal
-ideal to successive powers and determining when it stabilizes.  The Artinian
-condition guarantees that it will eventually stabalize.
-
-The relative (or residual) degree of ${\mathfrak p}$ is defined (Cohen Definition 4.8.4):
-
-$$f_i = [{\mathbb Z}_K/{\mathfrak p}_i : {\mathbb Z}/p{\mathbb Z}]$$
-
-This seems to be the nullity of the matrix that defines the ideal in the algebra.
-
-Why?  The dimension of the algebra (over ${\mathbb Z}/p{\mathbb Z}$)
-is the dimension of ${\mathbb Z}_K$.  The number of basis elements in
-the ideal is the dimension of ${\mathfrak p}_i$.  The dimension of
-${\mathbb Z}_K/{\mathfrak p}_i$ is the difference of these two numbers
-(the dimension of the algebra minus the dimension of the ideal), which
-is the dimension of the vector space minus the dimension of the
-ideal's basis matrix's kernel, or the nullity of this matrix.
-
-\vfill\eject
-\mysection{Normalization}
-
-Given: a rational function $f$ and a prime ideal $I$ in a maximal order $O$.
-
-Goal: compute the value of $f \bmod I$.
-
-Step 0: Precompute a $k[x]$-module basis for $I$ in Hermite normal form (doable since $I$ is finitely generated over $O$ and $O$ is finitely generated over $k[x]$) and $\alpha$, a rational function with a simple pole at the place corresponding to $I$ and no other finite poles.
-
-Step 1: Compute the valuation of $f$'s denominator; call it $\nu$.  Multiply both $f$'s numerator and denominator by $\alpha^\nu$.  Now both the numerator and denominator are in $O$, and the denominator is not in $I$ (i.e, it has a finite value).  So we've reduced to the case of computing the residue of an element of $O$, as we now can divide by the denominator's residue, since we know it's not zero.
-
-Step 2: Find a primitive element of the residue field; call it $g$.
-
-Step 3: Compute $g$'s minimal polynomial and use it to construct the residue field as an algebraic extension of the constant base field.
-
-Reducing an element $f \in O$ modulo the HNF basis of $I$ gives a $k[x]$-vector that represents $f \bmod I$, i.e, when this $k[x]$-vector is multiplied by the HNF basis vector, we obtain an element of $O$ equivalent (mod $I$) to $f$.
-
-We can represent $g$ and its powers in this form, and construct a matrix that converts from $g$-basis to HNF basis, then invert it to obtain a matrix that converts from HNF basis to $g$-basis.
-
-Use reduction mod $I$'s HNF basis, then multiply by this inverse matrix to obtain an element in the residue field.
-
-
 
 \vfill\eject
 \mysection{Sage's FunctionField code}
