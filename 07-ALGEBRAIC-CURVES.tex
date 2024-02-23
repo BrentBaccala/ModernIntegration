@@ -1010,7 +1010,8 @@ the polynomial ring modulo the defining polynomial of the curve, but these ideal
 are in one-to-one correspondence with the {\it points} of the curve, and we need
 some way to represent {\it places}.
 
-To solve this problem, we decompose the function field into {\it orders}, of which
+To solve this problem, we introduce the concept of {\it valuation rings}
+and decompose the function field into {\it orders}, of which
 there are two of primary interest: the maximal finite order and the maximal infinite order.
 The ideals of the maximal finite order correspond to
 finite places, and the ideals of the maximal infinite order correspond to infinite places.
@@ -1086,8 +1087,9 @@ with a unique maximal ideal $P$.  Every element $t \in P$ such that $P=tO$ is a 
 
 This is where we need to have a {\it discrete} valuation ring.  \cite{Swanson Huneke} proposition 6.3.4
 shows that a DVR is a principal ideal domain (and other equivalences).
-\cite{Stichtenoch} theorem 1.1.6 is relevant, as it shows that the valuation ring of a function
-field is a DVR.
+\cite{Stichtenoth} Theorem 1.1.6 is relevant, as it shows that the valuation ring of a function
+field is a DVR.  \cite{Swanson Huneke} Theorem 6.4.3 suggests that the Noetherian property
+(of the coordinate ring?) is what we need.
 
 Show that $O \mod P$ is isomorphic to the constants.  $x \mod P$ and $y \mod P$ give us the coordinates
 of the point corresponding to the place.
@@ -1142,7 +1144,7 @@ Show that valuation rings are maximal ideals of the order.  (are there other max
 Show that it's identical to the integral closure of the coordinate ring.
 
 \begin{definition}
-The {\bf infinite order} of a function field $F$ is the intersection of all its infinite valuation rings.
+The {\bf maximal infinite order} of a function field $F$ is the intersection of all its infinite valuation rings.
 \end{definition}
 
 Show that it's an order.
@@ -1482,20 +1484,20 @@ algebraic curves.
 \mysection{Sage's FunctionField code}
 
 Sage has built-in routines to compute Puiseux expansions without having to
-construct Newton polygons and substitute trial expansions, although a
-different syntax is required.  In fact, there are three different
+construct Newton polygons and substitute trial expansions.
+In fact, there are three different
 constructions in Sage for algebraic curves -- polynomial rings
 modulo an ideal, function fields, and curves in projective space.
 We'll mostly use the {\tt FunctionField} code.
 
 Instead of constructing a polynomial ring the usual way (which is?), we'll
-construct a {\tt FunctionField} over a single variable, specifying its
+construct a univariate {\tt FunctionField} over a single variable, specifying its
 constant field, then form its {\tt extension} modulo the curve's defining polynomial,
-which will also be a {\tt FunctionField}.
+which will yield another, bivariate, {\tt FunctionField}.
 
 A Sage {\tt FunctionField} has methods to construct both the maximal finite order
-and the infinite order (is it maximal?  I guess it is, in the sense that it contains
-all infinite places).  We can construct ideals of these orders, and from them
+and the maximal infinite order.
+We can construct ideals of these orders, and from them
 construct the corresponding places.  Given a place in the underlying univariate
 {\tt FunctionField}, we have a method that will extend the corresponding ideal
 to the bivariate {\tt FunctionField}, factor (decompose) it, and return a list
@@ -1514,6 +1516,12 @@ The main thing I don't like about it is that
 when you pass it a differential, it returns a {\tt LaurentSeries}, when it should actually
 return a {\tt LaurentSeries} times $ds$, where $s$ is the uniformizing variable.
 
+If a uniformizing variable is specified, either as a function field element
+or as a {\tt LaurentSeries}, we reverse the series, which only works if the series has valuation 1,
+giving us a new series that expresses $s$ in powers of the uniformizing variable, then
+then substitute the reversed series into the original $s$-expansion of the function field element,
+which gives us an expansion of the element in powers of the uniformizing variable.
+
 \begin{sagecommonsmall}
 from sage.rings.function_field.differential import FunctionFieldDifferential
 def puiseux(F, pl, uvar=None, absprec=0):
@@ -1528,7 +1536,10 @@ def puiseux(F, pl, uvar=None, absprec=0):
           valuation = f.valuation(pl)
        series = F.completion(pl, prec=max(1, absprec-valuation))
        if uvar:
-          uvar_series = series(uvar).reverse()
+          if isinstance(uvar, LaurentSeries):
+             uvar_series = uvar.reverse()
+          else:
+             uvar_series = series(uvar).reverse()
           f_series = series(f)(uvar_series)
        else:
           f_series = series(f)
@@ -1549,6 +1560,8 @@ def puiseux(F, pl, uvar=None, absprec=0):
 Construct Puiseux expansions of $y$ at the multiple points of the
 curve $y^2 = 1 - x^2$
 
+This is Example \ref{y^2 = 1 - x^2}, redone now using Sage {\tt FunctionField}.
+
 First we create a function field
 in one variable with coefficients in $\QQbar$:
 
@@ -1565,46 +1578,42 @@ L.<y> = R[]
 F.<y> = R.extension(y^2 + x^2 - 1)
 \end{sageblock}
 
-The function fields have two maximal orders (DEFINE), one finite and the other infinite.
+Recall from Example \ref{y^2 = 1 - x^2} that our multiple points lie at $x = \pm 1$.
 Since we wish to construct our series expansion at a point with finite coordinates
 (remember that this is projective space, so we also have points at infinity),
 we use the finite maximal order, construct the ideal corresponding the desired
-point, then construct the unique place (DEFINE) at that point:
+point, then construct the unique place at that point:
 
 \begin{sageblock}[ch7]
 O = F.maximal_order()
 pl = O.ideal(x-1, y).place()
 \end{sageblock}
 
-Finally, we construct the completion map at the place, which maps from the function
-field to a Laurent series, specified the desired precision of the expansion,
-and apply the map to the function field element ($y$) that we wish to expand:
+Finally, we construct the Puiseux expansion of $y$ at the place, specifying the desired precision of the expansion.
+Notice that {\tt puiseux} actually returns a function, to which we pass
+the function field element ($y$) that we wish to expand:
 
 \begin{sageblock}[ch7]
-F.completion(pl, prec=4)(y)
+puiseux(F, pl, absprec=4)(y)
 \end{sageblock}
 
-This answer differs from the one we computed by hand because the
-choice of uniformizing variable is not unique, and because the
-computer made a different choice than we did.  Our ``$t$'' variable
-was roughly $\sqrt{x-1}$.  Even though square roots don't exist {\it
-per se} in this field, we can construct a series expansion of $x-1$,
-construct the square root of the series expansion as another series expansion.
-This only works if the series for $x-1$ has valuation 2, which it does:
+This answer differs from the one we computed in Example \ref{y^2 = 1 - x^2} because the
+choice of uniformizing variable is not unique, and the
+computer made a different choice than we did.  Our ``$t$'' variable in Example \ref{y^2 = 1 - x^2}
+was roughly $\sqrt{x-1}$.  Even though square roots don't exist
+in this field, we can construct a series expansion of $x-1$,
+and construct the square root of the series expansion as another series expansion.
 
 \begin{sageblock}[ch7]
-xminus1 = F.completion(pl, prec=4)(x-1)
+xminus1 = puiseux(F, pl, absprec=5)(x-1)
 t = xminus1^(1/2)
 \end{sageblock}
 
-This series gives us $\sqrt{x-1}$ in powers of $s$.
-We reverse the series, which only works if the series has valuation 1,
-giving us a new series that expresses $s$ in powers of $\sqrt{x-1}$.
-We substitute the reversed series into the original $s$-expansion of $y$,
-which gives us an expansion of $y$ in powers of $\sqrt{x-1}$:
+Using this series as a uniformizing variables gives us $y$ in powers of $t$,
+even though the computer still prints the results using $s$.
 
 \begin{sageblock}[ch7]
-F.completion(pl, prec=4)(y)(t.reverse())
+puiseux(F, pl, absprec=4, uvar=t)(y)
 \end{sageblock}
 
 Comparing this to equation \ref{(1,0) expansion}, we see that they're the same.
@@ -1615,21 +1624,32 @@ because its structure is quite simple and we know that it will only have a singl
 and a single place, at infinity.
 
 \begin{sageblock}[ch7]
-Rinf = R.maximal_order_infinite().ideal(1/x).place()
+ROinf = R.maximal_order_infinite();
+Rinf = ROinf.ideal(1/x).place()
 \end{sageblock}
 
-Sage function fields come equipped with a {\tt places\_above} method that
-allow us to obtain a list of all places in an extension field that lie
-over a given place in the underlying function field.  Having obtained
-these places, represented as ideals in the maximal infinite order,
-it is straightforward to use the {\tt puiseux} function
-to construct Puiseux series.
+Now we'll use the {\tt places\_above} method
+to obtain a list of all places in an extension field that lie
+over a given place in the underlying function field.
+Recall from Example \ref{y^2 = 1 - x^2} that this curve has a
+singular point at infinity with two separate cycles
+and therefore two separate places.
 
 \begin{sageblock}[ch7]
 Pinf = F.places_above(Rinf)
-[puiseux(F, pl, absprec=5)(y) for pl in Pinf]
-[puiseux(F, pl, absprec=5)(x) for pl in Pinf]
 \end{sageblock}
+
+Having obtained
+these places, represented as ideals in the maximal infinite order,
+it is straightforward to use the {\tt puiseux} function
+to construct Puiseux series for $x$ and $y$.
+
+\begin{sageblock}[ch7]
+[puiseux(F, pl, absprec=5)(x) for pl in Pinf]
+[puiseux(F, pl, absprec=5)(y) for pl in Pinf]
+\end{sageblock}
+
+Comparing this to Example \ref{y^2 = 1 - x^2}, we see that the results are the same.
 
 \hfill$\Box$\end{quote}
 \end{examplecont}
