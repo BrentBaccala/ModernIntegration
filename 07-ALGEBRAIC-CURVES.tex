@@ -1316,6 +1316,30 @@ Use reduction mod $I$'s HNF basis, then multiply by this inverse matrix to obtai
 \end{algorithm}
 \end{mdframed}
 
+Conceptually, the various rings, fields, and inclusion maps look like this:
+
+\begin{center}
+\begin{tikzpicture}
+\matrix [column sep=10mm,row sep=10mm]
+{
+\node {\bf Rational Functions}; & \node{\bf Algebraic Curve}; & \\
+\node (Fx) {$C(x)$}; & \node (Fxy) {$C(x,y) \mod p(x,y)$}; & \node {Fraction Fields}; \\
+                     & \node (I) {${\cal I}$}; & \node [align=center] {Maximal Finite Order /\\ Integral Basis}; \\
+\node (Cx) {$C[x]$}; & \node (Cxy) {$C[x,y] \mod p(x,y)$}; & \node {Coordinate Rings}; \\
+};
+\draw [thick, ->] (Cx) -- (Fx);
+\draw [thick, ->] (Fx) -- (Fxy);
+\draw [thick, ->] (Cx) -- (Cxy);
+\draw [thick, ->] (Cxy) -- (I);
+\draw [thick, ->] (I) -- (Fxy);
+\end{tikzpicture}
+\end{center}
+
+The coordinate rings are subsets of their fraction fields, and can be mapped into them.
+The univariate coordinate rings and fields (the rational functions in $x$) are subsets of their
+counterparts on the algebraic curve, and can be mapped into them.  Finally, the algebraic
+curve's integral basis is a subset of its fraction field and a superset of its coordinate ring.
+
 \cite{Stichtenoth} Corollary 1.2.3 shows that
 all places of $C(x)$ (the rational function field) are in 1-to-1 correspondence with $C \cup \inf$ (as places).
 
