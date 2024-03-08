@@ -1631,6 +1631,101 @@ of which are units.
 
 \endexample
 
+\vfill\eject
+
+\mysection{Hermite Normal Form}
+
+If we're given a ring $R$ and a maximal ideal $I$, we know that $R \mod I$ will be a field,
+but how can we actually reduce an element $e$ of $R$ modulo $I$ and find its {\bf residue},
+which is $e$'s value in $R \mod I$, written $e \mod I$?
+
+The answer to that question depends heavily on the ring $R$ and how it and
+the ideal $I$ are represented.
+
+In Chapter \ref{chap:Algebraic Curves}, we'll need to perform this computation when
+$R$ is % an order, expressed as
+a free $K[x]$-module ($K$ is a field), which is to say that we'll
+have a set of basis elements $b_i$ in a larger field, typically $R$'s fraction field.
+Multiplying these basis elements
+by a vector in $K[x]$ will give us an element of $R$,
+and since the module is {\it free}, every vector in $K[x]$ will correspond to a unique element of $R$.
+
+Since an element of $R$ is specified as a vector in $K[x]$, we can form a square matrix corresponding to the element
+that, when multiplied by a vector $v$ in $K[x]$ will return a vector in $K[x]$ that is exactly
+the multiplication of the element of $R$ specified by the vector $v$ by the element of $R$ specified by the matrix.
+If we expand out the element horizontally (as a $K[x]$ vector), and list out its products with $b_i$ vertically,
+we'll get a matrix that when multiplied on the left by $v$ (as a row vector) will return the product
+as a row vector.
+
+$I$ will be given by a set of generators, also in $R$.  % , so we'll have a list of vectors in $K[x]$ that describe $I$.
+Multiplying any one of these vectors by $b_i$ will give us the corresponding generator.
+To form an element of $I$, we would then multiply each generator by an element of $R$ and add the products.
+
+In matrix notation, we can take the matrices that correspond to multiplying by each generator and stack
+them vertically.  Now we'll left multiply by a row vector $v$ in $K[x]$ with length $ng$ where $n$ is the degree
+of the $K[x]$-module and $g$ is the number of generators.  This corresponds to multiplying each generator
+by the corresponding element of $R$, of which there are $g$.
+
+% We'll form the vectors of $I$'s generators into the rows of a matrix $M$, that we'll
+% then reduce to its Hermite Normal Form $H$.
+
+A matrix $H$ (not necessarily square) with entries in $K[x]$ is in {\bf Hermite Normal Form} if: (wikipedia, modified slightly)
+\begin{enumerate}
+\item $H$ is upper triangular
+\item The leading coefficient of a row is strictly to the right of the leading coefficent of the row above it, and it is monic
+\item The elements below pivots are zero and elements above pivots are nonnegative and have degree strictly smaller than the pivot
+\end{enumerate}
+
+A simple algorithm to convert a matrix $M$ into HNF using elementary row operations works like this:
+\begin{enumerate}
+\item Let $i$ run from 1 to the number of columns in $M$.
+\item Use elementary row operations to move any rows with a zero in the $i$'th column,
+considering only rows $i$ and lower, to the bottom of the matrix
+\item Compute the monic GCD (use Section \ref{sec:Greatest Common Divisors}) of the entries in the $i$'th column, considering
+only rows $i$ and lower (i.e, the diagonal element and everything below it), but ignore the rows with zeros
+\item Use elementary row operations to construct the monic GCD in element $e_{ii}$.
+\item Element $e_{ii}$ will now be a factor of all elements beneath it, so use elementary row operations
+to replace these elements with zeros
+\item Divide $e_{ii}$ into each of the elements above it, and use elementary row operations to replace these elements
+by their remainders mod $e_{ii}$.
+\end{enumerate}
+
+We can form HNF by left multiplying by an invertable matrix.  So, we were left multiplying by an arbitrary
+row vector $v$ of length $ng$ to get $vM$, which is an element of the ideal, specified as a vector of length $n$.
+Using HNF, we now get $H=UM$, or $M=U^{-1}H$, or $vU^{-1}H$ as our result.  Now the bottom $(n-1)g$ rows
+of the HNF will be all zeros, so the rightmost $(n-1)g$ elements of $vU^{-1}$ will be ignored.
+
+Given a HNF matrix $H$ and an element $e$ of $R$ represented by a vector in $K[x]$, we can reduce modulo
+the ideal and obtain a vector $u$ in $K[x]$ with each element of strictly lower degree than the
+corresponding diagonal element in $H$.
+
+The algorithm to do this runs as follows:
+\begin{enumerate}
+\item Let $i$ run from 1 to the number of columns in $M$.
+\end{enumerate}
+
+% HNF reduction will produce a vector $v$ with as many entries as
+% columns in $H$, which is the dimension of the module over $K[x]$, such
+% that $Hv$, dotted into $b_i$, will be an element of $R$ that differs
+% from $e$ by a constant.
+
+HNF reduction will produce a row $u$ with as many entries as
+rows in $H$, such that $uH$, dotted into $b_i$ (call it $uHB$), will be an element of $R$ that differs
+from $e$ by less than the degree of the diagonal elements (clarify this).
+Since $vU^{-1} = u$, padding this vector with zeros
+and multiplying by $U$ gives us $v = uU$, which is a list of elements that when multiplied by the
+ideal generators, would produce the same result.
+
+If the ideal is maximal, the residue field is, in fact, a field, and will be $K$.  This implies that the
+matrix $H$ will have at most a single linear polynomial along the diagonal, all other entries in
+the matrix will be constants, and $vHB$ will differ from $e$ by a constant.
+
+Probably $b_0$ will be $1$, so we should end up with $e - Hv$ (as vectors), being a vector with a
+single constant entry in the first element, and the rest of the vector zero.
+
+We also expect only two rows in the matrix, since we know that these ideals can be generated with two generators,
+at least in the algebraic curve case.  See \cite{cohen138} Proposition 4.7.7, \cite{cohen193} Proposition 1.2.3
+(where the reader is advised to prove the result himself, perhaps using Smith and Hermite normal forms).
 
 \vfill\eject
 

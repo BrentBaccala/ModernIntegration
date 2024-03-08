@@ -1282,7 +1282,7 @@ trivial, but algorithms to do this have been known for over a hundred years.  Ch
 in \cite{alvanos} describes Trager's algorithm, which was originally published
 in \cite{trager}.
 If our algebraic curve is formed as the root of a polynomial, i.e, $y^n = p(x)$, then
-an integral basis has a particularly simple form, given in \cite{trager}.
+an integral basis has a particularly simple form, given in \cite{trager} pp. 30-31.
 
 Once we have an integral basis, we can represent places as ideals within the order
 using their ideal generators, of which there are also a finite number.  This gives us the most convenient
@@ -1302,19 +1302,111 @@ Goal: compute the value of $f \bmod I$.
 
 Step 0: Precompute a $k[x]$-module basis for $I$ in Hermite normal form (doable since $I$ is finitely generated over $O$ and $O$ is finitely generated over $k[x]$) and $\alpha$, a rational function with a simple pole at the place corresponding to $I$ and no other finite poles.
 
-Step 1: Compute the valuation of $f$'s denominator; call it $\nu$.  Multiply both $f$'s numerator and denominator by $\alpha^\nu$.  Now both the numerator and denominator are in $O$, and the denominator is not in $I$ (i.e, it has a finite value).  So we've reduced to the case of computing the residue of an element of $O$, as we now can divide by the denominator's residue, since we know it's not zero.
+Step 1: Compute the valuation of $f$'s denominator (how?); call it $\nu$.  Multiply both $f$'s numerator and denominator by $\alpha^\nu$.  Now both the numerator and denominator are in $O$, and the denominator is not in $I$ (i.e, it has a finite value).  So we've reduced to the case of computing the residue of an element of $O$, as we now can divide by the denominator's residue, since we know it's not zero.
 
-Step 2: Find a primitive element of the residue field; call it $g$.
+Step 2: Use the techniques from Section \ref{sec:Hermite Normal Form} to compute residues of both the numerator
+and the denominator, and divide them to obtain the result.
 
-Step 3: Compute $g$'s minimal polynomial and use it to construct the residue field as an algebraic extension of the constant base field.
+Note: If the field $k$ is not algebraically closed, then find a primitive element of the residue field and call it $g$.
+Compute $g$'s minimal polynomial and use it to construct the residue field as an algebraic extension of the constant base field.
+We can represent $g$ and its powers w.r.t. the HNF basis, construct a
+matrix that converts from $g$-basis to HNF basis, then invert it to
+obtain a matrix that converts from HNF basis to $g$-basis.
+Use reduction mod $I$'s HNF basis, then multiply by this inverse matrix to obtain an element in the residue field,
+expressed in $g$-basis.
 
-Reducing an element $f \in O$ modulo the HNF basis of $I$ gives a $k[x]$-vector that represents $f \bmod I$, i.e, when this $k[x]$-vector is multiplied by the HNF basis vector, we obtain an element of $O$ equivalent (mod $I$) to $f$.
+% Reducing an element $f \in O$ modulo the HNF basis of $I$ gives a
+% $k[x]$-vector that represents $f \bmod I$, i.e, when this
+% $k[x]$-vector is multiplied by the HNF basis vector, we obtain an
+% element of $O$ equivalent (mod $I$) to $f$.
 
-We can represent $g$ and its powers in this form, and construct a matrix that converts from $g$-basis to HNF basis, then invert it to obtain a matrix that converts from HNF basis to $g$-basis.
 
-Use reduction mod $I$'s HNF basis, then multiply by this inverse matrix to obtain an element in the residue field.
+Source: Sage's {\tt FunctionFieldPlace_polymod._residue_field}
 \end{algorithm}
 \end{mdframed}
+
+\begin{example}
+Compute the valuation of $y/x$ at the single place lying over the point $(1,1)$ in the function field $y^3=x$.
+
+The answer is obviously 1, but let's see how to compute this using the above algorithm.
+
+First, we know that an integral basis for this function field is $(1,y,y^2)$ \cite{trager} pp. 30-31.
+
+Our first generator $x-1$ can be represented by the matrix
+
+\[
+\left(\begin{matrix}
+ x-1 & 0 & 0 \cr
+ 0 & x-1 & 0 \cr
+ 0 & 0 & x-1 \cr
+\end{matrix}\right)
+\]
+
+Our second generator $y-1$ can be represented by the matrix
+
+\[
+\left(\begin{matrix}
+ -1 & 1 & 0 \cr
+ 0 & -1 & 1 \cr
+ x & 0 & -1 \cr
+\end{matrix}\right)
+\]
+
+Putting this second matrix in HNF we obtain:
+
+\[
+\left(\begin{matrix}
+ 1 & 0 & 1 \cr
+ 0 & 1 & -1 \cr
+ 0 & 0 & x-1 \cr
+\end{matrix}\right)
+\]
+
+Combining the two matrices, we obtain:
+
+\[
+\left(\begin{matrix}
+ 1 & 0 & 1 \cr
+ 0 & 1 & -1 \cr
+ 0 & 0 & x-1 \cr
+ x-1 & 0 & 0 \cr
+ 0 & x-1 & 0 \cr
+ 0 & 0 & x-1 \cr
+\end{matrix}\right)
+\]
+
+Reducing further using HNF elementary row operations yields:
+
+\[
+\left(\begin{matrix}
+ 1 & 0 & 1 \cr
+ 0 & 1 & -1 \cr
+ 0 & 0 & x-1 \cr
+ 0 & 0 & 0 \cr
+ 0 & 0 & 0 \cr
+ 0 & 0 & 0 \cr
+\end{matrix}\right)
+\]
+
+Since the two three rows are identical to those from the $y-1$ matrix,
+this implies that the ideal is principal and $y-1$ is the only generator required
+and our ideal's HNF matrix is:
+
+\[
+\left(\begin{matrix}
+ 1 & 0 & 1 \cr
+ 0 & 1 & -1 \cr
+ 0 & 0 & x-1 \cr
+\end{matrix}\right)
+\]
+
+$x$ is represented as $(x,0,0)$.  Applying the HNF reduction algorithm
+to this vector, we reduce by left-multiplying
+the matrix by $(x,0,-1)$ to obtain $(x,0,1)$,
+which, when dot-multiplied by $(1,y,y^2)$, yields $x+y^2$, not what we want.
+
+Is this why we used reversed HNF?
+\end{example}
 
 Conceptually, the various rings, fields, and inclusion maps look like this:
 
@@ -2045,6 +2137,8 @@ for zeros, negative for poles) with each point of the curve, subject
 to the stipulation that all but a finite number of those integers is
 zero.  Such a description is called a {\it Weil divisor}, and is most
 suitable for working in {\it intersection theory}.
+
+\ref{Stichtenoth} Definition 1.5.6 defines a Weil {\it differential}.
 
 For singular curves, the situation is more complicated.  A divisor
 needs to be associated with places, not points.  Such a divisor is
