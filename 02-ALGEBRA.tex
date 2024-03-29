@@ -1720,12 +1720,21 @@ If the ideal is maximal, the residue field is, in fact, a field, and will be $K$
 matrix $H$ will have at most a single linear polynomial along the diagonal, all other entries in
 the matrix will be constants, and $vHB$ will differ from $e$ by a constant.
 
-Probably $b_0$ will be $1$, so we should end up with $e - Hv$ (as vectors), being a vector with a
-single constant entry in the first element, and the rest of the vector zero.
+The bottom row is somewhat special, in that it will correspond to a generator using only
+a single basis element (the last one), and that generator will be the GCD of all elements in the ideal
+formed using only that basis element.
 
-We also expect only two rows in the matrix, since we know that these ideals can be generated with two generators,
-at least in the algebraic curve case.  See \cite{cohen138} Proposition 4.7.7, \cite{cohen193} Proposition 1.2.3
-(where the reader is advised to prove the result himself, perhaps using Smith and Hermite normal forms).
+We'll usually want that final basis element to be $1$, and the matrix element will be the GCD
+of all elements in the ideal formed with $x$ and not $y$.
+In this case, we'll end up with $e - Hv$ (as vectors), being a vector with a
+single constant entry in the last element, and the rest of the vector zero.
+
+% WE DON'T EXPECT TWO ROWS IN THE MATRIX - we need two generators over the integral basis,
+% but the matrix is expressed as a K[x]-module.
+
+% We also expect only two rows in the matrix, since we know that these ideals can be generated with two generators,
+% at least in the algebraic curve case.  See \cite{cohen138} Proposition 4.7.7, \cite{cohen193} Proposition 1.2.3
+% (where the reader is advised to prove the result himself, perhaps using Smith and Hermite normal forms).
 
 \vfill\eject
 

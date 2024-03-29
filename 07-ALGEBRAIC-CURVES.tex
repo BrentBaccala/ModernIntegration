@@ -1407,33 +1407,10 @@ and our ideal's HNF matrix is:
 
 $x$ is represented as $(0,0,x)$.  Applying the HNF reduction algorithm
 to this vector, we reduce by left-multiplying
-the matrix by $(x,0,-1)$ to obtain $(x,0,1)$,
-which, when dot-multiplied by $(1,y,y^2)$, yields $x+y^2$, not what we want.
-
-Is this why we used reversed HNF?
-
-On the other hand, if we order the basis $(y^2,y,1)$, then our matrix
-for $y-1$ is:
-
-\[
-\left(\begin{matrix}
- 0 & 1 & -1 \cr
- 1 & -1 & 0 \cr
- -1 & 0 & x \cr
-\end{matrix}\right)
-\]
-
-Putting this matrix in HNF we get:
-
-\[
-\left(\begin{matrix}
- 1 & 0 & -1 \cr
- 0 & 1 & -1 \cr
- 0 & 0 & x-1 \cr
-\end{matrix}\right)
-\]
-
-This {\it is} what we want: the $x-1$ is in the column corresponding to 1.
+the matrix by $(0,0,-1)$ to obtain $(0,0,1-x)$.
+Adding
+this vector to $(0,0,x)$ gives us $(0,0,1)$,
+which, when dot-multiplied by $(y^2,y,1)$, yields $1$, our remainder.
 
 \begin{sageblock}[ch7-hnf]
 R.<x> = FunctionField(QQbar)
