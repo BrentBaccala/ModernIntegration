@@ -1332,6 +1332,8 @@ The answer is obviously 1, but let's see how to compute this using the above alg
 
 First, we know that an integral basis for this function field is $(1,y,y^2)$ \cite{trager} pp. 30-31.
 
+We'll use the ordering $(y^2,y,1)$, because we want the $1$ to be last.
+
 Our first generator $x-1$ can be represented by the matrix
 
 \[
@@ -1342,13 +1344,16 @@ Our first generator $x-1$ can be represented by the matrix
 \end{matrix}\right)
 \]
 
+Remember that the columns correspond to the integral basis $(y^2,y,1)$, and the rows are
+the generators $x-1$, $(x-1)y$, and $(x-1)y^2$.
+
 Our second generator $y-1$ can be represented by the matrix
 
 \[
 \left(\begin{matrix}
- -1 & 1 & 0 \cr
- 0 & -1 & 1 \cr
- x & 0 & -1 \cr
+ 0 & 1 & -1 \cr
+ 1 & -1 & 0 \cr
+ -1 & 0 & x \cr
 \end{matrix}\right)
 \]
 
@@ -1356,7 +1361,7 @@ Putting this second matrix in HNF we obtain:
 
 \[
 \left(\begin{matrix}
- 1 & 0 & 1 \cr
+ 1 & 0 & -1 \cr
  0 & 1 & -1 \cr
  0 & 0 & x-1 \cr
 \end{matrix}\right)
@@ -1366,7 +1371,7 @@ Combining the two matrices, we obtain:
 
 \[
 \left(\begin{matrix}
- 1 & 0 & 1 \cr
+ 1 & 0 & -1 \cr
  0 & 1 & -1 \cr
  0 & 0 & x-1 \cr
  x-1 & 0 & 0 \cr
@@ -1379,7 +1384,7 @@ Reducing further using HNF elementary row operations yields:
 
 \[
 \left(\begin{matrix}
- 1 & 0 & 1 \cr
+ 1 & 0 & -1 \cr
  0 & 1 & -1 \cr
  0 & 0 & x-1 \cr
  0 & 0 & 0 \cr
@@ -1394,18 +1399,50 @@ and our ideal's HNF matrix is:
 
 \[
 \left(\begin{matrix}
- 1 & 0 & 1 \cr
+ 1 & 0 & -1 \cr
  0 & 1 & -1 \cr
  0 & 0 & x-1 \cr
 \end{matrix}\right)
 \]
 
-$x$ is represented as $(x,0,0)$.  Applying the HNF reduction algorithm
+$x$ is represented as $(0,0,x)$.  Applying the HNF reduction algorithm
 to this vector, we reduce by left-multiplying
 the matrix by $(x,0,-1)$ to obtain $(x,0,1)$,
 which, when dot-multiplied by $(1,y,y^2)$, yields $x+y^2$, not what we want.
 
 Is this why we used reversed HNF?
+
+On the other hand, if we order the basis $(y^2,y,1)$, then our matrix
+for $y-1$ is:
+
+\[
+\left(\begin{matrix}
+ 0 & 1 & -1 \cr
+ 1 & -1 & 0 \cr
+ -1 & 0 & x \cr
+\end{matrix}\right)
+\]
+
+Putting this matrix in HNF we get:
+
+\[
+\left(\begin{matrix}
+ 1 & 0 & -1 \cr
+ 0 & 1 & -1 \cr
+ 0 & 0 & x-1 \cr
+\end{matrix}\right)
+\]
+
+This {\it is} what we want: the $x-1$ is in the column corresponding to 1.
+
+\begin{sageblock}[ch7-hnf]
+R.<x> = FunctionField(QQbar)
+L.<y> = R[]
+F.<y> = R.extension(y^3 - x)
+F.maximal_order().ideal(x-1, y-1)
+F.maximal_order().ideal(y-1).hnf()
+\end{sageblock}
+
 \end{example}
 
 Conceptually, the various rings, fields, and inclusion maps look like this:
