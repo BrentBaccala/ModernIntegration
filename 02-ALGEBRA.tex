@@ -518,11 +518,11 @@ def long_division(dividend, divisor, var, domain='QQ'):
 
       if use_parens:
 
-	 ''' Insane code.  We want to span up to the first text of the     '''
-	 ''' polynomial to put a leading "-(" in.  Need to span an extra   '''
-	 ''' column if the first column of the poly isn't really occupied  '''
-	 ''' by anything.  Also have to explicitly enter (by printing)     '''
-	 ''' and leave (by modifying poly) math mode.                      '''
+         ''' Insane code.  We want to span up to the first text of the     '''
+         ''' polynomial to put a leading "-(" in.  Need to span an extra   '''
+         ''' column if the first column of the poly isn't really occupied  '''
+         ''' by anything.  Also have to explicitly enter (by printing)     '''
+         ''' and leave (by modifying poly) math mode.                      '''
 
          multispan_cols = numcols - (2*sterm.degree() + 2) + 1
          polystr = format_poly_textableformat(sterm)
