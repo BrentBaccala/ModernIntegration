@@ -1713,7 +1713,7 @@ def puiseux(F, pl, uvar=None, absprec=0):
           valuation = f.valuation(pl)
        series = F.completion(pl, prec=max(1, absprec-valuation))
        if uvar:
-          if isinstance(uvar, LaurentSeries):
+          if isinstance(uvar, sage.rings.laurent_series_ring_element.LaurentSeries):
              uvar_series = uvar.reverse()
           else:
              uvar_series = series(uvar).reverse()
