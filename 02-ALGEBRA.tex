@@ -481,27 +481,27 @@ def long_division(dividend, divisor, var, domain='QQ'):
    numcols = 2*(dividend.degree() + 1 + divisor.degree() + 1)
    print("\\vbox{\\offinterlineskip")
    print("\\tabskip=0pt plus1fil")
-   print "\\halign to\\hsize{\\tabskip=0pt",
+   print("\\halign to\\hsize{\\tabskip=0pt", end="")
    for i in range(0,numcols+1):
-      print "\\hfil $#$",
-      if (i < numcols): print " & ",
+      print("\\hfil $#$", end="")
+      if (i < numcols): print(" & ", end="")
    print("\\tabskip=0pt plus1fil\\cr")
 
    ' quotient, indented '
    ' remember, (twice the degree) plus two columns '
 
-   print "\\multispan{", numcols - (2*quotient.degree() + 2), "}&",
+   print("\\multispan{", numcols - (2*quotient.degree() + 2), "}&", end="")
    print(format_poly_textableformat(quotient))
    print("\\vbox to16pt{}\\cr")
 
    ' line under quotient '
 
-   print "\\multispan{", numcols - (2*dividend.degree()+2), "}&",
-   print "\\multispan{", 2*dividend.degree()+2, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr"
+   print("\\multispan{", numcols - (2*dividend.degree()+2), "}&", end="")
+   print("\\multispan{", 2*dividend.degree()+2, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr")
 
    ' divisor, vertical bar, dividend '
 
-   print format_poly_textableformat(divisor),
+   print(format_poly_textableformat(divisor), end="")
    print("&\\vrule\\," + format_poly_textableformat(dividend) + "\\vbox to16pt{}\\cr")
 
    ' series of divisions '
@@ -530,12 +530,12 @@ def long_division(dividend, divisor, var, domain='QQ'):
             polystr = polystr[1:len(polystr)]
             multispan_cols += 1
          polystr = polystr.replace('&', '$&', 1)
-         print "\\multispan{", multispan_cols, "}",
+         print("\\multispan{", multispan_cols, "}", end="")
          print("\\hfil $-(" + polystr + "\\vbox to16pt{}&)\\cr")
       else:
-         print "\\multispan{", numcols - (2*sterm.degree() + 2), "}&",
+         print("\\multispan{", numcols - (2*sterm.degree() + 2), "}&", end="")
          print(format_poly_textableformat(sterm))
-         print "\\vbox to16pt{}\\cr",
+         print("\\vbox to16pt{}\\cr", end="")
 
       " the line - there are two cases here depending on whether the leading "
       " term of the polynomial right above use is positive or negative,      "
@@ -547,19 +547,19 @@ def long_division(dividend, divisor, var, domain='QQ'):
       else:
         extend = 0
 
-      print "\\multispan{", numcols - (2*sterm.degree()+2)+1-extend, "}&",
-      print "\\multispan{", (2*sterm.degree()+2)-1+extend, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr"
+      print("\\multispan{", numcols - (2*sterm.degree()+2)+1-extend, "}&", end="")
+      print("\\multispan{", (2*sterm.degree()+2)-1+extend, "}\\vbox to 5pt{}\\leaders\\hrule\\hfil\\cr")
 
       " compute and print the new remainder "
 
       remainder = remainder.sub(sterm)
 
       if remainder != 0:
-         print "\\multispan{", numcols - (2*remainder.degree()+2), "}&",
+         print("\\multispan{", numcols - (2*remainder.degree()+2), "}&", end="")
          print(format_poly_textableformat(remainder))
          print("&\\vbox to16pt{}\\cr")
       else:
-         print "\\multispan{", numcols - 2, "}&",
+         print("\\multispan{", numcols - 2, "}&", end="")
          print(format_poly_textableformat(remainder))
          print("&\\vbox to16pt{}\\cr")
 
