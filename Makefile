@@ -1,7 +1,7 @@
 
 all: ModernIntegration.pdf slides.pdf decomposition.pdf
 
-SAGE=/usr/bin/sage
+SAGE=sage
 
 clean:
 	rm *.inc *.ps *.pdf
