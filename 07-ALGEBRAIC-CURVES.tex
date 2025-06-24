@@ -1081,7 +1081,7 @@ valuation, that have a zero at the place in question.  They form an ideal $P$ of
 valuation ring.  $O$ is, in fact, a {\it local ring}, and $P$ is its unique maximal ideal.
 
 Given a valuation ring $O$ and its maximal prime ideal $P$, we define the {\bf residue class field} of
-the valuation as $F_P := O/P$.  Given any element of $O$, its value at the corresponding place is its
+the valuation as $F_P := O/P$.  Given any element of $O$, its {\it residue} at the corresponding place is its
 image in $F_P$.  The easy case in when the field of constants is algebraically closed.  Otherwise,
 we can have non-rational places whose residue fields have degree (over the constants) greater than one.
 
@@ -1095,6 +1095,11 @@ contains a list of equivalent conditions that a DVR satisfies, including
 field is a DVR by establishing one of a DVR's key properties: it's
 a principal ideal domain with a unique maximal ideal.
 
+Intuitively, each distinct valuation ring corresponds to a place on the algebraic curve.
+The residue of an element is its value at the place (obtained by substituting the place's
+coordinates into the element's formula), and its value is its order (the lowest exponent
+that appears in its Puiseux expansion).
+
 % \cite{Swanson Huneke} proposition 6.3.4
 % shows that a DVR is a principal ideal domain (and other equivalences).
 % \cite{Swanson Huneke} Theorem 6.4.3 suggests that the Noetherian property
@@ -1106,7 +1111,7 @@ The valuation rings of a curve's function field are in one-to-one correspondence
 
 \proof
 \begin{enumerate}
-\item Every cycle induces a valuation ring
+\item Every cycle induces a unique valuation ring
 
 To do this, we just use the Puiseux expansion of a function field element to compute its valuation.
 If it is finite, it is in the valuation ring; if it is a pole, it is not in the valuation ring.
@@ -1116,6 +1121,46 @@ Show that valuation of the Puiseux expansion is independent of the choice of uni
 
 Show compatibility of the Puiseux expansions -- inverting one inverts the valuation
 (PUT THIS IN THE PREVIOUS SECTION)
+
+{\bf Uniqueness}: We wish to show that for any two different cycles $A$ and $B$,
+there is at least one function field element in $A$'s valuation ring that is not in $B$'s.
+In other words, we're looking for an element that has a pole at $B$ but not at $A$.
+
+Q: If both of the uniformizing variables have order one in each other's place,
+then are all uniformizing variables of one also u.v.'s of the other?
+
+A: Yes.  A uniformizing variable is any element of order one.  If a element of
+order one is written out w.r.t. any uniformizing variable $v$, it will have
+the form $c_1 v + \cdots$, and two expansions of this form can be composed
+to get another expansion of this form.  Therefore, two places either have
+compatible uniformizing variables, in which can any uniformizing variable
+at the one place will be a uniformizing variable at the other, or they
+are incompatible, in which case the two places have no uniformizing
+variables in common.
+
+The two different cycles $A$ and $B$ will have uniformizing variables $v_A$
+and $v_B$.  If the cycles are not compatible,
+$v_A$ is not also a uniformizing variable of $B$, then $v_A$'s expansion
+in $v_B$ will not have order one.  If $v_A$ has negative order at $B$, then $v_A$ has
+a pole at $B$ but not at $A$.  Likewise, if $v_B$ has negative order at $A$, then
+$v_B$ has a pole at $A$ but not at $B$.
+If $v_A$ has zero order at $B$, then $v_A^{-1}$ will also have zero order
+at $B$ (and be in its valuation ring), but will have a pole at $A$.
+Likewise, if $v_B$ has zero order at $A$, $v_B^{-1}$ will meet our requirements.
+Finally if $v_A$ has positive order $r>1$ at $B$ and $v_B$ has positive order $s>1$ at $A$,
+then $v_A/v_B$ has positive order at $B$ and negative order at $A$.
+
+%% v_A = c_1 v_B^r + ... = c_1 (c_2 v_A^q + ...)^r + ... = c_1 c_2 v_A^(qr) + ...     v_A's expansion at B
+%% v_B = c_2 v_A^q + ...                                                              v_B's expansion at A
+%% they're not compatible because the expansions are only valid at the place they correspond to
+
+If the uniformizing variables are compatible (they have order one at both places), then either $x$ or $y$
+will have different expansions at the two places in terms of $v$, so subtract off
+the common prefix $p$ (a polynomial in $v$) to get $(x-p)/v^r$ where $r$ is the order
+of $x-p$.  $(x-p)/v^r - c_A$ will be zero on $A$ and non-zero on $B$.  Inverting it
+will produce an element with a pole at $A$ and finite at $B$.  This element will
+be in $B$'s valuation ring but not in $A$'s.
+
 
 \item Every valuation ring induces a cycle
 
@@ -1149,7 +1194,8 @@ multiply by $t^{-v}$, where $t$ is a uniformizing parameter, to move the inverse
 \end{enumerate}
 \end{theorem}
 
-Since there are an infinite number of valuation rings, it is most convenient to separate them
+There are an infinite number of valuation rings for any algebraic curve over an infinite field
+of coefficients (like the complex numbers).  It is most convenient to separate them
 into two sets (the finite and the infinite), each of which can be represented as ideals
 of a particular subring (an order).
 
